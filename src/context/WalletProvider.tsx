@@ -1,5 +1,7 @@
 import React from 'react'
 import { Wallet } from './Index'
+import { LedgerWallet } from './LedgerWallet'
+import { BurnerWallet } from './BurnerWallet'
 
 interface WalletProviderStates {
     isLogged: boolean
@@ -13,7 +15,9 @@ interface WalletProviderStates {
 
 export default class WalletProvider extends React.Component<{}, WalletProviderStates> {
     loadLedger = async () => {
-       console.log('load Ledger')
+        console.log('load leger start')
+        const wallet = new LedgerWallet()
+        console.log('load Ledger', wallet.loadWallet())
     }
 
     loadBurner = async () => {
@@ -44,6 +48,8 @@ export default class WalletProvider extends React.Component<{}, WalletProviderSt
                 this.loadBurner()
                 break
         }
+        // TODO: remove
+        this.loadLedger()
     }
 
     render() {
