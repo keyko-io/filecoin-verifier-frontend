@@ -8,8 +8,14 @@ export class LedgerWallet {
 
     ledgerBusy: any = false
     ledgerApp: any = false
+    network: string = ''
+    path: string = ''
 
-    public loadWallet = async() => {
+    public loadWallet = async(network = 't') => {
+        // network and path
+        this.network = network
+        const networkCode = network === 'f' ? 461 : 1
+        this.path = `m/44'/${networkCode}'/0/0/`
         let transport
         try {
             transport = await TransportWebUSB.create();
@@ -28,12 +34,12 @@ export class LedgerWallet {
         }
     }
 
-    public getAccounts = async (network = 't', nStart = 0, nEnd = 5) => {
+    public getAccounts = async (nStart = 0, nEnd = 5) => {
 
         // TODO: throwIfBusy(ledgerBusy)
 
         this.ledgerBusy = true
-        const networkCode = network === 'f' ? 461 : 1
+        const networkCode = this.network === 'f' ? 461 : 1
         const paths = []
         for (let i = nStart; i < nEnd; i += 1) {
           paths.push(`m/44'/${networkCode}'/0/0/${i}`)
@@ -49,7 +55,7 @@ export class LedgerWallet {
         return addresses
     }
 
-    public sign = async (filecoinMessage:any, path:any) => {
+    public sign = async (filecoinMessage:any) => {
 
         // TODO: throwIfBusy(ledgerBusy)
 
@@ -58,7 +64,7 @@ export class LedgerWallet {
           filecoinMessage.toString()
         )
         const { signature_compact } = this.handleErrors(
-          await this.ledgerApp.sign(path, Buffer.from(serializedMessage, 'hex'))
+          await this.ledgerApp.sign(this.path, Buffer.from(serializedMessage, 'hex'))
         )
         return signature_compact.toString('base64')
     }

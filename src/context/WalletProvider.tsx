@@ -7,21 +7,31 @@ interface WalletProviderStates {
     isLogged: boolean
     isLoading: boolean
     wallet: string
-    sign(): Promise<any>
-    getAccounts(): Promise<any>
+    sign: any
+    getAccounts: any
     balance: number
     message: string
 }
 
 export default class WalletProvider extends React.Component<{}, WalletProviderStates> {
     loadLedger = async () => {
-        console.log('load leger start')
         const wallet = new LedgerWallet()
-        console.log('load Ledger', wallet.loadWallet())
+        await wallet.loadWallet()
+        this.setState({
+            wallet: 'ledger',
+            sign: wallet.sign,
+            getAccounts: wallet.getAccounts
+        })
     }
 
     loadBurner = async () => {
-        console.log('load Burner')
+        const wallet = new BurnerWallet()
+        await wallet.loadWallet()
+        this.setState({
+            wallet: 'burner',
+            sign: wallet.sign,
+            getAccounts: wallet.getAccounts
+        })
     }
 
     state = {
@@ -49,7 +59,7 @@ export default class WalletProvider extends React.Component<{}, WalletProviderSt
                 break
         }
         // TODO: remove
-        this.loadLedger()
+        this.loadBurner()
     }
 
     render() {
