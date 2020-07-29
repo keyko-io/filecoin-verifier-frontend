@@ -1,4 +1,4 @@
-const signer = require("@zondax/filecoin-signing-tools/js")
+const signer = require("@keyko-io/filecoin-signing-tools/js")
 
 export class BurnerWallet {
 
@@ -10,9 +10,13 @@ export class BurnerWallet {
         // network and path
         this.network = network
         const networkCode = network === 'f' ? 461 : 1
-        this.path = `m/44'/${networkCode}'/0/0/`
-        this.mnemonic = 'embody second thing treat element else coin craft movie clutch push quote sting more used dilemma dumb strong maid provide movie mercy report promote'
+        //this.path = `m/44'/${networkCode}'/0/0/`
+        //this.mnemonic = 'embody second thing treat element else coin craft movie clutch push quote sting more used dilemma dumb strong maid provide movie mercy report promote'
         // console.log(signer.generateMnemonic())
+
+        this.path = "m/44'/1'/1/0/2"
+        this.mnemonic = 'exit mystery juice city argue breeze film learn orange dynamic marine diary antenna road couple surge marine assume loop thought leader liquid rotate believe'  
+      
     }
 
     public getAccounts = async (nStart = 0, nEnd = 5) => {
