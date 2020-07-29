@@ -27,11 +27,26 @@ export class BurnerWallet {
 
     public sign = async (filecoinMessage:any) => {
         const { private_hexstring } = signer.keyDerive(this.mnemonic, this.path+'0', '')
-        const { signature } = signer.transactionSign(
-          filecoinMessage.toString(),
+        const signedMessage = signer.transactionSign(
+          filecoinMessage,
           private_hexstring
         )
-        return signature.data
+        return JSON.stringify({
+            Message: {
+              From: signedMessage.message.from,
+              GasLimit: signedMessage.message.gaslimit,
+              GasPrice: signedMessage.message.gasprice,
+              Method: signedMessage.message.method,
+              Nonce: signedMessage.message.nonce,
+              Params: signedMessage.message.params,
+              To: signedMessage.message.to,
+              Value: signedMessage.message.value,
+            },
+            Signature: {
+              Data: signedMessage.signature.data,
+              Type: signedMessage.signature.type,
+            }
+        })
     }
 
 }

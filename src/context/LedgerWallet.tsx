@@ -63,10 +63,25 @@ export class LedgerWallet {
         const serializedMessage = signer.transactionSerialize(
           filecoinMessage.toString()
         )
-        const { signature_compact } = this.handleErrors(
+        const signedMessage = this.handleErrors(
           await this.ledgerApp.sign(this.path, Buffer.from(serializedMessage, 'hex'))
         )
-        return signature_compact.toString('base64')
+        return JSON.stringify({
+          Message: {
+            From: signedMessage.message.from,
+            GasLimit: signedMessage.message.gaslimit,
+            GasPrice: signedMessage.message.gasprice,
+            Method: signedMessage.message.method,
+            Nonce: signedMessage.message.nonce,
+            Params: signedMessage.message.params,
+            To: signedMessage.message.to,
+            Value: signedMessage.message.value,
+          },
+          Signature: {
+            Data: signedMessage.signature.data,
+            Type: signedMessage.signature.type,
+          }
+      })
     }
 
     private handleErrors = (response:any) => {
