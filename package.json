@@ -27,9 +27,15 @@
     "react-fontawesome": "^1.7.1",
     "react-router-dom": "^5.2.0",
     "react-scripts": "3.4.1",
+    "slate-react-system": "0.0.6",
+    "typescript": "^3.7.5",
+    "filecoin-verifier-tools": "file:/Users/jpfernandez/Documents/Keyko/Filecoin/KeykoFork/filecoin-verifier-tools",
+    "@filecoin-shipyard/lotus-client-provider-nodejs": "0.0.5",
+    "@filecoin-shipyard/lotus-client-rpc": "0.0.11",
+    "@filecoin-shipyard/lotus-client-schema": "0.0.12",
+    "@keyko-io/filecoin-signing-tools": "0.2.0"
     "sass-loader": "^9.0.2",
-    "slate-react-system": "0.0.7",
-    "typescript": "^3.7.5"
+    "slate-react-system": "0.0.7
   },
   "scripts": {
     "start": "react-scripts start",

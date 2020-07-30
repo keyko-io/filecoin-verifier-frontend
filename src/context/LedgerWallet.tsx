@@ -55,7 +55,7 @@ export class LedgerWallet {
         return addresses
     }
 
-    public sign = async (filecoinMessage:any) => {
+    public sign = async (filecoinMessage:any, indexAccount:number) => {
 
         // TODO: throwIfBusy(ledgerBusy)
 
