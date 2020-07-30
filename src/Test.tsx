@@ -5,7 +5,6 @@ const VerifyAPIWithWallet = require('filecoin-verifier-tools/api/apiWallet')
 const { LotusRPC } = require('@filecoin-shipyard/lotus-client-rpc')
 const { BrowserProvider: Provider } = require('@filecoin-shipyard/lotus-client-provider-browser')
 const { testnet } = require('@filecoin-shipyard/lotus-client-schema')
-const signer = require("@keyko-io/filecoin-signing-tools/js")
 
 export default class Test extends Component {
     public static contextType = Wallet
@@ -38,14 +37,8 @@ export default class Test extends Component {
         })
         
         const client = new LotusRPC(provider, { schema: testnet.fullNode })
-
-        console.log(this.context)
- 
         const api = new VerifyAPIWithWallet(client, this.context)
-
         //const api = new VerifyAPIWithWallet(VerifyAPIWithWallet.browserProvider(endpointUrl, token), this.context)
-
-
 
         let verifiers = await api.listVerifiers()
     
@@ -57,13 +50,8 @@ export default class Test extends Component {
 
         console.log("ver: " + ver)
 
-        let address = "t1ejxune6bmm6qqpcsxydk43ylashnxmmrqwjaila"
-
-        const mnemonic = 'exit mystery juice city argue breeze film learn orange dynamic marine diary antenna road couple surge marine assume loop thought leader liquid rotate believe'
-        let key = signer.keyDerive(mnemonic, "m/44'/1'/1/0/2", "")
-
-
-        await api.verifyClient(address, 1000000000000000000000, key)    
+        let address = "t1i7a6kphm5qottfgz4d3ei6ge4ciziaqdpcqkzdy"
+        await api.verifyClient(address, 1000000000000000000000, 2)    
 
     }
 

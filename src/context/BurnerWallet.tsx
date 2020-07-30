@@ -14,7 +14,8 @@ export class BurnerWallet {
         //this.mnemonic = 'embody second thing treat element else coin craft movie clutch push quote sting more used dilemma dumb strong maid provide movie mercy report promote'
         // console.log(signer.generateMnemonic())
 
-        this.path = "m/44'/1'/1/0/2"
+        //this.path = "m/44'/1'/1/0/2"
+        this.path = "m/44'/1'/1/0/"
         this.mnemonic = 'exit mystery juice city argue breeze film learn orange dynamic marine diary antenna road couple surge marine assume loop thought leader liquid rotate believe'  
       
     }
@@ -29,10 +30,10 @@ export class BurnerWallet {
         return accounts
     }
 
-    public sign = async (filecoinMessage:any) => {
+    public sign = async (filecoinMessage:any, indexAccount:number) => {
 
         //const { private_hexstring } = signer.keyDerive(this.mnemonic, this.path+'0', '')
-        const private_hexstring = signer.keyDerive(this.mnemonic, this.path, '').private_hexstring
+        const private_hexstring = signer.keyDerive(this.mnemonic, this.path + indexAccount as string, '').private_hexstring
 
         const signedMessage = signer.transactionSign(
           filecoinMessage,
