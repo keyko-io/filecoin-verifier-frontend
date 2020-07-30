@@ -30,9 +30,10 @@ export class BurnerWallet {
     }
 
     public sign = async (filecoinMessage:any) => {
+
         //const { private_hexstring } = signer.keyDerive(this.mnemonic, this.path+'0', '')
         const private_hexstring = signer.keyDerive(this.mnemonic, this.path, '').private_hexstring
-        
+
         const signedMessage = signer.transactionSign(
           filecoinMessage,
           private_hexstring

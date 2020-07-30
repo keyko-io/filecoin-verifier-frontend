@@ -29,7 +29,7 @@ export default class Test extends Component {
     startApi = async () => {
 
         let endpointUrl = "ws://localhost:1234/rpc/v0"
-        let token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBbGxvdyI6WyJyZWFkIiwid3JpdGUiLCJzaWduIiwiYWRtaW4iXX0.j-wcvLhfLuQ-OxIENpaTsAJFcWSqC_lu0q6qSYctr_E" 
+        let token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBbGxvdyI6WyJyZWFkIiwid3JpdGUiLCJzaWduIiwiYWRtaW4iXX0.NXToq-xe93xdQpSeAlJrNseq4-EMA_wqhxhmyMG1h18" 
 
         const provider = new Provider(endpointUrl, {
             token: async () => {
@@ -40,8 +40,11 @@ export default class Test extends Component {
         const client = new LotusRPC(provider, { schema: testnet.fullNode })
 
         console.log(this.context)
-
+ 
         const api = new VerifyAPIWithWallet(client, this.context)
+
+        //const api = new VerifyAPIWithWallet(VerifyAPIWithWallet.browserProvider(endpointUrl, token), this.context)
+
 
 
         let verifiers = await api.listVerifiers()
