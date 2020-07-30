@@ -1,0 +1,39 @@
+.App {
+  max-width: 1280px !important;
+  position: relative;
+  margin-left: auto;
+  margin-right: auto;
+
+  .sidebar {
+    position: fixed;
+    display: flex;
+    flex-direction: column;
+    left: inherit;
+    border-right: none;
+    width: 200px;
+    background-color: #fff;
+    border-right: 1px solid #ccc;
+    height: 100%;
+
+    a, a:focus, a:visited, a:link, a:hover, a:target, a:active {
+      padding: 10px 20px;
+      text-decoration: none;
+      color: black;
+      border: none;
+      font-weight: bold;
+
+      .selected{
+        color: #2069EE;
+      }
+
+      svg {
+        padding-right: 10px;
+      }
+    }
+  }
+
+  .main {
+    display: block;
+    padding-left: 200px;
+  }
+}
