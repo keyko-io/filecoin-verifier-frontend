@@ -1,0 +1,338 @@
+/* constants */
+$sizes_navigation: 288;
+$sizes_sidebar: 416;
+$sizes_header: 72;
+
+$zindex_navigation: 1;
+$zindex_sidebar: 2;
+$zindex_modal: 3;
+$zindex_tooltip: 4;
+$zindex_header: 5;
+
+$font_text: "'inter-regular', -apple-system, BlinkMacSystemFont, arial, sans-serif";
+$font_semiBold: "'inter-semi-bold', -apple-system, BlinkMacSystemFont, arial, sans-serif";
+$font_medium: "'inter-medium', -apple-system, BlinkMacSystemFont, arial, sans-serif";
+$font_mono: "'mono', monaco, monospace";
+$font_monoBold: "'mono-bold', monaco, monospace";
+$font_monoCode: "'fira-code-regular', mono, monospace";
+$font_monoCodeBold: "'fira-code-bold', mono-bold, monospace";
+$font_code: "'jet-brains-regular', mono, monospace";
+$font_codeBold: "'jet-brains-bold', mono, monospace";
+
+$typescale_lvl1: "1rem";
+$typescale_lvl2: "1.25rem";
+$typescale_lvl3: "1.563rem";
+$typescale_lvl4: "1.953rem";
+
+$system_white: "#ffffff";
+$system_foreground: "#f7f7f7";
+$system_gray: "#e5e5e5";
+$system_border: "#d8d8d8";
+$system_darkGray: "#b2b2b2";
+$system_black: "#1b1f23";
+$system_pitchBlack: "#0c0c0c";
+$system_brand: "#0047FF";
+$system_link: "#2935ff";
+$system_green: "#28a745";
+$system_yellow: " #FFC940";
+$system_red: "#ff0000";
+
+$theme_foreground: $system_white;
+$theme_ctaBackground: $system_brand;
+$theme_pageBackground: $system_foreground;
+$theme_pageText: $system_black;
+
+/* global css */
+.tippy-touch {
+  cursor: pointer !important;
+}
+.tippy-notransition {
+  transition: none !important;
+}
+.tippy-popper {
+  z-index: $zindex_tooltip;
+  max-width: 400px;
+  perspective: 800px;
+  outline: 0;
+  transition-timing-function: cubic-bezier(0.165, 0.84, 0.44, 1);
+  pointer-events: none;
+}
+.tippy-popper.html-template {
+  max-width: 96%;
+  max-width: calc(100% - 20px);
+}
+.tippy-popper[x-placement^="top"] [x-arrow] {
+  border-top: 7px solid $system_white;
+  border-right: 7px solid transparent;
+  border-left: 7px solid transparent;
+  bottom: -7px;
+  margin: 0 9px;
+}
+.tippy-popper[x-placement^="top"] [data-animation="fade"].enter {
+  opacity: 1;
+  transform: translateY(-10px);
+}
+.tippy-popper[x-placement^="top"] [data-animation="fade"].leave {
+  opacity: 0;
+  transform: translateY(-10px);
+}
+.tippy-popper[x-placement^="bottom"] [x-arrow] {
+  border-bottom: 7px solid $system_white;
+  border-right: 7px solid transparent;
+  border-left: 7px solid transparent;
+  top: -7px;
+  margin: 0 9px;
+}
+.tippy-popper[x-placement^="bottom"] [data-animation="fade"].enter {
+  opacity: 1;
+  transform: translateY(10px);
+}
+.tippy-popper[x-placement^="bottom"] [data-animation="fade"].leave {
+  opacity: 0;
+  transform: translateY(10px);
+}
+.tippy-popper[x-placement^="left"] [x-arrow] {
+  border-left: 7px solid $system_white;
+  border-top: 7px solid transparent;
+  border-bottom: 7px solid transparent;
+  right: -7px;
+  margin: 6px 0;
+}
+.tippy-popper[x-placement^="left"] [data-animation="fade"].enter {
+  opacity: 1;
+  transform: translateX(-10px);
+}
+.tippy-popper[x-placement^="left"] [data-animation="fade"].leave {
+  opacity: 0;
+  transform: translateX(-10px);
+}
+.tippy-popper[x-placement^="right"] [x-arrow] {
+  border-right: 7px solid $system_white;
+  border-top: 7px solid transparent;
+  border-bottom: 7px solid transparent;
+  left: -7px;
+  margin: 6px 0;
+}
+.tippy-popper[x-placement^="right"] [data-animation="fade"].enter {
+  opacity: 1;
+  transform: translateX(10px);
+}
+.tippy-popper[x-placement^="right"] [data-animation="fade"].leave {
+  opacity: 0;
+  transform: translateX(10px);
+}
+.tippy-tooltip {
+  font-family: $font_text;
+  color: $system_white;
+  background-color: $system_pitchBlack;
+  position: relative;
+  border-radius: 4px;
+  font-size: 1rem;
+  padding: 12px;
+  text-align: center;
+  will-change: transform;
+  border: 1px solid transparent;
+}
+.tippy-tooltip[data-animatefill] {
+  overflow: hidden;
+  background-color: transparent;
+}
+.tippy-tooltip[data-interactive] {
+  pointer-events: auto;
+}
+.tippy-tooltip[data-inertia] {
+  transition-timing-function: cubic-bezier(0.53, 2, 0.36, 0.85);
+}
+.tippy-tooltip [x-arrow] {
+  position: absolute;
+  width: 0;
+  height: 0;
+}
+
+@media (max-width: 450px) {
+  .tippy-popper {
+    max-width: 96%;
+    max-width: calc(100% - 20px);
+  }
+}
+
+@font-face {
+  font-family: 'mono';
+  src: url('/public/SFMono-Medium.woff');
+}
+@font-face {
+  font-family: 'mono-bold';
+  src: url('/public/SFMono-Bold.woff');
+}
+@font-face {
+  font-family: 'inter-regular';
+  src: url('/public/Inter-Regular.woff');
+}
+@font-face {
+  font-family: 'inter-semi-bold';
+  src: url('/public/Inter-SemiBold.woff');
+}
+@font-face {
+  font-family: 'inter-medium';
+  src: url('/public/Inter-Medium.woff');
+}
+@font-face {
+  font-family: 'fira-code-regular';
+  src: url('/public/FiraCode-Regular.woff');
+}
+@font-face {
+  font-family: 'fira-code-bold';
+  src: url('/public/FiraCode-Bold.woff');
+}
+@font-face {
+  font-family: 'jet-brains-regular';
+  src: url('/public/JetBrainsMono-Regular.woff');
+}
+@font-face {
+  font-family: 'jet-brains-bold';
+  src: url('/public/JetBrainsMono-Bold.woff');
+}
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed,
+figure, figcaption, footer, header, hgroup,
+menu, nav, output, ruby, section, summary,
+time, mark, audio, video {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  vertical-align: baseline;
+}
+article, aside, details, figcaption, figure,
+footer, header, hgroup, menu, nav, section {
+  display: block;
+}
+html, body {
+  margin: 0;
+  padding: 0;
+  background: $system_foreground;
+  color: $system_black;
+  font-size: 16px;
+  font-family: $font_text;
+  scrollbar-width: none;
+  -ms-overflow-style: -ms-autohiding-scrollbar;
+  ::-webkit-scrollbar {
+    display: none;
+  }
+  -webkit-font-feature-settings: "liga"1, "ss01"1, "zero"1, "cv11"1, 'frac'1, 'calt'1, 'tnum'1;
+  -moz-font-feature-settings: "liga"1, "ss01"1, "zero"1, "cv11"1, 'frac'1, 'calt'1, 'tnum'1;
+  -ms-font-feature-settings: "liga"1, "ss01"1, "zero"1, "cv11"1, 'frac'1, 'calt'1, 'tnum'1;
+  font-feature-settings: "liga"1, "ss01"1, "zero"1, "cv11"1, 'frac'1, 'calt'1, 'tnum'1;
+}
+
+/* prettier-ignore */
+.language-javascript {
+  code,
+  pre {
+    color: #fff5b1;
+    text-shadow: 0 0 2px #100c0f, 0 0 5px #dc078e33, 0 0 10px #fff3;
+    font-family: $font_code;
+    font-size: 12px;
+    text-align: left;
+    white-space: pre;
+    word-spacing: normal;
+    word-break: normal;
+    word-wrap: normal;
+    tab-size: 2;
+    hyphens: none;
+  }
+  /* Code blocks */
+  pre {
+    padding: none;
+    margin: none;
+    overflow: auto;
+  }
+  :not(pre) > code,
+  pre {
+    background: none;
+  }
+  /* Inline code */
+  :not(pre) > code {
+    padding: .1em;
+    border-radius: .3em;
+    white-space: normal;
+  }
+  .token.comment,
+  .token.block-comment,
+  .token.prolog,
+  .token.doctype,
+  .token.cdata {
+    color: #FF00FF;
+  }
+  .token.punctuation {
+    color: #ffd33d;
+  }
+  .token.tag,
+  .token.attr-name,
+  .token.namespace,
+  .token.number,
+  .token.unit,
+  .token.hexcode,
+  .token.deleted {
+    color: cyan;
+  }
+  .token.property,
+  .token.selector {
+    color: #ffdf5d;
+    text-shadow: 0 0 2px #100c0f, 0 0 10px #257c5575, 0 0 35px #21272475;
+  }
+  .token.function-name {
+    color: #ffd33d;
+  }
+  .token.boolean,
+  .token.selector .token.id,
+  .token.class-name,
+  .token.function, 
+  .token.constant,
+  .token.symbol {
+    color: #c8e1ff;
+    text-shadow: 0 0 2px #001716, 0 0 3px #03edf975, 0 0 5px #03edf975, 0 0 8px #03edf975;
+  }
+  .token.important,
+  .token.atrule,
+  .token.keyword,
+  .token.selector .token.class,
+  .token.builtin {
+    color: #f9c513;
+    text-shadow: 0 0 2px #393a33, 0 0 8px #f39f0575, 0 0 2px #f39f0575;
+  }
+  .token.string,
+  .token.char,
+  .token.attr-value,
+  .token.regex,
+  .token.variable {
+    color: #fff;
+  }
+  .token.operator,
+  .token.entity,
+  .token.url {
+    color: #f9c513;
+  }
+  .token.important,
+  .token.bold {
+    font-weight: 400;
+    font-family: $font_codeBold;
+  }
+  .token.italic {
+    font-style: italic;
+  }
+  .token.entity {
+    cursor: help;
+  }
+  .token.inserted {
+    color: #f9c513;
+  }
+}
