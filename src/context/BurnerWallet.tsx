@@ -30,7 +30,9 @@ export class BurnerWallet {
     }
 
     public sign = async (filecoinMessage:any) => {
-        const { private_hexstring } = signer.keyDerive(this.mnemonic, this.path+'0', '')
+        //const { private_hexstring } = signer.keyDerive(this.mnemonic, this.path+'0', '')
+        const private_hexstring = signer.keyDerive(this.mnemonic, this.path, '').private_hexstring
+        
         const signedMessage = signer.transactionSign(
           filecoinMessage,
           private_hexstring
@@ -42,7 +44,8 @@ export class BurnerWallet {
               GasPrice: signedMessage.message.gasprice,
               Method: signedMessage.message.method,
               Nonce: signedMessage.message.nonce,
-              Params: signedMessage.message.params,
+             // Params: signedMessage.message.params,
+             Params: Buffer.from(signedMessage.message.params, "hex").toString("base64"),
               To: signedMessage.message.to,
               Value: signedMessage.message.value,
             },

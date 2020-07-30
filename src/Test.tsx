@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Wallet } from './context/Index'
 
-const VerifyAPI = require('filecoin-verifier-tools/api/api3')
+const VerifyAPIWithWallet = require('filecoin-verifier-tools/api/apiWallet')
 const { LotusRPC } = require('@filecoin-shipyard/lotus-client-rpc')
 const { BrowserProvider: Provider } = require('@filecoin-shipyard/lotus-client-provider-browser')
 const { testnet } = require('@filecoin-shipyard/lotus-client-schema')
@@ -41,7 +41,7 @@ export default class Test extends Component {
 
         console.log(this.context)
 
-        const api = new VerifyAPI(client, this.context)
+        const api = new VerifyAPIWithWallet(client, this.context)
 
 
         let verifiers = await api.listVerifiers()
@@ -54,7 +54,7 @@ export default class Test extends Component {
 
         console.log("ver: " + ver)
 
-        let address = "t1quarbvmnv2hex3uxbczw6bfhawcmr4wrvwwmj4i"
+        let address = "t1ejxune6bmm6qqpcsxydk43ylashnxmmrqwjaila"
 
         const mnemonic = 'exit mystery juice city argue breeze film learn orange dynamic marine diary antenna road couple surge marine assume loop thought leader liquid rotate believe'
         let key = signer.keyDerive(mnemonic, "m/44'/1'/1/0/2", "")
