@@ -51,9 +51,12 @@ export default class Verifiedclients extends Component<{},States> {
         })
     }
 
-    handleChange = (e:any) => this.setState({ [e.target.name]: e.target.val } as any)
+    handleChange = (e:any) => {
+        console.log(e.target.name, e.target.value)
+        this.setState({ [e.target.name]: e.target.value } as any)
+    }
 
-    public render(){
+    render(){
         return (
             <div>
                 <H1>Verified clients</H1>
