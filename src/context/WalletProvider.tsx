@@ -7,8 +7,12 @@ interface WalletProviderStates {
     isLogged: boolean
     isLoading: boolean
     wallet: string
+    api: any
     sign: any
     getAccounts: any
+    api2: any
+    sign2: any
+    getAccounts2: any
     balance: number
     message: string
 }
@@ -28,9 +32,14 @@ export default class WalletProvider extends React.Component<{}, WalletProviderSt
         const wallet = new BurnerWallet()
         await wallet.loadWallet()
         this.setState({
+            isLogged: true,
             wallet: 'burner',
+            api: wallet.api,
             sign: wallet.sign,
-            getAccounts: wallet.getAccounts
+            getAccounts: wallet.getAccounts,
+            api2: wallet.api2,
+            sign2: wallet.sign2,
+            getAccounts2: wallet.getAccounts2
         })
     }
 
@@ -38,8 +47,12 @@ export default class WalletProvider extends React.Component<{}, WalletProviderSt
         isLogged: false,
         isLoading: false,
         wallet: '',
+        api: {},
         sign: async () => {},
         getAccounts: async () => {},
+        api2: {},
+        sign2: async () => {},
+        getAccounts2: async () => {},
         balance: 0,
         message: ''
     }
