@@ -2,11 +2,17 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.scss';
 import App from './App';
+import WalletProvider from './context/WalletProvider'
+import { BrowserRouter, Route, Switch, Link } from 'react-router-dom'
 import * as serviceWorker from './serviceWorker';
 
 ReactDOM.render(
   <React.StrictMode>
-    <App />
+    <WalletProvider>
+      <BrowserRouter>
+        <App />
+      </BrowserRouter>
+    </WalletProvider>
   </React.StrictMode>,
   document.getElementById('root')
 );

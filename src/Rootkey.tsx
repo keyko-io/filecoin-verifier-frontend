@@ -11,7 +11,7 @@ export default class Rootkey extends Component {
     public render(){
         return (
             <div>
-                Rootkey
+                
             </div>
         )
     }

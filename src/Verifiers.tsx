@@ -23,7 +23,7 @@ export default class Verifiers extends Component {
     public render(){
         return (
             <div>
-                Verifiers
+                
             </div>
         )
     }

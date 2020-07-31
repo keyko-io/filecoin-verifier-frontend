@@ -11,7 +11,7 @@ export default class Governance extends Component {
     public render(){
         return (
             <div>
-                Governance
+                
             </div>
         )
     }

@@ -3,6 +3,8 @@
   position: relative;
   margin-left: auto;
   margin-right: auto;
+  background-color: rgb(247, 247, 247);
+  height: 100%;
 
   .sidebar {
     position: fixed;
@@ -15,25 +17,33 @@
     border-right: 1px solid #ccc;
     height: 100%;
 
-    a, a:focus, a:visited, a:link, a:hover, a:target, a:active {
-      padding: 10px 20px;
+    a, a:focus, a:visited, a:link, a:hover, a:target {
+      padding: 8px 20px;
       text-decoration: none;
       color: black;
       border: none;
-      font-weight: bold;
-
-      .selected{
-        color: #009EFF;
-      }
+      font-weight: 300;
 
       svg {
         padding-right: 10px;
       }
+    }
+
+    a.active {
+      color: #009EFF;
+    }
+
+    img {
+      width: 180px;
+      padding-left: 17px;
+      padding-top: 15px;
+      padding-bottom: 15px;
     }
   }
 
   .main {
     display: block;
     padding-left: 200px;
+    height: 100%;
   }
 }

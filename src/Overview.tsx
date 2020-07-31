@@ -11,7 +11,7 @@ export default class Overview extends Component {
     public render(){
         return (
             <div>
-                Overview
+                
             </div>
         )
     }

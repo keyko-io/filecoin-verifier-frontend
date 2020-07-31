@@ -218,10 +218,11 @@ footer, header, hgroup, menu, nav, section {
 html, body {
   margin: 0;
   padding: 0;
+  height: 100%;
   background: $system_foreground;
   color: $system_black;
-  font-size: 16px;
-  font-family: $font_text;
+  font-size: 14px;
+  font-family: "suisse_intl",Arial,Helvetica,sans-serif;
   scrollbar-width: none;
   -ms-overflow-style: -ms-autohiding-scrollbar;
   ::-webkit-scrollbar {
@@ -232,7 +233,9 @@ html, body {
   -ms-font-feature-settings: "liga"1, "ss01"1, "zero"1, "cv11"1, 'frac'1, 'calt'1, 'tnum'1;
   font-feature-settings: "liga"1, "ss01"1, "zero"1, "cv11"1, 'frac'1, 'calt'1, 'tnum'1;
 }
-
+#root{
+  height: 100%;
+}
 /* prettier-ignore */
 .language-javascript {
   code,
