@@ -77,7 +77,7 @@ export default class Rootkey  extends Component<{},States> {
                             placeholder="1000000000000000000000"
                             onChange={this.handleChange}
                         />
-                        <ButtonPrimary onClick={this.handleSubmit}>Add Verifier</ButtonPrimary>
+                        <ButtonPrimary onClick={this.handleSubmit}>Propose Verifier</ButtonPrimary>
                   </form>
                   </div>
 
