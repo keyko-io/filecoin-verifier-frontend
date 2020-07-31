@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { Route, Switch, NavLink } from 'react-router-dom'
-import Test from './Test'
 import Overview from './Overview'
 import Verifiedclients from './Verifiedclients'
 import Verifiers from './Verifiers'
@@ -34,7 +33,6 @@ class App extends Component {
           <NavLink activeClassName="active" to={'/verifiers'}><FontAwesomeIcon icon={["far", "circle"]} />Verifiers</NavLink>
           <NavLink activeClassName="active" to={'/governance'}><FontAwesomeIcon icon={["far", "circle"]} />Governance</NavLink>
           <NavLink activeClassName="active" to={'/rootkey'}><FontAwesomeIcon icon={["far", "circle"]} />Rootkey</NavLink>
-          <NavLink activeClassName="active" to={'/test'}><FontAwesomeIcon icon={["far", "circle"]} />Test</NavLink>
         </div>
         <div className="main">
           { this.context.isLogged === false ? (
@@ -46,7 +44,6 @@ class App extends Component {
               <Route component={Verifiers} path="/verifiers" />
               <Route component={Governance} path="/governance" />
               <Route component={Rootkey} path="/rootkey" />
-              <Route component={Test} path="/test" />
             </Switch>
           )}
         </div>

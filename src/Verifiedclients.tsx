@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
 import { Wallet } from './context/Index'
 // @ts-ignore
-import { Table, H1, H2, Input, ButtonPrimary } from "slate-react-system";
+import { Table, H1, H2, Input, ButtonPrimary, ButtonSecondary } from "slate-react-system";
 
 type States = {
     verifiers: any[]
     address: string
-    datacap: number
+    datacap: string
 };
 
 export default class Verifiedclients extends Component<{},States> {
@@ -22,7 +22,7 @@ export default class Verifiedclients extends Component<{},States> {
         this.state = {
             verifiers: [],
             address: '',
-            datacap: 1000000000000000000000
+            datacap: '1000000000000000000000'
         }
     }
 
@@ -41,18 +41,16 @@ export default class Verifiedclients extends Component<{},States> {
 
     handleSubmit = async (e:any) => {
         e.preventDefault()
-        await this.context.api.verifyClient(this.state.address, this.state.datacap, 2);
+        const datacap = BigInt(this.state.datacap);
+        await this.context.api.verifyClient(this.state.address, datacap, 2);
         this.setState({
             verifiers: [],
             address: '',
-            datacap: 1000000000000000000000
-        }, ()=>{
-            this.getList()
+            datacap: '1000000000000000000000'
         })
     }
 
     handleChange = (e:any) => {
-        console.log(e.target.name, e.target.value)
         this.setState({ [e.target.name]: e.target.value } as any)
     }
 
@@ -61,6 +59,7 @@ export default class Verifiedclients extends Component<{},States> {
             <div>
                 <H1>Verified clients</H1>
                 <Table data={{rows: this.state.verifiers, columns: this.columns}}/>
+                <ButtonSecondary onClick={()=>this.getList()}>Reload</ButtonSecondary>
                 <H2>Verify client</H2>
                 <div>
                     <form>

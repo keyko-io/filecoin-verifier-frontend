@@ -5,9 +5,9 @@ import { Table, H1, H2, Input, ButtonPrimary } from "slate-react-system";
 
 type States = {
     verifierAccountID: string
-    datacap: number
+    datacap: string
     verifierAccountIDToApprove: string
-    datacapToApprove: number
+    datacapToApprove: string
     proposedAccountID: string
     transactionID: number
 };
@@ -19,9 +19,9 @@ export default class Rootkey  extends Component<{},States> {
         super(props);
         this.state = {
             verifierAccountID: '',
-            datacap: 1000000000000000000000,
+            datacap: '1000000000000000000000',
             verifierAccountIDToApprove: '',
-            datacapToApprove: 1000000000000000000000,
+            datacapToApprove: '1000000000000000000000',
             proposedAccountID: '',
             transactionID: 0,
         }
@@ -33,19 +33,21 @@ export default class Rootkey  extends Component<{},States> {
 
     handleSubmit = async (e:any) => {
         e.preventDefault()
-        await this.context.api2.proposeVerifier(this.state.verifierAccountID, this.state.datacap, 2);
+        const datacap = BigInt(this.state.datacap)
+        await this.context.api2.proposeVerifier(this.state.verifierAccountID, datacap, 2);
         this.setState({
             verifierAccountID: '',
-            datacap: 1000000000000000000000
+            datacap: '1000000000000000000000'
         })
     }
 
     handleSubmitApprove = async (e:any) => {
         e.preventDefault()
-        await this.context.api2.approveVerifier(this.state.verifierAccountIDToApprove, this.state.datacapToApprove, this.state.proposedAccountID, this.state.transactionID, 2);
+        const datacapToApprove = BigInt(this.state.datacapToApprove)
+        await this.context.api2.approveVerifier(this.state.verifierAccountIDToApprove, datacapToApprove, this.state.proposedAccountID, this.state.transactionID, 2);
         this.setState({
             verifierAccountIDToApprove: '',
-            datacapToApprove: 1000000000000000000000,
+            datacapToApprove: '1000000000000000000000',
             proposedAccountID: '',
             transactionID: 0
         })

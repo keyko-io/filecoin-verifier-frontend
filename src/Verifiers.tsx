@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Wallet } from './context/Index'
 // @ts-ignore
-import { Table, H1, H2, H3, H4, P, UL, OL, LI } from "slate-react-system";
+import { Table, H1, H2, H3, H4, P, UL, OL, LI, ButtonSecondary } from "slate-react-system";
 
 export default class Verifiers extends Component {
     public static contextType = Wallet
@@ -16,10 +16,10 @@ export default class Verifiers extends Component {
     }
 
     componentDidMount() {
-        this.startApi()
+        this.getList()
     }
 
-    startApi = async () => {
+    getList = async () => {
         let listverifiers = await this.context.api.listVerifiers()
         let ver:any = []
         for (let [k,v] of listverifiers) {
@@ -33,6 +33,7 @@ export default class Verifiers extends Component {
             <div>
                 <H1>Verifiers</H1>
                 <Table data={{rows: this.state.verifiers, columns: this.columns}}/>
+                <ButtonSecondary onClick={()=>this.getList()}>Reload</ButtonSecondary>
             </div>
         )
     }
