@@ -44,7 +44,6 @@ export default class Verifiedclients extends Component<{},States> {
         const datacap = BigInt(this.state.datacap);
         await this.context.api.verifyClient(this.state.address, datacap, 2);
         this.setState({
-            verifiers: [],
             address: '',
             datacap: '1000000000000000000000'
         })
