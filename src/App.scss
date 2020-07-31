@@ -6,6 +6,19 @@
   background-color: rgb(247, 247, 247);
   height: 100%;
 
+  h1 {
+    padding-bottom: 20px;
+  }
+
+  h2 {
+    padding-top: 15px;
+    padding-bottom: 15px;
+  }
+
+  input {
+    margin-bottom: 18px;
+  }
+
   .sidebar {
     position: fixed;
     display: flex;
@@ -14,7 +27,7 @@
     border-right: none;
     width: 200px;
     background-color: #fff;
-    border-right: 1px solid #ccc;
+    border-right: 1px solid #e5e5e5;
     height: 100%;
 
     a, a:focus, a:visited, a:link, a:hover, a:target {
@@ -30,7 +43,7 @@
     }
 
     a.active {
-      color: #009EFF;
+      color: #003fe3;
     }
 
     img {
@@ -43,7 +56,8 @@
 
   .main {
     display: block;
-    padding-left: 200px;
+    margin-left: 200px;
     height: 100%;
+    padding: 20px;
   }
 }

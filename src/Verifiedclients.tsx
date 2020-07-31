@@ -1,49 +1,83 @@
 import React, { Component } from 'react';
 import { Wallet } from './context/Index'
 // @ts-ignore
-import { Table } from "slate-react-system";
+import { Table, H1, H2, Input, ButtonPrimary } from "slate-react-system";
 
-export default class Verifiedclients extends Component {
+type States = {
+    verifiers: any[]
+    address: string
+    datacap: number
+};
+
+export default class Verifiedclients extends Component<{},States> {
     public static contextType = Wallet
 
-    client: any
-    api: any
     columns = [
         { key: "a", name: "Verifier" },
-        { key: "b", name: "Datacap" },
-        { key: "d", name: "status" },
+        { key: "b", name: "Datacap" }
     ]
 
-    state = {
-        verifiers: [],
+    constructor(props: {}) {
+        super(props);
+        this.state = {
+            verifiers: [],
+            address: '',
+            datacap: 1000000000000000000000
+        }
     }
 
     componentDidMount() {
-        this.startApi()
+        this.getList()
     }
 
-    startApi = async () => {
-        let verifiers = await this.context.api.listVerifiers()
-        console.log('verifiers', verifiers)
-        let verifiers2 = await this.context.api2.listVerifiers()
-        console.log('verifiers2', verifiers2)
+    getList = async () => {
+        let listverifiers = await this.context.api.listVerifiedClients()
         let ver:any = []
-        for (let [k,v] of verifiers) {
+        for (let [k,v] of listverifiers) {
             ver.push({a:k, b:v.toString(10)})
         }
         this.setState({verifiers:ver})
-        /*
-        console.log("ver: " + ver)
-
-        let address = "t1i7a6kphm5qottfgz4d3ei6ge4ciziaqdpcqkzdy"
-        await api.verifyClient(address, 1000000000000000000000, 2)
-        */
     }
+
+    handleSubmit = async (e:any) => {
+        e.preventDefault()
+        await this.context.api.verifyClient(this.state.address, this.state.datacap, 2);
+        this.setState({
+            verifiers: [],
+            address: '',
+            datacap: 1000000000000000000000
+        }, ()=>{
+            this.getList()
+        })
+    }
+
+    handleChange = (e:any) => this.setState({ [e.target.name]: e.target.val } as any)
 
     public render(){
         return (
             <div>
+                <H1>Verified clients</H1>
                 <Table data={{rows: this.state.verifiers, columns: this.columns}}/>
+                <H2>Verify client</H2>
+                <div>
+                    <form>
+                        <Input
+                            description="Verifier address"
+                            name="address"
+                            value={this.state.address}
+                            placeholder="xxxxxx"
+                            onChange={this.handleChange}
+                        />
+                        <Input
+                            description="Verifier datacap"
+                            name="datacap"
+                            value={this.state.datacap}
+                            placeholder="1000000000000000000000"
+                            onChange={this.handleChange}
+                        />
+                        <ButtonPrimary onClick={this.handleSubmit}>Verify</ButtonPrimary>
+                    </form>
+                </div>
             </div>
         )
     }
