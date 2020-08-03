@@ -1,3 +1,5 @@
+import { config } from '../config'
+
 const signer = require("@keyko-io/filecoin-signing-tools/js")
 const VerifyAPIWithWallet = require('filecoin-verifier-tools/api/apiWallet')
 const { LotusRPC } = require('@filecoin-shipyard/lotus-client-rpc')
@@ -9,9 +11,6 @@ export class BurnerWallet {
     mnemonic: string = 'exit mystery juice city argue breeze film learn orange dynamic marine diary antenna road couple surge marine assume loop thought leader liquid rotate believe'
     mnemonic2: string = 'robot matrix ribbon husband feature attitude noise imitate matrix shaft resist cliff lab now gold menu grocery truth deliver camp about stand consider number'
     network: string = ''
-    path: string = "m/44'/1'/1/0/"
-    token: string = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBbGxvdyI6WyJyZWFkIiwid3JpdGUiLCJzaWduIiwiYWRtaW4iXX0.0VuB8dEF2Z_oZcyrsohYFFJjPthJrN4eG_LpS8IkDBA%'
-    endpointUrl: string = 'ws://localhost:1234/rpc/v0'
     client: any
     api: any
     client2: any
@@ -21,23 +20,23 @@ export class BurnerWallet {
         // network and path
         this.network = network
         // const networkCode = network === 'f' ? 461 : 1
-        //this.path = `m/44'/${networkCode}'/0/0/`
-        //this.mnemonic = 'embody second thing treat element else coin craft movie clutch push quote sting more used dilemma dumb strong maid provide movie mercy report promote'
+        // this.path = `m/44'/${networkCode}'/0/0/`
+        // this.mnemonic = 'embody second thing treat element else coin craft movie clutch push quote sting more used dilemma dumb strong maid provide movie mercy report promote'
         // console.log(signer.generateMnemonic())
 
-        //this.path = "m/44'/1'/1/0/2"
+        // this.path = "m/44'/1'/1/0/2"
         // this.path = "m/44'/1'/1/0/"
-        const provider = new Provider(this.endpointUrl, {
+        const provider = new Provider(config.lotusUri, {
             token: async () => {
-                return this.token
+                return config.lotusToken
             }
         })
         this.client = new LotusRPC(provider, { schema: testnet.fullNode })
         this.api = new VerifyAPIWithWallet(this.client, {sign: this.sign, getAccounts: this.getAccounts})
 
-        const provider2 = new Provider(this.endpointUrl, {
+        const provider2 = new Provider(config.lotusUri, {
             token: async () => {
-                return this.token
+                return config.lotusToken
             }
         })
         this.client2 = new LotusRPC(provider2, { schema: testnet.fullNode })
@@ -48,7 +47,7 @@ export class BurnerWallet {
         const accounts = []
         for (let i = nStart; i < nEnd; i += 1) {
             accounts.push(
-                signer.keyDerive(this.mnemonic, `${this.path}${i}`, '').address
+                signer.keyDerive(this.mnemonic, `${config.keyPath}${i}`, '').address
             )
         }
         return accounts
@@ -58,7 +57,7 @@ export class BurnerWallet {
         const accounts = []
         for (let i = nStart; i < nEnd; i += 1) {
             accounts.push(
-                signer.keyDerive(this.mnemonic2, `${this.path}${i}`, '').address
+                signer.keyDerive(this.mnemonic2, `${config.keyPath}${i}`, '').address
             )
         }
         return accounts
@@ -67,7 +66,7 @@ export class BurnerWallet {
     public sign = async (filecoinMessage:any, indexAccount:number) => {
 
         //const { private_hexstring } = signer.keyDerive(this.mnemonic, this.path+'0', '')
-        const private_hexstring = signer.keyDerive(this.mnemonic, this.path + indexAccount as string, '').private_hexstring
+        const private_hexstring = signer.keyDerive(this.mnemonic, config.keyPath + indexAccount as string, '').private_hexstring
 
         const signedMessage = signer.transactionSign(
           filecoinMessage,
@@ -93,7 +92,7 @@ export class BurnerWallet {
     }
 
     public sign2 = async (filecoinMessage:any, indexAccount:number) => {
-        const private_hexstring = signer.keyDerive(this.mnemonic2, this.path + indexAccount as string, '').private_hexstring
+        const private_hexstring = signer.keyDerive(this.mnemonic2, config.keyPath + indexAccount as string, '').private_hexstring
         const signedMessage = signer.transactionSign(
           filecoinMessage,
           private_hexstring
@@ -116,5 +115,4 @@ export class BurnerWallet {
             }
         })
     }
-
 }
