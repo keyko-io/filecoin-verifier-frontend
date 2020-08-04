@@ -11,5 +11,6 @@ export const Wallet = React.createContext({
     sign2: async () => {},
     getAccounts2: async () => {},
     balance: 0,
-    message: ''
+    message: '',
+    dispatchNotification: (message: string) => {}
 })

@@ -1,12 +1,13 @@
 import React, { Component } from 'react';
 import { Wallet } from './context/Index'
 // @ts-ignore
-import { Table, H1, H2, Input, ButtonPrimary, ButtonSecondary } from "slate-react-system";
+import { Table, H1, H2, Input, ButtonPrimary, ButtonSecondary, LoaderSpinner } from "slate-react-system";
 
 type States = {
     verifiers: any[]
     address: string
     datacap: string
+    submitLoading: boolean
 };
 
 export default class Verifiedclients extends Component<{},States> {
@@ -22,7 +23,8 @@ export default class Verifiedclients extends Component<{},States> {
         this.state = {
             verifiers: [],
             address: '',
-            datacap: '1000000000000000000000'
+            datacap: '1000000000000000000000',
+            submitLoading: false
         }
     }
 
@@ -41,12 +43,20 @@ export default class Verifiedclients extends Component<{},States> {
 
     handleSubmit = async (e:any) => {
         e.preventDefault()
-        const datacap = BigInt(this.state.datacap);
-        await this.context.api.verifyClient(this.state.address, datacap, 2);
-        this.setState({
-            address: '',
-            datacap: '1000000000000000000000'
-        })
+        this.setState({ submitLoading: true })
+        try{
+            const datacap = BigInt(this.state.datacap);
+            await this.context.api.verifyClient(this.state.address, datacap, 2);
+            this.setState({
+                address: '',
+                datacap: '1000000000000000000000',
+                submitLoading: false
+            })
+            this.context.dispatchNotification('Client verified!')
+        } catch (e) {
+            this.setState({ submitLoading: false })
+            this.context.dispatchNotification('Client verification failed. Try again later.')
+        }
     }
 
     handleChange = (e:any) => {
@@ -76,7 +86,7 @@ export default class Verifiedclients extends Component<{},States> {
                             placeholder="1000000000000000000000"
                             onChange={this.handleChange}
                         />
-                        <ButtonPrimary onClick={this.handleSubmit}>Verify</ButtonPrimary>
+                        <ButtonPrimary onClick={this.handleSubmit}>{this.state.submitLoading ? <LoaderSpinner /> : 'Verify'}</ButtonPrimary>
                     </form>
                 </div>
             </div>

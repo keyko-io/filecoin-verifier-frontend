@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Wallet } from './context/Index'
 // @ts-ignore
-import { Table, H1, H2, Input, ButtonPrimary } from "slate-react-system";
+import { H1, Input, ButtonPrimary, LoaderSpinner } from "slate-react-system";
 
 type States = {
     verifierAccountID: string
@@ -10,6 +10,8 @@ type States = {
     datacapToApprove: string
     proposedAccountID: string
     transactionID: number
+    approveLoading: boolean
+    proposeLoading: boolean
 };
 
 export default class Rootkey  extends Component<{},States> {
@@ -24,6 +26,8 @@ export default class Rootkey  extends Component<{},States> {
             datacapToApprove: '1000000000000000000000',
             proposedAccountID: '',
             transactionID: 0,
+            approveLoading: false,
+            proposeLoading: false
         }
     }
 
@@ -33,24 +37,40 @@ export default class Rootkey  extends Component<{},States> {
 
     handleSubmit = async (e:any) => {
         e.preventDefault()
-        const datacap = BigInt(this.state.datacap)
-        await this.context.api2.proposeVerifier(this.state.verifierAccountID, datacap, 2);
-        this.setState({
-            verifierAccountID: '',
-            datacap: '1000000000000000000000'
-        })
+        this.setState({ proposeLoading: true })
+        try {
+            const datacap = BigInt(this.state.datacap)
+            await this.context.api2.proposeVerifier(this.state.verifierAccountID, datacap, 2);
+            this.setState({
+                verifierAccountID: '',
+                datacap: '1000000000000000000000',
+                proposeLoading: false
+            })
+            this.context.dispatchNotification('Proposal submited.')
+        } catch (e) {
+            this.setState({ proposeLoading: false })
+            this.context.dispatchNotification('Proposal failed. Try again later.')
+        }
     }
 
     handleSubmitApprove = async (e:any) => {
         e.preventDefault()
-        const datacapToApprove = BigInt(this.state.datacapToApprove)
-        await this.context.api2.approveVerifier(this.state.verifierAccountIDToApprove, datacapToApprove, this.state.proposedAccountID, this.state.transactionID, 2);
-        this.setState({
-            verifierAccountIDToApprove: '',
-            datacapToApprove: '1000000000000000000000',
-            proposedAccountID: '',
-            transactionID: 0
-        })
+        this.setState({ approveLoading: true })
+        try {
+            const datacapToApprove = BigInt(this.state.datacapToApprove)
+            await this.context.api2.approveVerifier(this.state.verifierAccountIDToApprove, datacapToApprove, this.state.proposedAccountID, this.state.transactionID, 2);
+            this.setState({
+                verifierAccountIDToApprove: '',
+                datacapToApprove: '1000000000000000000000',
+                proposedAccountID: '',
+                transactionID: 0,
+                approveLoading: false
+            })
+            this.context.dispatchNotification('Approval submited!')
+        } catch (e) {
+            this.setState({ approveLoading: false })
+            this.context.dispatchNotification('Approval failed. Try again later.')
+        }
     }
 
     handleChange = (e:any) => {
@@ -79,7 +99,7 @@ export default class Rootkey  extends Component<{},States> {
                             placeholder="1000000000000000000000"
                             onChange={this.handleChange}
                         />
-                        <ButtonPrimary onClick={this.handleSubmit}>Propose Verifier</ButtonPrimary>
+                        <ButtonPrimary onClick={this.handleSubmit}>{this.state.approveLoading ? <LoaderSpinner /> : 'Propose Verifier'}</ButtonPrimary>
                   </form>
                   </div>
 
@@ -115,7 +135,7 @@ export default class Rootkey  extends Component<{},States> {
                             placeholder="xxxxxx"
                             onChange={this.handleChange}
                         />
-                        <ButtonPrimary onClick={this.handleSubmitApprove}>Approve Verifier</ButtonPrimary>
+                        <ButtonPrimary onClick={this.handleSubmitApprove}>{this.state.approveLoading ? <LoaderSpinner /> : 'Approve Verifier'}</ButtonPrimary>
                   </form>
                   </div>
 

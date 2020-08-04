@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Wallet } from './context/Index'
 // @ts-ignore
-import { Table, H1, H2, H3, H4, P, UL, OL, LI, ButtonSecondary } from "slate-react-system";
+import { Table, H1, ButtonSecondary } from "slate-react-system";
 
 export default class Verifiers extends Component {
     public static contextType = Wallet
