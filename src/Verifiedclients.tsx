@@ -62,7 +62,8 @@ export default class Verifiedclients extends Component<{},States> {
             this.context.dispatchNotification('Client verified!')
         } catch (e) {
             this.setState({ submitLoading: false })
-            this.context.dispatchNotification('Client verification failed. Try again later.')
+            this.context.dispatchNotification('Client verification failed: ' + e.message)
+            console.log(e.stack)
         }
     }
 

@@ -56,7 +56,8 @@ export default class Rootkey  extends Component<{},States> {
             this.context.dispatchNotification('Proposal submited.')
         } catch (e) {
             this.setState({ proposeLoading: false })
-            this.context.dispatchNotification('Proposal failed. Try again later.')
+            this.context.dispatchNotification('Proposal failed: ' + e.message)
+            console.log(e.stack)
         }
     }
 
@@ -78,7 +79,8 @@ export default class Rootkey  extends Component<{},States> {
             this.context.dispatchNotification('Approval submited!')
         } catch (e) {
             this.setState({ approveLoading: false })
-            this.context.dispatchNotification('Approval failed. Try again later.')
+            this.context.dispatchNotification('Approval failed: ' + e.message)
+            console.log(e.stack)
         }
     }
 
