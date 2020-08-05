@@ -46,14 +46,14 @@ export default class Rootkey  extends Component<{},States> {
         try {
             const datacap = parseFloat(this.state.datacap)
             const fullDatacap = BigInt(datacap * parseFloat(this.state.datacapExt))
-            await this.context.api2.proposeVerifier(this.state.verifierAccountID, fullDatacap, 2);
+            let messageID = await this.context.api2.proposeVerifier(this.state.verifierAccountID, fullDatacap, 2);
             this.setState({
                 verifierAccountID: '',
                 datacap: '1',
                 datacapExt: '1000000000000',
                 proposeLoading: false
             })
-            this.context.dispatchNotification('Proposal submited.')
+            this.context.dispatchNotification('Propose Message sent with ID: ' + messageID)
         } catch (e) {
             this.setState({ proposeLoading: false })
             this.context.dispatchNotification('Proposal failed: ' + e.message)
@@ -67,7 +67,7 @@ export default class Rootkey  extends Component<{},States> {
         try {
             const datacap = parseFloat(this.state.datacapToApprove)
             const fullDatacap = BigInt(datacap * parseFloat(this.state.datacapExtToApprove))
-            await this.context.api2.approveVerifier(this.state.verifierAccountIDToApprove, fullDatacap, this.state.proposedAccountID, this.state.transactionID, 2);
+            let messageID = await this.context.api2.approveVerifier(this.state.verifierAccountIDToApprove, fullDatacap, this.state.proposedAccountID, this.state.transactionID, 2);
             this.setState({
                 verifierAccountIDToApprove: '',
                 datacapToApprove: '1',
@@ -76,7 +76,7 @@ export default class Rootkey  extends Component<{},States> {
                 transactionID: 0,
                 approveLoading: false
             })
-            this.context.dispatchNotification('Approval submited!')
+            this.context.dispatchNotification('Approve Message sent with ID: ' + messageID)
         } catch (e) {
             this.setState({ approveLoading: false })
             this.context.dispatchNotification('Approval failed: ' + e.message)

@@ -52,14 +52,14 @@ export default class Verifiedclients extends Component<{},States> {
         try{
             const datacap = parseFloat(this.state.datacap)
             const fullDatacap = BigInt(datacap * parseFloat(this.state.datacapExt))
-            await this.context.api.verifyClient(this.state.address, fullDatacap, 2);
+            let messageID = await this.context.api.verifyClient(this.state.address, fullDatacap, 2);
             this.setState({
                 address: '',
                 datacap: '1',
                 datacapExt: '1000000000000',
                 submitLoading: false
             })
-            this.context.dispatchNotification('Client verified!')
+            this.context.dispatchNotification('Verify Client Message sent with ID: ' + messageID)
         } catch (e) {
             this.setState({ submitLoading: false })
             this.context.dispatchNotification('Client verification failed: ' + e.message)
