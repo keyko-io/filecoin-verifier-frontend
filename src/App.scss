@@ -62,6 +62,18 @@
 
     form {
       padding-bottom: 20px;
+
+      .datacapholder{
+        display: flex;
+        max-width: 480px;
+
+        .datacap{
+          flex-grow: 1;
+        }
+        .datacapext {
+          padding-top: 33px;
+        }
+      }
     }
 
     button>div {

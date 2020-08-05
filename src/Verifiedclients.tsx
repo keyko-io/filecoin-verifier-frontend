@@ -1,12 +1,14 @@
 import React, { Component } from 'react';
 import { Wallet } from './context/Index'
+import { config } from './config'
 // @ts-ignore
-import { Table, H1, H2, Input, ButtonPrimary, ButtonSecondary, LoaderSpinner } from "slate-react-system";
+import { Table, H1, H2, Input, ButtonPrimary, ButtonSecondary, LoaderSpinner, SelectMenu } from "slate-react-system";
 
 type States = {
     verifiers: any[]
     address: string
     datacap: string
+    datacapExt: string,
     submitLoading: boolean
 };
 
@@ -23,7 +25,8 @@ export default class Verifiedclients extends Component<{},States> {
         this.state = {
             verifiers: [],
             address: '',
-            datacap: '1000000000000000000000',
+            datacap: '1',
+            datacapExt: '1000000000000',
             submitLoading: false
         }
     }
@@ -41,15 +44,19 @@ export default class Verifiedclients extends Component<{},States> {
         this.setState({verifiers:ver})
     }
 
+
+
     handleSubmit = async (e:any) => {
         e.preventDefault()
         this.setState({ submitLoading: true })
         try{
-            const datacap = BigInt(this.state.datacap);
-            await this.context.api.verifyClient(this.state.address, datacap, 2);
+            const datacap = parseFloat(this.state.datacap)
+            const fullDatacap = BigInt(datacap * parseFloat(this.state.datacapExt))
+            await this.context.api.verifyClient(this.state.address, fullDatacap, 2);
             this.setState({
                 address: '',
-                datacap: '1000000000000000000000',
+                datacap: '1',
+                datacapExt: '1000000000000',
                 submitLoading: false
             })
             this.context.dispatchNotification('Client verified!')
@@ -79,13 +86,25 @@ export default class Verifiedclients extends Component<{},States> {
                             placeholder="xxxxxx"
                             onChange={this.handleChange}
                         />
-                        <Input
-                            description="Verifier datacap"
-                            name="datacap"
-                            value={this.state.datacap}
-                            placeholder="1000000000000000000000"
-                            onChange={this.handleChange}
-                        />
+                        <div className="datacapholder">
+                            <div className="datacap">
+                                <Input
+                                    description="Verifier datacap"
+                                    name="datacap"
+                                    value={this.state.datacap}
+                                    placeholder="1000000000000"
+                                    onChange={this.handleChange}
+                                />
+                            </div>
+                            <div className="datacapext">
+                                <SelectMenu
+                                    name="datacapExt"
+                                    value={this.state.datacapExt}
+                                    onChange={this.handleChange}
+                                    options={config.datacapExt}
+                                />
+                            </div>
+                        </div>
                         <ButtonPrimary onClick={this.handleSubmit}>{this.state.submitLoading ? <LoaderSpinner /> : 'Verify'}</ButtonPrimary>
                     </form>
                 </div>

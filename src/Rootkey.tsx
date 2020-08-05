@@ -1,13 +1,16 @@
 import React, { Component } from 'react';
 import { Wallet } from './context/Index'
+import { config } from './config'
 // @ts-ignore
-import { H1, Input, ButtonPrimary, LoaderSpinner } from "slate-react-system";
+import { H1, Input, ButtonPrimary, LoaderSpinner, SelectMenu } from "slate-react-system";
 
 type States = {
     verifierAccountID: string
     datacap: string
+    datacapExt: string
     verifierAccountIDToApprove: string
     datacapToApprove: string
+    datacapExtToApprove: string
     proposedAccountID: string
     transactionID: number
     approveLoading: boolean
@@ -21,9 +24,11 @@ export default class Rootkey  extends Component<{},States> {
         super(props);
         this.state = {
             verifierAccountID: '',
-            datacap: '1000000000000000000000',
+            datacap: '1',
+            datacapExt: '1000000000000',
             verifierAccountIDToApprove: '',
-            datacapToApprove: '1000000000000000000000',
+            datacapToApprove: '1',
+            datacapExtToApprove: '1000000000000',
             proposedAccountID: '',
             transactionID: 0,
             approveLoading: false,
@@ -39,11 +44,13 @@ export default class Rootkey  extends Component<{},States> {
         e.preventDefault()
         this.setState({ proposeLoading: true })
         try {
-            const datacap = BigInt(this.state.datacap)
-            await this.context.api2.proposeVerifier(this.state.verifierAccountID, datacap, 2);
+            const datacap = parseFloat(this.state.datacap)
+            const fullDatacap = BigInt(datacap * parseFloat(this.state.datacapExt))
+            await this.context.api2.proposeVerifier(this.state.verifierAccountID, fullDatacap, 2);
             this.setState({
                 verifierAccountID: '',
-                datacap: '1000000000000000000000',
+                datacap: '1',
+                datacapExt: '1000000000000',
                 proposeLoading: false
             })
             this.context.dispatchNotification('Proposal submited.')
@@ -57,11 +64,13 @@ export default class Rootkey  extends Component<{},States> {
         e.preventDefault()
         this.setState({ approveLoading: true })
         try {
-            const datacapToApprove = BigInt(this.state.datacapToApprove)
-            await this.context.api2.approveVerifier(this.state.verifierAccountIDToApprove, datacapToApprove, this.state.proposedAccountID, this.state.transactionID, 2);
+            const datacap = parseFloat(this.state.datacapToApprove)
+            const fullDatacap = BigInt(datacap * parseFloat(this.state.datacapExtToApprove))
+            await this.context.api2.approveVerifier(this.state.verifierAccountIDToApprove, fullDatacap, this.state.proposedAccountID, this.state.transactionID, 2);
             this.setState({
                 verifierAccountIDToApprove: '',
-                datacapToApprove: '1000000000000000000000',
+                datacapToApprove: '1',
+                datacapExtToApprove: '1000000000000',
                 proposedAccountID: '',
                 transactionID: 0,
                 approveLoading: false
@@ -92,13 +101,25 @@ export default class Rootkey  extends Component<{},States> {
                             placeholder="xxxxxx"
                             onChange={this.handleChange}
                         />
-                        <Input
-                            description="Verifier Datacap"
-                            name="datacap"
-                            value={this.state.datacap}
-                            placeholder="1000000000000000000000"
-                            onChange={this.handleChange}
-                        />
+                        <div className="datacapholder">
+                            <div className="datacap">
+                                <Input
+                                    description="Verifier datacap"
+                                    name="datacap"
+                                    value={this.state.datacap}
+                                    placeholder="1"
+                                    onChange={this.handleChange}
+                                />
+                            </div>
+                            <div className="datacapext">
+                                <SelectMenu
+                                    name="datacapExt"
+                                    value={this.state.datacapExt}
+                                    onChange={this.handleChange}
+                                    options={config.datacapExt}
+                                />
+                            </div>
+                        </div>
                         <ButtonPrimary onClick={this.handleSubmit}>{this.state.approveLoading ? <LoaderSpinner /> : 'Propose Verifier'}</ButtonPrimary>
                   </form>
                   </div>
@@ -114,13 +135,25 @@ export default class Rootkey  extends Component<{},States> {
                             placeholder="xxxxxx"
                             onChange={this.handleChange}
                         />
-                        <Input
-                            description="Verifier Datacap"
-                            name="datacapToApprove"
-                            value={this.state.datacapToApprove}
-                            placeholder="1000000000000000000000"
-                            onChange={this.handleChange}
-                        />
+                        <div className="datacapholder">
+                            <div className="datacap">
+                                <Input
+                                    description="Verifier datacap"
+                                    name="datacapToApprove"
+                                    value={this.state.datacapToApprove}
+                                    placeholder="1"
+                                    onChange={this.handleChange}
+                                />
+                            </div>
+                            <div className="datacapext">
+                                <SelectMenu
+                                    name="datacapExtToApprove"
+                                    value={this.state.datacapExtToApprove}
+                                    onChange={this.handleChange}
+                                    options={config.datacapExt}
+                                />
+                            </div>
+                        </div>
                          <Input
                             description="Proposed By"
                             name="proposedAccountID"
