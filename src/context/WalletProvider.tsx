@@ -12,6 +12,8 @@ interface WalletProviderStates {
     api: any
     sign: any
     getAccounts: any
+    walletIndex: number
+    activeAccount: string
     api2: any
     sign2: any
     getAccounts2: any
@@ -24,22 +26,26 @@ export default class WalletProvider extends React.Component<{}, WalletProviderSt
     loadLedger = async () => {
         const wallet = new LedgerWallet()
         await wallet.loadWallet()
+        const accounts: any[] = await wallet.getAccounts()
         this.setState({
             wallet: 'ledger',
             sign: wallet.sign,
-            getAccounts: wallet.getAccounts
+            getAccounts: wallet.getAccounts,
+            activeAccount: accounts[0]
         })
     }
 
     loadBurner = async () => {
         const wallet = new BurnerWallet()
         await wallet.loadWallet()
+        const accounts: any[] = await wallet.getAccounts()
         this.setState({
             isLogged: true,
             wallet: 'burner',
             api: wallet.api,
             sign: wallet.sign,
             getAccounts: wallet.getAccounts,
+            activeAccount: accounts[0],
             api2: wallet.api2,
             sign2: wallet.sign2,
             getAccounts2: wallet.getAccounts2
@@ -53,6 +59,8 @@ export default class WalletProvider extends React.Component<{}, WalletProviderSt
         api: {},
         sign: async () => {},
         getAccounts: async () => {},
+        walletIndex: 0,
+        activeAccount: '',
         api2: {},
         sign2: async () => {},
         getAccounts2: async () => {},
@@ -65,6 +73,13 @@ export default class WalletProvider extends React.Component<{}, WalletProviderSt
                 dark: true,
                 timeout: 5000
             }});
+        },
+        selectAccount: async (index: number) => {
+            const accounts: any = await this.state.getAccounts()
+            this.setState({
+                walletIndex: index,
+                activeAccount: accounts[index]
+            })
         }
     }
 
@@ -84,15 +99,6 @@ export default class WalletProvider extends React.Component<{}, WalletProviderSt
         }
         // TODO: remove
         this.loadBurner()
-    }
-
-    dispatchNotification = (message: string) => {
-        dispatchCustomEvent({ name: "create-notification", detail: {
-            id: Math.random().toString(36).replace(/[^a-z]+/g, '').substr(0, 5),
-            description: message,
-            dark: true,
-            timeout: 5000
-        }});
     }
 
     render() {

@@ -33,7 +33,7 @@ export default class Verifiers extends Component {
             <div>
                 <H1>Verifiers</H1>
                 <Table data={{rows: this.state.verifiers, columns: this.columns}}/>
-                <ButtonSecondary onClick={()=>this.getList()}>Reload</ButtonSecondary>
+                <ButtonSecondary onClick={()=>this.getList()}>Refresh</ButtonSecondary>
             </div>
         )
     }

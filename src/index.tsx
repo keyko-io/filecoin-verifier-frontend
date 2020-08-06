@@ -4,8 +4,9 @@ import './index.scss';
 import App from './App';
 import WalletProvider from './context/WalletProvider'
 import { BrowserRouter } from 'react-router-dom'
+import WalletMenu from './WalletMenu'
 // @ts-ignore
-import { GlobalNotification } from "slate-react-system";
+import { GlobalNotification, GlobalModal } from "slate-react-system";
 import * as serviceWorker from './serviceWorker';
 
 ReactDOM.render(
@@ -13,9 +14,11 @@ ReactDOM.render(
     <WalletProvider>
       <BrowserRouter>
         <App />
+        <WalletMenu />
       </BrowserRouter>
     </WalletProvider>
     <GlobalNotification style={{ bottom: 0, right: 0 }} />
+    <GlobalModal />
   </React.StrictMode>,
   document.getElementById('root')
 );

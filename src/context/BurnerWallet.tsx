@@ -43,7 +43,7 @@ export class BurnerWallet {
         this.api2 = new VerifyAPIWithWallet(this.client2, {sign: this.sign2, getAccounts: this.getAccounts2})
     }
 
-    public getAccounts = async (nStart = 0, nEnd = 5) => {
+    public getAccounts = async (nStart = 0, nEnd = 10) => {
         const accounts = []
         for (let i = nStart; i < nEnd; i += 1) {
             accounts.push(
@@ -53,7 +53,7 @@ export class BurnerWallet {
         return accounts
     }
 
-    public getAccounts2 = async (nStart = 0, nEnd = 5) => {
+    public getAccounts2 = async (nStart = 0, nEnd = 10) => {
         const accounts = []
         for (let i = nStart; i < nEnd; i += 1) {
             accounts.push(

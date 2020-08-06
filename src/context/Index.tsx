@@ -7,6 +7,8 @@ export const Wallet = React.createContext({
     api: {},
     sign: async () => {},
     getAccounts: async () => {},
+    walletIndex: 0,
+    activeAccount: '',
     api2: {},
     sign2: async () => {},
     getAccounts2: async () => {},
