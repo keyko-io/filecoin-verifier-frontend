@@ -1,11 +1,23 @@
 import React, { Component } from 'react';
 import { Wallet } from './context/Index'
+import WalletModal from './WalletModal'
 import Blockies from 'react-blockies';
 // @ts-ignore
-import { dispatchCustomEvent, H1, ButtonSecondary } from "slate-react-system";
+import { dispatchCustomEvent } from "slate-react-system";
 
-class WalletMenu extends Component {
+type States = {
+  seedphrase: string
+};
+
+class WalletMenu extends Component<{}, States> {
   public static contextType = Wallet
+
+  constructor(props: {}) {
+    super(props);
+    this.state = {
+        seedphrase: ''
+    }
+}
 
   componentDidMount () {
     this.context.getAccounts()
@@ -16,22 +28,21 @@ class WalletMenu extends Component {
     this.closeWallet()
   }
 
+  handleChange = (e:any) => {
+    this.setState({ [e.target.name]: e.target.value } as any)
+  }
+
+  handleImport = () => {
+    this.context.importSeed(this.state.seedphrase)
+    this.setState({seedphrase:''},()=>{
+      this.closeWallet()
+    })
+  }
+
   openWallet = async () => {
-    const accounts = await this.context.getAccounts()
-    let modal = (
-      <div className="accountModal">
-        <H1>Account select</H1>
-        <div className="accountsHolder">
-          {accounts.map((account:any,index:any) => 
-            <div className="account" key={index} onClick={()=>this.selectAccount(index)}>{account}</div>
-          )}
-        </div>
-        <ButtonSecondary onClick={this.closeWallet}>Close</ButtonSecondary>
-      </div>
-    );
     dispatchCustomEvent({ name: "create-modal", detail: {
       id: Math.random().toString(36).replace(/[^a-z]+/g, '').substr(0, 5),
-      modal
+      modal: <WalletModal/>
     }});
   }
 

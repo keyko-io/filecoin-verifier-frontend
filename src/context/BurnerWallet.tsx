@@ -43,6 +43,11 @@ export class BurnerWallet {
         this.api2 = new VerifyAPIWithWallet(this.client2, {sign: this.sign2, getAccounts: this.getAccounts2})
     }
 
+    public importSeed = async(seedphrase: string) => {
+        this.mnemonic = seedphrase
+        return this
+    }
+
     public getAccounts = async (nStart = 0, nEnd = 10) => {
         const accounts = []
         for (let i = nStart; i < nEnd; i += 1) {

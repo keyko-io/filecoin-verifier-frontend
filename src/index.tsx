@@ -16,9 +16,9 @@ ReactDOM.render(
         <App />
         <WalletMenu />
       </BrowserRouter>
+      <GlobalNotification style={{ bottom: 0, right: 0 }} />
+      <GlobalModal />
     </WalletProvider>
-    <GlobalNotification style={{ bottom: 0, right: 0 }} />
-    <GlobalModal />
   </React.StrictMode>,
   document.getElementById('root')
 );

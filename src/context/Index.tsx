@@ -9,6 +9,7 @@ export const Wallet = React.createContext({
     getAccounts: async () => {},
     walletIndex: 0,
     activeAccount: '',
+    importSeed: async (seedphrase: string) => {},
     api2: {},
     sign2: async () => {},
     getAccounts2: async () => {},
