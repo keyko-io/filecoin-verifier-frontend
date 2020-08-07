@@ -1,7 +1,7 @@
 import { config } from '../config'
 
 const signer = require("@keyko-io/filecoin-signing-tools/js")
-const VerifyAPIWithWallet = require('filecoin-verifier-tools/api/apiWallet')
+const VerifyAPI = require('filecoin-verifier-tools/api/api')
 const { LotusRPC } = require('@filecoin-shipyard/lotus-client-rpc')
 const { BrowserProvider: Provider } = require('@filecoin-shipyard/lotus-client-provider-browser')
 const { testnet } = require('@filecoin-shipyard/lotus-client-schema')
@@ -32,7 +32,7 @@ export class BurnerWallet {
             }
         })
         this.client = new LotusRPC(provider, { schema: testnet.fullNode })
-        this.api = new VerifyAPIWithWallet(this.client, {sign: this.sign, getAccounts: this.getAccounts})
+        this.api = new VerifyAPI(this.client, {sign: this.sign, getAccounts: this.getAccounts})
 
         const provider2 = new Provider(config.lotusUri, {
             token: async () => {
@@ -40,7 +40,7 @@ export class BurnerWallet {
             }
         })
         this.client2 = new LotusRPC(provider2, { schema: testnet.fullNode })
-        this.api2 = new VerifyAPIWithWallet(this.client2, {sign: this.sign2, getAccounts: this.getAccounts2})
+        this.api2 = new VerifyAPI(this.client2, {sign: this.sign2, getAccounts: this.getAccounts2})
     }
 
     public getAccounts = async (nStart = 0, nEnd = 10) => {
