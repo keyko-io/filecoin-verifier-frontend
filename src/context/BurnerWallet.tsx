@@ -2,9 +2,6 @@ import { config } from '../config'
 
 const signer = require("@keyko-io/filecoin-signing-tools/js")
 const VerifyAPI = require('filecoin-verifier-tools/api/api')
-const { LotusRPC } = require('@filecoin-shipyard/lotus-client-rpc')
-const { BrowserProvider: Provider } = require('@filecoin-shipyard/lotus-client-provider-browser')
-const { testnet } = require('@filecoin-shipyard/lotus-client-schema')
 
 export class BurnerWallet {
 
@@ -26,21 +23,20 @@ export class BurnerWallet {
 
         // this.path = "m/44'/1'/1/0/2"
         // this.path = "m/44'/1'/1/0/"
-        const provider = new Provider(config.lotusUri, {
+       
+        this.api= new VerifyAPI(VerifyAPI.browserProvider(config.lotusUri, {
             token: async () => {
                 return config.lotusToken
-            }
-        })
-        this.client = new LotusRPC(provider, { schema: testnet.fullNode })
-        this.api = new VerifyAPI(this.client, {sign: this.sign, getAccounts: this.getAccounts})
+            }     
+        }),  {sign: this.sign, getAccounts: this.getAccounts})
 
-        const provider2 = new Provider(config.lotusUri, {
+        this.api2= new VerifyAPI(VerifyAPI.browserProvider(config.lotusUri, {
             token: async () => {
                 return config.lotusToken
-            }
-        })
-        this.client2 = new LotusRPC(provider2, { schema: testnet.fullNode })
-        this.api2 = new VerifyAPI(this.client2, {sign: this.sign2, getAccounts: this.getAccounts2})
+            }     
+        }),  {sign: this.sign2, getAccounts: this.getAccounts2})
+
+
     }
 
     public importSeed = async(seedphrase: string) => {
