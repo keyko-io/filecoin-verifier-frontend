@@ -52,7 +52,7 @@ export default class Verifiedclients extends Component<{},States> {
         try{
             const datacap = parseFloat(this.state.datacap)
             const fullDatacap = BigInt(datacap * parseFloat(this.state.datacapExt))
-            let messageID = await this.context.api.verifyClient(this.state.address, fullDatacap, 2);
+            let messageID = await this.context.api.verifyClient(this.state.address, fullDatacap, this.context.walletIndex);
             this.setState({
                 address: '',
                 datacap: '1',

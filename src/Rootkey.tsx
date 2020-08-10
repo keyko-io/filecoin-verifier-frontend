@@ -46,7 +46,7 @@ export default class Rootkey  extends Component<{},States> {
         try {
             const datacap = parseFloat(this.state.datacap)
             const fullDatacap = BigInt(datacap * parseFloat(this.state.datacapExt))
-            let messageID = await this.context.api2.proposeVerifier(this.state.verifierAccountID, fullDatacap, 2);
+            let messageID = await this.context.api.proposeVerifier(this.state.verifierAccountID, fullDatacap, this.context.walletIndex);
             this.setState({
                 verifierAccountID: '',
                 datacap: '1',
@@ -67,7 +67,7 @@ export default class Rootkey  extends Component<{},States> {
         try {
             const datacap = parseFloat(this.state.datacapToApprove)
             const fullDatacap = BigInt(datacap * parseFloat(this.state.datacapExtToApprove))
-            let messageID = await this.context.api2.approveVerifier(this.state.verifierAccountIDToApprove, fullDatacap, this.state.proposedAccountID, this.state.transactionID, 2);
+            let messageID = await this.context.api.approveVerifier(this.state.verifierAccountIDToApprove, fullDatacap, this.state.proposedAccountID, this.state.transactionID, this.context.walletIndex);
             this.setState({
                 verifierAccountIDToApprove: '',
                 datacapToApprove: '1',

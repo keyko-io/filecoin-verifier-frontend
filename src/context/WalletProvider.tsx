@@ -15,9 +15,6 @@ interface WalletProviderStates {
     walletIndex: number
     activeAccount: string
     importSeed: any
-    api2: any
-    sign2: any
-    getAccounts2: any
     balance: number
     message: string
     dispatchNotification: any
@@ -47,10 +44,7 @@ export default class WalletProvider extends React.Component<{}, WalletProviderSt
             sign: wallet.sign,
             getAccounts: wallet.getAccounts,
             activeAccount: accounts[0],
-            importSeed: wallet.importSeed,
-            api2: wallet.api2,
-            sign2: wallet.sign2,
-            getAccounts2: wallet.getAccounts2
+            importSeed: wallet.importSeed
         })
     }
 
@@ -64,9 +58,6 @@ export default class WalletProvider extends React.Component<{}, WalletProviderSt
         walletIndex: 0,
         importSeed: async (seedphrase: string) => {},
         activeAccount: '',
-        api2: {},
-        sign2: async () => {},
-        getAccounts2: async () => {},
         balance: 0,
         message: '',
         dispatchNotification: (message: string) => {
