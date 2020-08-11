@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Wallet } from './context/Index'
 // @ts-ignore
 import { dispatchCustomEvent, H1, Input, ButtonPrimary } from "slate-react-system";
+import { config } from './config';
 
 type States = {
   seedphrase: string
@@ -29,6 +30,11 @@ class WalletModal extends Component<{}, States> {
     this.setState({ accounts })
   }
 
+  selectNetwork = async (index:number) => {
+    this.context.selectNetwork(index)
+    this.closeWallet()
+  }
+
   selectAccount = async (index:number) => {
     this.context.selectAccount(index)
     this.closeWallet()
@@ -52,6 +58,12 @@ class WalletModal extends Component<{}, States> {
   render() {
     return (
       <div className="accountModal">
+        <H1>Network select</H1>
+        <div className="accountsHolder">
+          {config.lotusNodes.map((node:any,index:any) => 
+            <div className="account" style={{ color: index === this.context.networkIndex ? '#003fe3' : 'inherit' }} key={index} onClick={()=>this.selectNetwork(index)}>{node.name}</div>
+          )}
+        </div>
         <H1>Account select</H1>
         <div className="accountsHolder">
           {this.state.accounts.map((account:any,index:any) => 

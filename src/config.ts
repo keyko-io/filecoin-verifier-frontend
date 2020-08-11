@@ -1,8 +1,16 @@
 export const config = {
     apiUri: process.env.REACT_APP_API_URI || 'http://localhost:4000',
-    lotusUri: process.env.REACT_APP_LOTUS_URI || 'ws://localhost:1234/rpc/v0',
-    lotusToken: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBbGxvdyI6WyJyZWFkIiwid3JpdGUiLCJzaWduIiwiYWRtaW4iXX0.0VuB8dEF2Z_oZcyrsohYFFJjPthJrN4eG_LpS8IkDBA%',
-    keyPath: "m/44'/1'/1/0/",
+    lotusNodes: [{
+        name: 'Localhost Testnet',
+        code: 1,
+        url: 'ws://localhost:1234/rpc/v0',
+        token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBbGxvdyI6WyJyZWFkIiwid3JpdGUiLCJzaWduIiwiYWRtaW4iXX0.0VuB8dEF2Z_oZcyrsohYFFJjPthJrN4eG_LpS8IkDBA%'
+    },{
+        name: 'Localhost Net',
+        code: 461,
+        url: 'ws://localhost:1234/rpc/v0',
+        token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBbGxvdyI6WyJyZWFkIiwid3JpdGUiLCJzaWduIiwiYWRtaW4iXX0.0VuB8dEF2Z_oZcyrsohYFFJjPthJrN4eG_LpS8IkDBA%'
+    }],
     datacapExt: [
         { value: "1000", name: "KiloBytes" },
         { value: "1000000", name: "MegaBytes" },
