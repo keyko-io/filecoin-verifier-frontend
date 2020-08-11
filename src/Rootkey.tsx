@@ -2,28 +2,39 @@ import React, { Component } from 'react';
 import { Wallet } from './context/Index'
 import { config } from './config'
 // @ts-ignore
-import { H1, Input, ButtonPrimary, LoaderSpinner, SelectMenu } from "slate-react-system";
+import { H1, Input, ButtonPrimary, ButtonSecondary, LoaderSpinner, SelectMenu, Table } from "slate-react-system";
 
 type States = {
     verifierAccountID: string
     datacap: string
     datacapExt: string
     verifierAccountIDToApprove: string
+    revokedVerifierAccountID: string
     datacapToApprove: string
     datacapExtToApprove: string
     proposedAccountID: string
     transactionID: number
     approveLoading: boolean
     proposeLoading: boolean
+    transactions: []
 };
 
 export default class Rootkey  extends Component<{},States> {
     public static contextType = Wallet
 
+    columns = [
+        { key: "a", name: "Transaction ID" },
+        { key: "b", name: "Method"},
+        { key: "c", name: "Verifier ID" },
+        { key: "d", name: "Datacap" },
+        { key: "e", name: "Proposed By" }
+    ]
+
     constructor(props: {}) {
         super(props);
         this.state = {
             verifierAccountID: '',
+            revokedVerifierAccountID: '',
             datacap: '1',
             datacapExt: '1000000000000',
             verifierAccountIDToApprove: '',
@@ -32,12 +43,31 @@ export default class Rootkey  extends Component<{},States> {
             proposedAccountID: '',
             transactionID: 0,
             approveLoading: false,
-            proposeLoading: false
+            proposeLoading: false,
+            transactions: []
         }
     }
 
     componentDidMount() {
+        this.getList()
+    }
 
+    getList = async () => {
+
+        // Method "Revoke" if datacap==0
+        let pendingTransactions = [
+            ['1', 'Add', 't01007', '25000000000000', 't01001'],
+            ['5', 'Add', 't01009', '4670000000000000', 't01001'], 
+            ['9', 'Revoke','t01012', '0', 't01001']
+        ]
+       // let pendingTransactions = await this.context.api.getPendingTransactions('t01002')
+       
+        let t:any = []
+        for (let [id, method, ver, cap, by] of pendingTransactions) {
+            t.push({a:id, b:method, c:ver, d:cap, e:by})
+        }
+        
+        this.setState({transactions:t})
     }
 
     handleSubmit = async (e:any) => {
@@ -61,9 +91,30 @@ export default class Rootkey  extends Component<{},States> {
         }
     }
 
+    handleSubmitRevoke = async (e:any) => {
+        e.preventDefault()
+        this.setState({ proposeLoading: true })
+        try {
+            const fullDatacap = BigInt(0)
+            let messageID = await this.context.api.proposeVerifier(this.state.revokedVerifierAccountID, fullDatacap, this.context.walletIndex);
+            this.setState({
+                revokedVerifierAccountID: '',
+                proposeLoading: false
+            })
+            this.context.dispatchNotification('Revoke Message sent with ID: ' + messageID)
+        } catch (e) {
+            this.setState({ proposeLoading: false })
+            this.context.dispatchNotification('Revoke Proposal failed: ' + e.message)
+            console.log(e.stack)
+        }
+    }
+
     handleSubmitApprove = async (e:any) => {
         e.preventDefault()
         this.setState({ approveLoading: true })
+        // This method should take the items selected from the transactions list and for each item call the approveVerifier method
+
+        /*
         try {
             const datacap = parseFloat(this.state.datacapToApprove)
             const fullDatacap = BigInt(datacap * parseFloat(this.state.datacapExtToApprove))
@@ -82,6 +133,7 @@ export default class Rootkey  extends Component<{},States> {
             this.context.dispatchNotification('Approval failed: ' + e.message)
             console.log(e.stack)
         }
+        */
     }
 
     handleChange = (e:any) => {
@@ -93,7 +145,7 @@ export default class Rootkey  extends Component<{},States> {
         return (
             <div>
                 <div>
-                  <H1>Propose Verifier</H1>
+                  <H1>Propose New Verifier</H1>
 
                   <form>
                         <Input
@@ -124,55 +176,34 @@ export default class Rootkey  extends Component<{},States> {
                         </div>
                         <ButtonPrimary onClick={this.handleSubmit}>{this.state.approveLoading ? <LoaderSpinner /> : 'Propose Verifier'}</ButtonPrimary>
                   </form>
-                  </div>
+                </div>
 
-                  <div>
-                  <H1>Approve Verifier</H1>
+
+                <div>
+                  <H1>Propose Revoke Verifier</H1>
 
                   <form>
                         <Input
                             description="Verifier Account ID"
-                            name="verifierAccountIDToApprove"
-                            value={this.state.verifierAccountIDToApprove}
+                            name="revokedVerifierAccountID"
+                            value={this.state.revokedVerifierAccountID}
                             placeholder="xxxxxx"
                             onChange={this.handleChange}
                         />
-                        <div className="datacapholder">
-                            <div className="datacap">
-                                <Input
-                                    description="Verifier datacap"
-                                    name="datacapToApprove"
-                                    value={this.state.datacapToApprove}
-                                    placeholder="1"
-                                    onChange={this.handleChange}
-                                />
-                            </div>
-                            <div className="datacapext">
-                                <SelectMenu
-                                    name="datacapExtToApprove"
-                                    value={this.state.datacapExtToApprove}
-                                    onChange={this.handleChange}
-                                    options={config.datacapExt}
-                                />
-                            </div>
-                        </div>
-                         <Input
-                            description="Proposed By"
-                            name="proposedAccountID"
-                            value={this.state.proposedAccountID}
-                            placeholder="xxxxxx"
-                            onChange={this.handleChange}
-                        />
-                        <Input
-                            description="TransactionID"
-                            name="transactionID"
-                            value={this.state.transactionID}
-                            placeholder="xxxxxx"
-                            onChange={this.handleChange}
-                        />
-                        <ButtonPrimary onClick={this.handleSubmitApprove}>{this.state.approveLoading ? <LoaderSpinner /> : 'Approve Verifier'}</ButtonPrimary>
+                        <ButtonPrimary onClick={this.handleSubmitRevoke}>{this.state.approveLoading ? <LoaderSpinner /> : 'Propose Revoke Verifier'}</ButtonPrimary>
                   </form>
-                  </div>
+                </div>
+
+                
+
+                <div>
+                    <H1>Proposals Pending to Approve</H1>
+                    <form>
+                        <Table data={{rows: this.state.transactions, columns: this.columns}}/>
+                        <ButtonSecondary onClick={()=>this.getList()}>Refresh</ButtonSecondary>
+                        <ButtonPrimary onClick={this.handleSubmitApprove}>{this.state.approveLoading ? <LoaderSpinner /> : 'Approve'}</ButtonPrimary>
+                    </form>
+                </div>
 
             </div>
    
