@@ -114,41 +114,20 @@ export default class Rootkey  extends Component<{},States> {
     handleSubmitApprove = async (e:any) => {
         e.preventDefault()
         this.setState({ approveLoading: true })
-        // This method should take the items selected from the transactions list and for each item call the approveVerifier method
-
-        const txToConfirm = []
-        for(const tx of this.state.transactions){
-            if(this.state.selectedTransactions.includes(tx.a)){
-                txToConfirm.push(tx)
-            }
-        }
-
-        // tx to confirm
-        console.log('tx to confirm', txToConfirm)
-
-        // clear selected at end
-        this.setState({selectedTransactions:[]})
-
-        /*
         try {
-            const datacap = parseFloat(this.state.datacapToApprove)
-            const fullDatacap = BigInt(datacap * parseFloat(this.state.datacapExtToApprove))
-            let messageID = await this.context.api.approveVerifier(this.state.verifierAccountIDToApprove, fullDatacap, this.state.proposedAccountID, this.state.transactionID, this.context.walletIndex);
-            this.setState({
-                verifierAccountIDToApprove: '',
-                datacapToApprove: '1',
-                datacapExtToApprove: '1000000000000',
-                proposedAccountID: '',
-                transactionID: 0,
-                approveLoading: false
-            })
-            this.context.dispatchNotification('Approve Message sent with ID: ' + messageID)
+            for(const tx of this.state.transactions){
+                if(this.state.selectedTransactions.includes(tx.a)){
+                    const datacap = BigInt(tx.d)
+                    await this.context.api.approveVerifier(tx.c, datacap, tx.e, tx.a, this.context.walletIndex);
+                }
+            }
+            this.setState({ selectedTransactions:[], approveLoading: false })
+            this.context.dispatchNotification('Transactions confirmed')
         } catch (e) {
             this.setState({ approveLoading: false })
             this.context.dispatchNotification('Approval failed: ' + e.message)
-            console.log(e.stack)
+            console.log('error', e.stack)
         }
-        */
     }
 
     handleChange = (e:any) => {
