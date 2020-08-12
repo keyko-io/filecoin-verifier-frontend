@@ -16,7 +16,8 @@ type States = {
     transactionID: number
     approveLoading: boolean
     proposeLoading: boolean
-    transactions: []
+    transactions: any[]
+    selectedTransactions: any[]
 };
 
 export default class Rootkey  extends Component<{},States> {
@@ -44,7 +45,8 @@ export default class Rootkey  extends Component<{},States> {
             transactionID: 0,
             approveLoading: false,
             proposeLoading: false,
-            transactions: []
+            transactions: [],
+            selectedTransactions: []
         }
     }
 
@@ -114,6 +116,19 @@ export default class Rootkey  extends Component<{},States> {
         this.setState({ approveLoading: true })
         // This method should take the items selected from the transactions list and for each item call the approveVerifier method
 
+        const txToConfirm = []
+        for(const tx of this.state.transactions){
+            if(this.state.selectedTransactions.includes(tx.a)){
+                txToConfirm.push(tx)
+            }
+        }
+
+        // tx to confirm
+        console.log('tx to confirm', txToConfirm)
+
+        // clear selected at end
+        this.setState({selectedTransactions:[]})
+
         /*
         try {
             const datacap = parseFloat(this.state.datacapToApprove)
@@ -139,6 +154,16 @@ export default class Rootkey  extends Component<{},States> {
     handleChange = (e:any) => {
         console.log(e.target.name, e.target.value)
         this.setState({ [e.target.name]: e.target.value } as any)
+    }
+
+    selectRow = (transactionId: string) => {
+        let selectedTxs = this.state.selectedTransactions
+        if(selectedTxs.includes(transactionId)){
+            selectedTxs = selectedTxs.filter(item => item !== transactionId)
+        } else {
+            selectedTxs.push(transactionId)
+        }
+        this.setState({selectedTransactions:selectedTxs})
     }
 
     public render(){
@@ -181,7 +206,6 @@ export default class Rootkey  extends Component<{},States> {
 
                 <div>
                   <H1>Propose Revoke Verifier</H1>
-
                   <form>
                         <Input
                             description="Verifier Account ID"
@@ -194,20 +218,34 @@ export default class Rootkey  extends Component<{},States> {
                   </form>
                 </div>
 
-                
-
-                <div>
+                <div className="pendingApprove">
                     <H1>Proposals Pending to Approve</H1>
-                    <form>
-                        <Table data={{rows: this.state.transactions, columns: this.columns}}/>
-                        <ButtonSecondary onClick={()=>this.getList()}>Refresh</ButtonSecondary>
-                        <ButtonPrimary onClick={this.handleSubmitApprove}>{this.state.approveLoading ? <LoaderSpinner /> : 'Approve'}</ButtonPrimary>
-                    </form>
+                    <table>
+                        <thead>
+                            <tr>
+                                {this.columns.map((fieldKey:any, index:any) => 
+                                    <td key={fieldKey.name}>{fieldKey.name}</td>
+                                )}
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {this.state.transactions.map((transaction:any, index:any) => 
+                                <tr
+                                    key={transaction.a}
+                                    onClick={()=>this.selectRow(transaction.a)}
+                                    className={this.state.selectedTransactions.includes(transaction.a)?'selected':''}
+                                >
+                                    {Object.keys(transaction).map((fieldKey:any, index:any) => 
+                                        <td key={transaction[fieldKey]}>{transaction[fieldKey]}</td>
+                                    )}
+                                </tr>
+                            )}
+                        </tbody>
+                    </table>
+                    <ButtonSecondary onClick={()=>this.getList()}>Refresh</ButtonSecondary>
+                    <ButtonPrimary onClick={this.handleSubmitApprove}>{this.state.approveLoading ? <LoaderSpinner /> : 'Approve'}</ButtonPrimary>
                 </div>
-
             </div>
-   
-        )       
-        
+        )
     }
 }
