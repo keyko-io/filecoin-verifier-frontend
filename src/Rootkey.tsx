@@ -23,14 +23,6 @@ type States = {
 export default class Rootkey  extends Component<{},States> {
     public static contextType = Wallet
 
-    columns = [
-        { key: "a", name: "Transaction ID" },
-        { key: "b", name: "Method"},
-        { key: "c", name: "Verifier ID" },
-        { key: "d", name: "Datacap" },
-        { key: "e", name: "Proposed By" }
-    ]
-
     constructor(props: {}) {
         super(props);
         this.state = {
@@ -55,36 +47,18 @@ export default class Rootkey  extends Component<{},States> {
     }
 
     getList = async () => {
-
         let pendingTxs = await this.context.api.pendingRootTransactions()
-
-        let pendingTransactions: any[] = []
+        let transactions: any[] = []
         for(let txs in pendingTxs){
-            pendingTransactions.push([
-                txs,
-                pendingTxs.parsed.params.cap === 0 ? 'Revoke' : 'Add',
-                pendingTxs[txs].parsed.params.verifier,
-                pendingTxs.parsed.params.cap,
-                pendingTxs[txs].signers
-            ])
+            transactions.push({
+                id: txs,
+                type: pendingTxs[txs].parsed.params.cap.toString() === '0' ? 'Revoke' : 'Add',
+                verifier: pendingTxs[txs].parsed.params.verifier,
+                cap: pendingTxs[txs].parsed.params.cap.toString(),
+                signer: pendingTxs[txs].signers[0]
+            })
         }
-
-        // Method "Revoke" if datacap==0
-        /*
-        let pendingTransactions = [
-            ['1', 'Add', 't01007', '25000000000000', 't01001'],
-            ['5', 'Add', 't01009', '4670000000000000', 't01001'], 
-            ['9', 'Revoke','t01012', '0', 't01001']
-        ]
-        */
-       // let pendingTransactions = await this.context.api.getPendingTransactions('t01002')
-       
-        let t:any = []
-        for (let [id, method, ver, cap, by] of pendingTransactions) {
-            t.push({a:id, b:method, c:ver, d:cap, e:by})
-        }
-        
-        this.setState({transactions:t})
+        this.setState({transactions})
     }
 
     handleSubmit = async (e:any) => {
@@ -217,21 +191,25 @@ export default class Rootkey  extends Component<{},States> {
                     <table>
                         <thead>
                             <tr>
-                                {this.columns.map((fieldKey:any, index:any) => 
-                                    <td key={fieldKey.name}>{fieldKey.name}</td>
-                                )}
+                                <td>Transaction ID</td>
+                                <td>Method</td>
+                                <td>Verifier ID</td>
+                                <td>Datacap</td>
+                                <td>Proposed By</td>
                             </tr>
                         </thead>
                         <tbody>
                             {this.state.transactions.map((transaction:any, index:any) => 
                                 <tr
-                                    key={transaction.a}
-                                    onClick={()=>this.selectRow(transaction.a)}
-                                    className={this.state.selectedTransactions.includes(transaction.a)?'selected':''}
+                                    key={transaction.id}
+                                    onClick={()=>this.selectRow(transaction.id)}
+                                    className={this.state.selectedTransactions.includes(transaction.id)?'selected':''}
                                 >
-                                    {Object.keys(transaction).map((fieldKey:any, index:any) => 
-                                        <td key={transaction[fieldKey]}>{transaction[fieldKey]}</td>
-                                    )}
+                                    <td>{transaction.id}</td>
+                                    <td>{transaction.type}</td>
+                                    <td>{transaction.verifier}</td>
+                                    <td>{transaction.cap}</td>
+                                    <td>{transaction.signer}</td>
                                 </tr>
                             )}
                         </tbody>
