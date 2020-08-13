@@ -56,12 +56,27 @@ export default class Rootkey  extends Component<{},States> {
 
     getList = async () => {
 
+        let pendingTxs = await this.context.api.pendingRootTransactions()
+
+        let pendingTransactions: any[] = []
+        for(let txs in pendingTxs){
+            pendingTransactions.push([
+                txs,
+                pendingTxs.parsed.params.cap === 0 ? 'Revoke' : 'Add',
+                pendingTxs[txs].parsed.params.verifier,
+                pendingTxs.parsed.params.cap,
+                pendingTxs[txs].signers
+            ])
+        }
+
         // Method "Revoke" if datacap==0
+        /*
         let pendingTransactions = [
             ['1', 'Add', 't01007', '25000000000000', 't01001'],
             ['5', 'Add', 't01009', '4670000000000000', 't01001'], 
             ['9', 'Revoke','t01012', '0', 't01001']
         ]
+        */
        // let pendingTransactions = await this.context.api.getPendingTransactions('t01002')
        
         let t:any = []
