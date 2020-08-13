@@ -2,19 +2,22 @@ import React, { Component } from 'react';
 import { Wallet } from './context/Index'
 import { config } from './config'
 // @ts-ignore
-import { H1, Input, ButtonPrimary, LoaderSpinner, SelectMenu } from "slate-react-system";
+import { H1, Input, ButtonPrimary, ButtonSecondary, LoaderSpinner, SelectMenu, Table } from "slate-react-system";
 
 type States = {
     verifierAccountID: string
     datacap: string
     datacapExt: string
     verifierAccountIDToApprove: string
+    revokedVerifierAccountID: string
     datacapToApprove: string
     datacapExtToApprove: string
     proposedAccountID: string
     transactionID: number
     approveLoading: boolean
     proposeLoading: boolean
+    transactions: any[]
+    selectedTransactions: any[]
 };
 
 export default class Rootkey  extends Component<{},States> {
@@ -24,6 +27,7 @@ export default class Rootkey  extends Component<{},States> {
         super(props);
         this.state = {
             verifierAccountID: '',
+            revokedVerifierAccountID: '',
             datacap: '1',
             datacapExt: '1000000000000',
             verifierAccountIDToApprove: '',
@@ -32,12 +36,29 @@ export default class Rootkey  extends Component<{},States> {
             proposedAccountID: '',
             transactionID: 0,
             approveLoading: false,
-            proposeLoading: false
+            proposeLoading: false,
+            transactions: [],
+            selectedTransactions: []
         }
     }
 
     componentDidMount() {
+        this.getList()
+    }
 
+    getList = async () => {
+        let pendingTxs = await this.context.api.pendingRootTransactions()
+        let transactions: any[] = []
+        for(let txs in pendingTxs){
+            transactions.push({
+                id: txs,
+                type: pendingTxs[txs].parsed.params.cap.toString() === '0' ? 'Revoke' : 'Add',
+                verifier: pendingTxs[txs].parsed.params.verifier,
+                cap: pendingTxs[txs].parsed.params.cap.toString(),
+                signer: pendingTxs[txs].signers[0]
+            })
+        }
+        this.setState({transactions})
     }
 
     handleSubmit = async (e:any) => {
@@ -61,26 +82,40 @@ export default class Rootkey  extends Component<{},States> {
         }
     }
 
+    handleSubmitRevoke = async (e:any) => {
+        e.preventDefault()
+        this.setState({ proposeLoading: true })
+        try {
+            const fullDatacap = BigInt(0)
+            let messageID = await this.context.api.proposeVerifier(this.state.revokedVerifierAccountID, fullDatacap, this.context.walletIndex);
+            this.setState({
+                revokedVerifierAccountID: '',
+                proposeLoading: false
+            })
+            this.context.dispatchNotification('Revoke Message sent with ID: ' + messageID)
+        } catch (e) {
+            this.setState({ proposeLoading: false })
+            this.context.dispatchNotification('Revoke Proposal failed: ' + e.message)
+            console.log(e.stack)
+        }
+    }
+
     handleSubmitApprove = async (e:any) => {
         e.preventDefault()
         this.setState({ approveLoading: true })
         try {
-            const datacap = parseFloat(this.state.datacapToApprove)
-            const fullDatacap = BigInt(datacap * parseFloat(this.state.datacapExtToApprove))
-            let messageID = await this.context.api.approveVerifier(this.state.verifierAccountIDToApprove, fullDatacap, this.state.proposedAccountID, this.state.transactionID, this.context.walletIndex);
-            this.setState({
-                verifierAccountIDToApprove: '',
-                datacapToApprove: '1',
-                datacapExtToApprove: '1000000000000',
-                proposedAccountID: '',
-                transactionID: 0,
-                approveLoading: false
-            })
-            this.context.dispatchNotification('Approve Message sent with ID: ' + messageID)
+            for(const tx of this.state.transactions){
+                if(this.state.selectedTransactions.includes(tx.a)){
+                    const datacap = BigInt(tx.d)
+                    await this.context.api.approveVerifier(tx.c, datacap, tx.e, tx.a, this.context.walletIndex);
+                }
+            }
+            this.setState({ selectedTransactions:[], approveLoading: false })
+            this.context.dispatchNotification('Transactions confirmed')
         } catch (e) {
             this.setState({ approveLoading: false })
             this.context.dispatchNotification('Approval failed: ' + e.message)
-            console.log(e.stack)
+            console.log('error', e.stack)
         }
     }
 
@@ -89,11 +124,21 @@ export default class Rootkey  extends Component<{},States> {
         this.setState({ [e.target.name]: e.target.value } as any)
     }
 
+    selectRow = (transactionId: string) => {
+        let selectedTxs = this.state.selectedTransactions
+        if(selectedTxs.includes(transactionId)){
+            selectedTxs = selectedTxs.filter(item => item !== transactionId)
+        } else {
+            selectedTxs.push(transactionId)
+        }
+        this.setState({selectedTransactions:selectedTxs})
+    }
+
     public render(){
         return (
             <div>
                 <div>
-                  <H1>Propose Verifier</H1>
+                  <H1>Propose New Verifier</H1>
 
                   <form>
                         <Input
@@ -124,59 +169,55 @@ export default class Rootkey  extends Component<{},States> {
                         </div>
                         <ButtonPrimary onClick={this.handleSubmit}>{this.state.approveLoading ? <LoaderSpinner /> : 'Propose Verifier'}</ButtonPrimary>
                   </form>
-                  </div>
+                </div>
 
-                  <div>
-                  <H1>Approve Verifier</H1>
 
+                <div>
+                  <H1>Propose Revoke Verifier</H1>
                   <form>
                         <Input
                             description="Verifier Account ID"
-                            name="verifierAccountIDToApprove"
-                            value={this.state.verifierAccountIDToApprove}
+                            name="revokedVerifierAccountID"
+                            value={this.state.revokedVerifierAccountID}
                             placeholder="xxxxxx"
                             onChange={this.handleChange}
                         />
-                        <div className="datacapholder">
-                            <div className="datacap">
-                                <Input
-                                    description="Verifier datacap"
-                                    name="datacapToApprove"
-                                    value={this.state.datacapToApprove}
-                                    placeholder="1"
-                                    onChange={this.handleChange}
-                                />
-                            </div>
-                            <div className="datacapext">
-                                <SelectMenu
-                                    name="datacapExtToApprove"
-                                    value={this.state.datacapExtToApprove}
-                                    onChange={this.handleChange}
-                                    options={config.datacapExt}
-                                />
-                            </div>
-                        </div>
-                         <Input
-                            description="Proposed By"
-                            name="proposedAccountID"
-                            value={this.state.proposedAccountID}
-                            placeholder="xxxxxx"
-                            onChange={this.handleChange}
-                        />
-                        <Input
-                            description="TransactionID"
-                            name="transactionID"
-                            value={this.state.transactionID}
-                            placeholder="xxxxxx"
-                            onChange={this.handleChange}
-                        />
-                        <ButtonPrimary onClick={this.handleSubmitApprove}>{this.state.approveLoading ? <LoaderSpinner /> : 'Approve Verifier'}</ButtonPrimary>
+                        <ButtonPrimary onClick={this.handleSubmitRevoke}>{this.state.approveLoading ? <LoaderSpinner /> : 'Propose Revoke Verifier'}</ButtonPrimary>
                   </form>
-                  </div>
+                </div>
 
+                <div className="pendingApprove">
+                    <H1>Proposals Pending to Approve</H1>
+                    <table>
+                        <thead>
+                            <tr>
+                                <td>Transaction ID</td>
+                                <td>Method</td>
+                                <td>Verifier ID</td>
+                                <td>Datacap</td>
+                                <td>Proposed By</td>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {this.state.transactions.map((transaction:any, index:any) => 
+                                <tr
+                                    key={transaction.id}
+                                    onClick={()=>this.selectRow(transaction.id)}
+                                    className={this.state.selectedTransactions.includes(transaction.id)?'selected':''}
+                                >
+                                    <td>{transaction.id}</td>
+                                    <td>{transaction.type}</td>
+                                    <td>{transaction.verifier}</td>
+                                    <td>{transaction.cap}</td>
+                                    <td>{transaction.signer}</td>
+                                </tr>
+                            )}
+                        </tbody>
+                    </table>
+                    <ButtonSecondary onClick={()=>this.getList()}>Refresh</ButtonSecondary>
+                    <ButtonPrimary onClick={this.handleSubmitApprove}>{this.state.approveLoading ? <LoaderSpinner /> : 'Approve'}</ButtonPrimary>
+                </div>
             </div>
-   
-        )       
-        
+        )
     }
 }

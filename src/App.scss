@@ -118,3 +118,22 @@
     margin: 20px 0px 10px 0px;
   }
 }
+
+.pendingApprove table {
+  font-size: 12px;
+  border-collapse: collapse;
+  width: 100%;
+
+  tr {
+    border-bottom: 1px solid #e5e5e5;
+    cursor: pointer;
+
+    td {
+      padding: 12px
+    }
+  }
+
+  tr.selected {
+    background-color: #ccc;
+  }
+}
