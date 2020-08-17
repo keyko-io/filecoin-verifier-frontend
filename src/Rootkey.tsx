@@ -105,9 +105,9 @@ export default class Rootkey  extends Component<{},States> {
         this.setState({ approveLoading: true })
         try {
             for(const tx of this.state.transactions){
-                if(this.state.selectedTransactions.includes(tx.a)){
-                    const datacap = BigInt(tx.d)
-                    await this.context.api.approveVerifier(tx.c, datacap, tx.e, tx.a, this.context.walletIndex);
+                if(this.state.selectedTransactions.includes(tx.id)){
+                    const datacap = BigInt(tx.cap)
+                    await this.context.api.approveVerifier(tx.verifier, datacap, tx.signer, tx.id, this.context.walletIndex);
                 }
             }
             this.setState({ selectedTransactions:[], approveLoading: false })
