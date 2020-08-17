@@ -16,8 +16,8 @@ export default class Verifiedclients extends Component<{},States> {
     public static contextType = Wallet
 
     columns = [
-        { key: "a", name: "Verifier" },
-        { key: "b", name: "Datacap" }
+        { key: "verified", name: "Verifier" },
+        { key: "datacap", name: "Datacap" }
     ]
 
     constructor(props: {}) {
@@ -36,15 +36,9 @@ export default class Verifiedclients extends Component<{},States> {
     }
 
     getList = async () => {
-        let listverifiers = await this.context.api.listVerifiedClients()
-        let ver:any = []
-        for (let [k,v] of listverifiers) {
-            ver.push({a:k, b:v.toString(10)})
-        }
-        this.setState({verifiers:ver})
+        const verifiers = await this.context.api.listVerifiedClients()
+        this.setState({verifiers})
     }
-
-
 
     handleSubmit = async (e:any) => {
         e.preventDefault()

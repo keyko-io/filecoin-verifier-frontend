@@ -7,8 +7,8 @@ export default class Verifiers extends Component {
     public static contextType = Wallet
 
     columns = [
-        { key: "a", name: "Verifier" },
-        { key: "b", name: "Datacap" }
+        { key: "verifier", name: "Verifier" },
+        { key: "datacap", name: "Datacap" }
     ]
 
     state = {
@@ -20,12 +20,8 @@ export default class Verifiers extends Component {
     }
 
     getList = async () => {
-        let listverifiers = await this.context.api.listVerifiers()
-        let ver:any = []
-        for (let [k,v] of listverifiers) {
-            ver.push({a:k, b:v.toString(10)})
-        }
-        this.setState({verifiers:ver})
+        const verifiers = await this.context.api.listVerifiers()
+        this.setState({verifiers})
     }
 
     public render(){
