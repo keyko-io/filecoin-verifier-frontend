@@ -1,6 +1,6 @@
 import { config } from '../config'
 
-const signer = require("@keyko-io/filecoin-signing-tools/js")
+const signer = require("@keyko-io/filecoin-signing-tools")
 const VerifyAPI = require('@keyko-io/filecoin-verifier-tools/api/api')
 
 export class BurnerWallet {
@@ -44,26 +44,9 @@ export class BurnerWallet {
 
     public sign = async (filecoinMessage:any, indexAccount:number) => {
         const private_hexstring = signer.keyDerive(this.mnemonic, `m/44'/${this.lotusNode.code}'/1/0/${indexAccount}`, '').private_hexstring
-        const signedMessage = signer.transactionSign(
+        return signer.transactionSignLotus(
           filecoinMessage,
           private_hexstring
         )
-        return JSON.stringify({
-            Message: {
-              From: signedMessage.message.from,
-              GasLimit: signedMessage.message.gaslimit,
-              GasPrice: signedMessage.message.gasprice,
-              Method: signedMessage.message.method,
-              Nonce: signedMessage.message.nonce,
-             // Params: signedMessage.message.params,
-             Params: Buffer.from(signedMessage.message.params, "hex").toString("base64"),
-              To: signedMessage.message.to,
-              Value: signedMessage.message.value,
-            },
-            Signature: {
-              Data: signedMessage.signature.data,
-              Type: signedMessage.signature.type,
-            }
-        })
     }
 }

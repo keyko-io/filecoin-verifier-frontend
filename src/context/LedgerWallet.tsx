@@ -2,7 +2,7 @@ import { mapSeries } from 'bluebird'
 const TransportWebUSB = require("@ledgerhq/hw-transport-webusb")
 const TransportU2F = require("@ledgerhq/hw-transport-u2f")
 const FilecoinApp = require("@zondax/ledger-filecoin")
-const signer = require("@zondax/filecoin-signing-tools/js")
+const signer = require("@zondax/filecoin-signing-tools")
 
 export class LedgerWallet {
 
