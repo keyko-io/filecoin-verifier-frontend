@@ -21,7 +21,8 @@ export default class Verifiers extends Component {
 
     getList = async () => {
         const verifiers = await this.context.api.listVerifiers()
-        this.setState({verifiers})
+        console.log(verifiers)
+        this.setState({verifiers: verifiers.map((lst:any) => ({verifier: lst[0], datacap: lst[1]}))})
     }
 
     public render(){

@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Wallet } from './context/Index'
 import { config } from './config'
 // @ts-ignore
-import { H1, Input, ButtonPrimary, ButtonSecondary, LoaderSpinner, SelectMenu, Table } from "slate-react-system";
+import { H1, Input, ButtonPrimary, ButtonSecondary, LoaderSpinner, SelectMenu } from "slate-react-system";
 
 type States = {
     verifierAccountID: string
