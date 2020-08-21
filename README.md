@@ -1,5 +1,10 @@
 # filecoin-verifier-fronend
 
-## Quick dev start
+## Quick start
 
-npm run start
+```
+git submodule init
+git submodule update
+yarn
+yarn run start
+```
