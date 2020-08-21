@@ -16,7 +16,7 @@ export default class Verifiedclients extends Component<{},States> {
     public static contextType = Wallet
 
     columns = [
-        { key: "verified", name: "Verifier" },
+        { key: "verified", name: "Verified client" },
         { key: "datacap", name: "Datacap" }
     ]
 

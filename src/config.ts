@@ -4,7 +4,7 @@ export const config = {
         name: 'Localhost Testnet',
         code: 1,
         url: 'ws://localhost:1234/rpc/v0',
-        token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBbGxvdyI6WyJyZWFkIiwid3JpdGUiLCJzaWduIiwiYWRtaW4iXX0.fK05MnwUrJfB4gdXy49xAPd3BNGVlDL3b1A_LwwtMu8'
+        token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBbGxvdyI6WyJyZWFkIiwid3JpdGUiLCJzaWduIiwiYWRtaW4iXX0.6K6XDNwdcCOxBGuPO4XfFSuCYRs3BOlOw5h7csr_RV8'
     },{
         name: 'Localhost Net',
         code: 461,
