@@ -14,6 +14,7 @@ interface WalletProviderStates {
     getAccounts: any
     walletIndex: number
     networkIndex: number
+    accounts: any[]
     activeAccount: string
     importSeed: any
     selectNetwork: any
@@ -31,7 +32,8 @@ export default class WalletProvider extends React.Component<{}, WalletProviderSt
             wallet: 'ledger',
             sign: wallet.sign,
             getAccounts: wallet.getAccounts,
-            activeAccount: accounts[0]
+            activeAccount: accounts[0],
+            accounts
         })
     }
 
@@ -46,7 +48,8 @@ export default class WalletProvider extends React.Component<{}, WalletProviderSt
             sign: wallet.sign,
             getAccounts: wallet.getAccounts,
             activeAccount: accounts[0],
-            importSeed: wallet.importSeed
+            importSeed: wallet.importSeed,
+            accounts
         })
     }
 
@@ -61,6 +64,7 @@ export default class WalletProvider extends React.Component<{}, WalletProviderSt
         importSeed: async (seedphrase: string) => {},
         networkIndex: 0,
         activeAccount: '',
+        accounts: [],
         balance: 0,
         message: '',
         dispatchNotification: (message: string) => {
@@ -90,7 +94,8 @@ export default class WalletProvider extends React.Component<{}, WalletProviderSt
                     sign: wallet.sign,
                     getAccounts: wallet.getAccounts,
                     activeAccount: accounts[this.state.walletIndex],
-                    importSeed: wallet.importSeed
+                    importSeed: wallet.importSeed,
+                    accounts
                 })
             })
         }
