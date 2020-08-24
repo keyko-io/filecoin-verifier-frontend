@@ -1,6 +1,6 @@
 import { config } from '../config'
 
-const signer = require("@keyko-io/filecoin-signing-tools")
+const signer = require("@zondax/filecoin-signing-tools")
 const VerifyAPI = require('@keyko-io/filecoin-verifier-tools/api/api')
 
 export class BurnerWallet {

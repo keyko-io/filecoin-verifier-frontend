@@ -12,7 +12,6 @@
     "@fortawesome/free-regular-svg-icons": "^5.14.0",
     "@fortawesome/free-solid-svg-icons": "^5.14.0",
     "@fortawesome/react-fontawesome": "^0.1.11",
-    "@keyko-io/filecoin-signing-tools": "./deps/filecoin-signing-tools/signer-npm/js",
     "@keyko-io/filecoin-verifier-tools": "./deps/filecoin-verifier-tools",
     "@ledgerhq/hw-transport-u2f": "^5.19.1",
     "@ledgerhq/hw-transport-webusb": "^5.19.1",
