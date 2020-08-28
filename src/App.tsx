@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Route, Switch, NavLink } from 'react-router-dom'
+import { Route, Switch } from 'react-router-dom'
 import Overview from './Overview'
 import Verifiedclients from './Verifiedclients'
 import Verifiers from './Verifiers'
@@ -12,10 +12,11 @@ import { far } from '@fortawesome/free-regular-svg-icons'
 import { fas } from '@fortawesome/free-solid-svg-icons'
 import Logo from './logo.svg';
 import { Wallet } from './context/Index'
+import { addressFilter } from './Filters'
 import WalletModal from './WalletModal'
 import './App.scss';
 // @ts-ignore
-import { Input, dispatchCustomEvent } from "slate-react-system"
+import { Input, dispatchCustomEvent, TabGroup } from "slate-react-system"
 import { config } from './config'
 import Blockies from 'react-blockies'
 
@@ -103,13 +104,13 @@ class App extends Component<{},States> {
               <div className="accountselectholder">
                 <div className="headertitles">Selected Account Type</div>
                 {this.context.accounts.map((account:any, index: number)=>{
-                  return <div key={index} style={{ color: index === this.context.walletIndex ? '#003fe3' : 'inherit' }} className="accountentry" onClick={()=>this.switchAccount(index)}>{account}</div>
+                  return <div key={index} style={{ color: index === this.context.walletIndex ? '#003fe3' : 'inherit' }} className="accountentry" onClick={()=>this.switchAccount(index)}>{addressFilter(account)}</div>
                 })}
                 <div className="importseedphrase" onClick={()=>{this.openWallet()}}>Import seedphrase</div>
               </div>
             : null}
             <div className="headertitles">Rootkey Holder ID</div>
-            <div>{this.context.activeAccount}</div>
+            <div>{addressFilter(this.context.activeAccount)}</div>
           </div>
           <div className="wallet">
             <div className="WalletMenu">

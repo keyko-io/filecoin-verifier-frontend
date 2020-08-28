@@ -4,12 +4,12 @@ export const config = {
         name: 'Localhost Testnet',
         code: 1,
         url: 'ws://localhost:1234/rpc/v0',
-        token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBbGxvdyI6WyJyZWFkIiwid3JpdGUiLCJzaWduIiwiYWRtaW4iXX0.0VuB8dEF2Z_oZcyrsohYFFJjPthJrN4eG_LpS8IkDBA%'
+        token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBbGxvdyI6WyJyZWFkIiwid3JpdGUiLCJzaWduIiwiYWRtaW4iXX0.RNjh8Upjg9MCSpmC7lmBbzI2yZooQgrBTnxTpfdDizs'
     },{
         name: 'Localhost Net',
         code: 461,
         url: 'ws://localhost:1234/rpc/v0',
-        token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBbGxvdyI6WyJyZWFkIiwid3JpdGUiLCJzaWduIiwiYWRtaW4iXX0.0VuB8dEF2Z_oZcyrsohYFFJjPthJrN4eG_LpS8IkDBA%'
+        token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBbGxvdyI6WyJyZWFkIiwid3JpdGUiLCJzaWduIiwiYWRtaW4iXX0.RNjh8Upjg9MCSpmC7lmBbzI2yZooQgrBTnxTpfdDizs'
     }],
     datacapExt: [
         { value: "1000", name: "KiloBytes" },

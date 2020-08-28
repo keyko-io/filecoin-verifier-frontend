@@ -135,6 +135,7 @@
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
+      font-family: monospace;
     }
 
     .importseedphrase {
@@ -206,6 +207,30 @@
     min-height: 100%;
     margin-top: 20px;
 
+    .tabsholder {
+      display: flex;
+      justify-content: space-between;
+
+      .tabs {
+        display: flex;
+        
+        >div {
+          padding: 10px;
+          margin-right: 10px;
+          border-bottom: 1px solid #ccc;
+          cursor: pointer;
+        }
+        >div.selected {
+          border-bottom: 1px solid #0090FF;
+          color: #0090FF;
+        }
+      }
+
+      .tabssadd {
+
+      }
+    }
+
     form {
       padding-bottom: 20px;
 
@@ -257,10 +282,19 @@
   }
 }
 
-.pendingApprove table {
+.main table {
+  margin-top: 20px;
   font-size: 12px;
   border-collapse: collapse;
   width: 100%;
+
+  thead {
+    font-weight: bold;
+    
+    tr {
+      border-bottom: 1px solid #000;
+    }
+  }
 
   tr {
     border-bottom: 1px solid #e5e5e5;
