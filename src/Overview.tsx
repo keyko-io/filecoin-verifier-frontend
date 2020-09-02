@@ -120,7 +120,7 @@ export default class Overview extends Component<{}, OverviewStates> {
                             </div>
                             <div className="textinfodatablock">
                                 <div className="data">75k</div>
-                                <div className="text">Comunity Members</div>
+                                <div className="text">Community Members</div>
                             </div>
                             <div className="textinfodatablock">
                                 <div className="data">24</div>
@@ -138,7 +138,7 @@ export default class Overview extends Component<{}, OverviewStates> {
                         <div className="tabsholder">
                             <div className="tabs">
                                 <div className={this.state.tabs === "1" ? "selected" : ""} onClick={()=>{this.showPending()}}>Pending verifiers ({this.state.pendingverifiers.length})</div>
-                                <div className={this.state.tabs === "2" ? "selected" : ""} onClick={()=>{this.showApproved()}}>Approved Verfifiers ({this.state.verifiers.length})</div>
+                                <div className={this.state.tabs === "2" ? "selected" : ""} onClick={()=>{this.showApproved()}}>Approved Verifiers ({this.state.verifiers.length})</div>
                             </div>
                             <div className="tabssadd">
                                 {this.state.tabs === "2" ? <ButtonPrimary onClick={()=>this.proposeVerifier()}>Propose verifier</ButtonPrimary> : null}
@@ -204,7 +204,7 @@ export default class Overview extends Component<{}, OverviewStates> {
                     <div className="main">
                         <div className="tabsholder">
                             <div className="tabs">
-                                <div className="selected">Verfified clients ({this.state.clients.length})</div>
+                                <div className="selected">Verified clients ({this.state.clients.length})</div>
                             </div>
                             <div className="tabssadd">
                                 <ButtonPrimary onClick={()=>this.addVerifiedClient()}>Add verified client</ButtonPrimary>
