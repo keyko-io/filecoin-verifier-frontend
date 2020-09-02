@@ -36,14 +36,14 @@ export class BurnerWallet {
         const accounts = []
         for (let i = nStart; i < nEnd; i += 1) {
             accounts.push(
-                signer.keyDerive(this.mnemonic, `m/44'/${this.lotusNode.code}'/1/0/${i}`, '').address
+                signer.keyDerive(this.mnemonic, `m/44'/${this.lotusNode.code}'/0/0/${i}`, '').address
             )
         }
         return accounts
     }
 
     public sign = async (filecoinMessage:any, indexAccount:number) => {
-        const private_hexstring = signer.keyDerive(this.mnemonic, `m/44'/${this.lotusNode.code}'/1/0/${indexAccount}`, '').private_hexstring
+        const private_hexstring = signer.keyDerive(this.mnemonic, `m/44'/${this.lotusNode.code}'/0/0/${indexAccount}`, '').private_hexstring
         const signedMessage = signer.transactionSign(
           filecoinMessage,
           private_hexstring
