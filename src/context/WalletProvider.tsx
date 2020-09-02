@@ -8,6 +8,8 @@ import { dispatchCustomEvent } from "slate-react-system";
 interface WalletProviderStates {
     isLogged: boolean
     isLoading: boolean
+    viewroot: boolean
+    switchview: any
     wallet: string
     api: any
     sign: any
@@ -56,6 +58,14 @@ export default class WalletProvider extends React.Component<{}, WalletProviderSt
     state = {
         isLogged: false,
         isLoading: false,
+        viewroot: false,
+        switchview: async () => {
+            if(this.state.viewroot){
+                this.setState({ viewroot: false })
+            } else {
+                this.setState({ viewroot: true })
+            }
+        },
         wallet: '',
         api: {},
         sign: async () => {},

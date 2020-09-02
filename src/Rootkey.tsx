@@ -120,7 +120,6 @@ export default class Rootkey  extends Component<{},States> {
     }
 
     handleChange = (e:any) => {
-        console.log(e.target.name, e.target.value)
         this.setState({ [e.target.name]: e.target.value } as any)
     }
 

@@ -1,10 +1,5 @@
 import React, { Component } from 'react';
-import { Route, Switch } from 'react-router-dom'
 import Overview from './Overview'
-import Verifiedclients from './Verifiedclients'
-import Verifiers from './Verifiers'
-import Governance from './Governance'
-import Rootkey from './Rootkey'
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { fab } from '@fortawesome/free-brands-svg-icons'
@@ -16,7 +11,7 @@ import { addressFilter } from './Filters'
 import WalletModal from './WalletModal'
 import './App.scss';
 // @ts-ignore
-import { Input, dispatchCustomEvent, TabGroup } from "slate-react-system"
+import { Input, dispatchCustomEvent, Toggle } from "slate-react-system"
 import { config } from './config'
 import Blockies from 'react-blockies'
 
@@ -29,6 +24,7 @@ type States = {
 
 class App extends Component<{},States> {
   public static contextType = Wallet
+  child: any
 
   constructor(props: {}) {
     super(props);
@@ -36,6 +32,7 @@ class App extends Component<{},States> {
       networkSelect: false,
       accountSelect: false
     }
+    this.child = React.createRef();
 }
 
   componentDidMount () {
@@ -62,11 +59,19 @@ class App extends Component<{},States> {
     this.context.selectAccount(index)
   }
 
+  switchRoot = () => {
+    this.context.switchview()
+  }
+
   openWallet = async () => {
     dispatchCustomEvent({ name: "create-modal", detail: {
       id: Math.random().toString(36).replace(/[^a-z]+/g, '').substr(0, 5),
       modal: <WalletModal/>
     }})
+  }
+
+  refresh = () => {
+    this.child.current.loadData();
   }
 
   render() {
@@ -97,19 +102,32 @@ class App extends Component<{},States> {
             />
             <FontAwesomeIcon icon={["fas", "search"]}/>
           </div>
-          <div className="refresh"><FontAwesomeIcon icon={["fas", "redo"]} flip="vertical" transform={{ rotate: 135 }}/></div>
+          <div className="refresh" onClick={() => this.refresh()}>
+            <FontAwesomeIcon icon={["fas", "redo"]} flip="vertical" transform={{ rotate: 135 }}/>
+          </div>
           <div className="notification"><FontAwesomeIcon icon={["far", "bell"]}/></div>
           <div className="accountholder" onClick={this.openAccountSelect}>
             {this.state.accountSelect?
               <div className="accountselectholder">
-                <div className="headertitles">Selected Account Type</div>
+                <div className="headertitles">Account Type</div>
+                <div>
+                  <div>{this.context.viewroot ? 'Rootkey Holder' : 'Approved Verifier'}</div>
+                  <div className="viewswitch">
+                  <Toggle
+                    active={this.context.viewroot}
+                    name="accountview"
+                    onChange={this.switchRoot}
+                  />
+                  </div>
+                </div>
+                <div className="headertitles">Account addresses</div>
                 {this.context.accounts.map((account:any, index: number)=>{
                   return <div key={index} style={{ color: index === this.context.walletIndex ? '#003fe3' : 'inherit' }} className="accountentry" onClick={()=>this.switchAccount(index)}>{addressFilter(account)}</div>
                 })}
                 <div className="importseedphrase" onClick={()=>{this.openWallet()}}>Import seedphrase</div>
               </div>
             : null}
-            <div className="headertitles">Rootkey Holder ID</div>
+            <div className="headertitles">{this.context.viewroot ? 'Rootkey Holder ID' : 'Approved Verifier ID'}</div>
             <div>{addressFilter(this.context.activeAccount)}</div>
           </div>
           <div className="wallet">
@@ -125,23 +143,10 @@ class App extends Component<{},States> {
             </div>
           </div>
         </div>
-        {/*
-        <NavLink activeClassName="active" exact to={'/'}><FontAwesomeIcon icon={["far", "circle"]}/>Overview</NavLink>
-        <NavLink activeClassName="active" to={'/verifiedclients'}><FontAwesomeIcon icon={["far", "circle"]} />Verified clients</NavLink>
-        <NavLink activeClassName="active" to={'/verifiers'}><FontAwesomeIcon icon={["far", "circle"]} />Verifiers</NavLink>
-        <NavLink activeClassName="active" to={'/governance'}><FontAwesomeIcon icon={["far", "circle"]} />Governance</NavLink>
-        <NavLink activeClassName="active" to={'/rootkey'}><FontAwesomeIcon icon={["far", "circle"]} />Rootkey</NavLink>
-        */}
         { this.context.isLogged === false ? (
             <div>Loading</div>
         ) : (
-          <Switch>
-            <Route component={Overview} path="/" exact/>
-            <Route component={Verifiedclients} path="/verifiedclients" />
-            <Route component={Verifiers} path="/verifiers" />
-            <Route component={Governance} path="/governance" />
-            <Route component={Rootkey} path="/rootkey" />
-          </Switch>
+          <Overview ref={this.child}/>
         )}
       </div>
     );

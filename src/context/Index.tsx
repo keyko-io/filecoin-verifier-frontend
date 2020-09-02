@@ -3,6 +3,8 @@ import React from 'react'
 export const Wallet = React.createContext({
     isLogged: false,
     isLoading: false,
+    viewroot: false,
+    switchview: async () => {},
     wallet: '',
     api: {},
     sign: async () => {},
