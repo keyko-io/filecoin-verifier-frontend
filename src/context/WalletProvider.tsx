@@ -50,7 +50,6 @@ export default class WalletProvider extends React.Component<{}, WalletProviderSt
             sign: wallet.sign,
             getAccounts: wallet.getAccounts,
             activeAccount: accounts[0],
-            importSeed: wallet.importSeed,
             accounts
         })
     }
@@ -71,7 +70,21 @@ export default class WalletProvider extends React.Component<{}, WalletProviderSt
         sign: async () => {},
         getAccounts: async () => {},
         walletIndex: 0,
-        importSeed: async (seedphrase: string) => {},
+        importSeed: async (seedphrase: string) => {
+            const wallet = new BurnerWallet()
+            await wallet.loadWallet(this.state.networkIndex)
+            await wallet.importSeed(seedphrase)
+            const accounts: any[] = await wallet.getAccounts()
+            this.setState({
+                isLogged: true,
+                wallet: 'burner',
+                api: wallet.api,
+                sign: wallet.sign,
+                getAccounts: wallet.getAccounts,
+                activeAccount: accounts[this.state.walletIndex],
+                accounts
+            })
+        },
         networkIndex: 0,
         activeAccount: '',
         accounts: [],
@@ -104,7 +117,6 @@ export default class WalletProvider extends React.Component<{}, WalletProviderSt
                     sign: wallet.sign,
                     getAccounts: wallet.getAccounts,
                     activeAccount: accounts[this.state.walletIndex],
-                    importSeed: wallet.importSeed,
                     accounts
                 })
             })
