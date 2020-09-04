@@ -10,6 +10,16 @@ export const config = {
         code: 461,
         url: 'ws://localhost:1234/rpc/v0',
         token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBbGxvdyI6WyJyZWFkIiwid3JpdGUiLCJzaWduIiwiYWRtaW4iXX0.9CmiCCCeDI85E1Jnl3j50cp9oDjThyakPhmvnQ9XAgs'
+    },{
+        name: 'Remote Testnet',
+        code: 1,
+        url: 'ws://18.189.26.23:28002/rpc/v0',
+        token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBbGxvdyI6WyJyZWFkIiwid3JpdGUiXX0.niP0Kugzl3DJiM2sHY7gDRcWBSmr3B1AyVie2Coc67E'
+    },{
+        name: 'Remote Net',
+        code: 461,
+        url: 'ws://18.189.26.23:28002/rpc/v0',
+        token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBbGxvdyI6WyJyZWFkIiwid3JpdGUiXX0.niP0Kugzl3DJiM2sHY7gDRcWBSmr3B1AyVie2Coc67E'
     }],
     datacapExt: [
         { value: "1000", name: "KiB" },
