@@ -13,12 +13,12 @@ export const config = {
     },{
         name: 'Remote Testnet',
         code: 1,
-        url: 'ws://18.189.26.23:28002/rpc/v0',
+        url: 'ws://beta-verify.filecoin.io/api/rpc/v0',
         token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBbGxvdyI6WyJyZWFkIiwid3JpdGUiXX0.niP0Kugzl3DJiM2sHY7gDRcWBSmr3B1AyVie2Coc67E'
     },{
         name: 'Remote Net',
         code: 461,
-        url: 'ws://18.189.26.23:28002/rpc/v0',
+        url: 'ws://beta-verify.filecoin.io/api/rpc/v0',
         token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBbGxvdyI6WyJyZWFkIiwid3JpdGUiXX0.niP0Kugzl3DJiM2sHY7gDRcWBSmr3B1AyVie2Coc67E'
     }],
     datacapExt: [
