@@ -28,10 +28,12 @@ interface WalletProviderStates {
 export default class WalletProvider extends React.Component<{}, WalletProviderStates> {
     loadLedger = async () => {
         const wallet = new LedgerWallet()
-        await wallet.loadWallet()
+        await wallet.loadWallet(this.state.networkIndex)
         const accounts: any[] = await wallet.getAccounts()
         this.setState({
+            isLogged: true,
             wallet: 'ledger',
+            api: wallet.api,
             sign: wallet.sign,
             getAccounts: wallet.getAccounts,
             activeAccount: accounts[0],
