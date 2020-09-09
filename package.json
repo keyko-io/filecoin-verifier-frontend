@@ -26,6 +26,7 @@
     "@zondax/filecoin-signing-tools": "^0.7.1",
     "@zondax/ledger-filecoin": "^0.11.1",
     "bluebird": "^3.7.2",
+    "copy-text-to-clipboard": "^2.2.0",
     "node-sass": "^4.14.1",
     "react": "^16.13.1",
     "react-blockies": "^1.4.1",

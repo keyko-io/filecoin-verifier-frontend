@@ -9,9 +9,10 @@ import Logo from './logo.svg';
 import { Wallet } from './context/Index'
 import { addressFilter } from './Filters'
 import WalletModal from './WalletModal'
+import copy from 'copy-text-to-clipboard'
 import './App.scss';
 // @ts-ignore
-import { Input, dispatchCustomEvent, Toggle } from "slate-react-system"
+import { Input, dispatchCustomEvent, Toggle, SVG } from "slate-react-system"
 import { config } from './config'
 import Blockies from 'react-blockies'
 
@@ -70,6 +71,11 @@ class App extends Component<{},States> {
     }})
   }
 
+  copyAddress = async (address:string) => {
+    copy(address)
+    this.context.dispatchNotification(address + ' copied to clipboard')
+  }
+
   refresh = () => {
     this.child.current.loadData();
   }
@@ -122,7 +128,9 @@ class App extends Component<{},States> {
                 </div>
                 <div className="headertitles">Account addresses</div>
                 {this.context.accounts.map((account:any, index: number)=>{
-                  return <div key={index} style={{ color: index === this.context.walletIndex ? '#003fe3' : 'inherit' }} className="accountentry" onClick={()=>this.switchAccount(index)}>{addressFilter(account)}</div>
+                  return <div key={index} style={{ color: index === this.context.walletIndex ? '#003fe3' : 'inherit' }} className="accountentry">
+                    <div onClick={()=>this.switchAccount(index)}>{addressFilter(account)} <span onClick={()=>this.copyAddress(account)}><SVG.CopyAndPaste height='15px' /></span> </div>
+                  </div>
                 })}
                 <div className="importseedphrase" onClick={()=>{this.openWallet()}}>Import seedphrase</div>
               </div>
