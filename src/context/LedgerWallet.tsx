@@ -1,8 +1,11 @@
 import { mapSeries } from 'bluebird'
 import { config } from '../config'
-const TransportWebUSB = require("@ledgerhq/hw-transport-webusb")
-const TransportU2F = require("@ledgerhq/hw-transport-u2f")
-const FilecoinApp = require("@zondax/ledger-filecoin")
+// @ts-ignore
+import TransportWebUSB from '@ledgerhq/hw-transport-webusb'
+// @ts-ignore
+import TransportU2F from "@ledgerhq/hw-transport-u2f"
+// @ts-ignore
+import FilecoinApp from "@zondax/ledger-filecoin"
 const signer = require("@zondax/filecoin-signing-tools/js")
 const VerifyAPI = require('@keyko-io/filecoin-verifier-tools/api/api')
 
@@ -26,15 +29,22 @@ export class LedgerWallet {
       try {
           transport = await TransportWebUSB.create();
       } catch (e) {
-          // no usb
+          console.log('TransportWebUSB error', e)
       }
+      /*
       try {
-          transport = await TransportU2F.create(10000);
+          transport2 = await TransportU2F.create(10000);
       } catch (e) {
-          // no U2F
+          console.log('debugging 1', e)
       }
+      */
+      // console.log('TransportU2F', transport)
       if (transport) {
-          this.ledgerApp = new FilecoinApp(transport);
+          try {
+              this.ledgerApp = new FilecoinApp(transport);
+          } catch (e) {
+              console.log('FilecoinApp error', e)
+          }
       } else {
           console.log('device not found')
       }
@@ -72,22 +82,7 @@ export class LedgerWallet {
         const signedMessage = this.handleErrors(
           await this.ledgerApp.sign(`m/44'/${this.lotusNode.code}'/1/0/${indexAccount}`, Buffer.from(serializedMessage, 'hex'))
         )
-        return JSON.stringify({
-          Message: {
-            From: signedMessage.message.from,
-            GasLimit: signedMessage.message.gaslimit,
-            GasPrice: signedMessage.message.gasprice,
-            Method: signedMessage.message.method,
-            Nonce: signedMessage.message.nonce,
-            Params: signedMessage.message.params,
-            To: signedMessage.message.to,
-            Value: signedMessage.message.value,
-          },
-          Signature: {
-            Data: signedMessage.signature.data,
-            Type: signedMessage.signature.type,
-          }
-      })
+        return signedMessage.toString('base64')
     }
 
     private handleErrors = (response:any) => {

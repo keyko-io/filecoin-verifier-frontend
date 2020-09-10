@@ -32,6 +32,7 @@ export default class WalletProvider extends React.Component<{}, WalletProviderSt
         const accounts: any[] = await wallet.getAccounts()
         this.setState({
             isLogged: true,
+            isLoading: false,
             wallet: 'ledger',
             api: wallet.api,
             sign: wallet.sign,
@@ -47,6 +48,7 @@ export default class WalletProvider extends React.Component<{}, WalletProviderSt
         const accounts: any[] = await wallet.getAccounts()
         this.setState({
             isLogged: true,
+            isLoading: false,
             wallet: 'burner',
             api: wallet.api,
             sign: wallet.sign,
@@ -122,25 +124,22 @@ export default class WalletProvider extends React.Component<{}, WalletProviderSt
                     accounts
                 })
             })
+        },
+        loadWallet: async (type:string) => {
+            this.setState({isLoading:true})
+            switch (type) {
+                case 'Ledger':
+                   this.loadLedger()
+                    break
+                case 'Burner':
+                    this.loadBurner()
+                    break
+            }
         }
     }
 
     async componentDidMount() {
-        await this.init()
-    }
 
-    init = async () => {
-        const presetWallet = localStorage.getItem('presetWallet')
-        switch (presetWallet) {
-            case 'Ledger':
-               this.loadLedger()
-                break
-            case 'Burner':
-                this.loadBurner()
-                break
-        }
-        // TODO: remove
-        this.loadBurner()
     }
 
     render() {
