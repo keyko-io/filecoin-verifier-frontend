@@ -137,6 +137,15 @@ export default class WalletProvider extends React.Component<{}, WalletProviderSt
         },
         selectNetwork: async (networkIndex: number) => {
             this.setState({ networkIndex }, async()=>{
+                switch (this.state.wallet) {
+                    case 'ledger':
+                        this.loadLedger()
+                        break
+                    case 'burner':
+                        this.loadBurner()
+                        break
+                }
+                /*
                 const wallet = new BurnerWallet()
                 await wallet.loadWallet(networkIndex)
                 const accounts: any[] = await wallet.getAccounts()
@@ -149,6 +158,7 @@ export default class WalletProvider extends React.Component<{}, WalletProviderSt
                     activeAccount: accounts[this.state.walletIndex],
                     accounts
                 })
+                */
             })
         },
         loadWallet: async (type:string) => {
