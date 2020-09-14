@@ -1,52 +1,177 @@
 import React, { Component } from 'react';
-import { Route, Switch, NavLink } from 'react-router-dom'
 import Overview from './Overview'
-import Verifiedclients from './Verifiedclients'
-import Verifiers from './Verifiers'
-import Governance from './Governance'
-import Rootkey from './Rootkey'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faCircle, faCoffee } from '@fortawesome/free-solid-svg-icons'
-import { far } from '@fortawesome/free-regular-svg-icons'
-import filecoinLogo from './filecoin-logo.png'
-import { Wallet } from './context/Index'
-import './App.scss';
-
 import { library } from '@fortawesome/fontawesome-svg-core'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { fab } from '@fortawesome/free-brands-svg-icons'
-library.add(fab, far, faCoffee, faCircle)
+import { far } from '@fortawesome/free-regular-svg-icons'
+import { fas } from '@fortawesome/free-solid-svg-icons'
+import Logo from './logo.svg';
+import { Wallet } from './context/Index'
+import { addressFilter } from './Filters'
+import WalletModal from './WalletModal'
+import copy from 'copy-text-to-clipboard'
+import './App.scss';
+// @ts-ignore
+import { Input, dispatchCustomEvent, Toggle, SVG, ButtonPrimary, LoaderSpinner } from "slate-react-system"
+import { config } from './config'
+import Blockies from 'react-blockies'
 
-class App extends Component {
+library.add(fab, far, fas)
+
+type States = {
+  networkSelect: boolean
+  accountSelect: boolean
+}
+
+class App extends Component<{},States> {
   public static contextType = Wallet
+  child: any
+
+  constructor(props: {}) {
+    super(props);
+    this.state = {
+      networkSelect: false,
+      accountSelect: false
+    }
+    this.child = React.createRef();
+}
 
   componentDidMount () {
-    console.log(this.context)
+    
+  }
+
+  openNetworkSelect = (e:any) => {
+    this.setState({
+      networkSelect: this.state.networkSelect === false ? true : false
+    })
+  }
+
+  openAccountSelect = (e:any) => {
+    this.setState({
+      accountSelect: this.state.accountSelect === false ? true : false
+    })
+  }
+
+  switchNetwork = (index:number) => {
+    this.context.selectNetwork(index)
+  }
+
+  switchAccount = (index:number) => {
+    this.context.selectAccount(index)
+  }
+
+  switchRoot = () => {
+    this.context.switchview()
+  }
+
+  openWallet = async () => {
+    dispatchCustomEvent({ name: "create-modal", detail: {
+      id: Math.random().toString(36).replace(/[^a-z]+/g, '').substr(0, 5),
+      modal: <WalletModal/>
+    }})
+  }
+
+  copyAddress = async (address:string) => {
+    copy(address)
+    this.context.dispatchNotification(address + ' copied to clipboard')
+  }
+
+  refresh = () => {
+    this.child.current.loadData();
+  }
+
+  loadLedger = async () => {
+    this.context.loadWallet('Ledger')
+  }
+
+  loadBurner = async () => {
+    this.context.loadWallet('Burner')
   }
 
   render() {
     return (
       <div className="App">
-        <div className="sidebar">
-          <div><img src={filecoinLogo} alt="Filecoin"/></div>
-          <NavLink activeClassName="active" exact to={'/'}><FontAwesomeIcon icon={["far", "circle"]}/>Overview</NavLink>
-          <NavLink activeClassName="active" to={'/verifiedclients'}><FontAwesomeIcon icon={["far", "circle"]} />Verified clients</NavLink>
-          <NavLink activeClassName="active" to={'/verifiers'}><FontAwesomeIcon icon={["far", "circle"]} />Verifiers</NavLink>
-          <NavLink activeClassName="active" to={'/governance'}><FontAwesomeIcon icon={["far", "circle"]} />Governance</NavLink>
-          <NavLink activeClassName="active" to={'/rootkey'}><FontAwesomeIcon icon={["far", "circle"]} />Rootkey</NavLink>
+        <div className="header">
+          <div><img src={Logo} alt="Filecoin"/></div>
+          <div className="networkselect" onClick={this.openNetworkSelect}>
+            {this.state.networkSelect?
+              <div className="networkselectholder">
+                <div className="headertitles">Network Select</div>
+                {config.lotusNodes.map((node:any, index:number)=>{
+                  return <div key={index} style={{ color: index === this.context.networkIndex ? '#003fe3' : 'inherit' }} className="networkentry" onClick={()=>this.switchNetwork(index)}>{node.name}</div>
+                })}
+              </div>
+            : null}
+            <div className="headertitles">Network selected</div>
+            <div className="addressholder">{config.lotusNodes[this.context.networkIndex].name}</div>
+          </div>
+          <div className="datacap">
+            <div className="headertitles">Datacap Amount</div>
+            <div><FontAwesomeIcon icon={["far", "save"]}/> 50 TiB</div>
+          </div>
+          <div className="search">
+            <Input
+              name="search"
+              placeholder="Search"
+            />
+            <FontAwesomeIcon icon={["fas", "search"]}/>
+          </div>
+          <div className="refresh" onClick={() => this.refresh()}>
+            <FontAwesomeIcon icon={["fas", "redo"]} flip="vertical" transform={{ rotate: 135 }}/>
+          </div>
+          <div className="notification"><FontAwesomeIcon icon={["far", "bell"]}/></div>
+          <div className="accountholder" onClick={this.openAccountSelect}>
+            {this.state.accountSelect?
+              <div className="accountselectholder">
+                <div className="headertitles">Account Type</div>
+                <div>
+                  <div>{this.context.viewroot ? 'Rootkey Holder' : 'Approved Verifier'}</div>
+                  <div className="viewswitch">
+                  <Toggle
+                    active={this.context.viewroot}
+                    name="accountview"
+                    onChange={this.switchRoot}
+                  />
+                  </div>
+                </div>
+                <div className="headertitles">Account addresses</div>
+                {this.context.accounts.map((account:any, index: number)=>{
+                  return <div key={index} style={{ color: index === this.context.walletIndex ? '#003fe3' : 'inherit' }} className="accountentry">
+                    <div onClick={()=>this.switchAccount(index)}>{addressFilter(account)} <span onClick={()=>this.copyAddress(account)}><SVG.CopyAndPaste height='15px' /></span> </div>
+                  </div>
+                })}
+                { this.context.wallet !== 'ledger' ?
+                  <div className="importseedphrase" onClick={()=>{this.openWallet()}}>Import seedphrase</div>
+                  : null
+                }
+              </div>
+            : null}
+            <div className="headertitles">{this.context.viewroot ? 'Rootkey Holder ID' : 'Approved Verifier ID'}</div>
+            <div>{addressFilter(this.context.activeAccount)}</div>
+          </div>
+          <div className="wallet">
+            <div className="WalletMenu">
+              <Blockies
+                seed={this.context.activeAccount}
+                size={10}
+                scale={4}
+                color="#dfe"
+                bgColor="#ffe"
+                spotColor="#abc"
+              />
+            </div>
+          </div>
         </div>
-        <div className="main">
-          { this.context.isLogged === false ? (
-              <div>Loading</div>
-          ) : (
-            <Switch>
-              <Route component={Overview} path="/" exact/>
-              <Route component={Verifiedclients} path="/verifiedclients" />
-              <Route component={Verifiers} path="/verifiers" />
-              <Route component={Governance} path="/governance" />
-              <Route component={Rootkey} path="/rootkey" />
-            </Switch>
-          )}
-        </div>
+        { this.context.isLoading === true ?
+          <div className="walletpicker"><LoaderSpinner /></div>
+        : this.context.isLogged === false ?
+            <div className="walletpicker">
+              <ButtonPrimary onClick={()=>this.loadBurner()}>Load Browser wallet</ButtonPrimary>
+              <ButtonPrimary onClick={()=>this.loadLedger()}>Load Ledger wallet</ButtonPrimary>
+            </div>
+         :
+          <Overview ref={this.child}/>
+        }
       </div>
     );
   }

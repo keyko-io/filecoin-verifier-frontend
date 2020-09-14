@@ -4,7 +4,6 @@ import './index.scss';
 import App from './App';
 import WalletProvider from './context/WalletProvider'
 import { BrowserRouter } from 'react-router-dom'
-import WalletMenu from './WalletMenu'
 // @ts-ignore
 import { GlobalNotification, GlobalModal } from "slate-react-system";
 import * as serviceWorker from './serviceWorker';
@@ -14,7 +13,6 @@ ReactDOM.render(
     <WalletProvider>
       <BrowserRouter>
         <App />
-        <WalletMenu />
       </BrowserRouter>
       <GlobalNotification style={{ bottom: 0, right: 0 }} />
       <GlobalModal />

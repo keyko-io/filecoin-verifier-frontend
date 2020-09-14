@@ -1,8 +1,4 @@
 .App {
-  max-width: 1280px !important;
-  position: relative;
-  margin-left: auto;
-  margin-right: auto;
   height: 100%;
 
   h1 {
@@ -18,16 +14,74 @@
     margin-bottom: 18px;
   }
 
-  .sidebar {
-    position: fixed;
+  .header {
     display: flex;
-    flex-direction: column;
-    left: inherit;
+    justify-content: space-between;
     border-right: none;
-    width: 200px;
     background-color: #fff;
-    border-right: 1px solid #e5e5e5;
-    height: 100%;
+    height: 73px;
+
+    .WalletMenu {
+      border-radius: 20px;
+      overflow: hidden;
+      cursor: pointer;
+      height: 40px;
+      width: 40px;
+      margin-right: 40px;
+      margin-top: 16px;
+    }
+
+    .accountholder {
+      padding-top: 19px;
+      cursor: pointer;
+      position: relative;
+    }
+
+    .networkselect {
+      padding-top: 19px;
+      cursor: pointer;
+      position: relative;
+    }
+
+    .datacap {
+      padding-top: 19px;
+      cursor: pointer;
+    }
+
+    .refresh {
+      padding-top: 27px;
+      cursor: pointer;
+    }
+
+    .headertitles {
+      font-weight: bold;
+      font-size: 12px;
+      padding-bottom: 7px;
+    }
+
+    .notification {
+      padding-top: 27px;
+      cursor: pointer;
+    }
+
+    .search {
+      position: relative;
+      svg {
+        position: absolute;
+        top: 30px;
+        left: 20px;
+      }
+      input {
+        margin-top: 16px;
+        box-shadow: none;
+        border: 1px solid #C7C7C7;
+        width: 300px;
+        padding-left: 48px;
+      }
+      input::placeholder{
+        color: #656565;
+      }
+    }
 
     a, a:focus, a:visited, a:link, a:hover, a:target {
       padding: 8px 20px;
@@ -44,21 +98,158 @@
     a.active {
       color: #003fe3;
     }
+  }
 
-    img {
-      width: 180px;
-      padding-left: 17px;
-      padding-top: 15px;
-      padding-bottom: 15px;
+  .walletpicker {
+    width: 100%;
+    height: 200px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .networkselectholder {
+    width: 250px;
+    position: absolute;
+    padding: 24px 16px;
+    top: 70px;
+    left: 0px;
+    border: 1px solid #C7C7C7;
+    border-radius: 8px;
+    background-color: #fff;
+    z-index: 1;
+
+    .networkentry {
+      padding-top: 10px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+  }
+
+  .accountselectholder {
+    width: 250px;
+    position: absolute;
+    padding: 24px 16px;
+    top: 70px;
+    left: 0px;
+    border: 1px solid #C7C7C7;
+    border-radius: 8px;
+    background-color: #fff;
+    z-index: 1;
+
+    .viewswitch {
+      padding: 10px;
+    }
+
+    .accountentry {
+      padding-top: 10px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      font-family: monospace;
+    }
+
+    .importseedphrase {
+      padding-top: 20px;
+      font-weight: bold;
+    }
+  }
+
+  .page {
+    .imageholder {
+      height: 200px;
+      background: url(/bg_image.png);
+      background-size: cover;
+      background-repeat: no-repeat;
+    }
+    .info {
+      background: linear-gradient(180deg, #0090FF 0%, #39C1CB 99.99%, rgba(0, 144, 255, 0) 100%);
+      position: relative;
+      height: 158px;
+
+      .textinfo {
+        position: absolute;
+        left: 0; 
+        right: 0; 
+        margin-left: auto; 
+        margin-right: auto; 
+        top: -50px;
+        max-width: 1280px;
+        color: #fff;
+        background-color: #0090FF;
+
+        .textinfotext {
+          padding: 15px 80px;
+        }
+
+        .textinfodata {
+          display: flex;
+          align-content: stretch;
+
+          .textinfodatablock {
+            text-align: center;
+            flex-grow: 1;
+            border: 1px solid #0090FF;
+            background-color: #fff;
+            color: #000;
+
+            .data {
+              font-size: 30px;
+              padding: 15px 20px;
+            }
+
+            .text {
+              padding-bottom: 20px;
+            }
+          }
+        }
+
+        h2 {
+          padding-top: 0px;
+          padding-bottom: 15px;
+        }
+      }
     }
   }
 
   .main {
-    display: block;
-    margin-left: 200px;
+    max-width: 1280px;
+    margin:auto;
     min-height: 100%;
-    padding: 20px;
-    background-color: rgb(247, 247, 247);
+    margin-top: 20px;
+
+    .tabsholder {
+      display: flex;
+      justify-content: space-between;
+
+      .tabs {
+        display: flex;
+        
+        >div {
+          padding: 10px;
+          margin-right: 10px;
+          border-bottom: 1px solid #ccc;
+          cursor: pointer;
+        }
+        >div.selected {
+          border-bottom: 1px solid #0090FF;
+          color: #0090FF;
+        }
+      }
+
+      .tabssadd {
+
+      }
+    }
+
+    .nodata {
+      height: 70px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      border-bottom: 1px solid #e5e5e5;
+    }
 
     form {
       padding-bottom: 20px;
@@ -76,23 +267,15 @@
       }
     }
 
+    button {
+      background-color: #0090FF;
+    }
+
     button>div {
       height: 15px;
       width: 15px;
     }
   }
-}
-
-.WalletMenu {
-  position: fixed;
-  top: 10px;
-  right: 10px;
-  border-radius: 20px;
-  overflow: hidden;
-  border: 1px solid #e5e5e5;
-  cursor: pointer;
-  height: 40px;
-  width: 40px;
 }
 
 .accountModal {
@@ -105,8 +288,13 @@
   overflow: "scroll";
   padding: 10px;
 
-  .accountsHolder {
+  .accountsholder {
     padding: 20px 0px;
+
+    .viewswitch {
+      padding: 10px;
+      margin: 10px;
+    }
   }
 
   .account {
@@ -119,10 +307,39 @@
   }
 }
 
-.pendingApprove table {
+.addmodal {
+  display: "flex";
+  flex-direction: "column";
+  align-items: "center";
+  text-align: "center";
+  width: "300px";
+  height: "300px";
+  overflow: "scroll";
+  padding: 10px;
+
+  .inputholder {
+    padding-top: 20px;
+  }
+
+  .datacapholder {
+    padding-top: 20px;
+    padding-bottom: 20px;
+  }
+}
+
+.main table {
+  margin-top: 20px;
   font-size: 12px;
   border-collapse: collapse;
   width: 100%;
+
+  thead {
+    font-weight: bold;
+    
+    tr {
+      border-bottom: 1px solid #000;
+    }
+  }
 
   tr {
     border-bottom: 1px solid #e5e5e5;
@@ -134,6 +351,6 @@
   }
 
   tr.selected {
-    background-color: #ccc;
+    background-color: #e5e5e5;
   }
 }
