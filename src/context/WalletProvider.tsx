@@ -145,20 +145,6 @@ export default class WalletProvider extends React.Component<{}, WalletProviderSt
                         this.loadBurner()
                         break
                 }
-                /*
-                const wallet = new BurnerWallet()
-                await wallet.loadWallet(networkIndex)
-                const accounts: any[] = await wallet.getAccounts()
-                this.setState({
-                    isLogged: true,
-                    wallet: 'burner',
-                    api: wallet.api,
-                    sign: wallet.sign,
-                    getAccounts: wallet.getAccounts,
-                    activeAccount: accounts[this.state.walletIndex],
-                    accounts
-                })
-                */
             })
         },
         loadWallet: async (type:string) => {

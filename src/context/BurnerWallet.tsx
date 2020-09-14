@@ -17,8 +17,8 @@ export class BurnerWallet {
         this.api= new VerifyAPI(VerifyAPI.browserProvider(this.lotusNode.url, {
             token: async () => {
                 return this.lotusNode.token
-            }     
-        }),  {sign: this.sign, getAccounts: this.getAccounts})
+            }
+        }), {sign: this.sign, getAccounts: this.getAccounts})
     }
 
     public importSeed = async(seedphrase: string) => {

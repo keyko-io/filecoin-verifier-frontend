@@ -22,8 +22,8 @@ export class LedgerWallet {
       this.api= new VerifyAPI(VerifyAPI.browserProvider(this.lotusNode.url, {
         token: async () => {
             return this.lotusNode.token
-        }     
-      }))
+        }
+      }), {sign: this.sign, getAccounts: this.getAccounts})
       let transport
       try {
           transport = await TransportWebUSB.create();
