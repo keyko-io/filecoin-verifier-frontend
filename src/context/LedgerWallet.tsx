@@ -4,8 +4,6 @@ import { config } from '../config'
 // @ts-ignore
 import TransportWebUSB from '@ledgerhq/hw-transport-webusb'
 // @ts-ignore
-import TransportU2F from "@ledgerhq/hw-transport-u2f"
-// @ts-ignore
 import FilecoinApp from "@zondax/ledger-filecoin"
 const signer = require("@zondax/filecoin-signing-tools")
 const VerifyAPI = require('@keyko-io/filecoin-verifier-tools/api/api')
@@ -32,14 +30,6 @@ export class LedgerWallet {
       } catch (e) {
           console.log('TransportWebUSB error', e)
       }
-      /*
-      try {
-          transport2 = await TransportU2F.create(10000);
-      } catch (e) {
-          console.log('debugging 1', e)
-      }
-      */
-      // console.log('TransportU2F', transport)
       if (transport) {
           try {
               this.ledgerApp = new FilecoinApp(transport);

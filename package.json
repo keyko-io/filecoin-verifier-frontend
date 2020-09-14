@@ -13,7 +13,6 @@
     "@fortawesome/free-solid-svg-icons": "^5.14.0",
     "@fortawesome/react-fontawesome": "^0.1.11",
     "@keyko-io/filecoin-verifier-tools": "./deps/filecoin-verifier-tools",
-    "@ledgerhq/hw-transport-u2f": "^5.22.0",
     "@ledgerhq/hw-transport-webusb": "^5.23.0",
     "@openworklabs/filecoin-wallet-provider": "^1.0.0-beta.2",
     "@testing-library/jest-dom": "^4.2.4",
