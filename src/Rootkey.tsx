@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Wallet } from './context/Index'
 import { config } from './config'
 // @ts-ignore
-import { H1, Input, ButtonPrimary, ButtonSecondary, LoaderSpinner, SelectMenu, Table } from "slate-react-system";
+import { H1, Input, ButtonPrimary, ButtonSecondary, LoaderSpinner, SelectMenu } from "slate-react-system";
 
 type States = {
     verifierAccountID: string
@@ -50,8 +50,11 @@ export default class Rootkey  extends Component<{},States> {
         let pendingTxs = await this.context.api.pendingRootTransactions()
         let transactions: any[] = []
         for(let txs in pendingTxs){
+            if (!pendingTxs[txs].parsed || pendingTxs[txs].parsed.name !== 'addVerifier') {
+                continue
+            }
             transactions.push({
-                id: txs,
+                id: pendingTxs[txs].id,
                 type: pendingTxs[txs].parsed.params.cap.toString() === '0' ? 'Revoke' : 'Add',
                 verifier: pendingTxs[txs].parsed.params.verifier,
                 cap: pendingTxs[txs].parsed.params.cap.toString(),

@@ -1,4 +1,5 @@
 import { mapSeries } from 'bluebird'
+
 import { config } from '../config'
 // @ts-ignore
 import TransportWebUSB from '@ledgerhq/hw-transport-webusb'
@@ -6,7 +7,7 @@ import TransportWebUSB from '@ledgerhq/hw-transport-webusb'
 import TransportU2F from "@ledgerhq/hw-transport-u2f"
 // @ts-ignore
 import FilecoinApp from "@zondax/ledger-filecoin"
-const signer = require("@zondax/filecoin-signing-tools/js")
+const signer = require("@zondax/filecoin-signing-tools")
 const VerifyAPI = require('@keyko-io/filecoin-verifier-tools/api/api')
 
 export class LedgerWallet {

@@ -16,7 +16,7 @@ export default class Verifiedclients extends Component<{},States> {
     public static contextType = Wallet
 
     columns = [
-        { key: "verified", name: "Verifier" },
+        { key: "verified", name: "Verified client" },
         { key: "datacap", name: "Datacap" }
     ]
 
@@ -75,7 +75,7 @@ export default class Verifiedclients extends Component<{},States> {
                 <div>
                     <form>
                         <Input
-                            description="Verifier address"
+                            description="Verified client address"
                             name="address"
                             value={this.state.address}
                             placeholder="xxxxxx"
@@ -84,7 +84,7 @@ export default class Verifiedclients extends Component<{},States> {
                         <div className="datacapholder">
                             <div className="datacap">
                                 <Input
-                                    description="Verifier datacap"
+                                    description="Verified client datacap"
                                     name="datacap"
                                     value={this.state.datacap}
                                     placeholder="1000000000000"

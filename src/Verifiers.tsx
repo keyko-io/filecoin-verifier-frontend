@@ -21,6 +21,7 @@ export default class Verifiers extends Component {
 
     getList = async () => {
         const verifiers = await this.context.api.listVerifiers()
+        console.log(verifiers)
         this.setState({verifiers})
     }
 

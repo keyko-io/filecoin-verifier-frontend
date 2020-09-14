@@ -1,6 +1,6 @@
 import { config } from '../config'
 
-const signer = require("@zondax/filecoin-signing-tools/js")
+const signer = require("@zondax/filecoin-signing-tools")
 const VerifyAPI = require('@keyko-io/filecoin-verifier-tools/api/api')
 
 export class BurnerWallet {
@@ -43,8 +43,8 @@ export class BurnerWallet {
     }
 
     public sign = async (filecoinMessage:any, indexAccount:number) => {
-        const private_hexstring = signer.keyDerive(this.mnemonic, `m/44'/${this.lotusNode.code}'/0/0/${indexAccount}`, '').private_hexstring
-        const signedMessage = signer.transactionSign(
+        const private_hexstring = signer.keyDerive(this.mnemonic, `m/44'/${this.lotusNode.code}'/1/0/${indexAccount}`, '').private_hexstring
+        return signer.transactionSignLotus(
           filecoinMessage,
           private_hexstring
         )
