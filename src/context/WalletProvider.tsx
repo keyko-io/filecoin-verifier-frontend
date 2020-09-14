@@ -27,16 +27,41 @@ interface WalletProviderStates {
 
 export default class WalletProvider extends React.Component<{}, WalletProviderStates> {
     loadLedger = async () => {
-        const wallet = new LedgerWallet()
-        await wallet.loadWallet()
-        const accounts: any[] = await wallet.getAccounts()
-        this.setState({
-            wallet: 'ledger',
-            sign: wallet.sign,
-            getAccounts: wallet.getAccounts,
-            activeAccount: accounts[0],
-            accounts
-        })
+        try {
+            const wallet = new LedgerWallet()
+            await wallet.loadWallet(this.state.networkIndex)
+            const accounts: any[] = await wallet.getAccounts()
+            this.setState({
+                isLogged: true,
+                isLoading: false,
+                wallet: 'ledger',
+                api: wallet.api,
+                sign: async (param1: any, param2: any) => {
+                    try {
+                        const ret = await wallet.sign(param1, param2)
+                        return ret
+                    } catch (e) {
+                        this.state.dispatchNotification(e.toString())
+                    }
+                },
+                getAccounts: async () => {
+                    try {
+                        const accounts = await wallet.getAccounts()
+                        return accounts
+                    } catch (e) {
+                        this.state.dispatchNotification(e.toString())
+                    }
+                },
+                activeAccount: accounts[0],
+                accounts
+            })
+        } catch (e) {
+            this.setState({
+                isLogged: false,
+                isLoading: false
+            })
+            this.state.dispatchNotification('Ledger ' + e.toString())
+        }
     }
 
     loadBurner = async () => {
@@ -45,12 +70,12 @@ export default class WalletProvider extends React.Component<{}, WalletProviderSt
         const accounts: any[] = await wallet.getAccounts()
         this.setState({
             isLogged: true,
+            isLoading: false,
             wallet: 'burner',
             api: wallet.api,
             sign: wallet.sign,
             getAccounts: wallet.getAccounts,
             activeAccount: accounts[0],
-            importSeed: wallet.importSeed,
             accounts
         })
     }
@@ -71,7 +96,21 @@ export default class WalletProvider extends React.Component<{}, WalletProviderSt
         sign: async () => {},
         getAccounts: async () => {},
         walletIndex: 0,
-        importSeed: async (seedphrase: string) => {},
+        importSeed: async (seedphrase: string) => {
+            const wallet = new BurnerWallet()
+            await wallet.loadWallet(this.state.networkIndex)
+            await wallet.importSeed(seedphrase)
+            const accounts: any[] = await wallet.getAccounts()
+            this.setState({
+                isLogged: true,
+                wallet: 'burner',
+                api: wallet.api,
+                sign: wallet.sign,
+                getAccounts: wallet.getAccounts,
+                activeAccount: accounts[this.state.walletIndex],
+                accounts
+            })
+        },
         networkIndex: 0,
         activeAccount: '',
         accounts: [],
@@ -86,14 +125,27 @@ export default class WalletProvider extends React.Component<{}, WalletProviderSt
             }});
         },
         selectAccount: async (index: number) => {
-            const accounts: any = await this.state.getAccounts()
-            this.setState({
-                walletIndex: index,
-                activeAccount: accounts[index]
-            })
+            try {
+                const accounts: any = await this.state.getAccounts()
+                this.setState({
+                    walletIndex: index,
+                    activeAccount: accounts[index]
+                })
+            } catch (e) {
+                // console.log('select account', e)
+            }
         },
         selectNetwork: async (networkIndex: number) => {
             this.setState({ networkIndex }, async()=>{
+                switch (this.state.wallet) {
+                    case 'ledger':
+                        this.loadLedger()
+                        break
+                    case 'burner':
+                        this.loadBurner()
+                        break
+                }
+                /*
                 const wallet = new BurnerWallet()
                 await wallet.loadWallet(networkIndex)
                 const accounts: any[] = await wallet.getAccounts()
@@ -104,29 +156,26 @@ export default class WalletProvider extends React.Component<{}, WalletProviderSt
                     sign: wallet.sign,
                     getAccounts: wallet.getAccounts,
                     activeAccount: accounts[this.state.walletIndex],
-                    importSeed: wallet.importSeed,
                     accounts
                 })
+                */
             })
+        },
+        loadWallet: async (type:string) => {
+            this.setState({isLoading:true})
+            switch (type) {
+                case 'Ledger':
+                   this.loadLedger()
+                    break
+                case 'Burner':
+                    this.loadBurner()
+                    break
+            }
         }
     }
 
     async componentDidMount() {
-        await this.init()
-    }
 
-    init = async () => {
-        const presetWallet = localStorage.getItem('presetWallet')
-        switch (presetWallet) {
-            case 'Ledger':
-               this.loadLedger()
-                break
-            case 'Burner':
-                this.loadBurner()
-                break
-        }
-        // TODO: remove
-        this.loadBurner()
     }
 
     render() {

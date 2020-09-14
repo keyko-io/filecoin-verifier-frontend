@@ -153,7 +153,6 @@ export default class Overview extends Component<{}, OverviewStates> {
                                         <tr>
                                             <td>Verifier</td>
                                             <td>Datacap</td>
-                                            <td>Granted By</td>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -161,7 +160,6 @@ export default class Overview extends Component<{}, OverviewStates> {
                                             <tr key={index}>
                                                 <td>{transaction.verifier}</td>
                                                 <td>{transaction.datacap}</td>
-                                                <td>{transaction.grantedby}</td>
                                             </tr>
                                         )}
                                     </tbody>
@@ -214,7 +212,7 @@ export default class Overview extends Component<{}, OverviewStates> {
                                 <table>
                                     <thead>
                                         <tr>
-                                            <td>Verifier</td>
+                                            <td>Client</td>
                                             <td>Datacap</td>
                                         </tr>
                                     </thead>

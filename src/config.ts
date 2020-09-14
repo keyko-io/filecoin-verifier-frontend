@@ -1,6 +1,16 @@
 export const config = {
     apiUri: process.env.REACT_APP_API_URI || 'http://localhost:4000',
     lotusNodes: [{
+        name: 'Remote Testnet',
+        code: 1,
+        url: 'wss://beta-verify.filecoin.io/api/rpc/v0',
+        token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBbGxvdyI6WyJyZWFkIiwid3JpdGUiXX0.niP0Kugzl3DJiM2sHY7gDRcWBSmr3B1AyVie2Coc67E'
+    },{
+        name: 'Remote Net',
+        code: 461,
+        url: 'wss://beta-verify.filecoin.io/api/rpc/v0',
+        token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBbGxvdyI6WyJyZWFkIiwid3JpdGUiXX0.niP0Kugzl3DJiM2sHY7gDRcWBSmr3B1AyVie2Coc67E'
+    },{
         name: 'Localhost Testnet',
         code: 1,
         url: 'ws://localhost:1234/rpc/v0',

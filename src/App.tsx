@@ -9,9 +9,10 @@ import Logo from './logo.svg';
 import { Wallet } from './context/Index'
 import { addressFilter } from './Filters'
 import WalletModal from './WalletModal'
+import copy from 'copy-text-to-clipboard'
 import './App.scss';
 // @ts-ignore
-import { Input, dispatchCustomEvent, Toggle } from "slate-react-system"
+import { Input, dispatchCustomEvent, Toggle, SVG, ButtonPrimary, LoaderSpinner } from "slate-react-system"
 import { config } from './config'
 import Blockies from 'react-blockies'
 
@@ -70,8 +71,21 @@ class App extends Component<{},States> {
     }})
   }
 
+  copyAddress = async (address:string) => {
+    copy(address)
+    this.context.dispatchNotification(address + ' copied to clipboard')
+  }
+
   refresh = () => {
     this.child.current.loadData();
+  }
+
+  loadLedger = async () => {
+    this.context.loadWallet('Ledger')
+  }
+
+  loadBurner = async () => {
+    this.context.loadWallet('Burner')
   }
 
   render() {
@@ -122,9 +136,14 @@ class App extends Component<{},States> {
                 </div>
                 <div className="headertitles">Account addresses</div>
                 {this.context.accounts.map((account:any, index: number)=>{
-                  return <div key={index} style={{ color: index === this.context.walletIndex ? '#003fe3' : 'inherit' }} className="accountentry" onClick={()=>this.switchAccount(index)}>{addressFilter(account)}</div>
+                  return <div key={index} style={{ color: index === this.context.walletIndex ? '#003fe3' : 'inherit' }} className="accountentry">
+                    <div onClick={()=>this.switchAccount(index)}>{addressFilter(account)} <span onClick={()=>this.copyAddress(account)}><SVG.CopyAndPaste height='15px' /></span> </div>
+                  </div>
                 })}
-                <div className="importseedphrase" onClick={()=>{this.openWallet()}}>Import seedphrase</div>
+                { this.context.wallet !== 'ledger' ?
+                  <div className="importseedphrase" onClick={()=>{this.openWallet()}}>Import seedphrase</div>
+                  : null
+                }
               </div>
             : null}
             <div className="headertitles">{this.context.viewroot ? 'Rootkey Holder ID' : 'Approved Verifier ID'}</div>
@@ -143,11 +162,16 @@ class App extends Component<{},States> {
             </div>
           </div>
         </div>
-        { this.context.isLogged === false ? (
-            <div>Loading</div>
-        ) : (
+        { this.context.isLoading === true ?
+          <div className="walletpicker"><LoaderSpinner /></div>
+        : this.context.isLogged === false ?
+            <div className="walletpicker">
+              <ButtonPrimary onClick={()=>this.loadBurner()}>Load Browser wallet</ButtonPrimary>
+              <ButtonPrimary onClick={()=>this.loadLedger()}>Load Ledger wallet</ButtonPrimary>
+            </div>
+         :
           <Overview ref={this.child}/>
-        )}
+        }
       </div>
     );
   }
