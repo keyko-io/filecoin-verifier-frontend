@@ -36,7 +36,7 @@ export class BurnerWallet {
         const accounts = []
         for (let i = nStart; i < nEnd; i += 1) {
             accounts.push(
-                signer.keyDerive(this.mnemonic, `m/44'/${this.lotusNode.code}'/0/0/${i}`, '').address
+                signer.keyDerive(this.mnemonic, `m/44'/${this.lotusNode.code}'/1/0/${i}`, '').address
             )
         }
         return accounts
