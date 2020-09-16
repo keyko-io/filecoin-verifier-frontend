@@ -4,6 +4,7 @@ import AddClientModal from './AddClientModal';
 import AddVerifierModal from './AddVerifierModal';
 // @ts-ignore
 import { ButtonPrimary, dispatchCustomEvent } from "slate-react-system";
+import { datacapFilter } from "./Filters"
 
 type OverviewStates = {
     tabs: string
@@ -159,7 +160,7 @@ export default class Overview extends Component<{}, OverviewStates> {
                                         {this.state.verifiers.map((transaction:any, index:any) => 
                                             <tr key={index}>
                                                 <td>{transaction.verifier}</td>
-                                                <td>{transaction.datacap}</td>
+                                                <td>{datacapFilter(transaction.datacap)}</td>
                                             </tr>
                                         )}
                                     </tbody>
@@ -188,7 +189,7 @@ export default class Overview extends Component<{}, OverviewStates> {
                                             >
                                                 <td>{transaction.type}</td>
                                                 <td>{transaction.verifier}</td>
-                                                <td>{transaction.datacap}</td>
+                                                <td>{datacapFilter(transaction.datacap)}</td>
                                                 <td>{transaction.signer}</td>
                                             </tr>
                                         )}
@@ -224,7 +225,7 @@ export default class Overview extends Component<{}, OverviewStates> {
                                                 /*className={this.state.selectedTransactions.includes(transaction.id)?'selected':''}*/
                                             >
                                                 <td>{transaction.verified}</td>
-                                                <td>{transaction.datacap}</td>
+                                                <td>{datacapFilter(transaction.datacap)}</td>
                                             </tr>
                                         )}
                                     </tbody>

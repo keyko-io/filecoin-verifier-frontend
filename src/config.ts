@@ -14,12 +14,12 @@ export const config = {
         name: 'Localhost Testnet',
         code: 1,
         url: 'ws://localhost:1234/rpc/v0',
-        token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBbGxvdyI6WyJyZWFkIiwid3JpdGUiLCJzaWduIiwiYWRtaW4iXX0.X7m_35dTJ_jH9xmPXuNfulGsRn69z1tUlCo1-9JnDNU'
+        token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBbGxvdyI6WyJyZWFkIiwid3JpdGUiLCJzaWduIiwiYWRtaW4iXX0.cxL0jxELGr1DnM55jZQH-WUGKy91bE-Fk9-ER9BIaBc'
     },{
         name: 'Localhost Net',
         code: 461,
         url: 'ws://localhost:1234/rpc/v0',
-        token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBbGxvdyI6WyJyZWFkIiwid3JpdGUiLCJzaWduIiwiYWRtaW4iXX0.X7m_35dTJ_jH9xmPXuNfulGsRn69z1tUlCo1-9JnDNU'
+        token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBbGxvdyI6WyJyZWFkIiwid3JpdGUiLCJzaWduIiwiYWRtaW4iXX0.cxL0jxELGr1DnM55jZQH-WUGKy91bE-Fk9-ER9BIaBc'
     }],
     datacapExt: [
         { value: "1000", name: "KiB" },
