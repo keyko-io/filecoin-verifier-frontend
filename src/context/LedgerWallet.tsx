@@ -50,7 +50,7 @@ export class LedgerWallet {
     public getAccounts = async (nStart = 0, nEnd = 5) => {
         const paths = []
         for (let i = nStart; i < nEnd; i += 1) {
-          paths.push(`m/44'/${this.lotusNode.code}'/0/0/${i}`)
+          paths.push(`m/44'/${this.lotusNode.code}'/1/0/${i}`)
         }
         const accounts = await mapSeries(paths, async path => {
             const returnLoad = await this.ledgerApp.getAddressAndPubKey(path)
@@ -62,12 +62,40 @@ export class LedgerWallet {
 
     public sign = async (filecoinMessage:any, indexAccount:number) => {
         const serializedMessage = signer.transactionSerialize(
-          filecoinMessage.toString()
+          filecoinMessage
         )
         const signedMessage = this.handleErrors(
           await this.ledgerApp.sign(`m/44'/${this.lotusNode.code}'/1/0/${indexAccount}`, Buffer.from(serializedMessage, 'hex'))
         )
-        return signedMessage.toString('base64')
+      
+        return await this.generateSignedMessage(filecoinMessage, signedMessage)
+    }
+
+
+    private generateSignedMessage =  async (filecoinMessage:any, signedMessage:any) =>{
+
+      return JSON.stringify({
+        Message: {
+          From: filecoinMessage.from,
+          GasLimit: filecoinMessage.gaslimit,
+          GasFeeCap: filecoinMessage.gasfeecap,
+          GasPremium: filecoinMessage.gaspremium,
+          Method: filecoinMessage.method,
+          Nonce: filecoinMessage.nonce,
+          Params: Buffer.from(filecoinMessage.params, "hex").toString(
+            "base64"
+          ),
+          To: filecoinMessage.to,
+          Value: filecoinMessage.value,
+        },
+        Signature: {
+          Data: signedMessage.signature_compact.toString('base64'),
+          Type: 1
+          //Type: signedMessage.signature.type,
+        },
+      });
+
+
     }
 
     private handleErrors = (response:any) => {
