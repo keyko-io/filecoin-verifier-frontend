@@ -10,6 +10,7 @@ type OverviewStates = {
     tabs: string
     verifiers: any[]
     pendingverifiers: any[]
+    clientsamount: string
     clients: any[]
     approveLoading: boolean
     selectedTransactions: any[]
@@ -24,6 +25,7 @@ export default class Overview extends Component<{}, OverviewStates> {
         tabs: '1',
         verifiers: [] as any[],
         pendingverifiers: [] as any[],
+        clientsamount: '',
         clients: [] as any[],
     }
 
@@ -96,11 +98,15 @@ export default class Overview extends Component<{}, OverviewStates> {
                 signer: pendingTxs[txs].signers[0]
             })
         }
-        console.log(clients, verifiers, pendingverifiers)
+        let clientsamount = 0
+        for(const txs of clients){
+            clientsamount = clientsamount + Number(txs.datacap)
+        }
         this.setState({
             clients,
             verifiers,
-            pendingverifiers
+            pendingverifiers,
+            clientsamount: clientsamount.toString()
         })
     }
 
@@ -116,7 +122,7 @@ export default class Overview extends Component<{}, OverviewStates> {
                         </div>
                         <div className="textinfodata">
                             <div className="textinfodatablock">
-                                <div className="data">60 PiB</div>
+                                <div className="data">{datacapFilter(this.state.clientsamount)}</div>
                                 <div className="text">Datacap Granted</div>
                             </div>
                             <div className="textinfodatablock">
@@ -124,12 +130,12 @@ export default class Overview extends Component<{}, OverviewStates> {
                                 <div className="text">Community Members</div>
                             </div>
                             <div className="textinfodatablock">
-                                <div className="data">24</div>
+                                <div className="data">{this.state.pendingverifiers.length}</div>
                                 <div className="text">Pending verifiers</div>
                             </div>
                             <div className="textinfodatablock">
-                                <div className="data">50</div>
-                                <div className="text">Verified Verifiers</div>
+                                <div className="data">{this.state.verifiers.length}</div>
+                                <div className="text">Approved Verifiers</div>
                             </div>
                         </div>
                     </div>
