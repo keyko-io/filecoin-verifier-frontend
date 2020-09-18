@@ -126,10 +126,6 @@ export default class Overview extends Component<{}, OverviewStates> {
                                 <div className="text">Datacap Granted</div>
                             </div>
                             <div className="textinfodatablock">
-                                <div className="data">75k</div>
-                                <div className="text">Community Members</div>
-                            </div>
-                            <div className="textinfodatablock">
                                 <div className="data">{this.state.pendingverifiers.length}</div>
                                 <div className="text">Pending verifiers</div>
                             </div>

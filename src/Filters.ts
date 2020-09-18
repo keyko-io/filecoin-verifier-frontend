@@ -5,6 +5,9 @@ export function addressFilter (input: string) {
 }
 
 export function datacapFilter (input: string) {
+    if(input === ""){
+        return `0 KiB`
+    }
     const inputLength = input.length
     for(const entry of config.datacapExt){
         if(inputLength < 4){
