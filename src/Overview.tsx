@@ -8,7 +8,6 @@ import { datacapFilter } from "./Filters"
 
 type OverviewStates = {
     tabs: string
-    verifiers: any[]
     pendingverifiers: any[]
     clientsamount: string
     clients: any[]
@@ -23,7 +22,6 @@ export default class Overview extends Component<{}, OverviewStates> {
         selectedTransactions: [] as any[],
         approveLoading: false,
         tabs: '1',
-        verifiers: [] as any[],
         pendingverifiers: [] as any[],
         clientsamount: '',
         clients: [] as any[],
@@ -84,7 +82,7 @@ export default class Overview extends Component<{}, OverviewStates> {
     }
 
     loadData = async () => {
-        const verifiers = await this.context.api.listVerifiers()
+        await this.context.loadVerified() // loaded into context
         const clients = await this.context.api.listVerifiedClients()
         // pending verififers
         let pendingTxs = await this.context.api.pendingRootTransactions()
@@ -104,7 +102,6 @@ export default class Overview extends Component<{}, OverviewStates> {
         }
         this.setState({
             clients,
-            verifiers,
             pendingverifiers,
             clientsamount: clientsamount.toString()
         })
@@ -130,7 +127,7 @@ export default class Overview extends Component<{}, OverviewStates> {
                                 <div className="text">Pending verifiers</div>
                             </div>
                             <div className="textinfodatablock">
-                                <div className="data">{this.state.verifiers.length}</div>
+                                <div className="data">{this.context.verified.length}</div>
                                 <div className="text">Approved Verifiers</div>
                             </div>
                         </div>
@@ -141,7 +138,7 @@ export default class Overview extends Component<{}, OverviewStates> {
                         <div className="tabsholder">
                             <div className="tabs">
                                 <div className={this.state.tabs === "1" ? "selected" : ""} onClick={()=>{this.showPending()}}>Pending verifiers ({this.state.pendingverifiers.length})</div>
-                                <div className={this.state.tabs === "2" ? "selected" : ""} onClick={()=>{this.showApproved()}}>Approved Verifiers ({this.state.verifiers.length})</div>
+                                <div className={this.state.tabs === "2" ? "selected" : ""} onClick={()=>{this.showApproved()}}>Approved Verifiers ({this.context.verified.length})</div>
                             </div>
                             <div className="tabssadd">
                                 {this.state.tabs === "2" ? <ButtonPrimary onClick={()=>this.proposeVerifier()}>Propose verifier</ButtonPrimary> : null}
@@ -159,7 +156,7 @@ export default class Overview extends Component<{}, OverviewStates> {
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        {this.state.verifiers.map((transaction:any, index:any) => 
+                                        {this.context.verified.map((transaction:any, index:any) => 
                                             <tr key={index}>
                                                 <td>{transaction.verifier}</td>
                                                 <td>{datacapFilter(transaction.datacap)}</td>
@@ -167,7 +164,7 @@ export default class Overview extends Component<{}, OverviewStates> {
                                         )}
                                     </tbody>
                                 </table>
-                                {this.state.verifiers.length === 0 ? <div className="nodata">No verifiers yet</div> : null}
+                                {this.context.verified.length === 0 ? <div className="nodata">No verifiers yet</div> : null}
                             </div>:null
                         }
                         { this.state.tabs === "1" ?
@@ -232,7 +229,7 @@ export default class Overview extends Component<{}, OverviewStates> {
                                         )}
                                     </tbody>
                                 </table>
-                                {this.state.verifiers.length === 0 ? <div className="nodata">No verified clients yet</div> : null}
+                                {this.context.verified.length === 0 ? <div className="nodata">No verified clients yet</div> : null}
                             </div>
                     </div>
                 }

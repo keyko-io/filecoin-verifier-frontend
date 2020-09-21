@@ -20,6 +20,8 @@ interface WalletProviderStates {
     activeAccount: string
     importSeed: any
     selectNetwork: any
+    verified: any[]
+    loadVerified: any,
     balance: number
     message: string
     dispatchNotification: any
@@ -92,7 +94,7 @@ export default class WalletProvider extends React.Component<{}, WalletProviderSt
             }
         },
         wallet: '',
-        api: {},
+        api: {} as any,
         sign: async () => {},
         getAccounts: async () => {},
         walletIndex: 0,
@@ -112,6 +114,20 @@ export default class WalletProvider extends React.Component<{}, WalletProviderSt
             })
         },
         networkIndex: 0,
+        verified: [],
+        loadVerified: async () => {
+            const approvedVerifiers = await this.state.api.listVerifiers()
+            const verified = []
+            for(const verifiedAddress of approvedVerifiers){
+                const verifierAccount = await this.state.api.actorKey(verifiedAddress.verifier)
+                verified.push({
+                    verifier: verifiedAddress.verifier,
+                    verifierAccount,
+                    datacap: verifiedAddress.datacap
+                })
+            }
+            this.setState({verified})
+        },
         activeAccount: '',
         accounts: [],
         balance: 0,

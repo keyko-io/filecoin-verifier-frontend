@@ -14,12 +14,12 @@ export const config = {
         name: 'Localhost Testnet',
         code: 1,
         url: 'ws://localhost:1234/rpc/v0',
-        token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBbGxvdyI6WyJyZWFkIiwid3JpdGUiLCJzaWduIiwiYWRtaW4iXX0.owTmGdM9NgjRl7Uuy7xMMczeGuxpsGOwy38lbCG3dyY'
+        token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBbGxvdyI6WyJyZWFkIiwid3JpdGUiLCJzaWduIiwiYWRtaW4iXX0.OJlFIgYG3D23RjWWXfjdTluG6Qx2EOgwMeWQxnUQrMM'
     },{
         name: 'Localhost Net',
         code: 461,
         url: 'ws://localhost:1234/rpc/v0',
-        token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBbGxvdyI6WyJyZWFkIiwid3JpdGUiLCJzaWduIiwiYWRtaW4iXX0.owTmGdM9NgjRl7Uuy7xMMczeGuxpsGOwy38lbCG3dyY'
+        token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBbGxvdyI6WyJyZWFkIiwid3JpdGUiLCJzaWduIiwiYWRtaW4iXX0.OJlFIgYG3D23RjWWXfjdTluG6Qx2EOgwMeWQxnUQrMM'
     }],
     datacapExt: [
         { value: "1000", name: "KiB" },
