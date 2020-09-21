@@ -149,7 +149,7 @@ class App extends Component<{},States> {
                     <div onClick={()=>this.switchAccount(index)}>
                       {addressFilter(account)}
                       <span className="copyaddress" onClick={()=>this.copyAddress(account)}><SVG.CopyAndPaste height='15px' /></span>
-                      <span className="datacap">{datacapFilter(this.getVerifierAmount(account))}</span>
+                      {this.context.viewroot === false ? <span className="datacap">{datacapFilter(this.getVerifierAmount(account))}</span> : null}
                     </div>
                   </div>
                 })}
