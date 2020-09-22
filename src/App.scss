@@ -110,7 +110,7 @@
 
   .walletpicker {
     width: 100%;
-    height: 200px;
+    height: 80px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -312,6 +312,34 @@
 
   input {
     margin: 20px 0px 10px 0px;
+  }
+}
+
+.wizzardfirst {
+  display: flex;
+  
+  .wizzardElement {
+    flex-grow: 1;
+    align-items: center;
+    text-align: center;
+    border: 1px solid #ccc;
+    margin: 10px;
+    cursor: pointer;
+    padding: 10px;
+
+    .number {
+      font-size: 24px;
+      padding-bottom: 15px;
+      padding-top: 10px;
+    }
+
+    .title {
+      padding-bottom: 15px;
+    }
+
+    .description {
+      color: #666;
+    }
   }
 }
 

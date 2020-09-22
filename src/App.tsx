@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import Overview from './Overview'
+import Landing from './Landing'
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { fab } from '@fortawesome/free-brands-svg-icons'
@@ -12,7 +13,7 @@ import WalletModal from './WalletModal'
 import copy from 'copy-text-to-clipboard'
 import './App.scss';
 // @ts-ignore
-import { Input, dispatchCustomEvent, Toggle, SVG, ButtonPrimary, LoaderSpinner } from "slate-react-system"
+import { Input, dispatchCustomEvent, Toggle, SVG, LoaderSpinner } from "slate-react-system"
 import { config } from './config'
 import Blockies from 'react-blockies'
 
@@ -78,14 +79,6 @@ class App extends Component<{},States> {
 
   refresh = () => {
     this.child.current.loadData();
-  }
-
-  loadLedger = async () => {
-    this.context.loadWallet('Ledger')
-  }
-
-  loadBurner = async () => {
-    this.context.loadWallet('Burner')
   }
 
   getVerifierAmount = (account:string) => {
@@ -178,10 +171,7 @@ class App extends Component<{},States> {
         { this.context.isLoading === true ?
           <div className="walletpicker"><LoaderSpinner /></div>
         : this.context.isLogged === false ?
-            <div className="walletpicker">
-              <ButtonPrimary onClick={()=>this.loadBurner()}>Load Browser wallet</ButtonPrimary>
-              <ButtonPrimary onClick={()=>this.loadLedger()}>Load Ledger wallet</ButtonPrimary>
-            </div>
+            <Landing/>
          :
           <Overview ref={this.child}/>
         }

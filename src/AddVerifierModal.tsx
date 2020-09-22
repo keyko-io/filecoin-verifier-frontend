@@ -28,14 +28,17 @@ class AddVerifierModal extends Component<{}, States> {
 
     }
 
-
     handleSubmit = async (e:any) => {
         e.preventDefault()
         this.setState({ proposeLoading: true })
         try {
             const datacap = parseFloat(this.state.datacap)
             const fullDatacap = BigInt(datacap * parseFloat(this.state.datacapExt))
-            let messageID = await this.context.api.proposeVerifier(this.state.verifierAccountID, fullDatacap, this.context.walletIndex);
+            let verifierAccountID = this.state.verifierAccountID
+            if(verifierAccountID.length < 12){
+                verifierAccountID = await this.context.api.actorKey(verifierAccountID)
+            }
+            let messageID = await this.context.api.proposeVerifier(verifierAccountID, fullDatacap, this.context.walletIndex);
             this.setState({
                 verifierAccountID: '',
                 datacap: '1',

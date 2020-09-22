@@ -25,7 +25,7 @@ class AddClientModal extends Component<{}, States> {
     }
 
     componentDidMount () {
-        console.log('loaded addclientmodal')
+
     }
 
     handleSubmit = async (e:any) => {
@@ -34,7 +34,11 @@ class AddClientModal extends Component<{}, States> {
         try{
             const datacap = parseFloat(this.state.datacap)
             const fullDatacap = BigInt(datacap * parseFloat(this.state.datacapExt))
-            let messageID = await this.context.api.verifyClient(this.state.address, fullDatacap, this.context.walletIndex);
+            let address = this.state.address
+            if(address.length < 12){
+                address = await this.context.api.actorKey(address)
+            }
+            let messageID = await this.context.api.verifyClient(address, fullDatacap, this.context.walletIndex);
             this.setState({
                 address: '',
                 datacap: '1',
