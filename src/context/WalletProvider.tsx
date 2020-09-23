@@ -117,7 +117,7 @@ export default class WalletProvider extends React.Component<{}, WalletProviderSt
         verified: [],
         loadVerified: async () => {
             const approvedVerifiers = await this.state.api.listVerifiers()
-            const verified = []
+            let verified = []
             for(const verifiedAddress of approvedVerifiers){
                 const verifierAccount = await this.state.api.actorKey(verifiedAddress.verifier)
                 verified.push({

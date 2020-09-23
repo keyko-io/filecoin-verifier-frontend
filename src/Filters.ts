@@ -5,16 +5,16 @@ export function addressFilter (input: string) {
 }
 
 export function datacapFilter (input: string) {
-    if(input === ""){
-        return `0 KiB`
+    if(input===""){
+        return "0 B"
     }
     const inputLength = input.length
-    for(const entry of config.datacapExt){
-        if(inputLength < 4){
-            return `${input} KiB`
-        } else if (inputLength < entry.value.length) {
-            return `${input.substring(0, inputLength - entry.value.length-1)} ${entry.name}`
+    if(inputLength > config.datacapExt[config.datacapExt.length-1].value.length+3){
+        return `9999+ ${config.datacapExt[config.datacapExt.length-1].name}`
+    }
+    for(let i = config.datacapExt.length-1; i>=0; i--){
+        if(config.datacapExt[i].value.length <= inputLength){
+            return `${input.substring(0, inputLength - (config.datacapExt[i].value.length-1))} ${config.datacapExt[i].name}`
         }
     }
-    return `${input.substring(0, inputLength-"1000000000000000000000000".length-1)} YiB`
 }

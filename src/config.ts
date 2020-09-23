@@ -22,6 +22,7 @@ export const config = {
         token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBbGxvdyI6WyJyZWFkIiwid3JpdGUiLCJzaWduIiwiYWRtaW4iXX0.OJlFIgYG3D23RjWWXfjdTluG6Qx2EOgwMeWQxnUQrMM'
     }],
     datacapExt: [
+        { value: "1", name: "B" },
         { value: "1000", name: "KiB" },
         { value: "1000000", name: "MiB" },
         { value: "1000000000", name: "GiB" },
