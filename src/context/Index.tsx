@@ -13,6 +13,7 @@ export const Wallet = React.createContext({
     networkIndex: 0,
     activeAccount: '',
     accounts: [],
+    accountsActive: {},
     verified: [],
     loadVerified: async () => {},
     importSeed: async (seedphrase: string) => {},

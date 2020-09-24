@@ -138,9 +138,10 @@ class App extends Component<{},States> {
                 </div>
                 <div className="headertitles">Account addresses</div>
                 {this.context.accounts.map((account:any, index: number)=>{
-                  return <div key={index} style={{ color: index === this.context.walletIndex ? '#003fe3' : 'inherit' }} className="accountentry">
-                    <div onClick={()=>this.switchAccount(index)}>
-                      {addressFilter(account)}
+                  return <div key={index} className="accountentry">
+                    <div>
+                      <FontAwesomeIcon icon={["fas", "circle"]} style={{ color: this.context.accountsActive[account] ? '#003fe3' : '#000000' }}/>
+                      <span onClick={()=>this.switchAccount(index)} style={{ color: index === this.context.walletIndex ? '#003fe3' : 'inherit' }}>{addressFilter(account)}</span>
                       <span className="copyaddress" onClick={()=>this.copyAddress(account)}><SVG.CopyAndPaste height='15px' /></span>
                       {this.context.viewroot === false ? <span className="datacap">{datacapFilter(this.getVerifierAmount(account))}</span> : null}
                     </div>

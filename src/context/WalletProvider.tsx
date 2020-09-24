@@ -17,6 +17,7 @@ interface WalletProviderStates {
     walletIndex: number
     networkIndex: number
     accounts: any[]
+    accountsActive: any
     activeAccount: string
     importSeed: any
     selectNetwork: any
@@ -27,12 +28,37 @@ interface WalletProviderStates {
     dispatchNotification: any
 }
 
+/*
+  activeAccount = async(account: string) => {
+    const master = await this.context.api.actorKey(account)
+    if(master){
+      return true
+    }else{
+      return false
+    }
+  }
+*/
+
+async function getActiveAccounts  (api: any, accounts: any) {
+    const accountsActive: any = {};
+    for(const acc of accounts){
+        try {
+            const key = await api.actorAddress(acc)
+            accountsActive[acc] = key
+        } catch (e) {
+
+        }
+    }
+    return accountsActive
+}
+
 export default class WalletProvider extends React.Component<{}, WalletProviderStates> {
     loadLedger = async () => {
         try {
             const wallet = new LedgerWallet()
             await wallet.loadWallet(this.state.networkIndex)
             const accounts: any[] = await wallet.getAccounts()
+            const accountsActive = await getActiveAccounts(wallet.api, accounts)
             this.setState({
                 isLogged: true,
                 isLoading: false,
@@ -55,7 +81,8 @@ export default class WalletProvider extends React.Component<{}, WalletProviderSt
                     }
                 },
                 activeAccount: accounts[0],
-                accounts
+                accounts,
+                accountsActive
             })
         } catch (e) {
             this.setState({
@@ -70,6 +97,7 @@ export default class WalletProvider extends React.Component<{}, WalletProviderSt
         const wallet = new BurnerWallet()
         await wallet.loadWallet(this.state.networkIndex)
         const accounts: any[] = await wallet.getAccounts()
+        const accountsActive = await getActiveAccounts(wallet.api, accounts)
         this.setState({
             isLogged: true,
             isLoading: false,
@@ -78,7 +106,8 @@ export default class WalletProvider extends React.Component<{}, WalletProviderSt
             sign: wallet.sign,
             getAccounts: wallet.getAccounts,
             activeAccount: accounts[0],
-            accounts
+            accounts,
+            accountsActive
         })
     }
 
@@ -103,6 +132,7 @@ export default class WalletProvider extends React.Component<{}, WalletProviderSt
             await wallet.loadWallet(this.state.networkIndex)
             await wallet.importSeed(seedphrase)
             const accounts: any[] = await wallet.getAccounts()
+            const accountsActive = await getActiveAccounts(wallet.api, accounts)
             this.setState({
                 isLogged: true,
                 wallet: 'burner',
@@ -110,7 +140,8 @@ export default class WalletProvider extends React.Component<{}, WalletProviderSt
                 sign: wallet.sign,
                 getAccounts: wallet.getAccounts,
                 activeAccount: accounts[this.state.walletIndex],
-                accounts
+                accounts,
+                accountsActive
             })
         },
         networkIndex: 0,
@@ -130,6 +161,7 @@ export default class WalletProvider extends React.Component<{}, WalletProviderSt
         },
         activeAccount: '',
         accounts: [],
+        accountsActive: {},
         balance: 0,
         message: '',
         dispatchNotification: (message: string) => {
