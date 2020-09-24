@@ -22,7 +22,7 @@
     "@types/node": "^12.12.51",
     "@types/react": "^16.9.43",
     "@types/react-dom": "^16.9.8",
-    "@zondax/filecoin-signing-tools": "./deps/filecoin-signing-tools/signer-npm/js",
+    "@zondax/filecoin-signing-tools": "0.7.1",
     "@zondax/ledger-filecoin": "^0.11.1",
     "bluebird": "^3.7.2",
     "copy-text-to-clipboard": "^2.2.0",
