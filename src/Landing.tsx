@@ -32,7 +32,7 @@ class App extends Component<{},States> {
       <div>
         <div className="walletpicker">
           <ButtonPrimary onClick={()=>this.context.loadWallet('Burner')}>Load Browser wallet</ButtonPrimary>
-          <ButtonPrimary onClick={()=>this.context.loadWallet('Ledger')()}>Load Ledger wallet</ButtonPrimary>
+          <ButtonPrimary onClick={()=>this.context.loadWallet('Ledger')}>Load Ledger wallet</ButtonPrimary>
         </div>
         {this.state.page === '' ?
           <div className="wizzardfirst">
