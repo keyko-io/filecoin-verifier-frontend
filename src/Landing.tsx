@@ -40,7 +40,7 @@ class App extends Component<{},States> {
       <div>
         <div className="walletpicker">
           <ButtonPrimary onClick={()=>this.context.loadWallet('Burner')}>Load Browser wallet</ButtonPrimary>
-          <ButtonPrimary onClick={()=>this.context.loadWallet('Ledger')()}>Load Ledger wallet</ButtonPrimary>
+          <ButtonPrimary onClick={()=>this.context.loadWallet('Ledger')}>Load Ledger wallet</ButtonPrimary>
           <LoginGithub
             clientId="8e922e2845a6083ab65c"
             scope="repo"
