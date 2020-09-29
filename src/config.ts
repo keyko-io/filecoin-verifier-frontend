@@ -4,12 +4,12 @@ export const config = {
         name: 'Remote Testnet',
         code: 1,
         url: 'wss://beta-verify.filecoin.io/api/rpc/v0',
-        token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBbGxvdyI6WyJyZWFkIl19.t_lwHOxCZo56PRPv1MFj4vlthO-WtDFYE7liqweJrgY'
+        token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBbGxvdyI6WyJyZWFkIiwid3JpdGUiXX0.fv8KUj6-p2OwGKLDriXHrR5wj1ZdJQhfPyEaHt55mAk'
     },{
         name: 'Remote Net',
         code: 461,
         url: 'wss://beta-verify.filecoin.io/api/rpc/v0',
-        token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBbGxvdyI6WyJyZWFkIl19.t_lwHOxCZo56PRPv1MFj4vlthO-WtDFYE7liqweJrgY'
+        token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBbGxvdyI6WyJyZWFkIiwid3JpdGUiXX0.fv8KUj6-p2OwGKLDriXHrR5wj1ZdJQhfPyEaHt55mAk'
     },{
         name: 'Localhost Testnet',
         code: 1,

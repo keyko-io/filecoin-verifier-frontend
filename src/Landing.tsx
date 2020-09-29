@@ -5,7 +5,15 @@ import { far } from '@fortawesome/free-regular-svg-icons'
 import { fas } from '@fortawesome/free-solid-svg-icons'
 import { Wallet } from './context/Index'
 // @ts-ignore
+import LoginGithub from 'react-login-github';
+// @ts-ignore
 import { Input, dispatchCustomEvent, Toggle, SVG, ButtonPrimary, LoaderSpinner } from "slate-react-system"
+
+
+// const { Octokit } = require("@octokit/rest");
+
+import { Octokit } from '@octokit/rest'
+import { createTokenAuth } from '@octokit/auth-token'
 
 library.add(fab, far, fas)
 
@@ -33,6 +41,38 @@ class App extends Component<{},States> {
         <div className="walletpicker">
           <ButtonPrimary onClick={()=>this.context.loadWallet('Burner')}>Load Browser wallet</ButtonPrimary>
           <ButtonPrimary onClick={()=>this.context.loadWallet('Ledger')()}>Load Ledger wallet</ButtonPrimary>
+          <LoginGithub
+            clientId="8e922e2845a6083ab65c"
+            scope="repo"
+            onSuccess={async (response:any)=>{
+              const authrequest = await fetch('http://localhost:4000/api/v1/github', {
+                  method: 'POST',
+                  headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                  },
+                  body: JSON.stringify({
+                    code: response.code
+                  })
+              })
+              const authjson = await authrequest.json()
+              const octokit = new Octokit({
+                auth: authjson.data.access_token,
+              })
+
+              const user = await octokit.request("/user");
+              console.log('user', user.data)
+
+              const issues = await octokit.issues.listForRepo({
+                owner: 'keyko-io',
+                repo: 'test-repo'
+              })
+              console.log('issues', issues.data)
+
+            }}
+            onFailure={(response:any)=>{
+              console.log('failure', response)
+            }}/>
         </div>
         {this.state.page === '' ?
           <div className="wizzardfirst">
