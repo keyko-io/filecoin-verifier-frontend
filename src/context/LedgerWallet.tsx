@@ -33,8 +33,21 @@ export class LedgerWallet {
       if (transport) {
           try {
               this.ledgerApp = new FilecoinApp(transport);
+              const version = await this.ledgerApp.getVersion()
+              if(version.device_locked){
+                throw new Error('Ledger locked.')
+              }
+              if(version.test_mode){
+                throw new Error('Filecoin app in test mode.')
+              }
+              if(version.minor < 18){
+                throw new Error('Please update Filecoin app on Ledger.')
+              }
+              if(version.minor < 18 && version.patch < 2){
+                throw new Error('Please update Filecoin app on Ledger.')
+              }
           } catch (e) {
-              console.log('FilecoinApp error', e)
+            throw new Error(e.message)
           }
       } else {
           console.log('device not found')

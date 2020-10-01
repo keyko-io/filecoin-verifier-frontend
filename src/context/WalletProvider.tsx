@@ -4,10 +4,16 @@ import { LedgerWallet } from './LedgerWallet'
 import { BurnerWallet } from './BurnerWallet'
 // @ts-ignore
 import { dispatchCustomEvent } from "slate-react-system";
+import { Octokit } from '@octokit/rest'
 
 interface WalletProviderStates {
     isLogged: boolean
     isLoading: boolean
+    githubLogged: boolean
+    githubOcto: any
+    loginGithub: any
+    loadClientRequests: any
+    clientRequests: any[]
     viewroot: boolean
     switchview: any
     wallet: string
@@ -27,17 +33,6 @@ interface WalletProviderStates {
     message: string
     dispatchNotification: any
 }
-
-/*
-  activeAccount = async(account: string) => {
-    const master = await this.context.api.actorKey(account)
-    if(master){
-      return true
-    }else{
-      return false
-    }
-  }
-*/
 
 async function getActiveAccounts  (api: any, accounts: any) {
     const accountsActive: any = {};
@@ -114,6 +109,43 @@ export default class WalletProvider extends React.Component<{}, WalletProviderSt
     state = {
         isLogged: false,
         isLoading: false,
+        githubLogged: false,
+        githubOcto: {} as any,
+        loginGithub: async (code:string) => {
+            try {
+                const authrequest = await fetch('http://localhost:4000/api/v1/github', {
+                    method: 'POST',
+                    headers: {
+                      'Accept': 'application/json',
+                      'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                      code
+                    })
+                })
+                const authjson = await authrequest.json()
+                const octokit = new Octokit({
+                  auth: authjson.data.access_token,
+                })
+                this.setState({
+                    githubLogged: true,
+                    githubOcto: octokit
+                })
+                this.state.loadClientRequests()
+            } catch (e) {
+                this.state.dispatchNotification('Failed to login. Try again later.')
+            }
+        },
+        loadClientRequests: async () => {
+            const issues = await this.state.githubOcto.issues.listForRepo({
+              owner: 'keyko-io',
+              repo: 'filecoin-clients-onboarding'
+            })
+            this.setState({
+                clientRequests: issues.data
+            })
+        },
+        clientRequests: [],
         viewroot: false,
         switchview: async () => {
             if(this.state.viewroot){

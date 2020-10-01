@@ -5,6 +5,8 @@ import AddVerifierModal from './AddVerifierModal';
 // @ts-ignore
 import { ButtonPrimary, dispatchCustomEvent } from "slate-react-system";
 import { datacapFilter } from "./Filters"
+// @ts-ignore
+import LoginGithub from 'react-login-github';
 
 type OverviewStates = {
     tabs: string
@@ -36,6 +38,14 @@ export default class Overview extends Component<{}, OverviewStates> {
     }
 
     showApproved = async () => {
+        this.setState({tabs: "2"})
+    }
+
+    showVerifiedClients = async () => {
+        this.setState({tabs: "1"})
+    }
+
+    showClientRequests = async () => {
         this.setState({tabs: "2"})
     }
 
@@ -138,11 +148,11 @@ export default class Overview extends Component<{}, OverviewStates> {
                         <div className="tabsholder">
                             <div className="tabs">
                                 <div className={this.state.tabs === "1" ? "selected" : ""} onClick={()=>{this.showPending()}}>Pending verifiers ({this.state.pendingverifiers.length})</div>
-                                <div className={this.state.tabs === "2" ? "selected" : ""} onClick={()=>{this.showApproved()}}>Approved Verifiers ({this.context.verified.length})</div>
+                                <div className={this.state.tabs === "2" ? "selected" : ""} onClick={()=>{this.showApproved()}}>Accepted Verifiers ({this.context.verified.length})</div>
                             </div>
                             <div className="tabssadd">
                                 {this.state.tabs === "2" ? <ButtonPrimary onClick={()=>this.proposeVerifier()}>Propose verifier</ButtonPrimary> : null}
-                                {this.state.tabs === "1" ? <ButtonPrimary onClick={()=>this.handleSubmitApprove()}>Accept selected</ButtonPrimary> : null}
+                                {this.state.tabs === "1" ? <ButtonPrimary onClick={()=>this.handleSubmitApprove()}>Accept verifiers</ButtonPrimary> : null}
                             </div>
                         </div>
                         { this.state.tabs === "2" ?
@@ -202,12 +212,56 @@ export default class Overview extends Component<{}, OverviewStates> {
                     <div className="main">
                         <div className="tabsholder">
                             <div className="tabs">
-                                <div className="selected">Verified clients ({this.state.clients.length})</div>
+                                <div className={this.state.tabs === "1" ? "selected" : ""} onClick={()=>{this.showVerifiedClients()}}>Verified clients ({this.state.clients.length})</div>
+                                <div className={this.state.tabs === "2" ? "selected" : ""} onClick={()=>{this.showClientRequests()}}>Client Requests ({this.context.clientRequests.length})</div>
                             </div>
                             <div className="tabssadd">
                                 <ButtonPrimary onClick={()=>this.addVerifiedClient()}>Add verified client</ButtonPrimary>
                             </div>
                         </div>
+                        { this.state.tabs === "2" && this.context.githubLogged ?
+                            <div>
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <td>Client</td>
+                                            <td>Datacap</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {this.context.clientRequests.map((clientReq:any, index:any) => 
+                                            <tr
+                                                key={index}
+                                                // onClick={()=>this.selectRow(transaction.id)}
+                                                /*className={this.state.selectedTransactions.includes(transaction.id)?'selected':''}*/
+                                            >
+                                                <div>{JSON.stringify(clientReq)}</div>
+                                                {/*
+                                                    <td>{transaction.verified}</td>
+                                                    <td>{datacapFilter(transaction.datacap)}</td>
+                                                */}
+                                            </tr>
+                                        )}
+                                    </tbody>
+                                </table>
+                                {this.context.clientRequests.length === 0 ? <div className="nodata">No client requests yet</div> : null}
+                            </div>
+                        : null }
+                        { this.state.tabs === "2" && !this.context.githubLogged ?
+                            <div>
+                                <LoginGithub
+                                    clientId="8e922e2845a6083ab65c"
+                                    scope="repo"
+                                    onSuccess={(response:any)=>{
+                                        this.context.loginGithub(response.code)
+                                    }}
+                                    onFailure={(response:any)=>{
+                                        console.log('failure', response)
+                                    }}
+                                />
+                            </div>
+                        : null }
+                        { this.state.tabs === "1" ?
                             <div>
                                 <table>
                                     <thead>
@@ -229,8 +283,9 @@ export default class Overview extends Component<{}, OverviewStates> {
                                         )}
                                     </tbody>
                                 </table>
-                                {this.context.verified.length === 0 ? <div className="nodata">No verified clients yet</div> : null}
+                                {this.state.clients.length === 0 ? <div className="nodata">No verified clients yet</div> : null}
                             </div>
+                        : null }
                     </div>
                 }
             </div>
