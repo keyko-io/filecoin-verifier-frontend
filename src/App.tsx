@@ -55,6 +55,7 @@ class App extends Component<{},States> {
 
   switchNetwork = (index:number) => {
     this.context.selectNetwork(index)
+    this.refresh()
   }
 
   switchAccount = (index:number) => {
