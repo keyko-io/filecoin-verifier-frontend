@@ -5,6 +5,7 @@ import { BurnerWallet } from './BurnerWallet'
 // @ts-ignore
 import { dispatchCustomEvent } from "slate-react-system";
 import { Octokit } from '@octokit/rest'
+const utils = require('@keyko-io/filecoin-verifier-tools/utils/issue-parser')
 
 interface WalletProviderStates {
     isLogged: boolean
@@ -12,6 +13,7 @@ interface WalletProviderStates {
     githubLogged: boolean
     githubOcto: any
     loginGithub: any
+    initGithubOcto: any
     loadClientRequests: any
     clientRequests: any[]
     viewroot: boolean
@@ -124,25 +126,39 @@ export default class WalletProvider extends React.Component<{}, WalletProviderSt
                     })
                 })
                 const authjson = await authrequest.json()
-                const octokit = new Octokit({
-                  auth: authjson.data.access_token,
-                })
-                this.setState({
-                    githubLogged: true,
-                    githubOcto: octokit
-                })
-                this.state.loadClientRequests()
+                localStorage.setItem('githubToken', authjson.data.access_token)
+                this.state.initGithubOcto(authjson.data.access_token)
             } catch (e) {
                 this.state.dispatchNotification('Failed to login. Try again later.')
             }
         },
+        initGithubOcto: async (token:string) => {
+            const octokit = new Octokit({
+                auth: token
+            })
+            this.setState({
+                githubLogged: true,
+                githubOcto: octokit
+            }, ()=>this.state.loadClientRequests())
+        },
         loadClientRequests: async () => {
-            const issues = await this.state.githubOcto.issues.listForRepo({
+            const rawIssues = await this.state.githubOcto.issues.listForRepo({
               owner: 'keyko-io',
               repo: 'filecoin-clients-onboarding'
             })
+            const issues: any[] = []
+            for(const rawIssue of rawIssues.data){
+                const data = utils.parseIssue(rawIssue.body)
+                if(data.correct){
+                    issues.push({
+                        number: rawIssue.number,
+                        url: rawIssue.html_url,
+                        data
+                    })
+                }
+            }
             this.setState({
-                clientRequests: issues.data
+                clientRequests: issues
             })
         },
         clientRequests: [],
@@ -241,7 +257,10 @@ export default class WalletProvider extends React.Component<{}, WalletProviderSt
     }
 
     async componentDidMount() {
-
+        const githubToken = localStorage.getItem('githubToken')!
+        if(githubToken){
+            this.state.initGithubOcto(githubToken)
+        }
     }
 
     render() {

@@ -225,7 +225,9 @@ export default class Overview extends Component<{}, OverviewStates> {
                                     <thead>
                                         <tr>
                                             <td>Client</td>
+                                            <td>Address</td>
                                             <td>Datacap</td>
+                                            <td>Link</td>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -235,11 +237,10 @@ export default class Overview extends Component<{}, OverviewStates> {
                                                 // onClick={()=>this.selectRow(transaction.id)}
                                                 /*className={this.state.selectedTransactions.includes(transaction.id)?'selected':''}*/
                                             >
-                                                <div>{JSON.stringify(clientReq)}</div>
-                                                {/*
-                                                    <td>{transaction.verified}</td>
-                                                    <td>{datacapFilter(transaction.datacap)}</td>
-                                                */}
+                                                <td>{clientReq.data.name}</td>
+                                                <td>{clientReq.data.address}</td>
+                                                <td>{clientReq.data.datacap}</td>
+                                                <td><a target="_blank" rel="noopener noreferrer" href={clientReq.url}>#{clientReq.number}</a></td>
                                             </tr>
                                         )}
                                     </tbody>
@@ -248,7 +249,7 @@ export default class Overview extends Component<{}, OverviewStates> {
                             </div>
                         : null }
                         { this.state.tabs === "2" && !this.context.githubLogged ?
-                            <div>
+                            <div id="githublogin">
                                 <LoginGithub
                                     clientId="8e922e2845a6083ab65c"
                                     scope="repo"

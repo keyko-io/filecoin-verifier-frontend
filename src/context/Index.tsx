@@ -3,6 +3,12 @@ import React from 'react'
 export const Wallet = React.createContext({
     isLogged: false,
     isLoading: false,
+    githubLogged: false,
+    githubOcto: {},
+    loginGithub: async (code: string) => {},
+    initGithubOcto: async (token: string) => {},
+    loadClientRequests: async () => {},
+    clientRequests: [],
     viewroot: false,
     switchview: async () => {},
     wallet: '',
