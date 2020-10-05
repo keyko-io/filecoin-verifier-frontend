@@ -5,6 +5,7 @@ import { BurnerWallet } from './BurnerWallet'
 // @ts-ignore
 import { dispatchCustomEvent } from "slate-react-system";
 import { Octokit } from '@octokit/rest'
+import { IssueBody } from '../IssueBody'
 const utils = require('@keyko-io/filecoin-verifier-tools/utils/issue-parser')
 
 interface WalletProviderStates {
@@ -16,6 +17,7 @@ interface WalletProviderStates {
     initGithubOcto: any
     loadClientRequests: any
     clientRequests: any[]
+    createRequest: any
     viewroot: boolean
     switchview: any
     wallet: string
@@ -162,6 +164,19 @@ export default class WalletProvider extends React.Component<{}, WalletProviderSt
             })
         },
         clientRequests: [],
+        createRequest: async (data:any) => {
+            try {
+                const issue = await this.state.githubOcto.issues.create({
+                    owner: 'keyko-io',
+                    repo: 'filecoin-clients-onboarding',
+                    title: 'Data Cap Request for: '+data.organization,
+                    body: IssueBody(data)
+                });
+                return issue
+            } catch (error) {
+                console.log(error)
+            }
+        },
         viewroot: false,
         switchview: async () => {
             if(this.state.viewroot){

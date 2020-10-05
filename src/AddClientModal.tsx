@@ -7,6 +7,7 @@ import { dispatchCustomEvent, H3, Input, ButtonPrimary, SelectMenu, LoaderSpinne
 type States = {
     address: string
     datacap: string
+    organization: string
     datacapExt: string
     submitLoading: boolean
 };
@@ -19,6 +20,7 @@ class AddClientModal extends Component<{}, States> {
         this.state = {
             address: '',
             datacap: '1',
+            organization: '',
             datacapExt: '1000000000000',
             submitLoading: false
         }
@@ -31,6 +33,14 @@ class AddClientModal extends Component<{}, States> {
     handleSubmit = async (e:any) => {
         e.preventDefault()
         this.setState({ submitLoading: true })
+        this.context.createRequest({
+            address: this.state.address,
+            datacap: this.state.datacap,
+            organization: this.state.organization
+        })
+        dispatchCustomEvent({ name: "delete-modal", detail: {} })
+        this.setState({ submitLoading: false })
+        /*
         try{
             const datacap = parseFloat(this.state.datacap)
             const fullDatacap = BigInt(datacap * parseFloat(this.state.datacapExt))
@@ -53,6 +63,8 @@ class AddClientModal extends Component<{}, States> {
             console.log(e.stack)
             dispatchCustomEvent({ name: "delete-modal", detail: {} })
         }
+        */
+        
     }
 
     handleChange = (e:any) => {
@@ -67,10 +79,17 @@ class AddClientModal extends Component<{}, States> {
             <form>
                 <div className="inputholder">
                     <Input
+                        description="Organization"
+                        name="organization"
+                        value={this.state.organization}
+                        placeholder="Name of organization"
+                        onChange={this.handleChange}
+                    />
+                    <Input
                         description="Client address"
                         name="address"
                         value={this.state.address}
-                        placeholder="xxxxxx"
+                        placeholder="Address"
                         onChange={this.handleChange}
                     />
                 </div>
