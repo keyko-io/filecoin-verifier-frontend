@@ -8,6 +8,10 @@ type States = {
     address: string
     datacap: string
     organization: string
+    publicprofile: string
+    useplan: string
+    contact: string
+    comments: string
     datacapExt: string
     submitLoading: boolean
 };
@@ -21,7 +25,11 @@ class AddClientModal extends Component<{}, States> {
             address: '',
             datacap: '1',
             organization: '',
-            datacapExt: '1000000000000',
+            publicprofile: '',
+            useplan: '',
+            contact: '',
+            comments: '',
+            datacapExt: 'TiB',
             submitLoading: false
         }
     }
@@ -35,36 +43,15 @@ class AddClientModal extends Component<{}, States> {
         this.setState({ submitLoading: true })
         this.context.createRequest({
             address: this.state.address,
-            datacap: this.state.datacap,
-            organization: this.state.organization
+            datacap: this.state.datacap + this.state.datacapExt,
+            organization: this.state.organization,
+            publicprofile: this.state.publicprofile,
+            useplan: this.state.useplan,
+            contact: this.state.contact,
+            comments: this.state.comments
         })
         dispatchCustomEvent({ name: "delete-modal", detail: {} })
         this.setState({ submitLoading: false })
-        /*
-        try{
-            const datacap = parseFloat(this.state.datacap)
-            const fullDatacap = BigInt(datacap * parseFloat(this.state.datacapExt))
-            let address = this.state.address
-            if(address.length < 12){
-                address = await this.context.api.actorKey(address)
-            }
-            let messageID = await this.context.api.verifyClient(address, fullDatacap, this.context.walletIndex);
-            this.setState({
-                address: '',
-                datacap: '1',
-                datacapExt: '1000000000000',
-                submitLoading: false
-            })
-            this.context.dispatchNotification('Verify Client Message sent with ID: ' + messageID)
-            dispatchCustomEvent({ name: "delete-modal", detail: {} })
-        } catch (e) {
-            this.setState({ submitLoading: false })
-            this.context.dispatchNotification('Client verification failed: ' + e.message)
-            console.log(e.stack)
-            dispatchCustomEvent({ name: "delete-modal", detail: {} })
-        }
-        */
-        
     }
 
     handleChange = (e:any) => {
@@ -74,7 +61,7 @@ class AddClientModal extends Component<{}, States> {
   render() {
     return (
       <div className="addmodal">
-        <H3>Add Verified client</H3>
+        <H3>Request datacap</H3>
         <div>
             <form>
                 <div className="inputholder">
@@ -85,8 +72,46 @@ class AddClientModal extends Component<{}, States> {
                         placeholder="Name of organization"
                         onChange={this.handleChange}
                     />
+                </div>
+                <div className="inputholder">
                     <Input
-                        description="Client address"
+                        description="Public Profile of Organization"
+                        name="publicprofile"
+                        value={this.state.publicprofile}
+                        placeholder=""
+                        onChange={this.handleChange}
+                    />
+                </div>
+                <div className="inputholder">
+                    <Input
+                        description="Intended Use Case / Allocation Plan"
+                        name="useplan"
+                        value={this.state.useplan}
+                        placeholder=""
+                        onChange={this.handleChange}
+                    />
+                </div>
+                <div className="inputholder">
+                    <Input
+                        description="Contact Information"
+                        name="contact"
+                        value={this.state.contact}
+                        placeholder=""
+                        onChange={this.handleChange}
+                    />
+                </div>
+                <div className="inputholder">
+                    <Input
+                        description="Comments"
+                        name="comments"
+                        value={this.state.comments}
+                        placeholder=""
+                        onChange={this.handleChange}
+                    />
+                </div>
+                <div className="inputholder">
+                    <Input
+                        description="Address"
                         name="address"
                         value={this.state.address}
                         placeholder="Address"
@@ -96,7 +121,7 @@ class AddClientModal extends Component<{}, States> {
                 <div className="datacapholder">
                     <div className="datacap">
                         <Input
-                            description="Client datacap"
+                            description="Requested datacap"
                             name="datacap"
                             value={this.state.datacap}
                             placeholder="1000000000000"
@@ -108,11 +133,11 @@ class AddClientModal extends Component<{}, States> {
                             name="datacapExt"
                             value={this.state.datacapExt}
                             onChange={this.handleChange}
-                            options={config.datacapExt}
+                            options={config.datacapExtName}
                         />
                     </div>
                 </div>
-                <ButtonPrimary onClick={this.handleSubmit}>{this.state.submitLoading ? <LoaderSpinner /> : 'Add client'}</ButtonPrimary>
+                <ButtonPrimary onClick={this.handleSubmit}>{this.state.submitLoading ? <LoaderSpinner /> : 'Request'}</ButtonPrimary>
             </form>
         </div>
       </div>

@@ -30,18 +30,25 @@ Is there any other information you can provide?
 
 Some description or link to the public profile of the organization
 
+>${data.publicprofile}
+
 ### Intended Use Case / Allocation Plan
 
 Please, include some information about the main usage you want to make of the datacap.
+
+>${data.useplan}
 
 ### Contact Information
 
 How can we contact with you?
 
+>${data.contact}
+
 ### Comments
 
 Do you have any additional comment?
 
+>${data.comments}
 
 ## Disclaimer
 

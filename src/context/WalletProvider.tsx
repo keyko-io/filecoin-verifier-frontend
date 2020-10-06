@@ -172,9 +172,14 @@ export default class WalletProvider extends React.Component<{}, WalletProviderSt
                     title: 'Data Cap Request for: '+data.organization,
                     body: IssueBody(data)
                 });
-                return issue
+                if(issue.status === 201){
+                    this.state.dispatchNotification('Request submited as #'+issue.data.number)
+                    this.state.loadClientRequests()
+                }else{
+                    this.state.dispatchNotification('Something went wrong.')
+                }
             } catch (error) {
-                console.log(error)
+                this.state.dispatchNotification(error.toString())
             }
         },
         viewroot: false,
