@@ -613,25 +613,33 @@
     top: 150px;
     text-align: center;
     display: flex;
-    flex: 100%;
     border: 1px solid #0091FF;
     box-sizing: border-box;
 
-    table {
-      max-width: 1280px;
+    .data {
       margin-left: auto;
       margin-right: auto;
       left: 0;
       right: 0;
+      font-family: Inter;
+      font-style: normal;
+      font-weight: 600;
+      font-size: 14px;
+      line-height: 20px;
+      color: #1A1A1A;
+      display: block;
+      flex: 95%;
+    }
 
-      thead {
-        font-family: Inter;
-        font-style: normal;
-        font-weight: 600;
-        font-size: 14px;
-        line-height: 20px;
-        color: #1A1A1A;
+    .checks {
+      flex: 5%;
+      margin-top: 80px;
+
+      figure {
+        margin-left: 20px;
+        margin-bottom: 30px;
       }
+
     }
   }
 

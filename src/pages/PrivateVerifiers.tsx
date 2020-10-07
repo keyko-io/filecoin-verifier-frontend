@@ -1,13 +1,13 @@
 import React, { Component } from 'react';
 // @ts-ignore
-import { Table, H1, ButtonSecondary, dispatchCustomEvent } from "slate-react-system";
+import { Table, CheckBox, ButtonSecondary, dispatchCustomEvent } from "slate-react-system";
 import Welcome from '../components/Welcome';
 import PrivateVerifierModal from './PrivateVerifierModal';
 
 export default class PrivateVerifiers extends Component {
 
     columns = [
-        { key: "name", name: "Verifier" },
+        { key: "name", name: "Verifier", type: "FILE_LINK" },
         { key: "location", name: "Location" },
         { key: "website", name: "website" },
         { key: "email", name: "email" },
@@ -21,44 +21,42 @@ export default class PrivateVerifiers extends Component {
 
     state = {
         verifiers: [],
-        selectedVerifier: [] as any[],
+        selectedVerifier: 0,
+        checks: []
     }
 
     componentDidMount() {
-        this.getList()
+        this.loadData()
+    }
+
+    loadData = async () => {
+        await this.getList()
+        let initialChecks = [] as any[]
+        this.state.verifiers.forEach((_) => {
+            initialChecks.push(false)
+        })
+        this.setState({ checks: initialChecks })
     }
 
     getList = async () => {
-
         const verifiers = require('../data/verifiers.json').verifiers;
-        console.log(verifiers)
         this.setState({ verifiers })
-        // this.state.verifiers = verifiers
-        // console.log(this.state.verifiers)
     }
 
-    selectRow = (name: string) => {
-        console.log("selected " + name)
-        this.state.selectedVerifier = []
-        let selectedVer = this.state.selectedVerifier
-        selectedVer.push(name)
-        this.setState({ selectedTransactions: name })
-        /*
-        if(selectedVer.includes(name)){
-            selectedVer = selectedVer.filter(item => item !== name)
-        } else {
-            selectedVer.push(name)
-        }
-        this.setState({selectedTransactions:name})
-        */
+
+    updateChecks = (e: any) => {
+        let checks = [] as any[]
+        this.state.checks.forEach((ele, i) => {
+            checks.push(Number(e.target.name) === i ?
+                e.target.value :
+                false)
+        })
+        this.setState({ checks: checks })
+        this.setState({ selectedVerifier: Number(e.target.name) })
     }
 
     contactVerifier = async () => {
-        let selectedVerifier = this.state.selectedVerifier[0]
-        let verifier = this.state.verifiers.filter((verifier: any, index: any, array: any) => verifier.name == selectedVerifier)[0] as any
-
-        console.log("Verifier Name: " + verifier.name)
-
+        let verifier: any = this.state.verifiers[this.state.selectedVerifier]
         dispatchCustomEvent({
             name: "create-modal", detail: {
                 id: Math.random().toString(36).replace(/[^a-z]+/g, '').substr(0, 5),
@@ -73,38 +71,36 @@ export default class PrivateVerifiers extends Component {
                 <div className="container">
                     <Welcome />
                     <div className="tableverifiers">
-                        <table>
-                            <thead>
-                                <tr>
-                                    <td>Verifier</td>
-                                    <td>Location</td>
-                                    <td>Email</td>
-                                    <td>Address</td>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {this.state.verifiers.map((verifier: any, index: any) =>
-                                    <tr
-                                        key={index}
-                                        onClick={() => this.selectRow(verifier.name)}
-                                        className={this.state.selectedVerifier.includes(verifier.name) ? 'selected' : ''}
-                                    >
-                                        <td>{verifier.name}</td>
-                                        <td>{verifier.location}</td>
-                                        <td>{verifier.email}</td>
-                                        <td>{verifier.address}</td>
-                                    </tr>
-                                )}
-                            </tbody>
-                        </table>
+                        <div className="checks">
+                            {this.state.verifiers.map((_, i) => {
+                                return (<CheckBox
+                                    name={i}
+                                    key={i}
+                                    value={this.state.checks[i]}
+                                    onChange={this.updateChecks}
+                                />)
+                            })}
+                        </div>
+                        <div className="data">
+                            <Table
+                                data={{
+                                    columns: this.columns,
+                                    rows: this.state.verifiers,
+                                }}
+                                name="verifiers"
+                            />
+                        </div>
                     </div>
                     <div className="started">
                         <div className="siglebutton">
-                            <ButtonSecondary onClick={() => this.contactVerifier()}>Contact Verifier</ButtonSecondary>
+                            <ButtonSecondary
+                                onClick={() => this.contactVerifier()}>
+                                Contact Verifier
+                            </ButtonSecondary>
                         </div>
                     </div>
-                    </div>
                 </div>
+            </div>
         )
     }
 }
