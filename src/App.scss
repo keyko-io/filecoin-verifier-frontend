@@ -596,8 +596,43 @@
       color: #FFFFFF;
       background: #0091FF;
     }
+  }
 
+}
 
+.verifiers {
+  .tableverifiers {
+    position: absolute;
+    margin-left: auto;
+    margin-right: auto;
+    max-width: 1280px;
+    height: 670px;
+    left: 0;
+    right: 0;
+    background: #fff;
+    top: 150px;
+    text-align: center;
+    display: flex;
+    flex: 100%;
+    border: 1px solid #0091FF;
+    box-sizing: border-box;
+
+    table {
+      max-width: 1280px;
+      margin-left: auto;
+      margin-right: auto;
+      left: 0;
+      right: 0;
+
+      thead {
+        font-family: Inter;
+        font-style: normal;
+        font-weight: 600;
+        font-size: 14px;
+        line-height: 20px;
+        color: #1A1A1A;
+      }
+    }
   }
 
 }

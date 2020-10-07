@@ -6,6 +6,7 @@ import RootKey from './svg/rkh-verifiers.svg';
 import Cients from './svg/client-miners.svg';
 import Option from '../components/Option'
 import history from '../context/History'
+import Welcome from '../components/Welcome'
 
 type States = {
   optionSelected: boolean[]
@@ -60,10 +61,7 @@ class Onboarding extends Component<{}, States> {
           <div><img src={Logo} alt="Filecoin" /></div>
         </div>
         <div className="container">
-          <div className="welcome">
-            <div className="title">Welcome to the Filecoin Pro Registry</div>
-            <div className="description">You may proceed in any of these pathways but you may not have access to all three. It all depends on whether you’ve been granted access to it by either the network, a rootkey holder, or an approved verifier respectively.</div>
-          </div>
+          <Welcome />
           <div className="options">
             {options.map((option: OptionType, index: number) => {
               return <Option
@@ -79,7 +77,7 @@ class Onboarding extends Component<{}, States> {
           </div>
           <div className="started">
             <div className="siglebutton">
-              <ButtonPrimary onClick={()=>this.getStarted()}>Get started</ButtonPrimary>
+              <ButtonPrimary onClick={() => this.getStarted()}>Get started</ButtonPrimary>
             </div>
           </div>
         </div>
