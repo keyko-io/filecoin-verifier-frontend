@@ -190,7 +190,7 @@
         .textinfodata {
           display: flex;
           align-content: stretch;
-          border: 2px solid #0090FF;
+          border: 1px solid #0090FF;
 
           .textinfodatablock {
             text-align: center;
@@ -244,7 +244,9 @@
       }
 
       .tabssadd {
-
+        button {
+          margin-left: 10px;
+        }
       }
     }
 

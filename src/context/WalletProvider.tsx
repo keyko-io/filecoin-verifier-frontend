@@ -18,6 +18,8 @@ interface WalletProviderStates {
     loadClientRequests: any
     clientRequests: any[]
     createRequest: any
+    clientsGithub: any
+    loadClientsGithub: any
     viewroot: boolean
     switchview: any
     wallet: string
@@ -82,6 +84,8 @@ export default class WalletProvider extends React.Component<{}, WalletProviderSt
                 activeAccount: accounts[0],
                 accounts,
                 accountsActive
+            }, ()=>{
+                this.loadGithub()
             })
         } catch (e) {
             this.setState({
@@ -107,6 +111,8 @@ export default class WalletProvider extends React.Component<{}, WalletProviderSt
             activeAccount: accounts[0],
             accounts,
             accountsActive
+        }, ()=>{
+            this.loadGithub()
         })
     }
 
@@ -141,7 +147,10 @@ export default class WalletProvider extends React.Component<{}, WalletProviderSt
             this.setState({
                 githubLogged: true,
                 githubOcto: octokit
-            }, ()=>this.state.loadClientRequests())
+            }, ()=>{
+                this.state.loadClientRequests()
+                this.state.loadClientsGithub()
+            })
         },
         loadClientRequests: async () => {
             const rawIssues = await this.state.githubOcto.issues.listForRepo({
@@ -181,6 +190,34 @@ export default class WalletProvider extends React.Component<{}, WalletProviderSt
             } catch (error) {
                 this.state.dispatchNotification(error.toString())
             }
+        },
+        clientsGithub: {},
+        loadClientsGithub: async () => {
+            const rawIssues = await this.state.githubOcto.issues.listForRepo({
+                owner: 'keyko-io',
+                repo: 'filecoin-clients-onboarding',
+                state: 'closed',
+                labels: 'state:Granted'
+              })
+            const issues: any = {}
+            for(const rawIssue of rawIssues.data){
+                const data = utils.parseIssue(rawIssue.body)
+                try {
+                    const address = await this.state.api.actorKey(data.address)
+                    if(data.correct && address){
+                        issues[address]= {
+                            number: rawIssue.number,
+                            url: rawIssue.html_url,
+                            data
+                        }
+                    }
+                } catch(e) {
+                    // console.log(e)
+                }
+            }
+            this.setState({
+                clientsGithub: issues
+            })
         },
         viewroot: false,
         switchview: async () => {
@@ -276,11 +313,15 @@ export default class WalletProvider extends React.Component<{}, WalletProviderSt
         }
     }
 
-    async componentDidMount() {
+    loadGithub () {
         const githubToken = localStorage.getItem('githubToken')!
-        if(githubToken){
+        if(githubToken && this.state.isLogged){
             this.state.initGithubOcto(githubToken)
         }
+    }
+
+    async componentDidMount() {
+        this.loadGithub()
     }
 
     render() {
