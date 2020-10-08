@@ -137,7 +137,6 @@ export default class Overview extends Component<{}, OverviewStates> {
     public render(){
         return (
             <div className="page">
-                <div className="imageholder"></div>
                 <div className="info">
                     <div className="textinfo">
                         <div className="textinfotext">
