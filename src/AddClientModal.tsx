@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Wallet } from './context/Index'
 import { config } from './config'
 // @ts-ignore
-import { dispatchCustomEvent, H3, Input, ButtonPrimary, SelectMenu, LoaderSpinner } from "slate-react-system";
+import { dispatchCustomEvent, Input, ButtonPrimary, SelectMenu, LoaderSpinner } from "slate-react-system";
 
 type States = {
     address: string
@@ -61,85 +61,95 @@ class AddClientModal extends Component<{}, States> {
   render() {
     return (
       <div className="addmodal">
-        <H3>Request datacap</H3>
-        <div>
-            <form>
-                <div className="inputholder">
-                    <Input
-                        description="Organization"
-                        name="organization"
-                        value={this.state.organization}
-                        placeholder="Name of organization"
-                        onChange={this.handleChange}
-                    />
-                </div>
-                <div className="inputholder">
-                    <Input
-                        description="Public Profile of Organization"
-                        name="publicprofile"
-                        value={this.state.publicprofile}
-                        placeholder=""
-                        onChange={this.handleChange}
-                    />
-                </div>
-                <div className="inputholder">
-                    <Input
-                        description="Intended Use Case / Allocation Plan"
-                        name="useplan"
-                        value={this.state.useplan}
-                        placeholder=""
-                        onChange={this.handleChange}
-                    />
-                </div>
-                <div className="inputholder">
-                    <Input
-                        description="Contact Information"
-                        name="contact"
-                        value={this.state.contact}
-                        placeholder=""
-                        onChange={this.handleChange}
-                    />
-                </div>
-                <div className="inputholder">
-                    <Input
-                        description="Comments"
-                        name="comments"
-                        value={this.state.comments}
-                        placeholder=""
-                        onChange={this.handleChange}
-                    />
-                </div>
-                <div className="inputholder">
-                    <Input
-                        description="Address"
-                        name="address"
-                        value={this.state.address}
-                        placeholder="Address"
-                        onChange={this.handleChange}
-                    />
-                </div>
-                <div className="datacapholder">
-                    <div className="datacap">
+        <form>
+            <div className="title">Making Request</div>
+            <div className="twopanel">
+
+                <div>
+                    <div className="inputholder">
                         <Input
-                            description="Requested datacap"
-                            name="datacap"
-                            value={this.state.datacap}
-                            placeholder="1000000000000"
+                            description="Organization"
+                            name="organization"
+                            value={this.state.organization}
+                            placeholder="Name of organization"
                             onChange={this.handleChange}
                         />
                     </div>
-                    <div className="datacapext">
-                        <SelectMenu
-                            name="datacapExt"
-                            value={this.state.datacapExt}
+                    <div className="inputholder">
+                        <Input
+                            description="Public Profile of Organization"
+                            name="publicprofile"
+                            value={this.state.publicprofile}
+                            placeholder="XXXXXXXXXXX"
                             onChange={this.handleChange}
-                            options={config.datacapExtName}
+                        />
+                    </div>
+                    <div className="inputholder">
+                        <Input
+                            description="Intended Use Case / Allocation Plan"
+                            name="useplan"
+                            value={this.state.useplan}
+                            placeholder="Intended Use Case"
+                            onChange={this.handleChange}
+                        />
+                    </div>
+                    <div className="inputholder">
+                        <Input
+                            description="Contact Information"
+                            name="contact"
+                            value={this.state.contact}
+                            placeholder="Contact of Proposer"
+                            onChange={this.handleChange}
                         />
                     </div>
                 </div>
-                <ButtonPrimary onClick={this.handleSubmit}>{this.state.submitLoading ? <LoaderSpinner /> : 'Request'}</ButtonPrimary>
-            </form>
-        </div>
+
+
+                <div>
+                    <div className="inputholder">
+                        <Input
+                            description="Address"
+                            name="address"
+                            value={this.state.address}
+                            placeholder="XXXXXXXXXXX"
+                            onChange={this.handleChange}
+                        />
+                    </div>
+                    <div className="datacapholder">
+                        <div className="datacap">
+                            <Input
+                                description="Datacap Request"
+                                name="datacap"
+                                value={this.state.datacap}
+                                placeholder="1000000000000"
+                                onChange={this.handleChange}
+                            />
+                        </div>
+                        <div className="datacapext">
+                            <SelectMenu
+                                name="datacapExt"
+                                value={this.state.datacapExt}
+                                onChange={this.handleChange}
+                                options={config.datacapExtName}
+                            />
+                        </div>
+                    </div>
+                    <div className="inputholder">
+                        <Input
+                            description="Comments"
+                            name="comments"
+                            value={this.state.comments}
+                            placeholder="Additional comments"
+                            onChange={this.handleChange}
+                        />
+                    </div>
+                </div>
+
+            </div>
+            <div className="centerbutton">
+                <ButtonPrimary onClick={this.handleSubmit}>{this.state.submitLoading ? <LoaderSpinner /> : 'Send Request'}</ButtonPrimary>
+            </div>
+        </form>
       </div>
     )
   }

@@ -344,14 +344,6 @@
 }
 
 .addmodal {
-  display: "flex";
-  flex-direction: "column";
-  align-items: "center";
-  text-align: "center";
-  width: "300px";
-  height: "300px";
-  overflow: "scroll";
-  padding: 10px;
 
   .inputholder {
     padding-top: 20px;
@@ -360,6 +352,36 @@
   .datacapholder {
     padding-top: 20px;
     padding-bottom: 20px;
+  }
+
+  .title {
+    font-size: 22px;
+    padding-top: 25px;
+    padding-left: 40px;
+    font-weight: bold;
+  }
+
+  .twopanel {
+    display: flex;
+    width: 900px;
+    padding-left: 30px;
+    padding-right: 30px;
+
+    > div {
+      flex-basis: 50%;
+      padding-left: 10px;
+      padding-right: 10px;
+    }
+  }
+
+  .centerbutton {
+    text-align: center;
+    padding-top: 20px;
+    padding-bottom: 20px;
+
+    button {
+      background-color: #0090FF;
+    }
   }
 }
 

@@ -15,7 +15,7 @@ ReactDOM.render(
         <App />
       </BrowserRouter>
       <GlobalNotification style={{ bottom: 0, right: 0 }} />
-      <GlobalModal />
+      <GlobalModal style={{ maxWidth: "none" }}/>
     </WalletProvider>
   </React.StrictMode>,
   document.getElementById('root')
