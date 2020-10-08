@@ -51,7 +51,10 @@ class Onboarding extends Component<{}, States> {
   }
 
   getStarted = () => {
-    history.push("/preonboarding")
+    history.push({
+      pathname: "/wallet",
+      state: { selected: this.state.optionSelected }
+    })
   }
 
   render() {
@@ -62,7 +65,7 @@ class Onboarding extends Component<{}, States> {
         </div>
         <div className="container">
           <Welcome />
-          <div className="options">
+          <div className="options twooptions">
             {options.map((option: OptionType, index: number) => {
               return <Option
                 key={index}

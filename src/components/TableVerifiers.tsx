@@ -1,10 +1,9 @@
 import React, { Component } from 'react';
 // @ts-ignore
-import { Table, CheckBox, ButtonSecondary, dispatchCustomEvent } from "slate-react-system";
-import Welcome from '../components/Welcome';
+import { Table, CheckBox, dispatchCustomEvent } from "slate-react-system";
 import PrivateVerifierModal from './PrivateVerifierModal';
 
-export default class PrivateVerifiers extends Component {
+export default class TableVerifiers extends Component {
 
     columns = [
         { key: "name", name: "Verifier", type: "FILE_LINK" },
@@ -43,10 +42,9 @@ export default class PrivateVerifiers extends Component {
         this.setState({ verifiers })
     }
 
-
     updateChecks = (e: any) => {
         let checks = [] as any[]
-        this.state.checks.forEach((ele, i) => {
+        this.state.checks.forEach((_, i) => {
             checks.push(Number(e.target.name) === i ?
                 e.target.value :
                 false)
@@ -56,7 +54,7 @@ export default class PrivateVerifiers extends Component {
     }
 
     contactVerifier = async () => {
-        let verifier: any = this.state.verifiers[this.state.selectedVerifier]
+        //let verifier: any = this.state.verifiers[this.state.selectedVerifier]
         dispatchCustomEvent({
             name: "create-modal", detail: {
                 id: Math.random().toString(36).replace(/[^a-z]+/g, '').substr(0, 5),
@@ -68,39 +66,28 @@ export default class PrivateVerifiers extends Component {
     public render() {
         return (
             <div className="verifiers">
-                <div className="container">
-                    <Welcome />
-                    <div className="tableverifiers">
-                        <div className="checks">
-                            {this.state.verifiers.map((_, i) => {
-                                return (<CheckBox
-                                    name={i}
-                                    key={i}
-                                    value={this.state.checks[i]}
-                                    onChange={this.updateChecks}
-                                />)
-                            })}
-                        </div>
-                        <div className="data">
-                            <Table
-                                data={{
-                                    columns: this.columns,
-                                    rows: this.state.verifiers,
-                                }}
-                                name="verifiers"
-                            />
-                        </div>
-                    </div>
-                    <div className="started">
-                        <div className="siglebutton">
-                            <ButtonSecondary
-                                onClick={() => this.contactVerifier()}>
-                                Contact Verifier
-                            </ButtonSecondary>
-                        </div>
-                    </div>
+            <div className="tableverifiers">
+                <div className="checks">
+                    {this.state.verifiers.map((_, i) => {
+                        return (<CheckBox
+                            name={i}
+                            key={i}
+                            value={this.state.checks[i]}
+                            onChange={this.updateChecks}
+                        />)
+                    })}
+                </div>
+                <div className="data">
+                    <Table
+                        data={{
+                            columns: this.columns,
+                            rows: this.state.verifiers,
+                        }}
+                        name="verifiers"
+                    />
                 </div>
             </div>
+        </div>
         )
     }
 }

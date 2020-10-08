@@ -481,6 +481,49 @@
     }
   }
 
+  .tabsholder {
+    position: absolute;
+    margin-left: auto;
+    margin-right: auto;
+    max-width: 1280px;
+    height: 600px;
+    left: 0;
+    right: 0;
+    background: #fff;
+    top: 220px;
+    text-align: center;
+    display: flex;
+    z-index: 1;
+    height: 60px;
+    border-top: 1px solid #0091FF;
+    border-left: 1px solid #0091FF;
+    border-right: 1px solid #0091FF;
+    cursor: pointer;
+
+    .tab {
+      flex: 50%;
+      margin-top: 20px;
+      font-family: Inter;
+      font-style: normal;
+      font-weight: 600;
+      font-size: 16px;
+      line-height: 24px;
+      border-bottom: 2px solid #F1F1F1;
+    }
+
+    .selected {
+      border-bottom: 1px solid #0091FF;
+    }
+
+  }
+
+  .twooptions {
+    .option {
+      border-right: 1px solid #0091FF;
+      border-bottom: 1px solid #0091FF;
+    }
+  }
+
   .options {
     position: absolute;
     margin-left: auto;
@@ -493,15 +536,16 @@
     top: 220px;
     text-align: center;
     display: flex;
+    border-right: 1px solid #0091FF;
+    border-left: 1px solid #0091FF;
 
     .option {
       flex: 50%;
-      border: 1px solid #0091FF;
       box-sizing: border-box;
       cursor: pointer;
 
       img {
-        margin-top: 70px;
+        margin-top: 100px;
       }
 
       .optiontitle {
@@ -529,7 +573,6 @@
     }
 
     .columnleft {
-      border-left: 1px solid #0091FF;
       border-top: 1px solid #0091FF;
       flex: 50%;
 
@@ -539,7 +582,6 @@
     }
 
     .columright {
-      border-right: 1px solid #0091FF;
       border-top: 1px solid #0091FF;
 
       .optiontitle {
@@ -600,20 +642,41 @@
 
 }
 
+.doublebutton button {
+  margin-right: 80px;
+  height: 20px;
+  left: 0px;
+  right: 0px;
+  top: calc(50% - 20px/2);
+  font-family: Inter;
+  font-style: normal;
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 20px;
+  width: 180px;
+  background: #0091FF;
+}
+
+.doublebutton button:nth-child(2) {
+  background: #fFF !important;
+  color: #0091FF;
+}
+
 .verifiers {
   .tableverifiers {
     position: absolute;
     margin-left: auto;
     margin-right: auto;
     max-width: 1280px;
-    height: 670px;
+    height: 600px;
     left: 0;
     right: 0;
     background: #fff;
-    top: 150px;
+    top: 280px;
     text-align: center;
     display: flex;
-    border: 1px solid #0091FF;
+    border-left: 1px solid #0091FF;
+    border-right: 1px solid #0091FF;
     box-sizing: border-box;
 
     .data {
@@ -639,8 +702,19 @@
         margin-left: 20px;
         margin-bottom: 30px;
       }
-
     }
   }
+}
 
+.preonboarding {
+  .started {
+    .doublebutton button {
+      width: 320px;
+      background: #FFFFFF;
+      color: #1A1A1A;
+      border: 1px solid #C7C7C7;
+      box-sizing: border-box;
+      border-radius: 4px;
+    }
+  }
 }

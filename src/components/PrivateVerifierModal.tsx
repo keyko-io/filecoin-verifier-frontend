@@ -42,9 +42,9 @@ class PrivateVerifierModal extends Component<{}, States> {
         e.preventDefault()
         this.setState({ submitLoading: true })
         try {
-            const datacap = parseFloat(this.state.datacap)
-            const fullDatacap = BigInt(datacap * parseFloat(this.state.datacapExt))
-            let address = this.state.address
+            //const datacap = parseFloat(this.state.datacap)
+            //const fullDatacap = BigInt(datacap * parseFloat(this.state.datacapExt))
+            //let address = this.state.address
             /*
             if(address.length < 12){
                 address = await this.context.api.actorKey(address)

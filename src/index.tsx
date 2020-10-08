@@ -11,7 +11,6 @@ import Preonboarding from './pages/Preonboarding';
 import Onboarding from './pages/Onboarding';
 import Landing from './pages/Landing';
 import history from './context/History';
-import PrivateVerifiers from './pages/PrivateVerifiers';
 
 ReactDOM.render(
   <React.StrictMode>
@@ -19,10 +18,9 @@ ReactDOM.render(
       <Router history={history}>
         <Switch>
           <Route exact path={'/'} component={App} ></Route>
-          <Route exact path={'/preonboarding'} component={Preonboarding} ></Route>
+          <Route exact path={'/wallet'} component={Preonboarding} ></Route>
           <Route exact path={'/onboarding'} component={Onboarding} ></Route>
           <Route exact path={'/landing'} component={Landing} ></Route>
-          <Route exact path={'/verifiers'} component={PrivateVerifiers} ></Route>
         </Switch>
       </Router>
       <GlobalNotification style={{ bottom: 0, right: 0 }} />

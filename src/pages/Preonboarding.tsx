@@ -5,7 +5,29 @@ import { ButtonPrimary } from "slate-react-system";
 import RootKey from './svg/root-key.svg';
 import Welcome from '../components/Welcome'
 
-class Preonboarding extends Component<{}> {
+
+type PreonboardingStates = {
+  tabs: string
+}
+
+
+class Preonboarding extends Component<{}, PreonboardingStates> {
+
+  state = {
+    tabs: '0',
+  }
+
+  componentDidMount() {
+
+  }
+
+  showRootKey = async () => {
+    this.setState({ tabs: "0" })
+  }
+
+  showVerifier = async () => {
+    this.setState({ tabs: "1" })
+  }
 
   render() {
     return (
@@ -15,6 +37,10 @@ class Preonboarding extends Component<{}> {
         </div>
         <div className="container">
           <Welcome />
+          <div className="tabsholder">
+            <div className={this.state.tabs === "0" ? "selected tab" : "tab"} onClick={() => { this.showRootKey() }}>Root Key Holder Wallet</div>
+            <div className={this.state.tabs === "1" ? "selected tab" : "tab"} onClick={() => { this.showVerifier() }}>Verifier Wallet</div>
+          </div>
           <div className="options">
             <div className="columnleft">
               <div><img src={RootKey} alt="For RKH & Verifiers" /></div>

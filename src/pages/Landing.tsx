@@ -7,9 +7,12 @@ import LessPiB from './svg/lesspib.svg';
 import MorePiB from './svg/morepib.svg';
 import Option from '../components/Option'
 import Welcome from '../components/Welcome'
+import TableVerifiers from '../components/TableVerifiers';
 
 type States = {
-  optionSelected: boolean[]
+  optionSelected: boolean[],
+  tabs: string,
+  url: number
 }
 
 type OptionType = {
@@ -42,6 +45,8 @@ class Landing extends Component<{}, States> {
     super(props);
     this.state = {
       optionSelected: [false, false, false],
+      tabs: '0',
+      url: 0,
     }
   }
 
@@ -52,9 +57,25 @@ class Landing extends Component<{}, States> {
         newState[index] = true :
         newState[index] = false
     })
-    this.setState({ optionSelected: newState })
+    this.setState({
+      optionSelected: newState,
+      url: Number(e.currentTarget.id)
+    })
   }
 
+  showRootKey = () => {
+    this.setState({ tabs: "0" })
+  }
+
+  showVerifier = () => {
+    this.setState({ tabs: "1" })
+  }
+
+  navigate = () => {
+    if (this.state.url === 0 && this.state.tabs === '0') {
+      window.open('https://verify.glif.io/', '_blank');
+    }
+  }
 
   render() {
     return (
@@ -64,22 +85,30 @@ class Landing extends Component<{}, States> {
         </div>
         <div className="container">
           <Welcome />
-          <div className="options">
-            {options.map((option: OptionType, index: number) => {
-              return <Option
-                key={index}
-                id={index}
-                title={option.title}
-                desc={option.desc}
-                imgSrc={option.imgSrc}
-                active={this.state.optionSelected[index]}
-                onClick={this.changeActive.bind(this)}
-              />
-            })}
+          <div className="tabsholder">
+            <div className={this.state.tabs === "0" ? "selected tab" : "tab"} onClick={() => { this.showRootKey() }}>Public Request</div>
+            <div className={this.state.tabs === "1" ? "selected tab" : "tab"} onClick={() => { this.showVerifier() }}>Private Requests</div>
           </div>
+          {this.state.tabs === "0" ?
+            <div className="options">
+              {options.map((option: OptionType, index: number) => {
+                return <Option
+                  key={index}
+                  id={index}
+                  title={option.title}
+                  desc={option.desc}
+                  imgSrc={option.imgSrc}
+                  active={this.state.optionSelected[index]}
+                  onClick={this.changeActive.bind(this)}
+                />
+              })}
+            </div>
+            : <TableVerifiers />}
           <div className="started">
             <div className="doublebutton">
-              <ButtonPrimary>Get started</ButtonPrimary>
+              <ButtonPrimary onClick={() => this.navigate()}>
+                {this.state.tabs === "0" ? "Get Verified" : "Make Request"}
+              </ButtonPrimary>
               <ButtonPrimary>Learn More</ButtonPrimary>
             </div>
           </div>
