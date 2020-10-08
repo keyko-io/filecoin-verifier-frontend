@@ -114,6 +114,7 @@
     a.active {
       color: #003fe3;
     }
+
   }
 
   .walletpicker {
@@ -545,11 +546,11 @@
       cursor: pointer;
 
       img {
-        margin-top: 100px;
+        margin-top: 70px;
       }
 
       .optiontitle {
-        margin-top: 60px;
+        margin-top: 50px;
         font-family: Inter;
         font-style: normal;
         font-weight: bold;
@@ -642,7 +643,9 @@
 
 }
 
-.doublebutton button {
+.doublebutton button,
+.doublebutton button:hover,
+.doublebutton button:visited {
   margin-right: 80px;
   height: 20px;
   left: 0px;
