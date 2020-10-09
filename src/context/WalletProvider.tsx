@@ -6,6 +6,7 @@ import { BurnerWallet } from './BurnerWallet'
 import { dispatchCustomEvent } from "slate-react-system";
 import { Octokit } from '@octokit/rest'
 import { IssueBody } from '../IssueBody'
+import { config } from '../config';
 const utils = require('@keyko-io/filecoin-verifier-tools/utils/issue-parser')
 
 interface WalletProviderStates {
@@ -129,7 +130,7 @@ export default class WalletProvider extends React.Component<{}, WalletProviderSt
         githubOcto: {} as any,
         loginGithub: async (code:string) => {
             try {
-                const authrequest = await fetch('http://localhost:4000/api/v1/github', {
+                const authrequest = await fetch(config.apiUri+'/api/v1/github', {
                     method: 'POST',
                     headers: {
                       'Accept': 'application/json',
