@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 // @ts-ignore
 import { Table, CheckBox, dispatchCustomEvent } from "slate-react-system";
-import AddClientModal from '../AddClientModal';
+import MakeRequestModal from '../MakeRequestModal';
 
 export default class TableVerifiers extends Component {
 
@@ -58,7 +58,7 @@ export default class TableVerifiers extends Component {
         dispatchCustomEvent({
             name: "create-modal", detail: {
                 id: Math.random().toString(36).replace(/[^a-z]+/g, '').substr(0, 5),
-                modal: <AddClientModal/>
+                modal: <MakeRequestModal/>
             }
         })
     }
