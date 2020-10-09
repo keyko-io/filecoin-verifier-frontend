@@ -68,7 +68,6 @@ export default class Overview extends Component<{}, OverviewStates> {
                     const dataext = config.datacapExt.reverse()
                     for(const entry of dataext){
                         if(request.data.datacap.endsWith(entry.name)){
-                            console.log('found', entry)
                             prepDatacapExt = entry.value
                             prepDatacap = request.data.datacap.substring(0, request.data.datacap.length-entry.name.length)
                             break
