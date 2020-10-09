@@ -1,23 +1,18 @@
 export const config = {
     apiUri: process.env.REACT_APP_API_URI || 'http://localhost:4000',
     lotusNodes: [{
-        name: 'Remote Testnet',
-        code: 1,
-        url: 'wss://beta-verify.filecoin.io/api/rpc/v0',
-        token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBbGxvdyI6WyJyZWFkIiwid3JpdGUiXX0.fv8KUj6-p2OwGKLDriXHrR5wj1ZdJQhfPyEaHt55mAk'
+        name: 'Mainnet',
+        code: 461,
+        url: 'wss://node.glif.io/space10/lotus/rpc/v0',
+        token: process.env.REACT_APP_MAINNET_TOKEN
     },{
-        name: 'Remote Net',
+        name: 'Nerpanet',
         code: 461,
         url: 'wss://beta-verify.filecoin.io/api/rpc/v0',
-        token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBbGxvdyI6WyJyZWFkIiwid3JpdGUiXX0.fv8KUj6-p2OwGKLDriXHrR5wj1ZdJQhfPyEaHt55mAk'
+        token: process.env.REACT_APP_NERPANET_TOKEN
     },{
-        name: 'Localhost Testnet',
+        name: 'Localhost',
         code: 1,
-        url: 'ws://localhost:1234/rpc/v0',
-        token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBbGxvdyI6WyJyZWFkIiwid3JpdGUiLCJzaWduIiwiYWRtaW4iXX0.OJlFIgYG3D23RjWWXfjdTluG6Qx2EOgwMeWQxnUQrMM'
-    },{
-        name: 'Localhost Net',
-        code: 461,
         url: 'ws://localhost:1234/rpc/v0',
         token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBbGxvdyI6WyJyZWFkIiwid3JpdGUiLCJzaWduIiwiYWRtaW4iXX0.OJlFIgYG3D23RjWWXfjdTluG6Qx2EOgwMeWQxnUQrMM'
     }],

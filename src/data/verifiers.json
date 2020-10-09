@@ -1,0 +1,33 @@
+{
+    "verifiers" : [
+        {
+            "id": 1,
+            "name": "Verifier A",
+            "location": "US",
+            "website": "google.com",
+            "email": "verifierA@ver.io",
+            "address": "t1xxx",
+            "total_datacap": 1000000000000000,
+            "email_request": 1,
+            "github_request": 0,
+            "github_user" : "",
+            "github_repo": ""
+
+        },
+        {
+            "id": 2,
+            "name": "Verifier B",
+            "location": "EUR",
+            "website": "google.com",
+            "email": "verifierB@ver.io",
+            "address": "t1xxx",
+            "total_datacap": 1000000000000000,
+            "email_request": 1,
+            "github_request": 1,
+            "github_user" : "verifB",
+            "github_repo": "github.com/verifB/datacapRequest"
+
+        }
+    ]
+
+}

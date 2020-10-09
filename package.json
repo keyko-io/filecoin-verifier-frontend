@@ -61,6 +61,8 @@
     ]
   },
   "devDependencies": {
+    "jest":  "^24.9.0",
+    "babel-jest": "^24.9.0",
     "@types/bluebird": "^3.5.32",
     "@types/react-blockies": "^1.4.0",
     "@types/react-router-dom": "^5.1.5"
