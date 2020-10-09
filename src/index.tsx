@@ -17,9 +17,9 @@ ReactDOM.render(
     <WalletProvider>
       <Router history={history}>
         <Switch>
-          <Route exact path={'/'} component={App} ></Route>
+          <Route exact path={'/'} component={Onboarding} ></Route>
+          <Route exact path={'/app'} component={App} ></Route>
           <Route exact path={'/wallet'} component={Preonboarding} ></Route>
-          <Route exact path={'/onboarding'} component={Onboarding} ></Route>
           <Route exact path={'/landing'} component={Landing} ></Route>
         </Switch>
       </Router>

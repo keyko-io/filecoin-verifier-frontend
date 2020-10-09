@@ -54,13 +54,18 @@ async function getActiveAccounts  (api: any, accounts: any) {
 }
 
 export default class WalletProvider extends React.Component<{}, WalletProviderStates> {
+    setStateAsync(state:any) {
+        return new Promise((resolve) => {
+          this.setState(state, resolve)
+        });
+    }
     loadLedger = async () => {
         try {
             const wallet = new LedgerWallet()
             await wallet.loadWallet(this.state.networkIndex)
             const accounts: any[] = await wallet.getAccounts()
             const accountsActive = await getActiveAccounts(wallet.api, accounts)
-            this.setState({
+            await this.setStateAsync({
                 isLogged: true,
                 isLoading: false,
                 wallet: 'ledger',
@@ -84,15 +89,16 @@ export default class WalletProvider extends React.Component<{}, WalletProviderSt
                 activeAccount: accounts[0],
                 accounts,
                 accountsActive
-            }, ()=>{
-                this.loadGithub()
             })
+            this.loadGithub()
+            return true
         } catch (e) {
             this.setState({
                 isLogged: false,
                 isLoading: false
             })
             this.state.dispatchNotification('Ledger ' + e.toString())
+            return false
         }
     }
 
@@ -101,7 +107,7 @@ export default class WalletProvider extends React.Component<{}, WalletProviderSt
         await wallet.loadWallet(this.state.networkIndex)
         const accounts: any[] = await wallet.getAccounts()
         const accountsActive = await getActiveAccounts(wallet.api, accounts)
-        this.setState({
+        this.setStateAsync({
             isLogged: true,
             isLoading: false,
             wallet: 'burner',
@@ -111,9 +117,9 @@ export default class WalletProvider extends React.Component<{}, WalletProviderSt
             activeAccount: accounts[0],
             accounts,
             accountsActive
-        }, ()=>{
-            this.loadGithub()
         })
+        this.loadGithub()
+        return true
     }
 
     state = {
@@ -304,11 +310,9 @@ export default class WalletProvider extends React.Component<{}, WalletProviderSt
             this.setState({isLoading:true})
             switch (type) {
                 case 'Ledger':
-                   this.loadLedger()
-                    break
+                    return this.loadLedger()
                 case 'Burner':
-                    this.loadBurner()
-                    break
+                    return this.loadBurner()
             }
         }
     }

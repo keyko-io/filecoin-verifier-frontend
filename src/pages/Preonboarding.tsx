@@ -6,7 +6,8 @@ import RootKey from './svg/root-key.svg';
 import Verifiers from './svg/verifier-wallet.svg';
 import Welcome from '../components/Welcome'
 import { Location } from 'history';
-
+import history from '../context/History'
+import { Wallet } from '../context/Index'
 
 type PreonboardingStates = {
   tabs: string
@@ -18,6 +19,7 @@ type LocationState = {
 
 
 class Preonboarding extends Component<{}, PreonboardingStates, LocationState> {
+  public static contextType = Wallet
 
   constructor(props: { location: LocationState }) {
     super(props);
@@ -38,6 +40,30 @@ class Preonboarding extends Component<{}, PreonboardingStates, LocationState> {
 
   showVerifier = async () => {
     this.setState({ tabs: "1" })
+  }
+
+  loadLedgerWallet = async() => {
+    const logged = await this.context.loadWallet('Ledger')
+    if (logged) {
+      if(this.state.tabs === "0" && this.context.viewroot === false){
+        this.context.switchview()
+      }
+      history.push({
+        pathname: "/app"
+      })
+    }
+  }
+
+  loadBurnerWallet = async() => {
+    const logged = await this.context.loadWallet('Burner')
+    if (logged) {
+      if(this.state.tabs === "0" && this.context.viewroot === false){
+        this.context.switchview()
+      }
+      history.push({
+        pathname: "/app"
+      })
+    }
   }
 
   render() {
@@ -67,8 +93,8 @@ class Preonboarding extends Component<{}, PreonboardingStates, LocationState> {
           </div>
           <div className="started">
             <div className="doublebutton">
-              <ButtonPrimary>Load Browser Wallet</ButtonPrimary>
-              <ButtonPrimary>Load Ledger Wallet</ButtonPrimary>
+              <ButtonPrimary onClick={()=>this.loadBurnerWallet()}>Load Browser wallet</ButtonPrimary>
+              <ButtonPrimary onClick={()=>this.loadLedgerWallet()}>Load Ledger wallet</ButtonPrimary>
             </div>
           </div>
         </div>
