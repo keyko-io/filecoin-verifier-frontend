@@ -245,7 +245,7 @@ export default class Overview extends Component<{}, OverviewStates> {
                                             <td>Client</td>
                                             <td>Address</td>
                                             <td>Datacap</td>
-                                            <td>Link</td>
+                                            <td>Audit trail</td>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -282,8 +282,10 @@ export default class Overview extends Component<{}, OverviewStates> {
                                 <table>
                                     <thead>
                                         <tr>
-                                            <td>Client</td>
+                                            <td>Name</td>
+                                            <td>Address</td>
                                             <td>Datacap</td>
+                                            <td>Audit trail</td>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -293,8 +295,12 @@ export default class Overview extends Component<{}, OverviewStates> {
                                                 // onClick={()=>this.selectRow(transaction.id)}
                                                 /*className={this.state.selectedTransactions.includes(transaction.id)?'selected':''}*/
                                             >
+
+                                                <td>{this.context.clientsGithub[transaction.verified] ? this.context.clientsGithub[transaction.verified].data.name : null}</td>
                                                 <td>{transaction.verified}</td>
                                                 <td>{datacapFilter(transaction.datacap)}</td>
+                                                <td>{this.context.clientsGithub[transaction.verified] ? <a target="_blank" rel="noopener noreferrer" href={this.context.clientsGithub[transaction.verified].url}>#{this.context.clientsGithub[transaction.verified].number}</a>:null}</td>
+
                                             </tr>
                                         )}
                                     </tbody>
