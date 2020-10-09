@@ -16,7 +16,7 @@ type States = {
     submitLoading: boolean
 };
 
-class AddClientModal extends Component<{}, States> {
+class MakeRequestModal extends Component<{}, States> {
     public static contextType = Wallet
 
     constructor(props: {}) {
@@ -40,16 +40,6 @@ class AddClientModal extends Component<{}, States> {
 
     handleSubmit = async (e:any) => {
         e.preventDefault()
-        this.setState({ submitLoading: true })
-        this.context.createRequest({
-            address: this.state.address,
-            datacap: this.state.datacap + this.state.datacapExt,
-            organization: this.state.organization,
-            publicprofile: this.state.publicprofile,
-            useplan: this.state.useplan,
-            contact: this.state.contact,
-            comments: this.state.comments
-        })
         dispatchCustomEvent({ name: "delete-modal", detail: {} })
         this.setState({ submitLoading: false })
     }
@@ -155,4 +145,4 @@ class AddClientModal extends Component<{}, States> {
   }
 }
 
-export default AddClientModal;
+export default MakeRequestModal;
