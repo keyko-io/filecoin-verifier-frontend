@@ -7,6 +7,7 @@ import { ButtonPrimary, dispatchCustomEvent, CheckBox } from "slate-react-system
 import { datacapFilter } from "./Filters"
 // @ts-ignore
 import LoginGithub from 'react-login-github';
+import { config } from './config'
 
 type OverviewStates = {
     tabs: string
@@ -58,10 +59,49 @@ export default class Overview extends Component<{}, OverviewStates> {
         }})
     }
 
-    verifyClients = () => {
-        // create transactions from selected clients and submit
+    verifyClients = async() => {
+        for(const request of this.context.clientRequests){
+            if(this.state.selectedClientRequests.includes(request.number)){
+                try{
+                    let prepDatacap = '1'
+                    let prepDatacapExt = 'B'
+                    const dataext = config.datacapExt.reverse()
+                    for(const entry of dataext){
+                        if(request.data.datacap.endsWith(entry.name)){
+                            console.log('found', entry)
+                            prepDatacapExt = entry.value
+                            prepDatacap = request.data.datacap.substring(0, request.data.datacap.length-entry.name.length)
+                            break
+                        }
+                    }
+                    const datacap = parseFloat(prepDatacap)
+                    const fullDatacap = BigInt(datacap * parseFloat(prepDatacapExt))
+                    let address = request.data.address
+                    if(address.length < 12){
+                        address = await this.context.api.actorKey(address)
+                    }
+                    let messageID = await this.context.api.verifyClient(address, fullDatacap, this.context.walletIndex)
+                    // github update
+                    await this.context.githubOcto.issues.removeAllLabels({
+                        owner: 'keyko-io',
+                        repo: 'filecoin-clients-onboarding',
+                        number: request.number,
+                    })
+                    await this.context.githubOcto.issues.addLabels({
+                        owner: 'keyko-io',
+                        repo: 'filecoin-clients-onboarding',
+                        number: request.number,
+                        labels: 'state:Granted',
+                    })
+                    // send notifications
+                    this.context.dispatchNotification('Verify Client Message sent with ID: ' + messageID)
+                } catch (e) {
+                    this.context.dispatchNotification('Verification failed: ' + e.message)
+                    console.log(e.stack)
+                }
+            }
+        }
     }
-
 
     selectRow = (transactionId: string) => {
         let selectedTxs = this.state.selectedTransactions
