@@ -41,6 +41,8 @@ const options: OptionsType = [
 
 class Landing extends Component<{}, States> {
 
+  child: any
+
   constructor(props: {}) {
     super(props);
     this.state = {
@@ -48,6 +50,7 @@ class Landing extends Component<{}, States> {
       tabs: '0',
       url: 0,
     }
+    this.child = React.createRef();
   }
 
   changeActive = (e: any) => {
@@ -63,17 +66,19 @@ class Landing extends Component<{}, States> {
     })
   }
 
-  showRootKey = () => {
+  showPublic = () => {
     this.setState({ tabs: "0" })
   }
 
-  showVerifier = () => {
+  showPrivate = () => {
     this.setState({ tabs: "1" })
   }
 
   navigate = () => {
     if (this.state.url === 0 && this.state.tabs === '0') {
       window.open('https://verify.glif.io/', '_blank');
+    } else if (this.state.tabs === '1') {
+      this.child.current.contactVerifier();
     }
   }
 
@@ -86,8 +91,8 @@ class Landing extends Component<{}, States> {
         <div className="container">
           <Welcome />
           <div className="tabsholder">
-            <div className={this.state.tabs === "0" ? "selected tab" : "tab"} onClick={() => { this.showRootKey() }}>Public Request</div>
-            <div className={this.state.tabs === "1" ? "selected tab" : "tab"} onClick={() => { this.showVerifier() }}>Private Requests</div>
+            <div className={this.state.tabs === "0" ? "selected tab" : "tab"} onClick={() => { this.showPublic() }}>Public Request</div>
+            <div className={this.state.tabs === "1" ? "selected tab" : "tab"} onClick={() => { this.showPrivate() }}>Private Requests</div>
           </div>
           {this.state.tabs === "0" ?
             <div className="options">
@@ -103,7 +108,7 @@ class Landing extends Component<{}, States> {
                 />
               })}
             </div>
-            : <TableVerifiers />}
+            : <TableVerifiers ref={this.child}/>}
           <div className="started">
             <div className="doublebutton">
               <ButtonPrimary onClick={() => this.navigate()}>

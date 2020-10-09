@@ -4,21 +4,32 @@ import Logo from '../logo.svg';
 import { ButtonPrimary } from "slate-react-system";
 import RootKey from './svg/root-key.svg';
 import Welcome from '../components/Welcome'
+import { Location } from 'history';
 
 
 type PreonboardingStates = {
   tabs: string
 }
 
+type LocationState = {
+  state: { selected: Location };
+};
 
-class Preonboarding extends Component<{}, PreonboardingStates> {
 
-  state = {
-    tabs: '0',
+class Preonboarding extends Component<{}, PreonboardingStates, LocationState> {
+
+  constructor(props: { location: LocationState }) {
+    super(props);
+    const selectTab = (element: boolean) => element === true;
+    const selected = props.location.state.selected as unknown as boolean[];
+    const index = selected.findIndex(selectTab);
+    this.state = {
+      tabs: index > 0 ? index.toString() : '0'
+    }
   }
 
-  componentDidMount() {
 
+  componentDidMount() {
   }
 
   showRootKey = async () => {

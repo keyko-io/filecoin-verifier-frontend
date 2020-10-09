@@ -31,5 +31,16 @@ export const config = {
         { value: "1000000000000000000", name: "EiB" },
         { value: "1000000000000000000000", name: "ZiB" },
         { value: "1000000000000000000000000", name: "YiB" }
+    ],
+    datacapExtName: [
+        { value: "1B", name: "B" },
+        { value: "KiB", name: "KiB" },
+        { value: "MiB", name: "MiB" },
+        { value: "GiB", name: "GiB" },
+        { value: "TiB", name: "TiB" },
+        { value: "PiB", name: "PiB" },
+        { value: "EiB", name: "EiB" },
+        { value: "ZiB", name: "ZiB" },
+        { value: "YiB", name: "YiB" }
     ]
 }
