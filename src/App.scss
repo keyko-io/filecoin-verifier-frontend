@@ -10,10 +10,6 @@
     padding-bottom: 15px;
   }
 
-  input {
-    margin-bottom: 18px;
-  }
-
   .header {
     display: flex;
     justify-content: space-between;
@@ -184,26 +180,27 @@
     .info {
       background: linear-gradient(180deg, #0090FF 0%, #39C1CB 99.99%, rgba(0, 144, 255, 0) 100%);
       position: relative;
-      height: 158px;
+      height: 190px;
+      margin-bottom: 70px;
 
       .textinfo {
         position: absolute;
-        left: 0;
-        right: 0;
-        margin-left: auto;
-        margin-right: auto;
-        top: -50px;
+        left: 0; 
+        right: 0; 
+        margin-left: auto; 
+        margin-right: auto; 
+        top: 5px;
         max-width: 1280px;
         color: #fff;
-        background-color: #0090FF;
 
         .textinfotext {
-          padding: 15px 80px;
+          padding: 30px 80px;
         }
 
         .textinfodata {
           display: flex;
           align-content: stretch;
+          border: 1px solid #0090FF;
 
           .textinfodatablock {
             text-align: center;
@@ -257,7 +254,11 @@
         }
       }
 
-      .tabssadd {}
+      .tabssadd {
+        button {
+          margin-left: 10px;
+        }
+      }
     }
 
     .nodata {
@@ -354,14 +355,6 @@
 }
 
 .addmodal {
-  display: "flex";
-  flex-direction: "column";
-  align-items: "center";
-  text-align: "center";
-  width: "300px";
-  height: "300px";
-  overflow: "scroll";
-  padding: 10px;
 
   .inputholder {
     padding-top: 20px;
@@ -370,6 +363,36 @@
   .datacapholder {
     padding-top: 20px;
     padding-bottom: 20px;
+  }
+
+  .title {
+    font-size: 22px;
+    padding-top: 25px;
+    padding-left: 40px;
+    font-weight: bold;
+  }
+
+  .twopanel {
+    display: flex;
+    width: 900px;
+    padding-left: 30px;
+    padding-right: 30px;
+
+    > div {
+      flex-basis: 50%;
+      padding-left: 10px;
+      padding-right: 10px;
+    }
+  }
+
+  .centerbutton {
+    text-align: center;
+    padding-top: 20px;
+    padding-bottom: 20px;
+
+    button {
+      background-color: #0090FF;
+    }
   }
 }
 

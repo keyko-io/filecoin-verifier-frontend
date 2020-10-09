@@ -3,10 +3,11 @@ import { Wallet } from './context/Index';
 import AddClientModal from './AddClientModal';
 import AddVerifierModal from './AddVerifierModal';
 // @ts-ignore
-import { ButtonPrimary, dispatchCustomEvent } from "slate-react-system";
+import { ButtonPrimary, dispatchCustomEvent, CheckBox } from "slate-react-system";
 import { datacapFilter } from "./Filters"
 // @ts-ignore
 import LoginGithub from 'react-login-github';
+import { config } from './config'
 
 type OverviewStates = {
     tabs: string
@@ -15,6 +16,7 @@ type OverviewStates = {
     clients: any[]
     approveLoading: boolean
     selectedTransactions: any[]
+    selectedClientRequests: any[]
 }
 
 export default class Overview extends Component<{}, OverviewStates> {
@@ -22,6 +24,7 @@ export default class Overview extends Component<{}, OverviewStates> {
 
     state = {
         selectedTransactions: [] as any[],
+        selectedClientRequests: [] as any[],
         approveLoading: false,
         tabs: '1',
         pendingverifiers: [] as any[],
@@ -42,18 +45,61 @@ export default class Overview extends Component<{}, OverviewStates> {
     }
 
     showVerifiedClients = async () => {
-        this.setState({tabs: "1"})
-    }
-
-    showClientRequests = async () => {
         this.setState({tabs: "2"})
     }
 
-    addVerifiedClient = async () => {
+    showClientRequests = async () => {
+        this.setState({tabs: "1"})
+    }
+
+    requestDatacap = () => {
         dispatchCustomEvent({ name: "create-modal", detail: {
             id: Math.random().toString(36).replace(/[^a-z]+/g, '').substr(0, 5),
             modal: <AddClientModal/>
         }})
+    }
+
+    verifyClients = async() => {
+        for(const request of this.context.clientRequests){
+            if(this.state.selectedClientRequests.includes(request.number)){
+                try{
+                    let prepDatacap = '1'
+                    let prepDatacapExt = 'B'
+                    const dataext = config.datacapExt.reverse()
+                    for(const entry of dataext){
+                        if(request.data.datacap.endsWith(entry.name)){
+                            prepDatacapExt = entry.value
+                            prepDatacap = request.data.datacap.substring(0, request.data.datacap.length-entry.name.length)
+                            break
+                        }
+                    }
+                    const datacap = parseFloat(prepDatacap)
+                    const fullDatacap = BigInt(datacap * parseFloat(prepDatacapExt))
+                    let address = request.data.address
+                    if(address.length < 12){
+                        address = await this.context.api.actorKey(address)
+                    }
+                    let messageID = await this.context.api.verifyClient(address, fullDatacap, this.context.walletIndex)
+                    // github update
+                    await this.context.githubOcto.issues.removeAllLabels({
+                        owner: 'keyko-io',
+                        repo: 'filecoin-clients-onboarding',
+                        number: request.number,
+                    })
+                    await this.context.githubOcto.issues.addLabels({
+                        owner: 'keyko-io',
+                        repo: 'filecoin-clients-onboarding',
+                        number: request.number,
+                        labels: 'state:Granted',
+                    })
+                    // send notifications
+                    this.context.dispatchNotification('Verify Client Message sent with ID: ' + messageID)
+                } catch (e) {
+                    this.context.dispatchNotification('Verification failed: ' + e.message)
+                    console.log(e.stack)
+                }
+            }
+        }
     }
 
     selectRow = (transactionId: string) => {
@@ -64,6 +110,16 @@ export default class Overview extends Component<{}, OverviewStates> {
             selectedTxs.push(transactionId)
         }
         this.setState({selectedTransactions:selectedTxs})
+    }
+
+    selectClientRow = (number: string) => {
+        let selectedTxs = this.state.selectedClientRequests
+        if(selectedTxs.includes(number)){
+            selectedTxs = selectedTxs.filter(item => item !== number)
+        } else {
+            selectedTxs.push(number)
+        }
+        this.setState({selectedClientRequests:selectedTxs})
     }
 
     proposeVerifier = async () => {
@@ -120,7 +176,6 @@ export default class Overview extends Component<{}, OverviewStates> {
     public render(){
         return (
             <div className="page">
-                <div className="imageholder"></div>
                 <div className="info">
                     <div className="textinfo">
                         <div className="textinfotext">
@@ -212,31 +267,30 @@ export default class Overview extends Component<{}, OverviewStates> {
                     <div className="main">
                         <div className="tabsholder">
                             <div className="tabs">
-                                <div className={this.state.tabs === "1" ? "selected" : ""} onClick={()=>{this.showVerifiedClients()}}>Verified clients ({this.state.clients.length})</div>
-                                <div className={this.state.tabs === "2" ? "selected" : ""} onClick={()=>{this.showClientRequests()}}>Client Requests ({this.context.clientRequests.length})</div>
+                                <div className={this.state.tabs === "1" ? "selected" : ""} onClick={()=>{this.showClientRequests()}}>Client Requests ({this.context.clientRequests.length})</div>
+                                <div className={this.state.tabs === "2" ? "selected" : ""} onClick={()=>{this.showVerifiedClients()}}>Verified clients ({this.state.clients.length})</div>
                             </div>
                             <div className="tabssadd">
-                                <ButtonPrimary onClick={()=>this.addVerifiedClient()}>Add verified client</ButtonPrimary>
+                                <ButtonPrimary onClick={()=>this.requestDatacap()}>Request datacap</ButtonPrimary>
+                                <ButtonPrimary onClick={()=>this.verifyClients()}>Verify client</ButtonPrimary>
                             </div>
                         </div>
-                        { this.state.tabs === "2" && this.context.githubLogged ?
+                        { this.state.tabs === "1" && this.context.githubLogged ?
                             <div>
                                 <table>
                                     <thead>
                                         <tr>
+                                            <td></td>
                                             <td>Client</td>
                                             <td>Address</td>
                                             <td>Datacap</td>
-                                            <td>Link</td>
+                                            <td>Audit trail</td>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         {this.context.clientRequests.map((clientReq:any, index:any) => 
-                                            <tr
-                                                key={index}
-                                                // onClick={()=>this.selectRow(transaction.id)}
-                                                /*className={this.state.selectedTransactions.includes(transaction.id)?'selected':''}*/
-                                            >
+                                            <tr key={index}>
+                                                <td><input type="checkbox" onChange={()=>this.selectClientRow(clientReq.number)} checked={this.state.selectedClientRequests.includes(clientReq.number)}/></td>
                                                 <td>{clientReq.data.name}</td>
                                                 <td>{clientReq.data.address}</td>
                                                 <td>{clientReq.data.datacap}</td>
@@ -248,7 +302,7 @@ export default class Overview extends Component<{}, OverviewStates> {
                                 {this.context.clientRequests.length === 0 ? <div className="nodata">No client requests yet</div> : null}
                             </div>
                         : null }
-                        { this.state.tabs === "2" && !this.context.githubLogged ?
+                        { this.state.tabs === "1" && !this.context.githubLogged ?
                             <div id="githublogin">
                                 <LoginGithub
                                     clientId="8e922e2845a6083ab65c"
@@ -262,13 +316,15 @@ export default class Overview extends Component<{}, OverviewStates> {
                                 />
                             </div>
                         : null }
-                        { this.state.tabs === "1" ?
+                        { this.state.tabs === "2" ?
                             <div>
                                 <table>
                                     <thead>
                                         <tr>
-                                            <td>Client</td>
+                                            <td>Name</td>
+                                            <td>Address</td>
                                             <td>Datacap</td>
+                                            <td>Audit trail</td>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -278,8 +334,12 @@ export default class Overview extends Component<{}, OverviewStates> {
                                                 // onClick={()=>this.selectRow(transaction.id)}
                                                 /*className={this.state.selectedTransactions.includes(transaction.id)?'selected':''}*/
                                             >
+
+                                                <td>{this.context.clientsGithub[transaction.verified] ? this.context.clientsGithub[transaction.verified].data.name : null}</td>
                                                 <td>{transaction.verified}</td>
                                                 <td>{datacapFilter(transaction.datacap)}</td>
+                                                <td>{this.context.clientsGithub[transaction.verified] ? <a target="_blank" rel="noopener noreferrer" href={this.context.clientsGithub[transaction.verified].url}>#{this.context.clientsGithub[transaction.verified].number}</a>:null}</td>
+
                                             </tr>
                                         )}
                                     </tbody>
