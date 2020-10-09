@@ -3,6 +3,7 @@ import Logo from '../logo.svg';
 // @ts-ignore
 import { ButtonPrimary } from "slate-react-system";
 import RootKey from './svg/root-key.svg';
+import Verifiers from './svg/verifier-wallet.svg';
 import Welcome from '../components/Welcome'
 import { Location } from 'history';
 
@@ -27,7 +28,6 @@ class Preonboarding extends Component<{}, PreonboardingStates, LocationState> {
       tabs: index > 0 ? index.toString() : '0'
     }
   }
-
 
   componentDidMount() {
   }
@@ -54,7 +54,11 @@ class Preonboarding extends Component<{}, PreonboardingStates, LocationState> {
           </div>
           <div className="options">
             <div className="columnleft">
-              <div><img src={RootKey} alt="For RKH & Verifiers" /></div>
+              <div>{this.state.tabs === "0" ?
+                <img src={RootKey} alt="For RKH & Verifiers" />
+                : <img src={Verifiers} alt="For RKH & Verifiers" />
+              }
+              </div>
             </div>
             <div className="columright">
               <div className="optiontitle">For Clients & Miners</div>
