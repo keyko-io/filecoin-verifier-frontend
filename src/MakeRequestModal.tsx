@@ -40,7 +40,33 @@ class MakeRequestModal extends Component<{}, States> {
 
     handleSubmit = async (e:any) => {
         e.preventDefault()
-        dispatchCustomEvent({ name: "delete-modal", detail: {} })
+
+        const emailrequest = await fetch(config.apiUri+'/api/v1/email/requestDatacap', {
+            method: 'POST',
+            headers: {
+              'Accept': 'application/json',
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${config.apiToken}`
+            },
+            body: JSON.stringify({
+                verifierEmail: "verifier@gmail.com",
+                verifierName: "Verifier A",
+                name: "Fulanito",
+                publicProfile: "fulanito.com",
+                useCase: this.state.useplan,
+                contact: this.state.contact,
+                address: this.state.address,
+                datacap: this.state.datacap,
+                datacapUnit: this.state.datacapExt,
+                comments: this.state.comments,
+                subject : "New Request of Datacap",
+                datetimeRequested: ""
+            })
+        })
+        const request = await emailrequest.json()
+        if(request.success){
+            dispatchCustomEvent({ name: "delete-modal", detail: {} })
+        }
         this.setState({ submitLoading: false })
     }
 
