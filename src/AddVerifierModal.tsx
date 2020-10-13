@@ -67,7 +67,7 @@ class AddVerifierModal extends Component<{}, States> {
             <form>
                 <div className="inputholder">
                     <Input
-                        description="Verifier Account ID"
+                        description="Notary Account ID"
                         name="verifierAccountID"
                         value={this.state.verifierAccountID}
                         placeholder="xxxxxx"
@@ -77,7 +77,7 @@ class AddVerifierModal extends Component<{}, States> {
                 <div className="datacapholder">
                     <div className="datacap">
                         <Input
-                            description="Verifier datacap"
+                            description="Notary datacap"
                             name="datacap"
                             value={this.state.datacap}
                             placeholder="1"
@@ -93,7 +93,7 @@ class AddVerifierModal extends Component<{}, States> {
                         />
                     </div>
                 </div>
-                <ButtonPrimary onClick={this.handleSubmit}>{this.state.proposeLoading ? <LoaderSpinner /> : 'Propose Verifier'}</ButtonPrimary>
+                <ButtonPrimary onClick={this.handleSubmit}>{this.state.proposeLoading ? <LoaderSpinner /> : 'Propose Notary'}</ButtonPrimary>
             </form>
         </div>
     )

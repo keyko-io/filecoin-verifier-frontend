@@ -144,7 +144,7 @@ export default class Rootkey  extends Component<{},States> {
 
                   <form>
                         <Input
-                            description="Verifier Account ID"
+                            description="Notary Account ID"
                             name="verifierAccountID"
                             value={this.state.verifierAccountID}
                             placeholder="xxxxxx"
@@ -153,7 +153,7 @@ export default class Rootkey  extends Component<{},States> {
                         <div className="datacapholder">
                             <div className="datacap">
                                 <Input
-                                    description="Verifier datacap"
+                                    description="Notary datacap"
                                     name="datacap"
                                     value={this.state.datacap}
                                     placeholder="1"
@@ -169,7 +169,7 @@ export default class Rootkey  extends Component<{},States> {
                                 />
                             </div>
                         </div>
-                        <ButtonPrimary onClick={this.handleSubmit}>{this.state.approveLoading ? <LoaderSpinner /> : 'Propose Verifier'}</ButtonPrimary>
+                        <ButtonPrimary onClick={this.handleSubmit}>{this.state.approveLoading ? <LoaderSpinner /> : 'Propose Notary'}</ButtonPrimary>
                   </form>
                 </div>
 
@@ -178,13 +178,13 @@ export default class Rootkey  extends Component<{},States> {
                   <H1>Propose Revoke Verifier</H1>
                   <form>
                         <Input
-                            description="Verifier Account ID"
+                            description="Notary Account ID"
                             name="revokedVerifierAccountID"
                             value={this.state.revokedVerifierAccountID}
                             placeholder="xxxxxx"
                             onChange={this.handleChange}
                         />
-                        <ButtonPrimary onClick={this.handleSubmitRevoke}>{this.state.approveLoading ? <LoaderSpinner /> : 'Propose Revoke Verifier'}</ButtonPrimary>
+                        <ButtonPrimary onClick={this.handleSubmitRevoke}>{this.state.approveLoading ? <LoaderSpinner /> : 'Propose Revoke Notary'}</ButtonPrimary>
                   </form>
                 </div>
 

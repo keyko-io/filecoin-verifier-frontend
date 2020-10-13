@@ -128,7 +128,7 @@ class App extends Component<{},States> {
               <div className="accountselectholder">
                 <div className="headertitles">Account Type</div>
                 <div>
-                  <div>{this.context.viewroot ? 'Rootkey Holder' : 'Approved Verifier'}</div>
+                  <div>{this.context.viewroot ? 'Rootkey Holder' : 'Approved Notary'}</div>
                   <div className="viewswitch">
                   <Toggle
                     active={this.context.viewroot}
@@ -154,7 +154,7 @@ class App extends Component<{},States> {
                 }
               </div>
             : null}
-            <div className="headertitles">{this.context.viewroot ? 'Rootkey Holder ID' : 'Approved Verifier ID'}</div>
+            <div className="headertitles">{this.context.viewroot ? 'Rootkey Holder ID' : 'Approved Notary ID'}</div>
             <div>{addressFilter(this.context.activeAccount)}</div>
           </div>
           <div className="wallet">
