@@ -23,7 +23,7 @@ type OptionsType = OptionType[]
 
 const options: OptionsType = [
   {
-    title: "For RKH & Verifiers",
+    title: "For RKH & Notarys",
     desc: "Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah",
     imgSrc: RootKey.toString()
   }, {
