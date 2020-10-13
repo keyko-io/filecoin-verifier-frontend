@@ -9,7 +9,8 @@ import history from '../context/History'
 import Welcome from '../components/Welcome'
 
 type States = {
-  optionSelected: boolean[]
+  optionSelected: boolean[],
+  url: number
 }
 
 type OptionType = {
@@ -26,7 +27,7 @@ const options: OptionsType = [
     desc: "Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah",
     imgSrc: RootKey.toString()
   }, {
-    title: "For Clients & Miners",
+    title: "For Clients",
     desc: "Here is where you will manage all your deals with miners as you operate as a verified client. To become verified, you’ll need to manage your relationship with approved verifies here.",
     imgSrc: Cients.toString()
   }]
@@ -37,6 +38,7 @@ class Onboarding extends Component<{}, States> {
     super(props);
     this.state = {
       optionSelected: [false, false],
+      url: 0,
     }
   }
 
@@ -47,14 +49,22 @@ class Onboarding extends Component<{}, States> {
         newState[index] = true :
         newState[index] = false
     })
-    this.setState({ optionSelected: newState })
+    this.setState({
+      optionSelected: newState,
+      url: Number(e.currentTarget.id)
+    })
   }
 
   getStarted = () => {
-    history.push({
-      pathname: "/wallet",
-      state: { selected: this.state.optionSelected }
-    })
+    this.state.url == 0 ?
+      history.push({
+        pathname: "/wallet",
+        state: { selected: this.state.optionSelected }
+      })
+      :
+      history.push({
+        pathname: "/landing",
+      })
   }
 
   render() {

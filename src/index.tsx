@@ -11,6 +11,7 @@ import Preonboarding from './pages/Preonboarding';
 import Onboarding from './pages/Onboarding';
 import Landing from './pages/Landing';
 import history from './context/History';
+import Verifiers from './pages/Verifiers';
 
 ReactDOM.render(
   <React.StrictMode>
@@ -21,10 +22,11 @@ ReactDOM.render(
           <Route exact path={'/app'} component={App} ></Route>
           <Route exact path={'/wallet'} component={Preonboarding} ></Route>
           <Route exact path={'/landing'} component={Landing} ></Route>
+          <Route exact path={'/verifiers'} component={Verifiers} ></Route>
         </Switch>
       </Router>
       <GlobalNotification style={{ bottom: 0, right: 0 }} />
-      <GlobalModal style={{ maxWidth: "none" }}/>
+      <GlobalModal style={{ maxWidth: "none" }} />
     </WalletProvider>
   </React.StrictMode>,
   document.getElementById('root')

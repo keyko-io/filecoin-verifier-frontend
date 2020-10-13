@@ -185,10 +185,10 @@
 
       .textinfo {
         position: absolute;
-        left: 0; 
-        right: 0; 
-        margin-left: auto; 
-        margin-right: auto; 
+        left: 0;
+        right: 0;
+        margin-left: auto;
+        margin-right: auto;
         top: 5px;
         max-width: 1280px;
         color: #fff;
@@ -378,7 +378,7 @@
     padding-left: 30px;
     padding-right: 30px;
 
-    > div {
+    >div {
       flex-basis: 50%;
       padding-left: 10px;
       padding-right: 10px;
@@ -572,6 +572,15 @@
         margin-top: 70px;
       }
 
+      .optionhead {
+        margin-top: 50px;
+        font-family: JetBrains Mono;
+        font-style: normal;
+        font-weight: normal;
+        font-size: 48px;
+        line-height: 48px;
+      }
+
       .optiontitle {
         margin-top: 50px;
         font-family: Inter;
@@ -698,7 +707,7 @@
     left: 0;
     right: 0;
     background: #fff;
-    top: 280px;
+    top: 220px;
     text-align: center;
     display: flex;
     border-left: 1px solid #0091FF;
@@ -722,7 +731,7 @@
 
     .checks {
       flex: 5%;
-      margin-top: 80px;
+      margin-top: 50px;
 
       figure {
         margin-left: 20px;
