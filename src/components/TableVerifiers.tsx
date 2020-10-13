@@ -6,16 +6,11 @@ import MakeRequestModal from '../MakeRequestModal';
 export default class TableVerifiers extends Component {
 
     columns = [
-        { key: "name", name: "Verifier", type: "FILE_LINK" },
+        { key: "name", name: "Notary Name", type: "FILE_LINK", width: "98px" },
+        { key: "use_case", name: "Use Case" },
         { key: "location", name: "Location" },
         { key: "website", name: "website" },
-        { key: "email", name: "email" },
-        { key: "address", name: "Address" },
-        { key: "total_datacap", name: "Total Datacap" },
-        { key: "email_request", name: "Available on email," },
-        { key: "github_request", name: "Available on github" },
-        { key: "github_user", name: "Github user" },
-        { key: "github_repo", name: "Github repo" }
+        { key: "total_datacap", name: "Datacap" }
     ]
 
     state = {
@@ -38,7 +33,7 @@ export default class TableVerifiers extends Component {
     }
 
     getList = async () => {
-        const verifiers = require('../data/verifiers.json').verifiers;
+        const verifiers = require('../data/verifiers.json').notarys;
         this.setState({ verifiers })
     }
 
@@ -54,11 +49,11 @@ export default class TableVerifiers extends Component {
     }
 
     contactVerifier = async () => {
-        //let verifier: any = this.state.verifiers[this.state.selectedVerifier]
+        let verifier: any = this.state.verifiers[this.state.selectedVerifier]
         dispatchCustomEvent({
             name: "create-modal", detail: {
                 id: Math.random().toString(36).replace(/[^a-z]+/g, '').substr(0, 5),
-                modal: <MakeRequestModal/>
+                modal: <MakeRequestModal verifier={verifier} />
             }
         })
     }
@@ -66,28 +61,28 @@ export default class TableVerifiers extends Component {
     public render() {
         return (
             <div className="verifiers">
-            <div className="tableverifiers">
-                <div className="checks">
-                    {this.state.verifiers.map((_, i) => {
-                        return (<CheckBox
-                            name={i}
-                            key={i}
-                            value={this.state.checks[i]}
-                            onChange={this.updateChecks}
-                        />)
-                    })}
-                </div>
-                <div className="data">
-                    <Table
-                        data={{
-                            columns: this.columns,
-                            rows: this.state.verifiers,
-                        }}
-                        name="verifiers"
-                    />
+                <div className="tableverifiers">
+                    <div className="checks">
+                        {this.state.verifiers.map((_, i) => {
+                            return (<CheckBox
+                                name={i}
+                                key={i}
+                                value={this.state.checks[i]}
+                                onChange={this.updateChecks}
+                            />)
+                        })}
+                    </div>
+                    <div className="data">
+                        <Table
+                            data={{
+                                columns: this.columns,
+                                rows: this.state.verifiers,
+                            }}
+                            name="verifiers"
+                        />
+                    </div>
                 </div>
             </div>
-        </div>
         )
     }
 }

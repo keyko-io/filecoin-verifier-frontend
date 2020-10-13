@@ -87,7 +87,7 @@ class Preonboarding extends Component<{}, PreonboardingStates, LocationState> {
               </div>
             </div>
             <div className="columright">
-              <div className="optiontitle">For Clients & Miners</div>
+              <div className="optiontitle">For Clients</div>
               <div className="optiondesc">Here is where you will manage all your deals with miners as you operate as a verified client. To become verified, you’ll need to manage your relationship with approved verifies here.</div>
             </div>
           </div>
