@@ -189,11 +189,11 @@ export default class Overview extends Component<{}, OverviewStates> {
                             </div>
                             <div className="textinfodatablock">
                                 <div className="data">{this.state.pendingverifiers.length}</div>
-                                <div className="text">Pending verifiers</div>
+                                <div className="text">Pending Notaries</div>
                             </div>
                             <div className="textinfodatablock">
                                 <div className="data">{this.context.verified.length}</div>
-                                <div className="text">Approved Verifiers</div>
+                                <div className="text">Approved Notaries</div>
                             </div>
                         </div>
                     </div>
@@ -202,12 +202,12 @@ export default class Overview extends Component<{}, OverviewStates> {
                     <div className="main">
                         <div className="tabsholder">
                             <div className="tabs">
-                                <div className={this.state.tabs === "1" ? "selected" : ""} onClick={()=>{this.showPending()}}>Pending verifiers ({this.state.pendingverifiers.length})</div>
-                                <div className={this.state.tabs === "2" ? "selected" : ""} onClick={()=>{this.showApproved()}}>Accepted Verifiers ({this.context.verified.length})</div>
+                                <div className={this.state.tabs === "1" ? "selected" : ""} onClick={()=>{this.showPending()}}>Pending Notaries ({this.state.pendingverifiers.length})</div>
+                                <div className={this.state.tabs === "2" ? "selected" : ""} onClick={()=>{this.showApproved()}}>Accepted Notaries ({this.context.verified.length})</div>
                             </div>
                             <div className="tabssadd">
-                                {this.state.tabs === "2" ? <ButtonPrimary onClick={()=>this.proposeVerifier()}>Propose verifier</ButtonPrimary> : null}
-                                {this.state.tabs === "1" ? <ButtonPrimary onClick={()=>this.handleSubmitApprove()}>Accept verifiers</ButtonPrimary> : null}
+                                {this.state.tabs === "2" ? <ButtonPrimary onClick={()=>this.proposeVerifier()}>Propose Notary</ButtonPrimary> : null}
+                                {this.state.tabs === "1" ? <ButtonPrimary onClick={()=>this.handleSubmitApprove()}>Accept Notaries</ButtonPrimary> : null}
                             </div>
                         </div>
                         { this.state.tabs === "2" ?
@@ -216,7 +216,7 @@ export default class Overview extends Component<{}, OverviewStates> {
                                 <table>
                                     <thead>
                                         <tr>
-                                            <td>Verifier</td>
+                                            <td>Notary</td>
                                             <td>Datacap</td>
                                         </tr>
                                     </thead>
@@ -229,7 +229,7 @@ export default class Overview extends Component<{}, OverviewStates> {
                                         )}
                                     </tbody>
                                 </table>
-                                {this.context.verified.length === 0 ? <div className="nodata">No verifiers yet</div> : null}
+                                {this.context.verified.length === 0 ? <div className="nodata">No notaries yet</div> : null}
                             </div>:null
                         }
                         { this.state.tabs === "1" ?
@@ -239,7 +239,7 @@ export default class Overview extends Component<{}, OverviewStates> {
                                     <thead>
                                         <tr>
                                             <td>Type</td>
-                                            <td>Verifier</td>
+                                            <td>Notary</td>
                                             <td>Datacap</td>
                                             <td>Proposed By</td>
                                         </tr>
@@ -259,7 +259,7 @@ export default class Overview extends Component<{}, OverviewStates> {
                                         )}
                                     </tbody>
                                 </table>
-                                {this.state.pendingverifiers.length === 0 ? <div className="nodata">No pending verifiers yet</div> : null}
+                                {this.state.pendingverifiers.length === 0 ? <div className="nodata">No pending notaries yet</div> : null}
                             </div>:null
                         }
                     </div>

@@ -7,7 +7,7 @@ export default class Verifiers extends Component {
     public static contextType = Wallet
 
     columns = [
-        { key: "verifier", name: "Verifier" },
+        { key: "verifier", name: "Notaries" },
         { key: "datacap", name: "Datacap" }
     ]
 
