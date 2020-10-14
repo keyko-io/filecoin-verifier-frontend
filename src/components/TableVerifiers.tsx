@@ -10,7 +10,8 @@ export default class TableVerifiers extends Component {
         { key: "use_case", name: "Use Case" },
         { key: "location", name: "Location" },
         { key: "website", name: "website" },
-        { key: "total_datacap", name: "Datacap" }
+        { key: "max_datacap_allocation", name: "Max Datacap Allocation" },
+        { key: "private_request", name: "Available for Private Request" }
     ]
 
     state = {
