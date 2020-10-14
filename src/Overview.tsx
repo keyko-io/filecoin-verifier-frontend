@@ -155,7 +155,7 @@ export default class Overview extends Component<{}, OverviewStates> {
         let pendingverifiers: any[] = []
         for(let txs in pendingTxs){
             pendingverifiers.push({
-                id: txs,
+                id: pendingTxs[txs].id,
                 type: pendingTxs[txs].parsed.params.cap.toString() === '0' ? 'Revoke' : 'Add',
                 verifier: pendingTxs[txs].parsed.params.verifier,
                 datacap: pendingTxs[txs].parsed.params.cap.toString(),
