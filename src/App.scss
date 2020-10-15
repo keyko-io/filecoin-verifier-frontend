@@ -394,6 +394,18 @@
       background-color: #0090FF;
     }
   }
+
+  .methodselection {
+    margin-top: 15px;
+
+    .methodlabel {
+      margin-bottom: 8px;
+    }
+
+    label {
+      margin-bottom: 4px;
+    }
+  }
 }
 
 #githublogin {
