@@ -59,7 +59,7 @@ class MakeRequestModal extends Component<ModalProps, States> {
     }
 
     handleSubmit = async (e:any) => {
-        e.prevetDefault()
+        e.preventDefault()
         if(this.state.gitHubMethod){
             this.handleGithubSubmit()
         }
@@ -69,6 +69,7 @@ class MakeRequestModal extends Component<ModalProps, States> {
     }
 
     handleEmailSubmit = async () => {
+        try {
         const emailrequest = await fetch(config.apiUri + '/api/v1/email/requestDatacap', {
             method: 'POST',
             headers: {
@@ -80,7 +81,7 @@ class MakeRequestModal extends Component<ModalProps, States> {
                 verifierEmail: this.props.verifier.email,
                 verifierName: this.state.verifierName,
                 name: this.state.organization,
-                publicProfile: this.props.verifier.website,
+                publicProfile: this.state.publicprofile,
                 useCase: this.state.useplan,
                 contact: this.state.contact,
                 address: this.state.address,
@@ -96,6 +97,11 @@ class MakeRequestModal extends Component<ModalProps, States> {
             dispatchCustomEvent({ name: "delete-modal", detail: {} })
         }
         this.setState({ submitLoading: false })
+    }catch(error) {
+        // HANDLE ERROR
+        console.log("ERROR: " + error)
+    }
+
     }
 
     handleGithubSubmit = async () => {
