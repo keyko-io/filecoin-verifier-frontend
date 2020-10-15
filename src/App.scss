@@ -482,7 +482,7 @@
     background: linear-gradient(180deg, #0090FF 0%, #39C1CB 99.99%, rgba(0, 144, 255, 0) 100%);
 
     .title {
-      top: 96px;
+      margin-top: 29px;
       font-family: Inter;
       font-style: normal;
       font-weight: bold;
@@ -491,17 +491,19 @@
       align-items: center;
       text-align: center;
       color: #FFFFFF;
-      margin-top: 20px;
     }
 
     .description {
+      padding-top: 10px;
       font-family: Inter;
       font-style: normal;
       font-weight: normal;
       font-size: 16px;
       line-height: 24px;
       color: #FFFFFF;
-      margin-top: 10px;
+      max-width: 960px;
+      position: relative;
+      margin: auto;
     }
   }
 
@@ -593,7 +595,16 @@
         padding-top: 60px;
       }
 
-
+      .optionsubtitle {
+        font-family: Inter;
+        font-style: normal;
+        font-weight: 600;
+        font-size: 16px;
+        line-height: 24px;
+        line-height: 36px;
+        padding-top: 15px;
+        
+      }
 
       .optiondesc {
         margin-top: 20px;

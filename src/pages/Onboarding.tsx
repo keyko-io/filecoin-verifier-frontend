@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 // @ts-ignore
-import { ButtonPrimary } from "slate-react-system";
 import RootKey from './svg/rkh-verifiers.svg';
 import Cients from './svg/client-miners.svg';
 import Option from '../components/Option'
@@ -21,7 +20,7 @@ type OptionsType = OptionType[]
 
 const options: OptionsType = [
   {
-    title: "For Root Key Holders & Notaries",
+    title: "For Root Key Holders and Notaries",
     desc: "Manage and process in-bound DataCap allocation requests.",
     imgSrc: RootKey.toString()
   }, {
