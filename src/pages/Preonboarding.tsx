@@ -23,9 +23,7 @@ class Preonboarding extends Component<{}, PreonboardingStates, LocationState> {
 
   constructor(props: { location: LocationState }) {
     super(props);
-    const selectTab = (element: boolean) => element === true;
-    const selected = props.location.state.selected as unknown as boolean[];
-    const index = selected.findIndex(selectTab);
+    const index = props.location.state.selected as unknown as Number;
     this.state = {
       tabs: index > 0 ? index.toString() : '0'
     }

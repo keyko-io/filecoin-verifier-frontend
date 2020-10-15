@@ -6,7 +6,7 @@ type OptionProps = {
     subtitle?: string,
     desc: string,
     imgSrc: string,
-    active: boolean,
+    active?: boolean,
     id: number,
     onClick: (target: any) => void;
 }
