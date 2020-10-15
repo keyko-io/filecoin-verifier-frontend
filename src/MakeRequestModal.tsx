@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Wallet } from './context/Index'
 import { config } from './config'
 // @ts-ignore
-import { dispatchCustomEvent, Input, ButtonPrimary, SelectMenu, LoaderSpinner } from "slate-react-system";
+import { dispatchCustomEvent, Input, ButtonPrimary, SelectMenu, LoaderSpinner, CheckBox } from "slate-react-system";
 
 type States = {
     address: string
@@ -16,6 +16,8 @@ type States = {
     submitLoading: boolean
     verifierName: string
     publicProfile: string
+    emailMethod: boolean,
+    gitHubMethod: boolean
 }
 
 type ModalProps = {
@@ -25,8 +27,9 @@ type ModalProps = {
         use_case: string,
         location: string,
         website: string,
-        total_datacap: number
-        email: string
+        total_datacap: number,
+        email: string,
+        private_request: string
     }
 }
 
@@ -46,16 +49,26 @@ class MakeRequestModal extends Component<ModalProps, States> {
             datacapExt: 'TiB',
             submitLoading: false,
             verifierName: this.props.verifier.name,
-            publicProfile: this.props.verifier.website
+            publicProfile: this.props.verifier.website,
+            emailMethod: false,
+            gitHubMethod: false
         }
     }
 
     componentDidMount() {
     }
 
-    handleSubmit = async (e: any) => {
-        e.preventDefault()
+    handleSubmit = async (e:any) => {
+        e.prevetDefault()
+        if(this.state.gitHubMethod){
+            this.handleGithubSubmit()
+        }
+        if(this.state.emailMethod){
+            this.handleEmailSubmit()
+        }
+    }
 
+    handleEmailSubmit = async () => {
         const emailrequest = await fetch(config.apiUri + '/api/v1/email/requestDatacap', {
             method: 'POST',
             headers: {
@@ -67,7 +80,7 @@ class MakeRequestModal extends Component<ModalProps, States> {
                 verifierEmail: this.props.verifier.email,
                 verifierName: this.state.verifierName,
                 name: this.state.organization,
-                publicProfile:  this.props.verifier.website,
+                publicProfile: this.props.verifier.website,
                 useCase: this.state.useplan,
                 contact: this.state.contact,
                 address: this.state.address,
@@ -85,7 +98,28 @@ class MakeRequestModal extends Component<ModalProps, States> {
         this.setState({ submitLoading: false })
     }
 
+    handleGithubSubmit = async () => {
+        this.setState({ submitLoading: true })
+        this.context.createRequest({
+            address: this.state.address,
+            datacap: this.state.datacap + this.state.datacapExt,
+            organization: this.state.organization,
+            publicprofile: this.state.publicprofile,
+            useplan: this.state.useplan,
+            contact: this.state.contact,
+            comments: this.state.comments
+        })
+        dispatchCustomEvent({ name: "delete-modal", detail: {} })
+        this.setState({ submitLoading: false })
+    }
+
     handleChange = (e: any) => {
+        if(e.target.name === 'gitHubMethod'){
+            this.setState({emailMethod: false})
+        }
+        if(e.target.name === 'emailMethod'){
+            this.setState({gitHubMethod: false})
+        }
         this.setState({ [e.target.name]: e.target.value } as any)
     }
 
@@ -173,6 +207,22 @@ class MakeRequestModal extends Component<ModalProps, States> {
                                     placeholder="Additional comments"
                                     onChange={this.handleChange}
                                 />
+                            </div>
+                            <div className="methodselection">
+                                <div className="methodlabel"> Select the method to send your request</div>
+                                {this.props.verifier.private_request === "true" ? 
+                                <CheckBox
+                                    name="emailMethod"
+                                    value={this.state.emailMethod}
+                                    onChange={this.handleChange}
+                                >Email - send message</CheckBox>
+                                : null
+                            }
+                                <CheckBox
+                                    name="gitHubMethod"
+                                    value={this.state.gitHubMethod}
+                                    onChange={this.handleChange}
+                                >Github - create issue </CheckBox>
                             </div>
                         </div>
 
