@@ -603,7 +603,7 @@
         line-height: 24px;
         line-height: 36px;
         padding-top: 15px;
-        
+
       }
 
       .optiondesc {
@@ -777,13 +777,15 @@
     margin: auto;
     cursor: pointer;
   }
-  .headerback{
-    width: 50px;
+
+  .headerback {
+    cursor: pointer;
     float: left;
     margin: 25px 20px;
-  }
-  .backtitle{
-    float: left;
-    margin-left: 20px;
+    font-family: Inter;
+    font-style: normal;
+    font-weight: 600;
+    font-size: 16px;
+    line-height: 24px;
   }
 }
