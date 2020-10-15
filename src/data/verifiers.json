@@ -6,10 +6,9 @@
             "use_case": ["Computer Vision", "Geological Data"],
             "location": "US",
             "website": "google.com",
-            "total_datacap": 10000,
-            "total_datacap_unit": "PB",
             "max_datacap_allocation": "1 PB",
             "email": "notarya@a.com",
+            "github_user": "notarya",
             "private_request": "true"
         },
         {
@@ -18,10 +17,9 @@
             "use_case":  ["Long-term backups", "Long-term log storage", "Personal Storage"],
             "location": "EUR",
             "website": "google.com",
-            "total_datacap": 100,
-            "total_datacap_unit": "PB",
             "max_datacap_allocation": "100 GB",
             "email": "notaryb@a.com",
+            "github_user": "notaryb",
             "private_request": "true"
         },
         {
@@ -30,10 +28,9 @@
             "use_case":  ["Computer Vision", "Geological Data", "Autonomous Driving"],
             "location": "EUR",
             "website": "google.com",
-            "total_datacap": 250,
-            "total_datacap_unit": "PB",
             "max_datacap_allocation":  "100 GB",
             "email": "notaryc@a.com",
+            "github_user": "notaryc",
             "private_request": "true"
         },
         {
@@ -42,10 +39,9 @@
             "use_case":  ["Web 2 applications", "Decentralized applications"],
             "location": "ASIA",
             "website": "google.com",
-            "total_datacap": 10000,
-            "total_datacap_unit": "PB",
             "max_datacap_allocation": "1 PB",
             "email": "notaryd@a.com",
+            "github_user": "notaryd",
             "private_request": "true"
         },
         {
@@ -54,10 +50,9 @@
             "use_case":  ["Use Case"],
             "location": "AFR",
             "website": "google.com",
-            "total_datacap": 100,
-            "total_datacap_unit": "PB",
             "max_datacap_allocation": "100 GB",
             "email": "notarye@a.com",
+            "github_user": "notarye",
             "private_request": "true"
         },
         {
@@ -66,10 +61,9 @@
             "use_case":  ["Use Case"],
             "location": "AMER",
             "website": "google.com",
-            "total_datacap": 100,
-            "total_datacap_unit": "PB",
             "max_datacap_allocation": "100 GB",
             "email": "notaryf@a.com",
+            "github_user": "notaryf",
             "private_request": "false"
         }
     ]
