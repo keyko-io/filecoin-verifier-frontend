@@ -11,7 +11,6 @@ class Welcome extends Component<WelcomeProps> {
         return (
             <div className="welcome">
                 <div className="title">{this.props.title}</div>
-                <div className="description">{this.props.description}</div>
             </div>
         )
     }

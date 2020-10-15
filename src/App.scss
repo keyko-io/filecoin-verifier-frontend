@@ -773,7 +773,17 @@
 .header {
   .headerlogo {
     position: relative;
-    width: 100px;
+    width: 180px;
     margin: auto;
+    cursor: pointer;
+  }
+  .headerback{
+    width: 50px;
+    float: left;
+    margin: 25px 20px;
+  }
+  .backtitle{
+    float: left;
+    margin-left: 20px;
   }
 }
