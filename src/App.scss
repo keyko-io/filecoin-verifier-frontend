@@ -482,7 +482,7 @@
     background: linear-gradient(180deg, #0090FF 0%, #39C1CB 99.99%, rgba(0, 144, 255, 0) 100%);
 
     .title {
-      top: 96px;
+      margin-top: 29px;
       font-family: Inter;
       font-style: normal;
       font-weight: bold;
@@ -491,17 +491,19 @@
       align-items: center;
       text-align: center;
       color: #FFFFFF;
-      margin-top: 20px;
     }
 
     .description {
+      padding-top: 10px;
       font-family: Inter;
       font-style: normal;
       font-weight: normal;
       font-size: 16px;
       line-height: 24px;
       color: #FFFFFF;
-      margin-top: 10px;
+      max-width: 960px;
+      position: relative;
+      margin: auto;
     }
   }
 
@@ -563,6 +565,7 @@
     border-right: 1px solid #0091FF;
     border-left: 1px solid #0091FF;
 
+
     .option {
       flex: 50%;
       box-sizing: border-box;
@@ -570,6 +573,7 @@
 
       img {
         margin-top: 70px;
+        max-height: 186px;
       }
 
       .optionhead {
@@ -582,12 +586,24 @@
       }
 
       .optiontitle {
-        margin-top: 50px;
+        top: 150px;
         font-family: Inter;
         font-style: normal;
         font-weight: bold;
         font-size: 24px;
         line-height: 36px;
+        padding-top: 60px;
+      }
+
+      .optionsubtitle {
+        font-family: Inter;
+        font-style: normal;
+        font-weight: 600;
+        font-size: 16px;
+        line-height: 24px;
+        line-height: 36px;
+        padding-top: 15px;
+
       }
 
       .optiondesc {
@@ -755,5 +771,25 @@
       box-sizing: border-box;
       border-radius: 4px;
     }
+  }
+}
+
+.header {
+  .headerlogo {
+    position: relative;
+    width: 180px;
+    margin: auto;
+    cursor: pointer;
+  }
+
+  .headerback {
+    cursor: pointer;
+    float: left;
+    margin: 25px 20px;
+    font-family: Inter;
+    font-style: normal;
+    font-weight: 600;
+    font-size: 16px;
+    line-height: 24px;
   }
 }

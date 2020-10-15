@@ -1,12 +1,16 @@
 import React, { Component } from 'react';
 
+type WelcomeProps = {
+    title: string,
+    description: string,
+}
 
-class Welcome extends Component {
+class Welcome extends Component<WelcomeProps> {
 
     render() {
         return (
             <div className="welcome">
-                <div className="title">Welcome to the Filecoin Pro Registry</div>
+                <div className="title">{this.props.title}</div>
             </div>
         )
     }

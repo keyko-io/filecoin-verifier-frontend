@@ -38,7 +38,7 @@ export default class TableVerifiers extends Component {
     }
 
     getList = async () => {
-        /*
+
         let verifiers
         if(config.verifiers === 'DEV'){
             verifiers = jsonVerifiers.notaries
@@ -46,7 +46,6 @@ export default class TableVerifiers extends Component {
             verifiers = jsonvVerifiersProd.notaries
         }
         this.setState({ verifiers })
-        */
     }
 
     updateChecks = (e: any) => {

@@ -21,12 +21,14 @@ class Option extends Component<OptionProps> {
                 <div><img src={this.props.imgSrc} alt={this.props.title} /></div>
                 {this.props.head ?
                     <div className="optionhead">{this.props.head}</div>
-                    : null}
+                    : null
+                }
                 <div className="optiontitle" style={{ marginTop: this.props.head ? '20px' : 'inherit' }}
                 >{this.props.title}</div>
                 {this.props.subtitle ?
                     <div className="optionsubtitle">{this.props.subtitle}</div>
-                    : null}
+                    : null
+                }
                 <div className="optiondesc">{this.props.desc}</div>
             </div>
         )

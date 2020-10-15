@@ -1,12 +1,11 @@
 import React, { Component } from 'react';
-import Logo from '../logo.svg';
 // @ts-ignore
-import { ButtonPrimary } from "slate-react-system";
 import TiB from './svg/tib.svg';
 import MorePiB from './svg/morepib.svg';
 import Option from '../components/Option'
 import Welcome from '../components/Welcome'
 import history from '../context/History'
+import Header from '../components/Header';
 
 type States = {
   optionSelected: boolean[],
@@ -16,7 +15,6 @@ type States = {
 
 type OptionType = {
   title: string,
-  head: string,
   subtitle: string,
   desc: string,
   imgSrc: string
@@ -27,14 +25,12 @@ type OptionsType = OptionType[]
 const options: OptionsType = [
   {
     title: "Automatic Verification",
-    head: "",
     subtitle: "Get Verified by verify.glif.io",
     desc: "Receive small data allowances (8GB) by connecting to any GitHub account over 180 days old",
     imgSrc: TiB.toString()
   },
   {
     title: "General Verification",
-    head: "",
     subtitle: "Find a Notary in your geography or specialized in your use case",
     desc: "Receive a large amount of datacap for general storage requests such as personal, enterprise, institutional, or large scale archival purposes.",
     imgSrc: MorePiB.toString()
@@ -67,11 +63,12 @@ class Landing extends Component<{}, States> {
   render() {
     return (
       <div className="landing">
-        <div className="header">
-          <div><img src={Logo} alt="Filecoin" /></div>
-        </div>
+        <Header/>
         <div className="container">
-          <Welcome />
+          <Welcome
+            title="Welcome to the Filecoin Plus Registry"
+            description="A public request is all about Dash launched a hot deterministic wallet! Stellar is a burned exchange during lots of wash trade, so someone slept on the trusted fish. It proves many difficulty behind some cold wallet! Since IOTA counted few hot gas..."
+          />
           <div className="options twooptions">
             {options.map((option: OptionType, index: number) => {
               return <Option
