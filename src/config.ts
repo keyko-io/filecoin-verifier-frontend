@@ -5,7 +5,7 @@ export const config = {
     lotusNodes: [{
         name: 'Mainnet',
         code: 461,
-        url: 'wss://node.glif.io/space10/lotus/rpc/v0',
+        url: 'wss://api.node.glif.io/space10/lotus/rpc/v0',
         token: process.env.REACT_APP_MAINNET_TOKEN
     },{
         name: 'Nerpanet',
