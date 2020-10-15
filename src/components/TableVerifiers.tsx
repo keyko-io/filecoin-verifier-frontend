@@ -4,8 +4,8 @@ import { Table, CheckBox, dispatchCustomEvent } from "slate-react-system";
 import MakeRequestModal from '../MakeRequestModal';
 import { config } from '../config'
 
-const jsonVerifiers = require('../data/verifiers.json').notaries;
-const jsonvVerifiersProd = require('../data/verifiers-prod.json').notaries;
+import jsonVerifiers from '../data/verifiers.json';
+import jsonvVerifiersProd from '../data/verifiers-prod.json';
 
 export default class TableVerifiers extends Component {
 
@@ -40,9 +40,9 @@ export default class TableVerifiers extends Component {
     getList = async () => {
         let verifiers
         if(config.verifiers === 'DEV'){
-            verifiers = jsonVerifiers
+            verifiers = jsonVerifiers.notaries
         } else {
-            verifiers = jsonvVerifiersProd
+            verifiers = jsonvVerifiersProd.notaries
         }
         this.setState({ verifiers })
     }
