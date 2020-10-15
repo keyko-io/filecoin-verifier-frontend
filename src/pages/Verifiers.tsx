@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
-import Logo from '../logo.svg';
 // @ts-ignore
 import { ButtonPrimary } from "slate-react-system";
 import Welcome from '../components/Welcome'
 import TableVerifiers from '../components/TableVerifiers';
+import Header from '../components/Header';
 
 class Verifiers extends Component<{}> {
 
@@ -22,13 +22,11 @@ class Verifiers extends Component<{}> {
   render() {
     return (
       <div className="landing">
-        <div className="header">
-          <div><img src={Logo} alt="Filecoin" /></div>
-        </div>
+        <Header/>
         <div className="container">
           <Welcome
-            title=""
-            description=""
+            title="Welcome to the Filecoin Plus Registry"
+            description="A public request is all about Dash launched a hot deterministic wallet! Stellar is a burned exchange during lots of wash trade, so someone slept on the trusted fish. It proves many difficulty behind some cold wallet! Since IOTA counted few hot gas..."
           />
           <TableVerifiers ref={this.child} />
           <div className="started">
