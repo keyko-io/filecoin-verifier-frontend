@@ -3,6 +3,10 @@ import React, { Component } from 'react';
 import { Table, CheckBox, dispatchCustomEvent } from "slate-react-system";
 import MakeRequestModal from '../MakeRequestModal';
 import { config } from '../config'
+
+const jsonVerifiers = require('../data/verifiers.json').notaries;
+const jsonvVerifiersProd = require('../data/verifiers-prod.json').notaries;
+
 export default class TableVerifiers extends Component {
 
     columns = [
@@ -36,9 +40,9 @@ export default class TableVerifiers extends Component {
     getList = async () => {
         let verifiers
         if(config.verifiers === 'DEV'){
-            verifiers = require('../data/verifiers.json').notaries;
+            verifiers = jsonVerifiers
         } else {
-            verifiers = require('../data/verifiers-prod.json').notaries;
+            verifiers = jsonvVerifiersProd
         }
         this.setState({ verifiers })
     }
