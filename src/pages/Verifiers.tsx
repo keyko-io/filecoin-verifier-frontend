@@ -26,7 +26,10 @@ class Verifiers extends Component<{}> {
           <div><img src={Logo} alt="Filecoin" /></div>
         </div>
         <div className="container">
-          <Welcome />
+          <Welcome
+            title=""
+            description=""
+          />
           <TableVerifiers ref={this.child} />
           <div className="started">
             <div className="doublebutton">

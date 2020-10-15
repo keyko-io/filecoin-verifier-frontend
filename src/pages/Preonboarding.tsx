@@ -40,10 +40,10 @@ class Preonboarding extends Component<{}, PreonboardingStates, LocationState> {
     this.setState({ tabs: "1" })
   }
 
-  loadLedgerWallet = async() => {
+  loadLedgerWallet = async () => {
     const logged = await this.context.loadWallet('Ledger')
     if (logged) {
-      if(this.state.tabs === "0" && this.context.viewroot === false){
+      if (this.state.tabs === "0" && this.context.viewroot === false) {
         this.context.switchview()
       }
       history.push({
@@ -52,10 +52,10 @@ class Preonboarding extends Component<{}, PreonboardingStates, LocationState> {
     }
   }
 
-  loadBurnerWallet = async() => {
+  loadBurnerWallet = async () => {
     const logged = await this.context.loadWallet('Burner')
     if (logged) {
-      if(this.state.tabs === "0" && this.context.viewroot === false){
+      if (this.state.tabs === "0" && this.context.viewroot === false) {
         this.context.switchview()
       }
       history.push({
@@ -71,7 +71,10 @@ class Preonboarding extends Component<{}, PreonboardingStates, LocationState> {
           <div><img src={Logo} alt="Filecoin" /></div>
         </div>
         <div className="container">
-          <Welcome />
+          <Welcome
+            title=""
+            description=""
+          />
           <div className="tabsholder">
             <div className={this.state.tabs === "0" ? "selected tab" : "tab"} onClick={() => { this.showRootKey() }}>Root Key Holder Wallet</div>
             <div className={this.state.tabs === "1" ? "selected tab" : "tab"} onClick={() => { this.showVerifier() }}>Notary Wallet</div>
@@ -91,8 +94,8 @@ class Preonboarding extends Component<{}, PreonboardingStates, LocationState> {
           </div>
           <div className="started">
             <div className="doublebutton">
-              <ButtonPrimary onClick={()=>this.loadBurnerWallet()}>Load Browser wallet</ButtonPrimary>
-              <ButtonPrimary onClick={()=>this.loadLedgerWallet()}>Load Ledger wallet</ButtonPrimary>
+              <ButtonPrimary onClick={() => this.loadBurnerWallet()}>Load Browser wallet</ButtonPrimary>
+              <ButtonPrimary onClick={() => this.loadLedgerWallet()}>Load Ledger wallet</ButtonPrimary>
             </div>
           </div>
         </div>

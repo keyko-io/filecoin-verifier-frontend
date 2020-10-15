@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import Logo from '../logo.svg';
 // @ts-ignore
 import { ButtonPrimary } from "slate-react-system";
 import RootKey from './svg/rkh-verifiers.svg';
@@ -7,6 +6,7 @@ import Cients from './svg/client-miners.svg';
 import Option from '../components/Option'
 import history from '../context/History'
 import Welcome from '../components/Welcome'
+import Header from '../components/Header';
 
 type States = {
 }
@@ -55,11 +55,12 @@ class Onboarding extends Component<{}, States> {
   render() {
     return (
       <div className="onboarding">
-        <div className="header">
-          <div><img src={Logo} alt="Filecoin" /></div>
-        </div>
+        <Header/>
         <div className="container">
-          <Welcome />
+          <Welcome
+          title="Welcome to the Filecoin Plus Registry"
+          description="You may proceed in any of these pathways but you may not have access to both of them. It all depends on whether you’ve been granted access to it by either the network, a rootkey holder, or an approved verifier respectively." 
+          />
           <div className="options twooptions">
             {options.map((option: OptionType, index: number) => {
               return <Option

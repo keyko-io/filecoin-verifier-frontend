@@ -71,7 +71,10 @@ class Landing extends Component<{}, States> {
           <div><img src={Logo} alt="Filecoin" /></div>
         </div>
         <div className="container">
-          <Welcome />
+          <Welcome
+            title=""
+            description=""
+          />
           <div className="options twooptions">
             {options.map((option: OptionType, index: number) => {
               return <Option
