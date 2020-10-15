@@ -55,36 +55,14 @@ class Landing extends Component<{}, States> {
   }
 
   changeActive = (e: any) => {
-    const newState = [false, false]
-    this.state.optionSelected.forEach((_, index) => {
-      index === Number(e.currentTarget.id) ?
-        newState[index] = true :
-        newState[index] = false
-    })
-    this.setState({
-      optionSelected: newState,
-      url: Number(e.currentTarget.id)
-    })
-  }
-
-  showPublic = () => {
-    this.setState({ tabs: "0" })
-  }
-
-  showPrivate = () => {
-    this.setState({ tabs: "1" })
-  }
-
-  navigate = () => {
-    if (this.state.url === 0 && this.state.tabs === '0') {
-      window.open('https://verify.glif.io/', '_blank');
-    }
-    else if (this.state.url === 1) {
+    e.currentTarget.id == '0' ?
+      window.open('https://verify.glif.io/', '_blank')
+      :
       history.push({
         pathname: "/verifiers"
       })
-    }
   }
+
 
   render() {
     return (
@@ -94,27 +72,19 @@ class Landing extends Component<{}, States> {
         </div>
         <div className="container">
           <Welcome />
-            <div className="options">
-              {options.map((option: OptionType, index: number) => {
-                return <Option
-                  key={index}
-                  id={index}
-                  title={option.title}
-                  desc={option.desc}
-                  subtitle={option.subtitle}
-                  imgSrc={option.imgSrc}
-                  active={this.state.optionSelected[index]}
-                  onClick={this.changeActive.bind(this)}
-                />
-              })}
-            </div>
-          <div className="started">
-            <div className="doublebutton">
-              <ButtonPrimary onClick={() => this.navigate()}>
-                Get Verified
-              </ButtonPrimary>
-              <ButtonPrimary>Learn More</ButtonPrimary>
-            </div>
+          <div className="options twooptions">
+            {options.map((option: OptionType, index: number) => {
+              return <Option
+                key={index}
+                id={index}
+                title={option.title}
+                desc={option.desc}
+                subtitle={option.subtitle}
+                imgSrc={option.imgSrc}
+                active={this.state.optionSelected[index]}
+                onClick={this.changeActive.bind(this)}
+              />
+            })}
           </div>
         </div>
       </div>

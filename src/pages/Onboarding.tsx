@@ -9,8 +9,6 @@ import history from '../context/History'
 import Welcome from '../components/Welcome'
 
 type States = {
-  optionSelected: boolean[],
-  url: number
 }
 
 type OptionType = {
@@ -37,36 +35,21 @@ class Onboarding extends Component<{}, States> {
   constructor(props: {}) {
     super(props);
     this.state = {
-      optionSelected: [false, false],
-      url: 0,
     }
   }
 
   changeActive = (e: any) => {
-    const newState = [false, false]
-    this.state.optionSelected.forEach((_, index) => {
-      index === Number(e.currentTarget.id) ?
-        newState[index] = true :
-        newState[index] = false
-    })
-    this.setState({
-      optionSelected: newState,
-      url: Number(e.currentTarget.id)
-    })
 
-    //this.getStarted()
-  }
-
-  getStarted = () => {
-    this.state.url == 0 ?
+    e.currentTarget.id === '0' ?
       history.push({
         pathname: "/wallet",
-        state: { selected: this.state.optionSelected }
+        state: { selected: 0 }
       })
       :
       history.push({
         pathname: "/landing",
       })
+
   }
 
   render() {
@@ -85,15 +68,9 @@ class Onboarding extends Component<{}, States> {
                 title={option.title}
                 desc={option.desc}
                 imgSrc={option.imgSrc}
-                active={this.state.optionSelected[index]}
                 onClick={this.changeActive.bind(this)}
               />
             })}
-          </div>
-          <div className="started">
-            <div className="siglebutton">
-              <ButtonPrimary onClick={() => this.getStarted()}>Get started</ButtonPrimary>
-            </div>
           </div>
         </div>
       </div>
