@@ -4,6 +4,9 @@ import { Table, CheckBox, dispatchCustomEvent } from "slate-react-system";
 import MakeRequestModal from '../MakeRequestModal';
 import { config } from '../config'
 
+import jsonVerifiers from '../data/verifiers.json';
+import jsonvVerifiersProd from '../data/verifiers-prod.json';
+
 export default class TableVerifiers extends Component {
 
     columns = [
@@ -35,7 +38,13 @@ export default class TableVerifiers extends Component {
     }
 
     getList = async () => {
-        const verifiers = require(`../data/${config.dataSource}.json`).notarys;
+
+        let verifiers
+        if(config.verifiers === 'DEV'){
+            verifiers = jsonVerifiers.notaries
+        } else {
+            verifiers = jsonvVerifiersProd.notaries
+        }
         this.setState({ verifiers })
     }
 
@@ -75,13 +84,17 @@ export default class TableVerifiers extends Component {
                         })}
                     </div>
                     <div className="data">
-                        <Table
-                            data={{
-                                columns: this.columns,
-                                rows: this.state.verifiers,
-                            }}
-                            name="verifiers"
-                        />
+                        {this.state.verifiers.length > 0 ?
+                            <Table
+                                data={{
+                                    columns: this.columns,
+                                    rows: this.state.verifiers,
+                                }}
+                                name="verifiers"
+                            />
+                        :
+                            <div className="nodata">There are not available notaries yet</div>
+                        }
                     </div>
                 </div>
             </div>
