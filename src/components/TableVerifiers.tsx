@@ -38,6 +38,7 @@ export default class TableVerifiers extends Component {
     }
 
     getList = async () => {
+        /*
         let verifiers
         if(config.verifiers === 'DEV'){
             verifiers = jsonVerifiers.notaries
@@ -45,6 +46,7 @@ export default class TableVerifiers extends Component {
             verifiers = jsonvVerifiersProd.notaries
         }
         this.setState({ verifiers })
+        */
     }
 
     updateChecks = (e: any) => {
@@ -83,13 +85,17 @@ export default class TableVerifiers extends Component {
                         })}
                     </div>
                     <div className="data">
-                        <Table
-                            data={{
-                                columns: this.columns,
-                                rows: this.state.verifiers,
-                            }}
-                            name="verifiers"
-                        />
+                        {this.state.verifiers.length > 0 ?
+                            <Table
+                                data={{
+                                    columns: this.columns,
+                                    rows: this.state.verifiers,
+                                }}
+                                name="verifiers"
+                            />
+                        :
+                            <div className="nodata">There are not available notaries yet</div>
+                        }
                     </div>
                 </div>
             </div>
