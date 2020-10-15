@@ -36,9 +36,9 @@ export default class TableVerifiers extends Component {
     getList = async () => {
         let verifiers
         if(config.verifiers === 'DEV'){
-            verifiers = require('../data/verifiers.json').notarys;
+            verifiers = require('../data/verifiers.json').notaries;
         } else {
-            verifiers = require('../data/verifiers-prod.json').notarys;
+            verifiers = require('../data/verifiers-prod.json').notaries;
         }
         this.setState({ verifiers })
     }
