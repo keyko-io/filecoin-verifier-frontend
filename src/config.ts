@@ -1,6 +1,7 @@
 export const config = {
     apiUri: process.env.REACT_APP_API_URI || 'http://localhost:4000',
     apiToken: process.env.REACT_APP_API_TOKEN || '',
+    verifiers: process.env.REACT_APP_VERIFIERS || 'DEV',
     lotusNodes: [{
         name: 'Mainnet',
         code: 461,
