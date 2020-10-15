@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 // @ts-ignore
 import { Table, CheckBox, dispatchCustomEvent } from "slate-react-system";
 import MakeRequestModal from '../MakeRequestModal';
+import { config } from '../config'
 
 export default class TableVerifiers extends Component {
 
@@ -34,7 +35,7 @@ export default class TableVerifiers extends Component {
     }
 
     getList = async () => {
-        const verifiers = require('../data/verifiers.json').notarys;
+        const verifiers = require(`../data/${config.dataSource}.json`).notarys;
         this.setState({ verifiers })
     }
 
