@@ -23,12 +23,12 @@ type OptionsType = OptionType[]
 
 const options: OptionsType = [
   {
-    title: "For RKH & Notarys",
-    desc: "Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah",
+    title: "For Root Key Holders & Notaries",
+    desc: "Manage and process in-bound DataCap allocation requests.",
     imgSrc: RootKey.toString()
   }, {
     title: "For Clients",
-    desc: "Here is where you will manage all your deals with miners as you operate as a verified client. To become verified, you’ll need to manage your relationship with approved verifies here.",
+    desc: "Find a Notary in your geography or specialized in your use case to get DataCap!",
     imgSrc: Cients.toString()
   }]
 
@@ -53,6 +53,8 @@ class Onboarding extends Component<{}, States> {
       optionSelected: newState,
       url: Number(e.currentTarget.id)
     })
+
+    //this.getStarted()
   }
 
   getStarted = () => {

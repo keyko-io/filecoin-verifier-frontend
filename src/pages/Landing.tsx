@@ -27,15 +27,15 @@ type OptionsType = OptionType[]
 const options: OptionsType = [
   {
     title: "Automatic Verification",
-    head: "< 1 TiB",
-    subtitle: "Small Storage Request",
-    desc: "Get a small amount of data cap automatically for development! Users will be required to have a github account older than 1 year to receive data cap.",
+    head: "",
+    subtitle: "Get Verified by verify.glif.io",
+    desc: "Receive small data allowances (8GB) by connecting to any GitHub account over 180 days old",
     imgSrc: TiB.toString()
   },
   {
     title: "General Verification",
-    head: "> 1 TiB",
-    subtitle: "Large Storage Request",
+    head: "",
+    subtitle: "Find a Notary in your geography or specialized in your use case",
     desc: "Receive a large amount of datacap for general storage requests such as personal, enterprise, institutional, or large scale archival purposes.",
     imgSrc: MorePiB.toString()
   }]
@@ -100,7 +100,6 @@ class Landing extends Component<{}, States> {
                   key={index}
                   id={index}
                   title={option.title}
-                  head={option.head}
                   desc={option.desc}
                   subtitle={option.subtitle}
                   imgSrc={option.imgSrc}
