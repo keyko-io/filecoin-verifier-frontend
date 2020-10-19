@@ -12,12 +12,12 @@ export const config = {
         code: 461,
         url: 'wss://beta-verify.filecoin.io/api/rpc/v0',
         token: process.env.REACT_APP_NERPANET_TOKEN
-    },{
+    }/*,{
         name: 'Localhost',
         code: 1,
         url: 'ws://localhost:1234/rpc/v0',
         token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBbGxvdyI6WyJyZWFkIiwid3JpdGUiLCJzaWduIiwiYWRtaW4iXX0.OJlFIgYG3D23RjWWXfjdTluG6Qx2EOgwMeWQxnUQrMM'
-    }],
+    }*/],
     datacapExt: [
         { value: "1", name: "B" },
         { value: "1000", name: "KiB" },
