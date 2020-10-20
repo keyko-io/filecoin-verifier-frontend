@@ -48,6 +48,10 @@ export default class Overview extends Component<{}, OverviewStates> {
         this.setState({tabs: "2"})
     }
 
+    showVerifierRequests = async () => {
+        this.setState({tabs: "0"})
+    }
+
     showClientRequests = async () => {
         this.setState({tabs: "1"})
     }
@@ -201,6 +205,7 @@ export default class Overview extends Component<{}, OverviewStates> {
                     <div className="main">
                         <div className="tabsholder">
                             <div className="tabs">
+                                <div className={this.state.tabs === "0" ? "selected" : ""} onClick={()=>{this.showVerifierRequests()}}>Notary Requests ({this.context.verifierRequests.length})</div>
                                 <div className={this.state.tabs === "1" ? "selected" : ""} onClick={()=>{this.showPending()}}>Pending Notaries ({this.state.pendingverifiers.length})</div>
                                 <div className={this.state.tabs === "2" ? "selected" : ""} onClick={()=>{this.showApproved()}}>Accepted Notaries ({this.context.verified.length})</div>
                             </div>
@@ -209,6 +214,52 @@ export default class Overview extends Component<{}, OverviewStates> {
                                 {this.state.tabs === "1" ? <ButtonPrimary onClick={()=>this.handleSubmitApprove()}>Accept Notaries</ButtonPrimary> : null}
                             </div>
                         </div>
+
+
+                        { this.state.tabs === "0" && this.context.githubLogged ?
+                            <div>
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <td></td>
+                                            <td>Client</td>
+                                            <td>Address</td>
+                                            <td>Datacap</td>
+                                            <td>Audit trail</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {this.context.verifierRequests.map((clientReq:any, index:any) => 
+                                            <tr key={index}>
+                                                <td><input type="checkbox" onChange={()=>this.selectClientRow(clientReq.number)} checked={this.state.selectedClientRequests.includes(clientReq.number)}/></td>
+                                                <td>{clientReq.data.name}</td>
+                                                <td>{clientReq.data.address}</td>
+                                                <td>{clientReq.data.datacap}</td>
+                                                <td><a target="_blank" rel="noopener noreferrer" href={clientReq.url}>#{clientReq.number}</a></td>
+                                            </tr>
+                                        )}
+                                    </tbody>
+                                </table>
+                                {this.context.clientRequests.length === 0 ? <div className="nodata">No client requests yet</div> : null}
+                            </div>
+                        : null }
+                        { this.state.tabs === "0" && !this.context.githubLogged ?
+                            <div id="githublogin">
+                                <LoginGithub
+                                    clientId="8e922e2845a6083ab65c"
+                                    scope="repo"
+                                    onSuccess={(response:any)=>{
+                                        this.context.loginGithub(response.code)
+                                    }}
+                                    onFailure={(response:any)=>{
+                                        console.log('failure', response)
+                                    }}
+                                />
+                            </div>
+                        : null }
+
+
+
                         { this.state.tabs === "2" ?
                             <div>
 

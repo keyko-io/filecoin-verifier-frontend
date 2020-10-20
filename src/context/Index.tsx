@@ -9,6 +9,8 @@ export const Wallet = React.createContext({
     initGithubOcto: async (token: string) => {},
     loadClientRequests: async () => {},
     clientRequests: [],
+    loadVerifierRequests: async () => {},
+    verifierRequests: [],
     viewroot: false,
     switchview: async () => {},
     wallet: '',
