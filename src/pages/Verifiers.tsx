@@ -22,19 +22,24 @@ class Verifiers extends Component<{}> {
   render() {
     return (
       <div className="landing">
-        <Header/>
+        <Header />
         <div className="container">
-          <Welcome
-            title="Welcome to the Filecoin Plus Registry"
-            description="A public request is all about Dash launched a hot deterministic wallet! Stellar is a burned exchange during lots of wash trade, so someone slept on the trusted fish. It proves many difficulty behind some cold wallet! Since IOTA counted few hot gas..."
-          />
-          <TableVerifiers ref={this.child} />
-          <div className="started">
-            <div className="doublebutton">
-              <ButtonPrimary onClick={() => this.makeRequest()}>
-                Make Request
+            <Welcome
+              title="Welcome to the Filecoin Plus Registry"
+              description="A public request is all about Dash launched a hot deterministic wallet! Stellar is a burned exchange during lots of wash trade, so someone slept on the trusted fish. It proves many difficulty behind some cold wallet! Since IOTA counted few hot gas..."
+            />
+          <div className="wrapperverifiers">
+            <div className="tableselects">
+              <div className="tabletitle">Select Notary, Send Request</div>
+            </div>
+            <TableVerifiers ref={this.child} />
+            <div className="started">
+              <div className="doublebutton">
+                <ButtonPrimary onClick={() => this.makeRequest()}>
+                  Make Request
               </ButtonPrimary>
-              <ButtonPrimary>Learn More</ButtonPrimary>
+                <ButtonPrimary>Learn More</ButtonPrimary>
+              </div>
             </div>
           </div>
         </div>
