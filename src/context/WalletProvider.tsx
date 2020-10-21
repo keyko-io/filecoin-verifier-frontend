@@ -5,7 +5,7 @@ import { BurnerWallet } from './BurnerWallet'
 // @ts-ignore
 import { dispatchCustomEvent } from "slate-react-system";
 import { Octokit } from '@octokit/rest'
-import { IssueBody } from '../IssueBody'
+import { IssueBody, IssueVerifierBody } from '../IssueBody'
 import { config } from '../config';
 const utils = require('@keyko-io/filecoin-verifier-tools/utils/issue-parser')
 
@@ -159,6 +159,8 @@ export default class WalletProvider extends React.Component<{}, WalletProviderSt
             }, ()=>{
                 this.state.loadClientRequests()
                 this.state.loadClientsGithub()
+                this.state.loadVerified()
+                this.state.loadVerifierRequests()
             })
         },
         loadClientRequests: async () => {
@@ -209,11 +211,11 @@ export default class WalletProvider extends React.Component<{}, WalletProviderSt
                     owner: 'keyko-io',
                     repo: 'filecoin-notaries-onboarding',
                     title: 'Notary request for: '+data.organization,
-                    body: IssueBody(data)
+                    body: IssueVerifierBody(data)
                 });
                 if(issue.status === 201){
                     this.state.dispatchNotification('Request submited as #'+issue.data.number)
-                    this.state.loadClientRequests()
+                    this.state.loadVerifierRequests()
                 }else{
                     this.state.dispatchNotification('Something went wrong.')
                 }

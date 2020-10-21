@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Wallet } from './context/Index';
 import AddClientModal from './AddClientModal';
 import AddVerifierModal from './AddVerifierModal';
+import RequestVerifierModal from './RequestVerifierModal';
 // @ts-ignore
 import { ButtonPrimary, dispatchCustomEvent, CheckBox } from "slate-react-system";
 import { datacapFilter } from "./Filters"
@@ -17,6 +18,7 @@ type OverviewStates = {
     approveLoading: boolean
     selectedTransactions: any[]
     selectedClientRequests: any[]
+    selectedNotaryRequests: any[]
 }
 
 export default class Overview extends Component<{}, OverviewStates> {
@@ -25,6 +27,7 @@ export default class Overview extends Component<{}, OverviewStates> {
     state = {
         selectedTransactions: [] as any[],
         selectedClientRequests: [] as any[],
+        selectedNotaryRequests: [] as any[],
         approveLoading: false,
         tabs: '1',
         pendingverifiers: [] as any[],
@@ -88,12 +91,12 @@ export default class Overview extends Component<{}, OverviewStates> {
                     await this.context.githubOcto.issues.removeAllLabels({
                         owner: 'keyko-io',
                         repo: 'filecoin-clients-onboarding',
-                        number: request.number,
+                        issue_number: request.number,
                     })
                     await this.context.githubOcto.issues.addLabels({
                         owner: 'keyko-io',
                         repo: 'filecoin-clients-onboarding',
-                        number: request.number,
+                        issue_number: request.number,
                         labels: 'state:Granted',
                     })
                     // send notifications
@@ -116,6 +119,16 @@ export default class Overview extends Component<{}, OverviewStates> {
         this.setState({selectedTransactions:selectedTxs})
     }
 
+    selectNotaryRow = (number: string) => {
+        let selectedTxs = this.state.selectedNotaryRequests
+        if(selectedTxs.includes(number)){
+            selectedTxs = selectedTxs.filter(item => item !== number)
+        } else {
+            selectedTxs.push(number)
+        }
+        this.setState({selectedNotaryRequests:selectedTxs})
+    }
+
     selectClientRow = (number: string) => {
         let selectedTxs = this.state.selectedClientRequests
         if(selectedTxs.includes(number)){
@@ -131,6 +144,56 @@ export default class Overview extends Component<{}, OverviewStates> {
             id: Math.random().toString(36).replace(/[^a-z]+/g, '').substr(0, 5),
             modal: <AddVerifierModal/>
         }})
+    }
+
+    requestVerifier = async () => {
+        dispatchCustomEvent({ name: "create-modal", detail: {
+            id: Math.random().toString(36).replace(/[^a-z]+/g, '').substr(0, 5),
+            modal: <RequestVerifierModal/>
+        }})
+    }
+
+    acceptRequestVerifier = async () => {
+        for(const request of this.context.clientRequests){
+            if(this.state.selectedNotaryRequests.includes(request.number)){
+                try {
+                    let prepDatacap = '1'
+                    let prepDatacapExt = 'B'
+                    const dataext = config.datacapExt.reverse()
+                    for(const entry of dataext){
+                        if(request.data.datacap.endsWith(entry.name)){
+                            prepDatacapExt = entry.value
+                            prepDatacap = request.data.datacap.substring(0, request.data.datacap.length-entry.name.length)
+                            break
+                        }
+                    }
+                    const datacap = parseFloat(prepDatacap)
+                    const fullDatacap = BigInt(datacap * parseFloat(prepDatacapExt))
+                    let address = request.data.address
+                    if(address.length < 12){
+                        address = await this.context.api.actorKey(address)
+                    }
+                    let messageID = await this.context.api.proposeVerifier(address, fullDatacap, this.context.walletIndex)
+                    // github update
+                    await this.context.githubOcto.issues.removeAllLabels({
+                        owner: 'keyko-io',
+                        repo: 'filecoin-notary-onboarding',
+                        issue_number: request.number,
+                    })
+                    await this.context.githubOcto.issues.addLabels({
+                        owner: 'keyko-io',
+                        repo: 'filecoin-notary-onboarding',
+                        issue_number: request.number,
+                        labels: 'state:Granted',
+                    })
+                    // send notifications
+                    this.context.dispatchNotification('Accepting Message sent with ID: ' + messageID)
+                } catch (e) {
+                    this.context.dispatchNotification('Verification failed: ' + e.message)
+                    console.log(e.stack)
+                }
+            }
+        }
     }
 
     handleSubmitApprove = async () => {
@@ -210,12 +273,12 @@ export default class Overview extends Component<{}, OverviewStates> {
                                 <div className={this.state.tabs === "2" ? "selected" : ""} onClick={()=>{this.showApproved()}}>Accepted Notaries ({this.context.verified.length})</div>
                             </div>
                             <div className="tabssadd">
+                                {this.state.tabs === "0" ? <ButtonPrimary onClick={()=>this.requestVerifier()}>Request Notary</ButtonPrimary> : null}
+                                {this.state.tabs === "0" ? <ButtonPrimary onClick={()=>this.acceptRequestVerifier()}>Accept Notary</ButtonPrimary> : null}
                                 {this.state.tabs === "2" ? <ButtonPrimary onClick={()=>this.proposeVerifier()}>Propose Notary</ButtonPrimary> : null}
                                 {this.state.tabs === "1" ? <ButtonPrimary onClick={()=>this.handleSubmitApprove()}>Accept Notaries</ButtonPrimary> : null}
                             </div>
                         </div>
-
-
                         { this.state.tabs === "0" && this.context.githubLogged ?
                             <div>
                                 <table>
@@ -229,18 +292,18 @@ export default class Overview extends Component<{}, OverviewStates> {
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        {this.context.verifierRequests.map((clientReq:any, index:any) => 
+                                        {this.context.verifierRequests.map((notaryReq:any, index:any) => 
                                             <tr key={index}>
-                                                <td><input type="checkbox" onChange={()=>this.selectClientRow(clientReq.number)} checked={this.state.selectedClientRequests.includes(clientReq.number)}/></td>
-                                                <td>{clientReq.data.name}</td>
-                                                <td>{clientReq.data.address}</td>
-                                                <td>{clientReq.data.datacap}</td>
-                                                <td><a target="_blank" rel="noopener noreferrer" href={clientReq.url}>#{clientReq.number}</a></td>
+                                                <td><input type="checkbox" onChange={()=>this.selectNotaryRow(notaryReq.number)} checked={this.state.selectedNotaryRequests.includes(notaryReq.number)}/></td>
+                                                <td>{notaryReq.data.name}</td>
+                                                <td>{notaryReq.data.address}</td>
+                                                <td>{notaryReq.data.datacap}</td>
+                                                <td><a target="_blank" rel="noopener noreferrer" href={notaryReq.url}>#{notaryReq.number}</a></td>
                                             </tr>
                                         )}
                                     </tbody>
                                 </table>
-                                {this.context.clientRequests.length === 0 ? <div className="nodata">No client requests yet</div> : null}
+                                {this.context.verifierRequests.length === 0 ? <div className="nodata">No client requests yet</div> : null}
                             </div>
                         : null }
                         { this.state.tabs === "0" && !this.context.githubLogged ?
@@ -257,12 +320,8 @@ export default class Overview extends Component<{}, OverviewStates> {
                                 />
                             </div>
                         : null }
-
-
-
                         { this.state.tabs === "2" ?
                             <div>
-
                                 <table>
                                     <thead>
                                         <tr>
