@@ -5,7 +5,7 @@ import { BurnerWallet } from './BurnerWallet'
 // @ts-ignore
 import { dispatchCustomEvent } from "slate-react-system";
 import { Octokit } from '@octokit/rest'
-import { IssueBody } from '../IssueBody'
+import { IssueBody, IssueVerifierBody } from '../IssueBody'
 import { config } from '../config';
 const utils = require('@keyko-io/filecoin-verifier-tools/utils/issue-parser')
 
@@ -18,6 +18,8 @@ interface WalletProviderStates {
     initGithubOcto: any
     loadClientRequests: any
     clientRequests: any[]
+    loadVerifierRequests: any
+    verifierRequests: any[]
     createRequest: any
     clientsGithub: any
     loadClientsGithub: any
@@ -157,6 +159,8 @@ export default class WalletProvider extends React.Component<{}, WalletProviderSt
             }, ()=>{
                 this.state.loadClientRequests()
                 this.state.loadClientsGithub()
+                this.state.loadVerified()
+                this.state.loadVerifierRequests()
             })
         },
         loadClientRequests: async () => {
@@ -180,6 +184,45 @@ export default class WalletProvider extends React.Component<{}, WalletProviderSt
             })
         },
         clientRequests: [],
+        loadVerifierRequests: async () => {
+            const rawIssues = await this.state.githubOcto.issues.listForRepo({
+              owner: 'keyko-io',
+              repo: 'filecoin-notaries-onboarding'
+            })
+            const issues: any[] = []
+            for(const rawIssue of rawIssues.data){
+                const data = utils.parseIssue(rawIssue.body)
+                if(data.correct){
+                    issues.push({
+                        number: rawIssue.number,
+                        url: rawIssue.html_url,
+                        data
+                    })
+                }
+            }
+            this.setState({
+                verifierRequests: issues
+            })
+        },
+        verifierRequests: [],
+        createVerifierRequest: async (data:any) => {
+            try {
+                const issue = await this.state.githubOcto.issues.create({
+                    owner: 'keyko-io',
+                    repo: 'filecoin-notaries-onboarding',
+                    title: 'Notary request for: '+data.organization,
+                    body: IssueVerifierBody(data)
+                });
+                if(issue.status === 201){
+                    this.state.dispatchNotification('Request submited as #'+issue.data.number)
+                    this.state.loadVerifierRequests()
+                }else{
+                    this.state.dispatchNotification('Something went wrong.')
+                }
+            } catch (error) {
+                this.state.dispatchNotification(error.toString())
+            }
+        },
         createRequest: async (data:any) => {
             try {
                 const issue = await this.state.githubOcto.issues.create({
