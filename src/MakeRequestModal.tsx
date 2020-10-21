@@ -3,6 +3,7 @@ import { Wallet } from './context/Index'
 import { config } from './config'
 // @ts-ignore
 import { dispatchCustomEvent, Input, ButtonPrimary, SelectMenu, LoaderSpinner, CheckBox } from "slate-react-system";
+import ConfirmModal from './pages/ConfirmModal';
 
 type States = {
     address: string
@@ -58,49 +59,59 @@ class MakeRequestModal extends Component<ModalProps, States> {
     componentDidMount() {
     }
 
-    handleSubmit = async (e:any) => {
+    handleSubmit = async (e: any) => {
         e.preventDefault()
-        if(this.state.gitHubMethod){
+        if (this.state.gitHubMethod) {
             this.handleGithubSubmit()
         }
-        if(this.state.emailMethod){
+        if (this.state.emailMethod) {
             this.handleEmailSubmit()
         }
     }
 
     handleEmailSubmit = async () => {
         try {
-        const emailrequest = await fetch(config.apiUri + '/api/v1/email/requestDatacap', {
-            method: 'POST',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${config.apiToken}`
-            },
-            body: JSON.stringify({
-                verifierEmail: this.props.verifier.email,
-                verifierName: this.state.verifierName,
-                name: this.state.organization,
-                publicProfile: this.state.publicprofile,
-                useCase: this.state.useplan,
-                contact: this.state.contact,
-                address: this.state.address,
-                datacap: this.state.datacap,
-                datacapUnit: this.state.datacapExt,
-                comments: this.state.comments,
-                subject: "New Request of Datacap",
-                datetimeRequested: ""
+            const emailrequest = await fetch(config.apiUri + '/api/v1/email/requestDatacap', {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${config.apiToken}`
+                },
+                body: JSON.stringify({
+                    verifierEmail: this.props.verifier.email,
+                    verifierName: this.state.verifierName,
+                    name: this.state.organization,
+                    publicProfile: this.state.publicprofile,
+                    useCase: this.state.useplan,
+                    contact: this.state.contact,
+                    address: this.state.address,
+                    datacap: this.state.datacap,
+                    datacapUnit: this.state.datacapExt,
+                    comments: this.state.comments,
+                    subject: "New Request of Datacap",
+                    datetimeRequested: ""
+                })
             })
-        })
-        const request = await emailrequest.json()
-        if (request.success) {
-            dispatchCustomEvent({ name: "delete-modal", detail: {} })
+            const request = await emailrequest.json()
+            if (request.success) {
+                dispatchCustomEvent({
+                    name: "create-modal", detail: {
+                        id: Math.random().toString(36).replace(/[^a-z]+/g, '').substr(0, 5),
+                        modal: <ConfirmModal />
+                    }
+                })
+            }
+            this.setState({ submitLoading: false })
+        } catch (error) {
+            console.log("ERROR: " + error)
+            dispatchCustomEvent({
+                name: "create-modal", detail: {
+                    id: Math.random().toString(36).replace(/[^a-z]+/g, '').substr(0, 5),
+                    modal: <ConfirmModal error={true} />
+                }
+            })
         }
-        this.setState({ submitLoading: false })
-    }catch(error) {
-        // HANDLE ERROR
-        console.log("ERROR: " + error)
-    }
 
     }
 
@@ -120,11 +131,11 @@ class MakeRequestModal extends Component<ModalProps, States> {
     }
 
     handleChange = (e: any) => {
-        if(e.target.name === 'gitHubMethod'){
-            this.setState({emailMethod: false})
+        if (e.target.name === 'gitHubMethod') {
+            this.setState({ emailMethod: false })
         }
-        if(e.target.name === 'emailMethod'){
-            this.setState({gitHubMethod: false})
+        if (e.target.name === 'emailMethod') {
+            this.setState({ gitHubMethod: false })
         }
         this.setState({ [e.target.name]: e.target.value } as any)
     }
@@ -215,15 +226,15 @@ class MakeRequestModal extends Component<ModalProps, States> {
                                 />
                             </div>
                             <div className="methodselection">
-                                <div className="methodlabel"> Select the method to send your request</div>
-                                {this.props.verifier.private_request === "true" ? 
-                                <CheckBox
-                                    name="emailMethod"
-                                    value={this.state.emailMethod}
-                                    onChange={this.handleChange}
-                                >Email - send message</CheckBox>
-                                : null
-                            }
+                                <div className="methodlabel">Select the method to send your request</div>
+                                {this.props.verifier.private_request === "true" ?
+                                    <CheckBox
+                                        name="emailMethod"
+                                        value={this.state.emailMethod}
+                                        onChange={this.handleChange}
+                                    >Email - send message</CheckBox>
+                                    : null
+                                }
                                 <CheckBox
                                     name="gitHubMethod"
                                     value={this.state.gitHubMethod}

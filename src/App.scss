@@ -354,7 +354,8 @@
   }
 }
 
-.addmodal {
+.addmodal,
+.confirmmodal {
 
   .inputholder {
     padding-top: 20px;
@@ -362,7 +363,6 @@
 
   .datacapholder {
     padding-top: 20px;
-    padding-bottom: 20px;
   }
 
   .title {
@@ -383,6 +383,14 @@
       padding-left: 10px;
       padding-right: 10px;
     }
+
+    .css-1ev2p8p {
+      font-family: Inter;
+      font-style: normal;
+      font-weight: 600;
+      font-size: 12px;
+      line-height: 16px;
+    }
   }
 
   .centerbutton {
@@ -392,6 +400,7 @@
 
     button {
       background-color: #0090FF;
+      width: 176px;
     }
   }
 
@@ -671,17 +680,13 @@
 
   .started {
     position: absolute;
-    top: 820px;
+    top: 630px;
     max-width: 1280px;
     left: 0;
     right: 0;
     margin-left: auto;
     margin-right: auto;
     text-align: center;
-    border-left: 1px solid #0091FF;
-    border-right: 1px solid #0091FF;
-    border-bottom: 1px solid #0091FF;
-    box-sizing: border-box;
     padding: 10px;
 
     .siglebutton button {
@@ -735,12 +740,37 @@
     left: 0;
     right: 0;
     background: #fff;
-    top: 220px;
+    top: 80px;
     text-align: center;
     display: flex;
-    border-left: 1px solid #0091FF;
-    border-right: 1px solid #0091FF;
     box-sizing: border-box;
+
+    table {
+      position: absolute;
+      margin-left: auto;
+      margin-right: auto;
+      width: 100%;
+      left: 0;
+      right: 0;
+      border-collapse: collapse;
+    }
+
+    thead {
+      font-weight: bold;
+
+      tr {
+        border-bottom: 1px solid #000;
+      }
+    }
+
+    tr {
+      border-bottom: 1px solid #e5e5e5;
+      cursor: pointer;
+
+      td {
+        padding: 12px
+      }
+    }
 
     .data {
       margin-left: auto;
@@ -759,6 +789,9 @@
 
     .nodata {
       padding-top: 100px;
+      width: 300px;
+      margin-left: auto;
+      margin-right: auto;
     }
 
     .checks {
@@ -786,6 +819,23 @@
   }
 }
 
+.wrapperverifiers {
+  position: absolute;
+  margin-left: auto;
+  margin-right: auto;
+  max-width: 1280px;
+  height: 700px;
+  left: 0;
+  right: 0;
+  background: #fff;
+  top: 220px;
+  border-top: 1px solid #0091FF;
+  border-left: 1px solid #0091FF;
+  border-right: 1px solid #0091FF;
+  border-bottom: 1px solid #0091FF;
+  box-sizing: border-box;
+}
+
 .header {
   .headerlogo {
     position: relative;
@@ -804,4 +854,130 @@
     font-size: 16px;
     line-height: 24px;
   }
+
+  .headerrequest {
+    position: relative;
+    width: 180px;
+    float: right;
+    top: -60px;
+    right: 150px;
+  }
+
+}
+
+.errormodal,
+.confirmmodal {
+  width: 570px;
+  height: 454px;
+
+  .title {
+    text-align: center;
+    font-family: Inter;
+    font-style: normal;
+    font-weight: bold;
+    font-size: 16px;
+    line-height: 32px;
+  }
+
+  .description {
+    text-align: center;
+    font-family: Inter;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 16px;
+    line-height: 32px;
+    max-width: 350px;
+    margin: auto;
+  }
+
+  .img {
+    max-width: 180px;
+    max-height: 214px;
+    margin: auto;
+    margin-top: 30px;
+  }
+
+  .button {
+    width: 176px;
+    margin: auto;
+    margin-top: 40px;
+
+    button {
+      width: 176px;
+      background: #33A7FF;
+      border-radius: 4px;
+      font-family: Inter;
+      font-style: normal;
+      font-weight: 600;
+      font-size: 14px;
+      line-height: 20px;
+      text-align: center;
+      color: #FFFFFF;
+    }
+  }
+
+  form {
+    height: 32px;
+    width: 384px;
+    left: 0px;
+    top: 0px;
+    border-radius: 4px;
+    margin: auto;
+
+    .inputholder {
+      font-family: Inter;
+      font-style: normal;
+      font-weight: 600;
+      font-size: 12px;
+      line-height: 16px;
+      color: #1A1A1A;
+    }
+  }
+}
+
+
+.buttonnotfilled {
+  font-family: Inter;
+  font-style: normal;
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 20px;
+  text-align: center;
+
+  button,
+  button:checked,
+  button:active,
+  button:hover,
+  button:visited,
+  button:checked {
+    width: 176px;
+    height: 40px;
+    background: #FFFFFF;
+    border-radius: 4px;
+    color: #33A7FF;
+    border: 1px solid #33A7FF;
+  }
+}
+
+.tableselects {
+  position: absolute;
+  top: 20px;
+  margin-left: auto;
+  margin-right: auto;
+  max-width: 1280px;
+  height: 400px;
+  left: 0;
+  right: 0;
+  background: #FFFFFF;
+
+  .tabletitle {
+    padding: 20px 100px;
+    font-family: Inter;
+    font-style: normal;
+    font-weight: 600;
+    font-size: 16px;
+    line-height: 24px;
+  }
+
+
 }

@@ -40,7 +40,7 @@ export default class TableVerifiers extends Component {
     getList = async () => {
 
         let verifiers
-        if(config.verifiers === 'DEV'){
+        if (config.verifiers === 'DEV') {
             verifiers = jsonVerifiers.notaries
         } else {
             verifiers = jsonvVerifiersProd.notaries
@@ -73,29 +73,43 @@ export default class TableVerifiers extends Component {
         return (
             <div className="verifiers">
                 <div className="tableverifiers">
-                    <div className="checks">
-                        {this.state.verifiers.map((_, i) => {
-                            return (<CheckBox
-                                name={i}
-                                key={i}
-                                value={this.state.checks[i]}
-                                onChange={this.updateChecks}
-                            />)
-                        })}
-                    </div>
-                    <div className="data">
-                        {this.state.verifiers.length > 0 ?
-                            <Table
-                                data={{
-                                    columns: this.columns,
-                                    rows: this.state.verifiers,
-                                }}
-                                name="verifiers"
-                            />
-                        :
-                            <div className="nodata">There are not available notaries yet</div>
-                        }
-                    </div>
+                    {this.state.verifiers.length > 0 ?
+                        <table>
+                            <thead>
+                                <tr>
+                                    <td></td>
+                                    <td>Notary Name</td>
+                                    <td>Use case</td>
+                                    <td>Location</td>
+                                    <td>Website</td>
+                                    <td>Max Datacap Allocation</td>
+                                    <td>Private Requests</td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {
+                                    this.state.verifiers.map((verifier: any, i) =>
+                                        <tr>
+                                            <td>
+                                                <input type="checkbox" key={i} name={String(i)}
+                                                    checked={this.state.checks[i]}
+                                                    onChange={(e) => this.updateChecks(e)}
+                                                />
+                                            </td>
+                                            <td>{verifier.name}</td>
+                                            <td>{verifier.use_case.map((useCase: any) =>
+                                                <p style={{ padding: 3 }}>{useCase}</p>
+                                            )}</td>
+                                            <td>{verifier.location}</td>
+                                            <td>{verifier.website}</td>
+                                            <td>{verifier.max_datacap_allocation}</td>
+                                            <td>{verifier.private_request}</td>
+                                        </tr>
+                                    )
+                                }
+                            </tbody>
+                        </table>
+                        : <div className="nodata">There are not available notaries yet</div>}
                 </div>
             </div>
         )
