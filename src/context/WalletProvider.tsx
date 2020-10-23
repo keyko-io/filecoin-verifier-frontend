@@ -205,24 +205,6 @@ export default class WalletProvider extends React.Component<{}, WalletProviderSt
             })
         },
         verifierRequests: [],
-        createVerifierRequest: async (data:any) => {
-            try {
-                const issue = await this.state.githubOcto.issues.create({
-                    owner: 'keyko-io',
-                    repo: 'filecoin-notaries-onboarding',
-                    title: 'Notary request for: '+data.organization,
-                    body: IssueVerifierBody(data)
-                });
-                if(issue.status === 201){
-                    this.state.dispatchNotification('Request submited as #'+issue.data.number)
-                    this.state.loadVerifierRequests()
-                }else{
-                    this.state.dispatchNotification('Something went wrong.')
-                }
-            } catch (error) {
-                this.state.dispatchNotification(error.toString())
-            }
-        },
         createRequest: async (data:any) => {
             try {
                 const issue = await this.state.githubOcto.issues.create({

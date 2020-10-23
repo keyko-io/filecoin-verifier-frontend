@@ -273,7 +273,6 @@ export default class Overview extends Component<{}, OverviewStates> {
                                 <div className={this.state.tabs === "2" ? "selected" : ""} onClick={()=>{this.showApproved()}}>Accepted Notaries ({this.context.verified.length})</div>
                             </div>
                             <div className="tabssadd">
-                                {this.state.tabs === "0" ? <ButtonPrimary onClick={()=>this.requestVerifier()}>Request Notary</ButtonPrimary> : null}
                                 {this.state.tabs === "0" ? <ButtonPrimary onClick={()=>this.acceptRequestVerifier()}>Accept Notary</ButtonPrimary> : null}
                                 {this.state.tabs === "2" ? <ButtonPrimary onClick={()=>this.proposeVerifier()}>Propose Notary</ButtonPrimary> : null}
                                 {this.state.tabs === "1" ? <ButtonPrimary onClick={()=>this.handleSubmitApprove()}>Accept Notaries</ButtonPrimary> : null}
