@@ -3,6 +3,7 @@ import { Wallet } from './context/Index';
 import AddClientModal from './AddClientModal';
 import AddVerifierModal from './AddVerifierModal';
 import RequestVerifierModal from './RequestVerifierModal';
+import AddSelectedVerifiersModal from './AddSelectedVerifiersModal';
 // @ts-ignore
 import { ButtonPrimary, dispatchCustomEvent, CheckBox } from "slate-react-system";
 import { datacapFilter } from "./Filters"
@@ -18,7 +19,6 @@ type OverviewStates = {
     approveLoading: boolean
     selectedTransactions: any[]
     selectedClientRequests: any[]
-    selectedNotaryRequests: any[]
 }
 
 export default class Overview extends Component<{}, OverviewStates> {
@@ -27,7 +27,6 @@ export default class Overview extends Component<{}, OverviewStates> {
     state = {
         selectedTransactions: [] as any[],
         selectedClientRequests: [] as any[],
-        selectedNotaryRequests: [] as any[],
         approveLoading: false,
         tabs: '1',
         pendingverifiers: [] as any[],
@@ -120,13 +119,7 @@ export default class Overview extends Component<{}, OverviewStates> {
     }
 
     selectNotaryRow = (number: string) => {
-        let selectedTxs = this.state.selectedNotaryRequests
-        if(selectedTxs.includes(number)){
-            selectedTxs = selectedTxs.filter(item => item !== number)
-        } else {
-            selectedTxs.push(number)
-        }
-        this.setState({selectedNotaryRequests:selectedTxs})
+        this.context.selectNotaryRequest(number)
     }
 
     selectClientRow = (number: string) => {
@@ -154,6 +147,11 @@ export default class Overview extends Component<{}, OverviewStates> {
     }
 
     acceptRequestVerifier = async () => {
+        dispatchCustomEvent({ name: "create-modal", detail: {
+            id: Math.random().toString(36).replace(/[^a-z]+/g, '').substr(0, 5),
+            modal: <AddSelectedVerifiersModal/>
+        }})
+        /*
         for(const request of this.context.clientRequests){
             if(this.state.selectedNotaryRequests.includes(request.number)){
                 try {
@@ -184,7 +182,7 @@ export default class Overview extends Component<{}, OverviewStates> {
                         owner: 'keyko-io',
                         repo: 'filecoin-notary-onboarding',
                         issue_number: request.number,
-                        labels: 'state:Granted',
+                        labels: 'status:Proposed',
                     })
                     // send notifications
                     this.context.dispatchNotification('Accepting Message sent with ID: ' + messageID)
@@ -194,6 +192,7 @@ export default class Overview extends Component<{}, OverviewStates> {
                 }
             }
         }
+        */
     }
 
     handleSubmitApprove = async () => {
@@ -293,7 +292,7 @@ export default class Overview extends Component<{}, OverviewStates> {
                                     <tbody>
                                         {this.context.verifierRequests.map((notaryReq:any, index:any) => 
                                             <tr key={index}>
-                                                <td><input type="checkbox" onChange={()=>this.selectNotaryRow(notaryReq.number)} checked={this.state.selectedNotaryRequests.includes(notaryReq.number)}/></td>
+                                                <td><input type="checkbox" onChange={()=>this.selectNotaryRow(notaryReq.number)} checked={this.context.selectedNotaryRequests.includes(notaryReq.number)}/></td>
                                                 <td>{notaryReq.data.name}</td>
                                                 <td>{notaryReq.data.address}</td>
                                                 <td>{notaryReq.data.datacap}</td>
