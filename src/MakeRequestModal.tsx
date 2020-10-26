@@ -4,6 +4,7 @@ import { config } from './config'
 // @ts-ignore
 import { dispatchCustomEvent, Input, ButtonPrimary, SelectMenu, LoaderSpinner, CheckBox } from "slate-react-system";
 import ConfirmModal from './pages/ConfirmModal';
+import Onboarding from './pages/Onboarding';
 
 type States = {
     address: string
@@ -124,7 +125,8 @@ class MakeRequestModal extends Component<ModalProps, States> {
             publicprofile: this.state.publicprofile,
             useplan: this.state.useplan,
             contact: this.state.contact,
-            comments: this.state.comments
+            comments: this.state.comments,
+            onboarding: true
         })
         dispatchCustomEvent({ name: "delete-modal", detail: {} })
         this.setState({ submitLoading: false })
