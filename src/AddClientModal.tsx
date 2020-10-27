@@ -33,10 +33,9 @@ class AddClientModal extends Component<{}, States> {
         this.setState({ submitLoading: true })
 
        try{
-           console.log("datacapExt: " + this.state.datacapExt )
+           
         const datacap = parseFloat(this.state.datacap)
         const fullDatacap = BigInt(datacap * parseFloat(this.state.datacapExt))
-        console.log("full: " + fullDatacap)
         let messageID = await this.context.api.verifyClient(this.state.address, fullDatacap, this.context.walletIndex);
         this.setState({
             address: '',
