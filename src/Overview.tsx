@@ -147,13 +147,8 @@ export default class Overview extends Component<{}, OverviewStates> {
     }
 
     acceptRequestVerifier = async () => {
-        dispatchCustomEvent({ name: "create-modal", detail: {
-            id: Math.random().toString(36).replace(/[^a-z]+/g, '').substr(0, 5),
-            modal: <AddSelectedVerifiersModal/>
-        }})
-        /*
-        for(const request of this.context.clientRequests){
-            if(this.state.selectedNotaryRequests.includes(request.number)){
+        for(const request of this.context.verifierRequests){
+            if(this.context.selectedNotaryRequests.includes(request.number)){
                 try {
                     let prepDatacap = '1'
                     let prepDatacapExt = 'B'
@@ -192,7 +187,6 @@ export default class Overview extends Component<{}, OverviewStates> {
                 }
             }
         }
-        */
     }
 
     handleSubmitApprove = async () => {
@@ -267,14 +261,13 @@ export default class Overview extends Component<{}, OverviewStates> {
                     <div className="main">
                         <div className="tabsholder">
                             <div className="tabs">
-                                <div className={this.state.tabs === "0" ? "selected" : ""} onClick={()=>{this.showVerifierRequests()}}>Notary Requests ({this.context.verifierRequests.length})</div>
-                                <div className={this.state.tabs === "1" ? "selected" : ""} onClick={()=>{this.showPending()}}>Pending Notaries ({this.state.pendingverifiers.length})</div>
+                                <div className={this.state.tabs === "0" ? "selected" : ""} onClick={()=>{this.showVerifierRequests()}}>Notaries Approved by Governance ({this.context.verifierRequests.length})</div>
+                                <div className={this.state.tabs === "1" ? "selected" : ""} onClick={()=>{this.showPending()}}>Notaries Pending to Approve Onchain ({this.state.pendingverifiers.length})</div>
                                 <div className={this.state.tabs === "2" ? "selected" : ""} onClick={()=>{this.showApproved()}}>Accepted Notaries ({this.context.verified.length})</div>
                             </div>
                             <div className="tabssadd">
-                                {this.state.tabs === "0" ? <ButtonPrimary onClick={()=>this.acceptRequestVerifier()}>Accept Notary</ButtonPrimary> : null}
-                                {this.state.tabs === "2" ? <ButtonPrimary onClick={()=>this.proposeVerifier()}>Propose Notary</ButtonPrimary> : null}
-                                {this.state.tabs === "1" ? <ButtonPrimary onClick={()=>this.handleSubmitApprove()}>Accept Notaries</ButtonPrimary> : null}
+                                {this.state.tabs === "0" ? <ButtonPrimary onClick={()=>this.acceptRequestVerifier()}>Propose Onchain</ButtonPrimary> : null}
+                                {this.state.tabs === "1" ? <ButtonPrimary onClick={()=>this.handleSubmitApprove()}>Approve Onchain</ButtonPrimary> : null}
                             </div>
                         </div>
                         { this.state.tabs === "0" && this.context.githubLogged ?
