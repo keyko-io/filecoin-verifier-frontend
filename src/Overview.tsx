@@ -302,7 +302,7 @@ export default class Overview extends Component<{}, OverviewStates> {
                                         )}
                                     </tbody>
                                 </table>
-                                {this.context.verifierRequests.length === 0 ? <div className="nodata">No client requests yet</div> : null}
+                                {this.context.verifierRequests.length === 0 ? <div className="nodata">No public requests yet</div> : null}
                             </div>
                         : null }
                         { this.state.tabs === "0" && !this.context.githubLogged ?
@@ -375,11 +375,11 @@ export default class Overview extends Component<{}, OverviewStates> {
                     <div className="main">
                         <div className="tabsholder">
                             <div className="tabs">
-                                <div className={this.state.tabs === "1" ? "selected" : ""} onClick={()=>{this.showClientRequests()}}>Client Requests ({this.context.clientRequests.length})</div>
+                                <div className={this.state.tabs === "1" ? "selected" : ""} onClick={()=>{this.showClientRequests()}}>Public Requests ({this.context.clientRequests.length})</div>
                                 <div className={this.state.tabs === "2" ? "selected" : ""} onClick={()=>{this.showVerifiedClients()}}>Verified clients ({this.state.clients.length})</div>
                             </div>
                             <div className="tabssadd">
-                                <ButtonPrimary onClick={()=>this.requestDatacap()}>Request datacap</ButtonPrimary>
+                                <ButtonPrimary onClick={()=>this.requestDatacap()}>Approve Private Request</ButtonPrimary>
                                 <ButtonPrimary onClick={()=>this.verifyClients()}>Verify client</ButtonPrimary>
                             </div>
                         </div>
