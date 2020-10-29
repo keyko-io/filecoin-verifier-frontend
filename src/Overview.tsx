@@ -10,6 +10,7 @@ import { datacapFilter } from "./Filters"
 // @ts-ignore
 import LoginGithub from 'react-login-github';
 import { config } from './config'
+const utils = require('@keyko-io/filecoin-verifier-tools/utils/issue-parser')
 
 type OverviewStates = {
     tabs: string
@@ -191,11 +192,55 @@ export default class Overview extends Component<{}, OverviewStates> {
 
     handleSubmitApprove = async () => {
         this.setState({ approveLoading: true })
+        // load github issues
+        const rawIssues = await this.context.githubOcto.issues.listForRepo({
+            owner: 'keyko-io',
+            repo: 'filecoin-notary-onboarding',
+            state: 'open',
+            labels: 'status:Proposed'
+          })
+        const issues: any = {}
+        for(const rawIssue of rawIssues.data){
+            const data = utils.parseIssue(rawIssue.body)
+            try {
+                const address = await this.context.api.actorKey(data.address)
+                if(data.correct && address){
+                    issues[address]= {
+                        number: rawIssue.number,
+                        url: rawIssue.html_url,
+                        data
+                    }
+                }
+            } catch(e) {
+                console.log('retrieval', e)
+            }
+        }
+        // go over transactions
         try {
             for(let tx of this.state.pendingverifiers){
                 if(this.state.selectedTransactions.includes(tx.id)){
                     const datacap = BigInt(tx.datacap)
                     await this.context.api.approveVerifier(tx.verifier, datacap, tx.signer, tx.id, this.context.walletIndex);
+                    const multisigInfo = await this.context.api.multisigInfo(tx.verifier)
+                    // check if we have github issue, and all info
+                    if(
+                        multisigInfo && multisigInfo.signers &&
+                        multisigInfo.signers > config.rkhtreshold &&
+                        issues[tx.verifier]
+                    ){
+                        // github update
+                        await this.context.githubOcto.issues.removeAllLabels({
+                            owner: 'keyko-io',
+                            repo: 'filecoin-notary-onboarding',
+                            issue_number: issues[tx.verifier].number,
+                        })
+                        await this.context.githubOcto.issues.addLabels({
+                            owner: 'keyko-io',
+                            repo: 'filecoin-notary-onboarding',
+                            issue_number: issues[tx.verifier].number,
+                            labels: 'status:onchain',
+                        })
+                    }
                 }
             }
             this.setState({ selectedTransactions:[], approveLoading: false })
