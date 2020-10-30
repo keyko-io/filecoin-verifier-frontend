@@ -3,6 +3,7 @@ export const config = {
     apiToken: process.env.REACT_APP_API_TOKEN || '',
     verifiers: process.env.REACT_APP_VERIFIERS || 'DEV',
     onboardingClientRepo: process.env.REACT_ONBOARDING_REPO ||'filecoin-clients-onboarding-test',
+    onboardingGithubApp: process.env.REACT_ONBOARDING_GITHUB_APP ||'Iv1.10e7aaed4654db3c',
     lotusNodes: [{
         name: 'Mainnet',
         code: 461,
