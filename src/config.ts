@@ -9,21 +9,24 @@ export const config = {
         url: 'wss://api.node.glif.io/space10/lotus/rpc/v0',
         token: process.env.REACT_APP_MAINNET_TOKEN,
         clientRepo: 'filecoin-clients-onboarding',
-        notaryRepo: 'filecoin-notaries-onboarding'
+        notaryRepo: 'filecoin-notaries-onboarding',
+        githubApp:'8e922e2845a6083ab65c'
     },{
         name: 'Nerpanet',
         code: 461,
         url: 'wss://beta-verify.filecoin.io/api/rpc/v0',
         token: process.env.REACT_APP_NERPANET_TOKEN,
         clientRepo: 'filecoin-clients-onboarding-test',
-        notaryRepo: 'filecoin-notaries-onboarding'
+        notaryRepo: 'filecoin-notaries-onboarding',
+        githubApp:'Iv1.10e7aaed4654db3c'
     }/*,{
         name: 'Localhost',
         code: 1,
         url: 'ws://localhost:1234/rpc/v0',
         token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBbGxvdyI6WyJyZWFkIiwid3JpdGUiLCJzaWduIiwiYWRtaW4iXX0.OJlFIgYG3D23RjWWXfjdTluG6Qx2EOgwMeWQxnUQrMM'
         clientRepo: 'filecoin-clients-onboarding-test',
-        notaryRepo: 'filecoin-notaries-onboarding'
+        notaryRepo: 'filecoin-notaries-onboarding',
+        githubApp:'Iv1.940c1b5a18b6566d'
     }*/],
     datacapExt: [
         { value: "1", name: "B" },

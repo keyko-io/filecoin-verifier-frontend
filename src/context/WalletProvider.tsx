@@ -164,7 +164,6 @@ export default class WalletProvider extends React.Component<{}, WalletProviderSt
             })
         },
         loadClientRequests: async () => {
-            console.log(config.lotusNodes[this.state.networkIndex].clientRepo)
             const rawIssues = await this.state.githubOcto.issues.listForRepo({
                 owner: 'keyko-io',
                 repo: config.lotusNodes[this.state.networkIndex].clientRepo
@@ -226,6 +225,7 @@ export default class WalletProvider extends React.Component<{}, WalletProviderSt
         },
         clientsGithub: {},
         loadClientsGithub: async () => {
+            console.log(config.lotusNodes[this.state.networkIndex].clientRepo)
             const rawIssues = await this.state.githubOcto.issues.listForRepo({
                 owner: 'keyko-io',
                 repo: config.lotusNodes[this.state.networkIndex].clientRepo,
