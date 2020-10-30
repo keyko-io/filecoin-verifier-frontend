@@ -9,7 +9,7 @@ export const config = {
         token: process.env.REACT_APP_MAINNET_TOKEN
     },{
         name: 'Nerpanet',
-        code: 461,
+        code: 1,
         url: 'wss://beta-verify.filecoin.io/api/rpc/v0',
         token: process.env.REACT_APP_NERPANET_TOKEN
     }/*,{
