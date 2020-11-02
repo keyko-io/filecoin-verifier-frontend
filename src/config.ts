@@ -2,21 +2,28 @@ export const config = {
     apiUri: process.env.REACT_APP_API_URI || 'http://localhost:4000',
     apiToken: process.env.REACT_APP_API_TOKEN || '',
     verifiers: process.env.REACT_APP_VERIFIERS || 'DEV',
+    onboardingClientRepo: process.env.REACT_ONBOARDING_REPO ||'filecoin-clients-onboarding-test',
     lotusNodes: [{
         name: 'Mainnet',
         code: 461,
-        url: 'wss://api.node.glif.io/space10/lotus/rpc/v0',
-        token: process.env.REACT_APP_MAINNET_TOKEN
+        url: 'https://api.node.glif.io',
+        token: process.env.REACT_APP_MAINNET_TOKEN,
+        clientRepo: 'filecoin-clients-onboarding',
+        notaryRepo: 'filecoin-notaries-onboarding'
     },{
         name: 'Nerpanet',
         code: 1,
-        url: 'wss://beta-verify.filecoin.io/api/rpc/v0',
-        token: process.env.REACT_APP_NERPANET_TOKEN
+        url: 'https://beta-verify.filecoin.io/api/rpc/v0',
+        token: process.env.REACT_APP_NERPANET_TOKEN,
+        clientRepo: 'filecoin-clients-onboarding-test',
+        notaryRepo: 'filecoin-notaries-onboarding'
     }/*,{
         name: 'Localhost',
         code: 1,
         url: 'ws://localhost:1234/rpc/v0',
         token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBbGxvdyI6WyJyZWFkIiwid3JpdGUiLCJzaWduIiwiYWRtaW4iXX0.OJlFIgYG3D23RjWWXfjdTluG6Qx2EOgwMeWQxnUQrMM'
+        clientRepo: 'filecoin-clients-onboarding-test',
+        notaryRepo: 'filecoin-notaries-onboarding'
     }*/],
     datacapExt: [
         { value: "1", name: "B" },
