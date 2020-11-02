@@ -6,14 +6,14 @@ export const config = {
     lotusNodes: [{
         name: 'Mainnet',
         code: 461,
-        url: 'wss://api.node.glif.io/space10/lotus/rpc/v0',
+        url: 'https://api.node.glif.io',
         token: process.env.REACT_APP_MAINNET_TOKEN,
         clientRepo: 'filecoin-clients-onboarding',
         notaryRepo: 'filecoin-notaries-onboarding'
     },{
         name: 'Nerpanet',
         code: 1,
-        url: 'wss://beta-verify.filecoin.io/api/rpc/v0',
+        url: 'https://beta-verify.filecoin.io/api/rpc/v0',
         token: process.env.REACT_APP_NERPANET_TOKEN,
         clientRepo: 'filecoin-clients-onboarding-test',
         notaryRepo: 'filecoin-notaries-onboarding'
