@@ -338,11 +338,9 @@ export default class WalletProvider extends React.Component<{}, WalletProviderSt
             this.setState({ networkIndex }, async()=>{
                 switch (this.state.wallet) {
                     case 'ledger':
-                        this.loadLedger()
-                        break
+                        return this.loadLedger()
                     case 'burner':
-                        this.loadBurner()
-                        break
+                        return this.loadBurner()
                 }
             })
         },

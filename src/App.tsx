@@ -53,7 +53,7 @@ class App extends Component<{},States> {
     })
   }
 
-  switchNetwork = (index:number) => {
+  switchNetwork = async (index:number) => {
     this.context.selectNetwork(index)
     this.refresh()
   }
@@ -63,7 +63,9 @@ class App extends Component<{},States> {
   }
 
   switchRoot = () => {
-    this.context.switchview()
+    if(this.context.switchview){
+      this.context.switchview()
+    }
   }
 
   openWallet = async () => {
