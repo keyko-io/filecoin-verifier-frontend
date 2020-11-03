@@ -7,6 +7,7 @@ type OptionProps = {
     desc: string,
     imgSrc: string,
     active?: boolean,
+    available?: string,
     id: number,
     onClick: (target: any) => void;
 }
@@ -30,6 +31,10 @@ class Option extends Component<OptionProps> {
                     : null
                 }
                 <div className="optiondesc">{this.props.desc}</div>
+                {this.props.available ?
+                    <div className="optionavailable">{this.props.available}</div>
+                    : null
+                }
             </div>
         )
     }

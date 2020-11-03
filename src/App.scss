@@ -51,16 +51,37 @@
 
     .headertitles {
       font-weight: bold;
+      font-family: Inter;
+      font-style: normal;
+      font-weight: 600;
+      font-size: 16px;
+      line-height: 24px;
+    }
+
+    .accounttype {
+      font-family: Inter;
+      font-style: normal;
+      font-weight: normal;
       font-size: 12px;
       padding-bottom: 7px;
+      line-height: 16px;
+      letter-spacing: 0.4px;
     }
 
     .datacap {
       padding-left: 5px;
     }
 
+    .datacapdata img{
+      margin-right: 8px;
+      float: right;
+    }
+
     .copyaddress {
       padding-left: 5px;
+      float: right;
+      margin-right: 8px;
+      margin-top: 6px;
     }
 
     .notification {
@@ -143,7 +164,7 @@
   .accountselectholder {
     width: 250px;
     position: absolute;
-    padding: 24px 16px;
+    padding: 5px 16px;
     top: 70px;
     left: 0px;
     border: 1px solid #C7C7C7;
@@ -161,11 +182,36 @@
       overflow: hidden;
       text-overflow: ellipsis;
       font-family: monospace;
+      border-style: solid;
+      border-width: 1px;
+      border-radius: 4px;
+      border-color: #C7C7C7;
+      margin: 6px -10px;
+    }
+
+    .datacapdata {
+      font-family: Inter;
+      font-style: normal;
+      font-weight: normal;
+      font-size: 12px;
+      line-height: 16px;
+    }
+
+    .accountdata{
+      padding-left: 6px;
     }
 
     .importseedphrase {
       padding-top: 20px;
       font-weight: bold;
+      top: calc(50% - 20px/2);
+      font-family: Inter;
+      font-style: normal;
+      font-weight: 600;
+      font-size: 14px;
+      line-height: 20px;
+      text-align: center;
+      color: #0090FF;
     }
   }
 
@@ -195,6 +241,10 @@
 
         .textinfotext {
           padding: 30px 80px;
+
+          h2 {
+            text-align: center;
+          }
         }
 
         .textinfodata {
@@ -313,6 +363,16 @@
     .viewswitch {
       padding: 10px;
       margin: 10px;
+      width: 20px;
+    }
+
+    .accountaddress {
+      font-family: Inter;
+      font-style: normal;
+      font-weight: normal;
+      font-size: 20px;
+      line-height: 28px;
+      color: #1A1A1A;
     }
   }
 
@@ -503,7 +563,7 @@
     background: linear-gradient(180deg, #0090FF 0%, #39C1CB 99.99%, rgba(0, 144, 255, 0) 100%);
 
     .title {
-      margin-top: 29px;
+      margin-top: 62px;
       font-family: Inter;
       font-style: normal;
       font-weight: bold;
@@ -640,6 +700,12 @@
         font-size: 16px;
         line-height: 24px;
       }
+
+      .optionavailable {
+        padding-top: 15px;
+        font-style: italic;
+        font-size: 16px;
+      }
     }
 
     .columnleft {
@@ -703,6 +769,32 @@
       text-align: center;
       color: #FFFFFF;
       background: #0091FF;
+    }
+
+    .infobuttons {
+      max-width: 1280px;
+      left: 0;
+      right: 0;
+      margin-left: auto;
+      margin-right: auto;
+      text-align: center;
+
+      .info {
+        margin-top: 10px;
+        margin-left: 240px;
+        margin-right: -220px;
+        height: 20px;
+        font-family: Inter;
+        font-style: normal;
+        font-size: 14px;
+        width: 380px;
+        float: left;
+        text-align: left;
+      }
+
+      .info:nth-child(1) {
+        font-style: italic;
+      }
     }
   }
 
@@ -838,11 +930,13 @@
 
 .header {
   .headerlogo {
+    padding: 5px 5px;
     position: relative;
     width: 180px;
     margin: auto;
     cursor: pointer;
   }
+
 
   .headerback {
     cursor: pointer;
@@ -978,6 +1072,49 @@
     font-size: 16px;
     line-height: 24px;
   }
+}
 
+.learnmore {
+  position: absolute;
+  margin-left: auto;
+  margin-right: auto;
+  max-width: 1280px;
+  height: 60px;
+  left: 0;
+  right: 0;
+  background: #fff;
+  top: 815px;
+  text-align: center;
+  display: flex;
+  border-top: 1px solid #0091FF;
+  border-right: 1px solid #0091FF;
+  border-left: 1px solid #0091FF;
+  border-bottom: 1px solid #0091FF;
+
+  button,
+  button:checked,
+  button:active,
+  button:hover,
+  button:visited,
+  button:checked  {
+    position: absolute;
+    top: 10px;
+    left: 50%;
+    -ms-transform: translate(-50%);
+    transform: translate(-50%);
+    height: 20px;
+    font-family: Inter;
+    font-style: normal;
+    font-weight: 600;
+    font-size: 14px;
+    line-height: 20px;
+    border-right: 1px solid #0091FF;
+    border-top: 1px solid #0091FF;
+    border-left: 1px solid #0091FF;
+    border-bottom: 1px solid #0091FF;
+    width: 180px;
+    background: #fFF;
+    color: #0091FF;
+  }
 
 }

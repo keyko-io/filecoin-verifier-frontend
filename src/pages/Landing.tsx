@@ -6,6 +6,7 @@ import Option from '../components/Option'
 import Welcome from '../components/Welcome'
 import history from '../context/History'
 import Header from '../components/Header';
+import LearnMore from '../components/LearnMore';
 
 type States = {
   optionSelected: boolean[],
@@ -17,6 +18,7 @@ type OptionType = {
   title: string,
   subtitle: string,
   desc: string,
+  available?: string,
   imgSrc: string
 }
 
@@ -27,12 +29,13 @@ const options: OptionsType = [
     title: "Automatic Verification",
     subtitle: "Get Verified by verify.glif.io",
     desc: "Receive small data allowances (8GB) by connecting to any GitHub account over 180 days old",
+    available: "Currently unavailable",
     imgSrc: TiB.toString()
   },
   {
     title: "General Verification",
     subtitle: "Find a Notary in your geography or specialized in your use case",
-    desc: "Receive a large amount of datacap for general storage requests such as personal, enterprise, institutional, or large scale archival purposes.",
+    desc: "Request a DataCap allowance for general storage requests - such as personal, enterprise, or archival purposes.",
     imgSrc: MorePiB.toString()
   }]
 
@@ -77,12 +80,14 @@ class Landing extends Component<{}, States> {
                 title={option.title}
                 desc={option.desc}
                 subtitle={option.subtitle}
+                available={option.available}
                 imgSrc={option.imgSrc}
                 active={this.state.optionSelected[index]}
                 onClick={this.changeActive.bind(this)}
               />
             })}
           </div>
+          <LearnMore />
         </div>
       </div>
     );
