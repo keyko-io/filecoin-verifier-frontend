@@ -1274,20 +1274,15 @@
     node-fetch "^2.6.0"
     ws "^7.3.0"
 
-"@filecoin-shipyard/lotus-client-rpc@0.0.11":
-  version "0.0.11"
-  resolved "https://registry.yarnpkg.com/@filecoin-shipyard/lotus-client-rpc/-/lotus-client-rpc-0.0.11.tgz#60d6953dee4ff583ca982aae45d57e05a68ad89b"
-  integrity sha512-7ZgT7tyB+5fp5mC9yC4Da9vj3M8PiVPNuxFkFAaDRu8blDuKg/tNh4OMZr5pqs/uuwjRZuXslGl8dOb2Iz+rZg==
-
 "@filecoin-shipyard/lotus-client-rpc@0.0.13":
   version "0.0.13"
   resolved "https://registry.yarnpkg.com/@filecoin-shipyard/lotus-client-rpc/-/lotus-client-rpc-0.0.13.tgz#2f46ae0414111f22d6822c2489bcbdd42d5146f2"
   integrity sha512-pvtpLgfDP6OTEBhWWb9f6lKftjwewE5aBoLmdfPDJwnC/Na1jIQCy7k7j6hJVoUhHOyluUWSfCn0CIMsPV/izw==
 
-"@filecoin-shipyard/lotus-client-schema@0.0.14":
+"@filecoin-shipyard/lotus-client-rpc@0.0.14":
   version "0.0.14"
-  resolved "https://registry.yarnpkg.com/@filecoin-shipyard/lotus-client-schema/-/lotus-client-schema-0.0.14.tgz#c8f62fd87ca095be667102b52ffcad1c5f8d21fb"
-  integrity sha512-qBWjM58nvnIh9YpiY1XZbmDH1J3h8lrVUCA9co4tr2LCRypGOZe7n+1GKMJAN0CnTQSnQRT6RW8uJdqBymY5qg==
+  resolved "https://registry.yarnpkg.com/@filecoin-shipyard/lotus-client-rpc/-/lotus-client-rpc-0.0.14.tgz#0bf64bcc1554c058598f9d844e059a02efe9f2e9"
+  integrity sha512-knkou0TxO4V3BRETP2lsAK5Cw2xx1148t6AJtLVFCgIAcVo9C39ZrdKvLrUDTaUkuqmQSa2LnluAM7cdaOef7g==
 
 "@filecoin-shipyard/lotus-client-schema@2.0.0":
   version "2.0.0"
@@ -1333,6 +1328,15 @@
   integrity sha512-kV6HtqotM3K4YIXlTVvomuIi6QgGCvYm++ImyEx2wwgmSppZ6kbbA29ASwjAUBD63j2OFU0yoxeXpZkjrrX0qQ==
   dependencies:
     prop-types "^15.7.2"
+
+"@glif/filecoin-address@1.0.0-beta.5":
+  version "1.0.0-beta.5"
+  resolved "https://registry.yarnpkg.com/@glif/filecoin-address/-/filecoin-address-1.0.0-beta.5.tgz#4cb72eadaf2fcac661c8db97a7bdddbd345aed84"
+  integrity sha512-30hUG9isF4XO3DjT47nWbTSY+7M30N/5+Q9nCTL8TjNwHlXzsStsHetPQJxn4sq7bzV2L8S+AbeeM3cFqbFrmA==
+  dependencies:
+    blakejs "1.1.0"
+    borc "2.1.1"
+    leb128 "0.0.5"
 
 "@hapi/address@2.x.x":
   version "2.1.4"
@@ -1717,12 +1721,12 @@
     chalk "^4.0.0"
 
 "@keyko-io/filecoin-verifier-tools@./deps/filecoin-verifier-tools":
-  version "0.6.0"
+  version "0.6.1"
   dependencies:
     "@filecoin-shipyard/lotus-client-provider-nodejs" "0.0.5"
-    "@filecoin-shipyard/lotus-client-rpc" "0.0.11"
-    "@filecoin-shipyard/lotus-client-schema" "0.0.14"
-    "@openworklabs/filecoin-address" "0.0.10"
+    "@filecoin-shipyard/lotus-client-rpc" "0.0.14"
+    "@filecoin-shipyard/lotus-client-schema" "2.0.0"
+    "@glif/filecoin-address" "1.0.0-beta.5"
     "@zondax/filecoin-signing-tools" "^0.7.1"
     base32-decode "^1.0.0"
     base32-encode "^1.1.1"
@@ -1897,15 +1901,6 @@
   integrity sha512-UZ1pErDue6bZNjYOotCNveTXArOMZQFG6hKJfOnGnulVCMcVVi7YIIuuR4WfBhjo7zgpmzn/BkPDnUXtNx+PcQ==
   dependencies:
     "@types/node" ">= 8"
-
-"@openworklabs/filecoin-address@0.0.10":
-  version "0.0.10"
-  resolved "https://registry.yarnpkg.com/@openworklabs/filecoin-address/-/filecoin-address-0.0.10.tgz#2e3211a00800746ebb8753831eb788769f45bc79"
-  integrity sha512-zHzjW6G+/n46XcqqdfcAPumP5oS5V6ozFVKvFW5GXKJ0oLXwnEqoc0zWoodJXXA/7nDqbWxvH8/CSJysig8WTA==
-  dependencies:
-    blakejs "1.1.0"
-    borc "2.1.1"
-    leb128 "0.0.5"
 
 "@openworklabs/filecoin-address@0.0.14":
   version "0.0.14"
@@ -2137,9 +2132,9 @@
   integrity sha512-iIgQNzCm0v7QMhhe4Jjn9uRh+I6GoPmt03CbEtwx3ao8/EfoQcmgtqH4vQ5Db/lxiIGaWDv6nwvunuh0RyX0+A==
 
 "@types/babel__core@^7.0.0", "@types/babel__core@^7.1.0", "@types/babel__core@^7.1.7":
-  version "7.1.10"
-  resolved "https://registry.yarnpkg.com/@types/babel__core/-/babel__core-7.1.10.tgz#ca58fc195dd9734e77e57c6f2df565623636ab40"
-  integrity sha512-x8OM8XzITIMyiwl5Vmo2B1cR1S1Ipkyv4mdlbJjMa1lmuKvKY9FrBbEANIaMlnWn5Rf7uO+rC/VgYabNkE17Hw==
+  version "7.1.11"
+  resolved "https://registry.yarnpkg.com/@types/babel__core/-/babel__core-7.1.11.tgz#7fae4660a009a4031e293f25b213f142d823b3c4"
+  integrity sha512-E5nSOzrjnvhURYnbOR2dClTqcyhPbPvtEwLHf7JJADKedPbcZsoJVfP+I2vBNfBjz4bnZIuhL/tNmRi5nJ7Jlw==
   dependencies:
     "@babel/parser" "^7.1.0"
     "@babel/types" "^7.0.0"
