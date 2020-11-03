@@ -8,6 +8,7 @@ import { Octokit } from '@octokit/rest'
 import { IssueBody } from '../IssueBody'
 import { config } from '../config';
 const utils = require('@keyko-io/filecoin-verifier-tools/utils/issue-parser')
+const parser = require('@keyko-io/filecoin-verifier-tools/utils/notary-issue-parser')
 
 interface WalletProviderStates {
     isLogged: boolean
@@ -199,20 +200,35 @@ export default class WalletProvider extends React.Component<{}, WalletProviderSt
         },
         loadVerifierRequests: async () => {
             const rawIssues = await this.state.githubOcto.issues.listForRepo({
-              owner: 'keyko-io',
-              repo: 'filecoin-notaries-onboarding',
-              state: 'open',
-              labels: 'status:Approved'
+                owner: 'keyko-io',
+                repo: 'filecoin-notaries-onboarding',
+                state: 'open',
+                labels: 'status:Approved'
             })
             const issues: any[] = []
             for (const rawIssue of rawIssues.data) {
-                const data = utils.parseIssue(rawIssue.body)
+                const data = parser.parseIssue(rawIssue.body)
                 if (data.correct) {
-                    issues.push({
-                        number: rawIssue.number,
-                        url: rawIssue.html_url,
-                        data
-                    })
+
+                    // get comments
+                    const rawComments = await this.state.githubOcto.issues.listComments({
+                        owner: 'keyko-io',
+                        repo: 'filecoin-notaries-onboarding',
+                        issue_number: rawIssue.number,
+                    });
+                    for (const rawComment of rawComments.data) {
+                        const comment = parser.parseApproveComment(rawComment.body)
+                        if(comment.approvedMessage && comment.correct){
+                            issues.push({
+                                number: rawIssue.number,
+                                url: rawIssue.html_url,
+                                address: comment.address,
+                                datacap: comment.datacap,
+                                data
+                            })
+                            break
+                        }
+                    }
                 }
             }
             this.setState({

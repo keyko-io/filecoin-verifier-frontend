@@ -155,15 +155,15 @@ export default class Overview extends Component<{}, OverviewStates> {
                     let prepDatacapExt = 'B'
                     const dataext = config.datacapExt.reverse()
                     for(const entry of dataext){
-                        if(request.data.datacap.endsWith(entry.name)){
+                        if(request.datacap.endsWith(entry.name)){
                             prepDatacapExt = entry.value
-                            prepDatacap = request.data.datacap.substring(0, request.data.datacap.length-entry.name.length)
+                            prepDatacap = request.datacap.substring(0, request.datacap.length-entry.name.length)
                             break
                         }
                     }
                     const datacap = parseFloat(prepDatacap)
                     const fullDatacap = BigInt(datacap * parseFloat(prepDatacapExt))
-                    let address = request.data.address
+                    let address = request.address
                     if(address.length < 12){
                         address = await this.context.api.actorKey(address)
                     }
@@ -198,7 +198,7 @@ export default class Overview extends Component<{}, OverviewStates> {
             repo: 'filecoin-notary-onboarding',
             state: 'open',
             labels: 'status:Proposed'
-          })
+        })
         const issues: any = {}
         for(const rawIssue of rawIssues.data){
             const data = utils.parseIssue(rawIssue.body)
@@ -332,8 +332,8 @@ export default class Overview extends Component<{}, OverviewStates> {
                                             <tr key={index}>
                                                 <td><input type="checkbox" onChange={()=>this.selectNotaryRow(notaryReq.number)} checked={this.context.selectedNotaryRequests.includes(notaryReq.number)}/></td>
                                                 <td>{notaryReq.data.name}</td>
-                                                <td>{notaryReq.data.address}</td>
-                                                <td>{notaryReq.data.datacap}</td>
+                                                <td>{notaryReq.address}</td>
+                                                <td>{notaryReq.datacap}</td>
                                                 <td><a target="_blank" rel="noopener noreferrer" href={notaryReq.url}>#{notaryReq.number}</a></td>
                                             </tr>
                                         )}
