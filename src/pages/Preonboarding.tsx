@@ -8,6 +8,7 @@ import { Location } from 'history';
 import history from '../context/History'
 import { Wallet } from '../context/Index'
 import Header from '../components/Header';
+import LearnMore from '../components/LearnMore';
 
 type PreonboardingStates = {
   tabs: string
@@ -101,7 +102,18 @@ class Preonboarding extends Component<{}, PreonboardingStates, LocationState> {
               <ButtonPrimary onClick={() => this.loadBurnerWallet()}>Load Browser wallet</ButtonPrimary>
               <ButtonPrimary onClick={() => this.loadLedgerWallet()}>Load Ledger wallet</ButtonPrimary>
             </div>
+            <div className="infobuttons">
+              <div className="info">
+                <p>Not available for Mainnet</p>
+              </div>
+              <div className="info">
+              <p>1) Please ensure you have the latest firmware with Ledger</p>
+              <p>2) Please ensure your ledger is plugged in and unlocked</p>
+              <p>3) Please ensure you have “expert mode” enabled</p>
+              </div>
+            </div>
           </div>
+          <LearnMore/>
         </div>
       </div>
     );

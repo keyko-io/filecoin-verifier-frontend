@@ -19,6 +19,10 @@ class Verifiers extends Component<{}> {
     this.child.current.contactVerifier();
   }
 
+  navigate = () => {
+    window.open('https://github.com/filecoin-project/notary-governance', '_blank')
+}
+
   render() {
     return (
       <div className="landing">
@@ -38,7 +42,7 @@ class Verifiers extends Component<{}> {
                 <ButtonPrimary onClick={() => this.makeRequest()}>
                   Make Request
               </ButtonPrimary>
-                <ButtonPrimary>Learn More</ButtonPrimary>
+                <ButtonPrimary  onClick={() => this.navigate()}>Learn More</ButtonPrimary>
               </div>
             </div>
           </div>

@@ -7,6 +7,7 @@ import { fab } from '@fortawesome/free-brands-svg-icons'
 import { far } from '@fortawesome/free-regular-svg-icons'
 import { fas } from '@fortawesome/free-solid-svg-icons'
 import Logo from './logo.svg';
+import Network from './pages/svg/filecoin-network.svg';
 import { Wallet } from './context/Index'
 import { addressFilter, datacapFilter } from './Filters'
 import WalletModal from './WalletModal'
@@ -126,9 +127,10 @@ class App extends Component<{},States> {
           <div className="accountholder" onClick={this.openAccountSelect}>
             {this.state.accountSelect?
               <div className="accountselectholder">
-                <div className="headertitles">Account Type</div>
+                <div className="headertitles">Select Account Type</div>
                 <div>
                   <div>{this.context.viewroot ? 'Rootkey Holder' : 'Approved Notary'}</div>
+                  <div className="accounttype">{this.context.viewroot ? 'Rootkey Holder' : 'Approved Verifier'}</div>
                   <div className="viewswitch">
                   <Toggle
                     active={this.context.viewroot}
@@ -139,12 +141,16 @@ class App extends Component<{},States> {
                 </div>
                 <div className="headertitles">Account addresses</div>
                 {this.context.accounts.map((account:any, index: number)=>{
-                  return <div key={index} className="accountentry">
+                return <div key={index} className="accountentry" style={{ backgroundColor: index === this.context.walletIndex ? '#C7C7C7' : 'inherit' }}>
                     <div>
-                      <FontAwesomeIcon icon={["fas", "circle"]} style={{ color: this.context.accountsActive[account] ? '#003fe3' : '#000000' }}/>
-                      <span onClick={()=>this.switchAccount(index)} style={{ color: index === this.context.walletIndex ? '#003fe3' : 'inherit' }}>{addressFilter(account)}</span>
-                      <span className="copyaddress" onClick={()=>this.copyAddress(account)}><SVG.CopyAndPaste height='15px' /></span>
-                      {this.context.viewroot === false ? <span className="datacap">{datacapFilter(this.getVerifierAmount(account))}</span> : null}
+                      <div className="datacapdata" onClick={() => this.switchAccount(index)} >
+                        {this.context.viewroot === false ? <span className="datacap">Datacap: {datacapFilter(this.getVerifierAmount(account))}</span> : <span className="datacap"></span>}
+                        <img src={Network} alt="network"/>
+                      </div>
+                      <div className="accountdata">
+                        <span className="accountaddress" onClick={() => this.switchAccount(index)} >{addressFilter(account)}</span>
+                        <span className="copyaddress" onClick={() => this.copyAddress(account)}><SVG.CopyAndPaste height='15px' /></span>
+                      </div>
                     </div>
                   </div>
                 })}
