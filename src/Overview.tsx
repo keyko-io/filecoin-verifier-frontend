@@ -90,12 +90,12 @@ export default class Overview extends Component<{}, OverviewStates> {
                     // github update
                     await this.context.githubOcto.issues.removeAllLabels({
                         owner: 'keyko-io',
-                        repo: 'filecoin-clients-onboarding',
+                        repo:  config.lotusNodes[this.context.networkIndex].clientRepo,
                         issue_number: request.number,
                     })
                     await this.context.githubOcto.issues.addLabels({
                         owner: 'keyko-io',
-                        repo: 'filecoin-clients-onboarding',
+                        repo:  config.lotusNodes[this.context.networkIndex].clientRepo,
                         issue_number: request.number,
                         labels: 'state:Granted',
                     })
@@ -345,7 +345,7 @@ export default class Overview extends Component<{}, OverviewStates> {
                         { this.state.tabs === "0" && !this.context.githubLogged ?
                             <div id="githublogin">
                                 <LoginGithub
-                                    clientId="8e922e2845a6083ab65c"
+                                    clientId={config.githubApp}
                                     scope="repo"
                                     onSuccess={(response:any)=>{
                                         this.context.loginGithub(response.code)
@@ -434,7 +434,7 @@ export default class Overview extends Component<{}, OverviewStates> {
                                     </thead>
                                     <tbody>
                                         {this.context.clientRequests.map((clientReq:any, index:any) => 
-                                            <tr key={index}>
+                                             <tr key={index}>
                                                 <td><input type="checkbox" onChange={()=>this.selectClientRow(clientReq.number)} checked={this.state.selectedClientRequests.includes(clientReq.number)}/></td>
                                                 <td>{clientReq.data.name}</td>
                                                 <td>{clientReq.data.address}</td>
@@ -450,7 +450,7 @@ export default class Overview extends Component<{}, OverviewStates> {
                         { this.state.tabs === "1" && !this.context.githubLogged ?
                             <div id="githublogin">
                                 <LoginGithub
-                                    clientId="8e922e2845a6083ab65c"
+                                    clientId={config.githubApp}
                                     scope="repo"
                                     onSuccess={(response:any)=>{
                                         this.context.loginGithub(response.code)

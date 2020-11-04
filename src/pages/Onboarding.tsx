@@ -6,6 +6,7 @@ import Option from '../components/Option'
 import history from '../context/History'
 import Welcome from '../components/Welcome'
 import Header from '../components/Header';
+import LearnMore from '../components/LearnMore';
 
 type States = {
 }
@@ -72,6 +73,7 @@ class Onboarding extends Component<{}, States> {
               />
             })}
           </div>
+          <LearnMore/>
         </div>
       </div>
     );

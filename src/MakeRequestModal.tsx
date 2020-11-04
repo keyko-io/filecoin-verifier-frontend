@@ -4,7 +4,8 @@ import { config } from './config'
 // @ts-ignore
 import { dispatchCustomEvent, Input, ButtonPrimary, SelectMenu, LoaderSpinner, CheckBox } from "slate-react-system";
 import ConfirmModal from './pages/ConfirmModal';
-import Onboarding from './pages/Onboarding';
+// @ts-ignore
+import LoginGithub from 'react-login-github';
 
 type States = {
     address: string
@@ -31,7 +32,8 @@ type ModalProps = {
         website: string,
         total_datacap: number,
         email: string,
-        private_request: string
+        private_request: string,
+        github_user: string
     }
 }
 
@@ -126,6 +128,7 @@ class MakeRequestModal extends Component<ModalProps, States> {
             useplan: this.state.useplan,
             contact: this.state.contact,
             comments: this.state.comments,
+            assignees: [this.props.verifier.github_user],
             onboarding: true
         })
         dispatchCustomEvent({ name: "delete-modal", detail: {} })
@@ -250,6 +253,18 @@ class MakeRequestModal extends Component<ModalProps, States> {
                         <ButtonPrimary onClick={this.handleSubmit}>{this.state.submitLoading ? <LoaderSpinner /> : 'Send Request'}</ButtonPrimary>
                     </div>
                 </form>
+                <div id="githublogin">
+                    <LoginGithub
+                        clientId={config.githubApp}
+                        scope="repo"
+                        onSuccess={(response: any) => {
+                            this.context.loginGithub(response.code, true)
+                        }}
+                        onFailure={(response: any) => {
+                            console.log('failure', response)
+                        }}
+                    />
+                </div>
             </div>
         )
     }
