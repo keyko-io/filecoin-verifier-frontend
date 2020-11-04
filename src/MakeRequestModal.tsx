@@ -255,7 +255,7 @@ class MakeRequestModal extends Component<ModalProps, States> {
                 </form>
                 <div id="githublogin">
                     <LoginGithub
-                        clientId={config.onboardingGithubApp}
+                        clientId={config.githubApp}
                         scope="repo"
                         onSuccess={(response: any) => {
                             this.context.loginGithub(response.code, true)

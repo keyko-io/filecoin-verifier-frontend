@@ -308,7 +308,7 @@ export default class Overview extends Component<{}, OverviewStates> {
                         { this.state.tabs === "0" && !this.context.githubLogged ?
                             <div id="githublogin">
                                 <LoginGithub
-                                    clientId={config.lotusNodes[this.context.networkIndex].githubApp}
+                                    clientId={config.githubApp}
                                     scope="repo"
                                     onSuccess={(response:any)=>{
                                         this.context.loginGithub(response.code)
@@ -413,7 +413,7 @@ export default class Overview extends Component<{}, OverviewStates> {
                         { this.state.tabs === "1" && !this.context.githubLogged ?
                             <div id="githublogin">
                                 <LoginGithub
-                                    clientId={config.lotusNodes[this.context.networkIndex].githubApp}
+                                    clientId={config.githubApp}
                                     scope="repo"
                                     onSuccess={(response:any)=>{
                                         this.context.loginGithub(response.code)
