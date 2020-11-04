@@ -3,12 +3,14 @@ import { Wallet } from './context/Index';
 import AddClientModal from './AddClientModal';
 import AddVerifierModal from './AddVerifierModal';
 import RequestVerifierModal from './RequestVerifierModal';
+import AddSelectedVerifiersModal from './AddSelectedVerifiersModal';
 // @ts-ignore
 import { ButtonPrimary, dispatchCustomEvent, CheckBox } from "slate-react-system";
 import { datacapFilter } from "./Filters"
 // @ts-ignore
 import LoginGithub from 'react-login-github';
 import { config } from './config'
+const utils = require('@keyko-io/filecoin-verifier-tools/utils/issue-parser')
 
 type OverviewStates = {
     tabs: string
@@ -18,7 +20,6 @@ type OverviewStates = {
     approveLoading: boolean
     selectedTransactions: any[]
     selectedClientRequests: any[]
-    selectedNotaryRequests: any[]
 }
 
 export default class Overview extends Component<{}, OverviewStates> {
@@ -27,7 +28,6 @@ export default class Overview extends Component<{}, OverviewStates> {
     state = {
         selectedTransactions: [] as any[],
         selectedClientRequests: [] as any[],
-        selectedNotaryRequests: [] as any[],
         approveLoading: false,
         tabs: '1',
         pendingverifiers: [] as any[],
@@ -120,13 +120,7 @@ export default class Overview extends Component<{}, OverviewStates> {
     }
 
     selectNotaryRow = (number: string) => {
-        let selectedTxs = this.state.selectedNotaryRequests
-        if(selectedTxs.includes(number)){
-            selectedTxs = selectedTxs.filter(item => item !== number)
-        } else {
-            selectedTxs.push(number)
-        }
-        this.setState({selectedNotaryRequests:selectedTxs})
+        this.context.selectNotaryRequest(number)
     }
 
     selectClientRow = (number: string) => {
@@ -154,22 +148,22 @@ export default class Overview extends Component<{}, OverviewStates> {
     }
 
     acceptRequestVerifier = async () => {
-        for(const request of this.context.clientRequests){
-            if(this.state.selectedNotaryRequests.includes(request.number)){
+        for(const request of this.context.verifierRequests){
+            if(this.context.selectedNotaryRequests.includes(request.number)){
                 try {
                     let prepDatacap = '1'
                     let prepDatacapExt = 'B'
                     const dataext = config.datacapExt.reverse()
                     for(const entry of dataext){
-                        if(request.data.datacap.endsWith(entry.name)){
+                        if(request.datacap.endsWith(entry.name)){
                             prepDatacapExt = entry.value
-                            prepDatacap = request.data.datacap.substring(0, request.data.datacap.length-entry.name.length)
+                            prepDatacap = request.datacap.substring(0, request.datacap.length-entry.name.length)
                             break
                         }
                     }
                     const datacap = parseFloat(prepDatacap)
                     const fullDatacap = BigInt(datacap * parseFloat(prepDatacapExt))
-                    let address = request.data.address
+                    let address = request.address
                     if(address.length < 12){
                         address = await this.context.api.actorKey(address)
                     }
@@ -184,7 +178,7 @@ export default class Overview extends Component<{}, OverviewStates> {
                         owner: 'keyko-io',
                         repo: 'filecoin-notary-onboarding',
                         issue_number: request.number,
-                        labels: 'state:Granted',
+                        labels: 'status:Proposed',
                     })
                     // send notifications
                     this.context.dispatchNotification('Accepting Message sent with ID: ' + messageID)
@@ -198,11 +192,55 @@ export default class Overview extends Component<{}, OverviewStates> {
 
     handleSubmitApprove = async () => {
         this.setState({ approveLoading: true })
+        // load github issues
+        const rawIssues = await this.context.githubOcto.issues.listForRepo({
+            owner: 'keyko-io',
+            repo: 'filecoin-notary-onboarding',
+            state: 'open',
+            labels: 'status:Proposed'
+        })
+        const issues: any = {}
+        for(const rawIssue of rawIssues.data){
+            const data = utils.parseIssue(rawIssue.body)
+            try {
+                const address = await this.context.api.actorKey(data.address)
+                if(data.correct && address){
+                    issues[address]= {
+                        number: rawIssue.number,
+                        url: rawIssue.html_url,
+                        data
+                    }
+                }
+            } catch(e) {
+                console.log('retrieval', e)
+            }
+        }
+        // go over transactions
         try {
             for(let tx of this.state.pendingverifiers){
                 if(this.state.selectedTransactions.includes(tx.id)){
                     const datacap = BigInt(tx.datacap)
                     await this.context.api.approveVerifier(tx.verifier, datacap, tx.signer, tx.id, this.context.walletIndex);
+                    const multisigInfo = await this.context.api.multisigInfo(tx.verifier)
+                    // check if we have github issue, and all info
+                    if(
+                        multisigInfo && multisigInfo.signers &&
+                        multisigInfo.signers > config.rkhtreshold &&
+                        issues[tx.verifier]
+                    ){
+                        // github update
+                        await this.context.githubOcto.issues.removeAllLabels({
+                            owner: 'keyko-io',
+                            repo: 'filecoin-notary-onboarding',
+                            issue_number: issues[tx.verifier].number,
+                        })
+                        await this.context.githubOcto.issues.addLabels({
+                            owner: 'keyko-io',
+                            repo: 'filecoin-notary-onboarding',
+                            issue_number: issues[tx.verifier].number,
+                            labels: 'status:onchain',
+                        })
+                    }
                 }
             }
             this.setState({ selectedTransactions:[], approveLoading: false })
@@ -268,14 +306,13 @@ export default class Overview extends Component<{}, OverviewStates> {
                     <div className="main">
                         <div className="tabsholder">
                             <div className="tabs">
-                                <div className={this.state.tabs === "0" ? "selected" : ""} onClick={()=>{this.showVerifierRequests()}}>Notary Requests ({this.context.verifierRequests.length})</div>
-                                <div className={this.state.tabs === "1" ? "selected" : ""} onClick={()=>{this.showPending()}}>Pending Notaries ({this.state.pendingverifiers.length})</div>
+                                <div className={this.state.tabs === "0" ? "selected" : ""} onClick={()=>{this.showVerifierRequests()}}>Notaries Approved by Governance ({this.context.verifierRequests.length})</div>
+                                <div className={this.state.tabs === "1" ? "selected" : ""} onClick={()=>{this.showPending()}}>Notaries Pending to Approve Onchain ({this.state.pendingverifiers.length})</div>
                                 <div className={this.state.tabs === "2" ? "selected" : ""} onClick={()=>{this.showApproved()}}>Accepted Notaries ({this.context.verified.length})</div>
                             </div>
                             <div className="tabssadd">
-                                {this.state.tabs === "0" ? <ButtonPrimary onClick={()=>this.acceptRequestVerifier()}>Accept Notary</ButtonPrimary> : null}
-                                {this.state.tabs === "2" ? <ButtonPrimary onClick={()=>this.proposeVerifier()}>Propose Notary</ButtonPrimary> : null}
-                                {this.state.tabs === "1" ? <ButtonPrimary onClick={()=>this.handleSubmitApprove()}>Accept Notaries</ButtonPrimary> : null}
+                                {this.state.tabs === "0" ? <ButtonPrimary onClick={()=>this.acceptRequestVerifier()}>Propose Onchain</ButtonPrimary> : null}
+                                {this.state.tabs === "1" ? <ButtonPrimary onClick={()=>this.handleSubmitApprove()}>Approve Onchain</ButtonPrimary> : null}
                             </div>
                         </div>
                         { this.state.tabs === "0" && this.context.githubLogged ?
@@ -293,10 +330,10 @@ export default class Overview extends Component<{}, OverviewStates> {
                                     <tbody>
                                         {this.context.verifierRequests.map((notaryReq:any, index:any) => 
                                             <tr key={index}>
-                                                <td><input type="checkbox" onChange={()=>this.selectNotaryRow(notaryReq.number)} checked={this.state.selectedNotaryRequests.includes(notaryReq.number)}/></td>
+                                                <td><input type="checkbox" onChange={()=>this.selectNotaryRow(notaryReq.number)} checked={this.context.selectedNotaryRequests.includes(notaryReq.number)}/></td>
                                                 <td>{notaryReq.data.name}</td>
-                                                <td>{notaryReq.data.address}</td>
-                                                <td>{notaryReq.data.datacap}</td>
+                                                <td>{notaryReq.address}</td>
+                                                <td>{notaryReq.datacap}</td>
                                                 <td><a target="_blank" rel="noopener noreferrer" href={notaryReq.url}>#{notaryReq.number}</a></td>
                                             </tr>
                                         )}

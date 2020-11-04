@@ -49,4 +49,5 @@ export const config = {
         { value: "YiB", name: "YiB" }
     ],
     dataSource: process.env.REACT_APP_VERIFIES_DATA || 'verifiers-dev',
+    rkhtreshold: 1
 }

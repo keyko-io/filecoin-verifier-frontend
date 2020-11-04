@@ -5,9 +5,10 @@ import { BurnerWallet } from './BurnerWallet'
 // @ts-ignore
 import { dispatchCustomEvent } from "slate-react-system";
 import { Octokit } from '@octokit/rest'
-import { IssueBody, IssueVerifierBody } from '../IssueBody'
+import { IssueBody } from '../IssueBody'
 import { config } from '../config';
 const utils = require('@keyko-io/filecoin-verifier-tools/utils/issue-parser')
+const parser = require('@keyko-io/filecoin-verifier-tools/utils/notary-issue-parser')
 
 interface WalletProviderStates {
     isLogged: boolean
@@ -20,6 +21,8 @@ interface WalletProviderStates {
     clientRequests: any[]
     loadVerifierRequests: any
     verifierRequests: any[]
+    selectedNotaryRequests: any[]
+    selectNotaryRequest: any
     createRequest: any
     clientsGithub: any
     loadClientsGithub: any
@@ -192,20 +195,47 @@ export default class WalletProvider extends React.Component<{}, WalletProviderSt
             })
         },
         clientRequests: [],
+        selectedNotaryRequests: [] as any[],
+        selectNotaryRequest: async (number:any) => {
+            let selectedTxs = this.state.selectedNotaryRequests
+            if(selectedTxs.includes(number)){
+                selectedTxs = selectedTxs.filter((item:number) => item !== number)
+            } else {
+                selectedTxs.push(number)
+            }
+            this.setState({selectedNotaryRequests:selectedTxs})
+        },
         loadVerifierRequests: async () => {
             const rawIssues = await this.state.githubOcto.issues.listForRepo({
                 owner: 'keyko-io',
-                repo: config.lotusNodes[this.state.networkIndex].notaryRepo
+                repo: 'filecoin-notaries-onboarding',
+                state: 'open',
+                labels: 'status:Approved'
             })
             const issues: any[] = []
             for (const rawIssue of rawIssues.data) {
-                const data = utils.parseIssue(rawIssue.body)
+                const data = parser.parseIssue(rawIssue.body)
                 if (data.correct) {
-                    issues.push({
-                        number: rawIssue.number,
-                        url: rawIssue.html_url,
-                        data
-                    })
+
+                    // get comments
+                    const rawComments = await this.state.githubOcto.issues.listComments({
+                        owner: 'keyko-io',
+                        repo: 'filecoin-notaries-onboarding',
+                        issue_number: rawIssue.number,
+                    });
+                    for (const rawComment of rawComments.data) {
+                        const comment = parser.parseApproveComment(rawComment.body)
+                        if(comment.approvedMessage && comment.correct){
+                            issues.push({
+                                number: rawIssue.number,
+                                url: rawIssue.html_url,
+                                address: comment.address,
+                                datacap: comment.datacap,
+                                data
+                            })
+                            break
+                        }
+                    }
                 }
             }
             this.setState({
@@ -335,11 +365,9 @@ export default class WalletProvider extends React.Component<{}, WalletProviderSt
             this.setState({ networkIndex }, async () => {
                 switch (this.state.wallet) {
                     case 'ledger':
-                        this.loadLedger()
-                        break
+                        return this.loadLedger()
                     case 'burner':
-                        this.loadBurner()
-                        break
+                        return this.loadBurner()
                 }
             })
         },

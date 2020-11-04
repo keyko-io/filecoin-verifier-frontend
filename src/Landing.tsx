@@ -34,34 +34,6 @@ class App extends Component<{},States> {
           <ButtonPrimary onClick={()=>this.context.loadWallet('Burner')}>Load Browser wallet</ButtonPrimary>
           <ButtonPrimary onClick={()=>this.context.loadWallet('Ledger')}>Load Ledger wallet</ButtonPrimary>
         </div>
-        {this.state.page === '' ?
-          <div className="wizzardfirst">
-            <div className="wizzardElement" onClick={()=>this.setState({page:'small'})}>
-              <div className="number">&lt; 1Tib</div>
-              <div className="title">Requesting datacap (less then 1T of data)</div>
-              <div className="description">Description explaining whole concept and additionaly confirming on datacap sizes</div>
-            </div>
-            <div className="wizzardElement" onClick={()=>this.setState({page:'medium'})}>
-              <div className="number">&lt; 1Pib</div>
-              <div className="title">Requesting datacap (more then 1T of data)</div>
-              <div className="description">Description explaining whole concept and additionaly confirming on datacap sizes</div>
-            </div>
-            <div className="wizzardElement" onClick={()=>this.setState({page:'big'})}>
-              <div className="number">1Pib +</div>
-              <div className="title">Institution request (1P+ of data)</div>
-              <div className="description">Description explaining whole concept and additionaly confirming on datacap sizes</div>
-            </div>
-          </div>
-        :null}
-        {this.state.page === 'small' ?
-          <div>You are requesting datacap (less then 1T of data)</div>
-        :null}
-        {this.state.page === 'medium' ?
-          <div>You are requesting datacap (more then 1T of data)</div>
-        :null}
-        {this.state.page === 'big' ?
-          <div>Your are equesting datacap (1P+ of data)</div>
-        :null}
       </div>
     );
   }
