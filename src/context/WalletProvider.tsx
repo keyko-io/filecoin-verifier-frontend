@@ -130,7 +130,7 @@ export default class WalletProvider extends React.Component<{}, WalletProviderSt
         isLoading: false,
         githubLogged: false,
         githubOcto: {} as any,
-        loginGithub: async (code: string) => {
+        loginGithub: async (code: string, onboarding?: boolean) => {
             try {
                 const authrequest = await fetch(config.apiUri + '/api/v1/github', {
                     method: 'POST',
@@ -144,15 +144,21 @@ export default class WalletProvider extends React.Component<{}, WalletProviderSt
                 })
                 const authjson = await authrequest.json()
                 localStorage.setItem('githubToken', authjson.data.access_token)
-                this.state.initGithubOcto(authjson.data.access_token)
+                this.state.initGithubOcto(authjson.data.access_token, onboarding)
             } catch (e) {
                 this.state.dispatchNotification('Failed to login. Try again later.')
             }
         },
-        initGithubOcto: async (token: string) => {
+        initGithubOcto: async (token: string, onboarding?: boolean) => {
             const octokit = new Octokit({
                 auth: token
             })
+            onboarding ?            
+            this.setState({
+                githubLogged: true,
+                githubOcto: octokit
+            })
+            :
             this.setState({
                 githubLogged: true,
                 githubOcto: octokit
@@ -164,10 +170,11 @@ export default class WalletProvider extends React.Component<{}, WalletProviderSt
             })
         },
         loadClientRequests: async () => {
-            console.log(config.lotusNodes[this.state.networkIndex].clientRepo)
+            const user = await this.state.githubOcto.users.getAuthenticated();
             const rawIssues = await this.state.githubOcto.issues.listForRepo({
                 owner: 'keyko-io',
-                repo: config.lotusNodes[this.state.networkIndex].clientRepo
+                repo: config.lotusNodes[this.state.networkIndex].clientRepo,
+                assignee: user.data.login
             })
             const issues: any[] = []
             for (const rawIssue of rawIssues.data) {
@@ -212,6 +219,7 @@ export default class WalletProvider extends React.Component<{}, WalletProviderSt
                     owner: 'keyko-io',
                     repo: data.onboarding ? config.onboardingClientRepo : config.lotusNodes[this.state.networkIndex].clientRepo,
                     title: 'Data Cap Request for: ' + data.organization,
+                    assignees: data.assignees,
                     body: IssueBody(data)
                 });
                 if (issue.status === 201) {

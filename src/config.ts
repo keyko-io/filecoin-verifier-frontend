@@ -3,6 +3,7 @@ export const config = {
     apiToken: process.env.REACT_APP_API_TOKEN || '',
     verifiers: process.env.REACT_APP_VERIFIERS || 'DEV',
     onboardingClientRepo: process.env.REACT_ONBOARDING_REPO ||'filecoin-clients-onboarding-test',
+    githubApp: process.env.REACT_GITHUB_APP || 'Iv1.10e7aaed4654db3c',
     lotusNodes: [{
         name: 'Mainnet',
         code: 461,
@@ -23,7 +24,7 @@ export const config = {
         url: 'ws://localhost:1234/rpc/v0',
         token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBbGxvdyI6WyJyZWFkIiwid3JpdGUiLCJzaWduIiwiYWRtaW4iXX0.OJlFIgYG3D23RjWWXfjdTluG6Qx2EOgwMeWQxnUQrMM'
         clientRepo: 'filecoin-clients-onboarding-test',
-        notaryRepo: 'filecoin-notaries-onboarding'
+        notaryRepo: 'filecoin-notaries-onboarding',
     }*/],
     datacapExt: [
         { value: "1", name: "B" },
