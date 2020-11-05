@@ -12,9 +12,7 @@ type States = {
     datacap: string
     organization: string
     publicprofile: string
-    useplan: string
     contact: string
-    comments: string
     datacapExt: string
     submitLoading: boolean
     verifierName: string
@@ -47,9 +45,7 @@ class MakeRequestModal extends Component<ModalProps, States> {
             datacap: '1',
             organization: '',
             publicprofile: '',
-            useplan: '',
             contact: '',
-            comments: '',
             datacapExt: 'TiB',
             submitLoading: false,
             verifierName: this.props.verifier.name,
@@ -86,12 +82,10 @@ class MakeRequestModal extends Component<ModalProps, States> {
                     verifierName: this.state.verifierName,
                     name: this.state.organization,
                     publicProfile: this.state.publicprofile,
-                    useCase: this.state.useplan,
                     contact: this.state.contact,
                     address: this.state.address,
                     datacap: this.state.datacap,
                     datacapUnit: this.state.datacapExt,
-                    comments: this.state.comments,
                     subject: "New Request of Datacap",
                     datetimeRequested: ""
                 })
@@ -125,9 +119,7 @@ class MakeRequestModal extends Component<ModalProps, States> {
             datacap: this.state.datacap + this.state.datacapExt,
             organization: this.state.organization,
             publicprofile: this.state.publicprofile,
-            useplan: this.state.useplan,
             contact: this.state.contact,
-            comments: this.state.comments,
             assignees: [this.props.verifier.github_user],
             onboarding: true
         })
@@ -149,7 +141,7 @@ class MakeRequestModal extends Component<ModalProps, States> {
         return (
             <div className="addmodal">
                 <form>
-                    <div className="title">Making Request</div>
+                    <div className="title">Datacap Allocation Request</div>
                     <div className="twopanel">
 
                         <div>
@@ -164,34 +156,14 @@ class MakeRequestModal extends Component<ModalProps, States> {
                             </div>
                             <div className="inputholder">
                                 <Input
-                                    description="Public Profile of Organization"
+                                    description="Website / Social Media"
                                     name="publicprofile"
                                     value={this.state.publicprofile}
                                     placeholder="XXXXXXXXXXX"
                                     onChange={this.handleChange}
                                 />
                             </div>
-                            <div className="inputholder">
-                                <Input
-                                    description="Intended Use Case / Allocation Plan"
-                                    name="useplan"
-                                    value={this.state.useplan}
-                                    placeholder="Intended Use Case"
-                                    onChange={this.handleChange}
-                                />
-                            </div>
-                            <div className="inputholder">
-                                <Input
-                                    description="Contact Information"
-                                    name="contact"
-                                    value={this.state.contact}
-                                    placeholder="Contact of Proposer"
-                                    onChange={this.handleChange}
-                                />
-                            </div>
                         </div>
-
-
                         <div>
                             <div className="inputholder">
                                 <Input
@@ -221,25 +193,8 @@ class MakeRequestModal extends Component<ModalProps, States> {
                                     />
                                 </div>
                             </div>
-                            <div className="inputholder">
-                                <Input
-                                    description="Comments"
-                                    name="comments"
-                                    value={this.state.comments}
-                                    placeholder="Additional comments"
-                                    onChange={this.handleChange}
-                                />
-                            </div>
                             <div className="methodselection">
                                 <div className="methodlabel">Select the method to send your request</div>
-                                {this.props.verifier.private_request === "true" ?
-                                    <CheckBox
-                                        name="emailMethod"
-                                        value={this.state.emailMethod}
-                                        onChange={this.handleChange}
-                                    >Email - send message</CheckBox>
-                                    : null
-                                }
                                 <CheckBox
                                     name="gitHubMethod"
                                     value={this.state.gitHubMethod}
