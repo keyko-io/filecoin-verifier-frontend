@@ -105,7 +105,7 @@ class App extends Component<{}, States> {
             {this.state.networkSelect ?
               <div className="networkselectholder">
                 <div className="headertitles">Network Select</div>
-                {config.lotusNodes.map((node: any, index: number) => {
+                {config.lotusNodes.filter((node: any, index: number) => config.networks.includes(node.name)).map((node: any, index: number) => {
                   return <div key={index} style={{ color: index === this.context.networkIndex ? '#003fe3' : 'inherit' }} className="networkentry" onClick={() => this.switchNetwork(index)}>{node.name}</div>
                 })}
               </div>
