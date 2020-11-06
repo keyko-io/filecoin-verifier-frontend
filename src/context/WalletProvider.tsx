@@ -248,7 +248,7 @@ export default class WalletProvider extends React.Component<{}, WalletProviderSt
                 const issue = await this.state.githubOcto.issues.create({
                     owner: 'keyko-io',
                     repo: data.onboarding ? config.onboardingClientRepo : config.lotusNodes[this.state.networkIndex].clientRepo,
-                    title: 'Data Cap Request for: ' + data.organization,
+                    title: 'Client Allocation Request for: ' + data.organization,
                     assignees: data.assignees,
                     body: IssueBody(data)
                 });
