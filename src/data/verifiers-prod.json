@@ -1,3 +1,26 @@
 {
-    "notaries" : []
+    "notaries" : [
+        {
+            "id": 1,
+            "name": "Jonathan V.",
+            "use_case": ["Computer Vision", "Geological Data"],
+            "location": "US",
+            "website": "google.com",
+            "max_datacap_allocation": "100 PB",
+            "email": "notarya@a.com",
+            "github_user": "jnthnvctr",
+            "private_request": "false"
+        },
+        {
+            "id": 2,
+            "name": "Phillip B.",
+            "use_case":  ["Long-term backups", "Long-term log storage", "Personal Storage"],
+            "location": "US",
+            "website": "google.com",
+            "max_datacap_allocation": "100 PB",
+            "email": "notaryb@a.com",
+            "github_user": "phillippbanhardt",
+            "private_request": "false"
+        }
+    ]
 }
