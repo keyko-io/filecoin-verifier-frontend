@@ -19,10 +19,10 @@ ReactDOM.render(
       <Router history={history}>
         <Switch>
           <Route exact path={'/'} component={Onboarding} ></Route>
-          <Route exact path={'/app'} component={App} ></Route>
-          <Route exact path={'/wallet'} component={Preonboarding} ></Route>
-          <Route exact path={'/landing'} component={Landing} ></Route>
-          <Route exact path={'/verifiers'} component={Verifiers} ></Route>
+          <Route path={'/app'} component={App} ></Route>
+          <Route path={'/wallet'} component={Preonboarding} ></Route>
+          <Route path={'/landing'} component={Landing} ></Route>
+          <Route path={'/verifiers'} component={Verifiers} ></Route>
         </Switch>
       </Router>
       <GlobalNotification style={{ bottom: 0, right: 0 }} />

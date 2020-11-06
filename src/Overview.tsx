@@ -346,6 +346,7 @@ export default class Overview extends Component<{}, OverviewStates> {
                             <div id="githublogin">
                                 <LoginGithub
                                     clientId={config.githubApp}
+                                    redirectUri={config.oauthUri}
                                     scope="repo"
                                     onSuccess={(response:any)=>{
                                         this.context.loginGithub(response.code)

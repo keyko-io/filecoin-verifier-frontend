@@ -4,6 +4,7 @@ export const config = {
     verifiers: process.env.REACT_APP_VERIFIERS || 'DEV',
     onboardingClientRepo: process.env.REACT_ONBOARDING_REPO ||'filecoin-clients-onboarding-test',
     githubApp: process.env.REACT_APP_GITHUB_APP || 'Iv1.10e7aaed4654db3c',
+    oauthUri: '/oauth/',
     lotusNodes: [{
         name: 'Mainnet',
         code: 461,
