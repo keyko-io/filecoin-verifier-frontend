@@ -133,7 +133,7 @@ export default class WalletProvider extends React.Component<{}, WalletProviderSt
     const activeIndex= config.lotusNodes
         .map((node: any, index: number) => {return {name: node.name, index:index}})
         .filter((node: any, index: number) => config.networks.includes(node.name))
-        //config.networks
+       
     return activeIndex[0].index
     }
 
