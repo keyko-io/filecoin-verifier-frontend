@@ -128,6 +128,15 @@ export default class WalletProvider extends React.Component<{}, WalletProviderSt
         return true
     }
 
+    initNetworkIndex = () => {
+
+    const activeIndex= config.lotusNodes
+        .map((node: any, index: number) => {return {name: node.name, index:index}})
+        .filter((node: any, index: number) => config.networks.includes(node.name))
+       
+    return activeIndex[0].index
+    }
+
     state = {
         isLogged: false,
         isLoading: false,
@@ -248,7 +257,7 @@ export default class WalletProvider extends React.Component<{}, WalletProviderSt
                 const issue = await this.state.githubOcto.issues.create({
                     owner: 'keyko-io',
                     repo: data.onboarding ? config.onboardingClientRepo : config.lotusNodes[this.state.networkIndex].clientRepo,
-                    title: 'Data Cap Request for: ' + data.organization,
+                    title: 'Client Allocation Request for: ' + data.organization,
                     assignees: data.assignees,
                     body: IssueBody(data)
                 });
@@ -320,7 +329,7 @@ export default class WalletProvider extends React.Component<{}, WalletProviderSt
                 accountsActive
             })
         },
-        networkIndex: 0,
+        networkIndex: this.initNetworkIndex(),
         verified: [],
         loadVerified: async () => {
             const approvedVerifiers = await this.state.api.listVerifiers()
