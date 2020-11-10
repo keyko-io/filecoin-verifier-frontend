@@ -98,22 +98,24 @@ class Preonboarding extends Component<{}, PreonboardingStates, LocationState> {
               </div>}
           </div>
           <div className="started">
-            <div className="doublebutton">
-              <ButtonPrimary onClick={() => this.loadBurnerWallet()}>Load Browser wallet</ButtonPrimary>
-              <ButtonPrimary onClick={() => this.loadLedgerWallet()}>Load Ledger wallet</ButtonPrimary>
-            </div>
-            <div className="infobuttons">
-              <div className="info">
-                <p>Not available for Mainnet</p>
+            <div className="doublebutton buttonsholder">
+              <div className="buttonlegend">
+                <ButtonPrimary onClick={() => this.loadBurnerWallet()}>Load Browser wallet</ButtonPrimary>
+                <div className="info">
+                  <p>Not available for Mainnet</p>
+                </div>
               </div>
-              <div className="info">
-              <p>1) Please ensure you have the latest firmware with Ledger</p>
-              <p>2) Please ensure your ledger is plugged in and unlocked</p>
-              <p>3) Please ensure you have “expert mode” enabled</p>
+              <div className="buttonlegend">
+                <ButtonPrimary onClick={() => this.loadLedgerWallet()}>Load Ledger wallet</ButtonPrimary>
+                <div className="info">
+                  <p>1) Please ensure you have the latest firmware with Ledger</p>
+                  <p>2) Please ensure your ledger is plugged in and unlocked</p>
+                  <p>3) Please ensure you have “expert mode” enabled</p>
+                </div>
               </div>
             </div>
           </div>
-          <LearnMore/>
+          <LearnMore />
         </div>
       </div>
     );
