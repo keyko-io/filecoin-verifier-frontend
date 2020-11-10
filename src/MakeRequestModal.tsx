@@ -51,7 +51,7 @@ class MakeRequestModal extends Component<ModalProps, States> {
             verifierName: this.props.verifier.name,
             publicProfile: this.props.verifier.website,
             emailMethod: false,
-            gitHubMethod: false
+            gitHubMethod: true
         }
     }
 
@@ -134,7 +134,7 @@ class MakeRequestModal extends Component<ModalProps, States> {
         if (e.target.name === 'emailMethod') {
             this.setState({ gitHubMethod: false })
         }
-        this.setState({ [e.target.name]: e.target.value } as any)
+        this.setState({ [e.target.name]: true } as any)
     }
 
     render() {
@@ -213,6 +213,7 @@ class MakeRequestModal extends Component<ModalProps, States> {
                 </form>
                 {this.context.githubLogged ?
                     null :
+                    <>
                     <div id="githublogin">
                         <LoginGithub
                             redirectUri={config.oauthUri}
@@ -226,6 +227,8 @@ class MakeRequestModal extends Component<ModalProps, States> {
                             }}
                         />
                     </div>
+                    <div className="loginwarn">Github sign in required</div>
+                    </>
                 }
             </div>
         )
