@@ -37,6 +37,7 @@ export default class Overview extends Component<{}, OverviewStates> {
 
     componentDidMount() {
         this.loadData()
+        setInterval(()=>{ this.loadData() }, 5000);
     }
 
     showPending = async () => {
