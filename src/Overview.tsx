@@ -97,7 +97,7 @@ export default class Overview extends Component<{}, OverviewStates> {
                         owner: 'keyko-io',
                         repo:  config.lotusNodes[this.context.networkIndex].clientRepo,
                         issue_number: request.number,
-                        labels: 'state:Granted',
+                        labels: ['state:Granted'],
                     })
                     // send notifications
                     this.context.dispatchNotification('Verify Client Message sent with ID: ' + messageID)
