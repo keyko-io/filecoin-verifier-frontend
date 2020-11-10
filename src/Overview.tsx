@@ -179,7 +179,7 @@ export default class Overview extends Component<{}, OverviewStates> {
                         owner: 'keyko-io',
                         repo: 'filecoin-notary-onboarding',
                         issue_number: request.number,
-                        labels: 'status:Proposed',
+                        labels: ['status:Proposed'],
                     })
                     // send notifications
                     this.context.dispatchNotification('Accepting Message sent with ID: ' + messageID)
@@ -239,7 +239,7 @@ export default class Overview extends Component<{}, OverviewStates> {
                             owner: 'keyko-io',
                             repo: 'filecoin-notary-onboarding',
                             issue_number: issues[tx.verifier].number,
-                            labels: 'status:onchain',
+                            labels: ['status:onchain'],
                         })
                     }
                 }
