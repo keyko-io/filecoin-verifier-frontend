@@ -205,22 +205,28 @@ class MakeRequestModal extends Component<ModalProps, States> {
 
                     </div>
                     <div className="centerbutton">
-                        <ButtonPrimary onClick={this.handleSubmit}>{this.state.submitLoading ? <LoaderSpinner /> : 'Send Request'}</ButtonPrimary>
+                        {this.context.githubLogged ?
+                            <ButtonPrimary onClick={this.handleSubmit}>{this.state.submitLoading ? <LoaderSpinner /> : 'Send Request'}</ButtonPrimary>
+                            : null
+                        }
                     </div>
                 </form>
-                <div id="githublogin">
-                    <LoginGithub
-                        redirectUri={config.oauthUri}
-                        clientId={config.githubApp}
-                        scope="repo"
-                        onSuccess={(response: any) => {
-                            this.context.loginGithub(response.code, true)
-                        }}
-                        onFailure={(response: any) => {
-                            console.log('failure', response)
-                        }}
-                    />
-                </div>
+                {this.context.githubLogged ?
+                    null :
+                    <div id="githublogin">
+                        <LoginGithub
+                            redirectUri={config.oauthUri}
+                            clientId={config.githubApp}
+                            scope="repo"
+                            onSuccess={(response: any) => {
+                                this.context.loginGithub(response.code, true)
+                            }}
+                            onFailure={(response: any) => {
+                                console.log('failure', response)
+                            }}
+                        />
+                    </div>
+                }
             </div>
         )
     }
