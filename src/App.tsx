@@ -113,18 +113,6 @@ class App extends Component<{}, States> {
             <div className="headertitles">Network selected</div>
             <div className="addressholder">{config.lotusNodes[this.context.networkIndex].name}</div>
           </div>
-          <div className="datacap">
-            <div className="headertitles">Datacap Amount</div>
-
-            <div><FontAwesomeIcon icon={["far", "save"]} /> 50 TiB</div>
-          </div>
-          <div className="search">
-            <Input
-              name="search"
-              placeholder="Search"
-            />
-            <FontAwesomeIcon icon={["fas", "search"]} />
-          </div>
           <div className="refresh" onClick={() => this.refresh()}>
             <FontAwesomeIcon icon={["fas", "redo"]} flip="vertical" transform={{ rotate: 135 }} />
           </div>
