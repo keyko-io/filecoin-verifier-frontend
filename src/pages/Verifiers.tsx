@@ -37,7 +37,7 @@ class Verifiers extends Component<{}> {
               <div className="tabletitle">Select Notary, Send Request</div>
             </div>
             <TableVerifiers ref={this.child} />
-            <div className="started">
+            <div className="started buttonsverifiers">
               <div className="doublebutton">
                 <ButtonPrimary onClick={() => this.makeRequest()}>
                   Make Request
