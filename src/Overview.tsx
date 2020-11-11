@@ -172,12 +172,12 @@ export default class Overview extends Component<{}, OverviewStates> {
                     // github update
                     await this.context.githubOcto.issues.removeAllLabels({
                         owner: 'keyko-io',
-                        repo: 'filecoin-notary-onboarding',
+                        repo: 'filecoin-notaries-onboarding',
                         issue_number: request.number,
                     })
                     await this.context.githubOcto.issues.addLabels({
                         owner: 'keyko-io',
-                        repo: 'filecoin-notary-onboarding',
+                        repo: 'filecoin-notaries-onboarding',
                         issue_number: request.number,
                         labels: ['status:Proposed'],
                     })
@@ -196,7 +196,7 @@ export default class Overview extends Component<{}, OverviewStates> {
         // load github issues
         const rawIssues = await this.context.githubOcto.issues.listForRepo({
             owner: 'keyko-io',
-            repo: 'filecoin-notary-onboarding',
+            repo: 'filecoin-notaries-onboarding',
             state: 'open',
             labels: 'status:Proposed'
         })
@@ -232,12 +232,12 @@ export default class Overview extends Component<{}, OverviewStates> {
                         // github update
                         await this.context.githubOcto.issues.removeAllLabels({
                             owner: 'keyko-io',
-                            repo: 'filecoin-notary-onboarding',
+                            repo: 'filecoin-notaries-onboarding',
                             issue_number: issues[tx.verifier].number,
                         })
                         await this.context.githubOcto.issues.addLabels({
                             owner: 'keyko-io',
-                            repo: 'filecoin-notary-onboarding',
+                            repo: 'filecoin-notaries-onboarding',
                             issue_number: issues[tx.verifier].number,
                             labels: ['status:onchain'],
                         })
