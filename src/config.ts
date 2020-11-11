@@ -6,6 +6,8 @@ export const config = {
     githubApp: process.env.REACT_APP_GITHUB_APP || 'Iv1.10e7aaed4654db3c',
     oauthUri: process.env.REACT_APP_OAUTH_URI || 'http://localhost:3000/oauth/',
     networks: process.env.NETWORKS || 'Mainnet,Nerpanet',
+    githubNotaryOwner: process.env.REACT_APP_NOTARY_OWNER || 'keyko-io',
+    githubClientOwner: process.env.REACT_APP_CLIENT_OWNER || 'keyko-io',
     lotusNodes: [{
         name: 'Mainnet',
         code: 461,
