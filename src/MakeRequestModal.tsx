@@ -134,7 +134,9 @@ class MakeRequestModal extends Component<ModalProps, States> {
         if (e.target.name === 'emailMethod') {
             this.setState({ gitHubMethod: false })
         }
-        this.setState({ [e.target.name]: true } as any)
+        if (e.target.name !== 'gitHubMethod') {
+            this.setState({ [e.target.name]: e.target.value } as any)
+        }
     }
 
     render() {
@@ -214,20 +216,20 @@ class MakeRequestModal extends Component<ModalProps, States> {
                 {this.context.githubLogged ?
                     null :
                     <>
-                    <div id="githublogin">
-                        <LoginGithub
-                            redirectUri={config.oauthUri}
-                            clientId={config.githubApp}
-                            scope="repo"
-                            onSuccess={(response: any) => {
-                                this.context.loginGithub(response.code, true)
-                            }}
-                            onFailure={(response: any) => {
-                                console.log('failure', response)
-                            }}
-                        />
-                    </div>
-                    <div className="loginwarn">Github sign in required</div>
+                        <div id="githublogin">
+                            <LoginGithub
+                                redirectUri={config.oauthUri}
+                                clientId={config.githubApp}
+                                scope="repo"
+                                onSuccess={(response: any) => {
+                                    this.context.loginGithub(response.code, true)
+                                }}
+                                onFailure={(response: any) => {
+                                    console.log('failure', response)
+                                }}
+                            />
+                        </div>
+                        <div className="loginwarn">Github sign in required</div>
                     </>
                 }
             </div>
