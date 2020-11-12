@@ -187,8 +187,12 @@ export default class Overview extends Component<{}, OverviewStates> {
                         issue_number: request.number,
                         labels: ['status:Proposed'],
                     })
+
+                    await this.context.loadVerifierRequests()
                     // send notifications
-                    this.context.dispatchNotification('Accepting Message sent with ID: ' + messageID)
+                    this.context.dispatchNotification('Accepting Message sent with ID: ' + messageID)     
+
+                    
                 } catch (e) {
                     this.context.dispatchNotification('Verification failed: ' + e.message)
                     console.log(e.stack)
