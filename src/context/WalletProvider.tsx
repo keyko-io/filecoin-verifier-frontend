@@ -184,7 +184,7 @@ export default class WalletProvider extends React.Component<{}, WalletProviderSt
         loadClientRequests: async () => {
             const user = await this.state.githubOcto.users.getAuthenticated();
             const rawIssues = await this.state.githubOcto.issues.listForRepo({
-                owner: config.githubClientOwner,
+                owner: config.lotusNodes[this.state.networkIndex].clientOwner,
                 repo: config.lotusNodes[this.state.networkIndex].clientRepo,
                 assignee: user.data.login
             })
@@ -216,8 +216,8 @@ export default class WalletProvider extends React.Component<{}, WalletProviderSt
         },
         loadVerifierRequests: async () => {
             const rawIssues = await this.state.githubOcto.issues.listForRepo({
-                owner: config.githubNotaryOwner,
-                repo: 'filecoin-notaries-onboarding',
+                owner: config.lotusNodes[this.state.networkIndex].notaryOwner,
+                repo: config.lotusNodes[this.state.networkIndex].notaryRepo,
                 state: 'open',
                 labels: 'status:Approved'
             })
@@ -228,8 +228,8 @@ export default class WalletProvider extends React.Component<{}, WalletProviderSt
 
                     // get comments
                     const rawComments = await this.state.githubOcto.issues.listComments({
-                        owner: config.githubNotaryOwner,
-                        repo: 'filecoin-notaries-onboarding',
+                        owner: config.lotusNodes[this.state.networkIndex].notaryOwner,
+                        repo: config.lotusNodes[this.state.networkIndex].notaryRepo,
                         issue_number: rawIssue.number,
                     });
                     for (const rawComment of rawComments.data) {
@@ -255,7 +255,7 @@ export default class WalletProvider extends React.Component<{}, WalletProviderSt
         createRequest: async (data: any) => {
             try {
                 const issue = await this.state.githubOcto.issues.create({
-                    owner: config.githubClientOwner,
+                    owner: data.onboarding ? 'keyko-io' : config.lotusNodes[this.state.networkIndex].clientOwner,
                     repo: data.onboarding ? config.onboardingClientRepo : config.lotusNodes[this.state.networkIndex].clientRepo,
                     title: 'Client Allocation Request for: ' + data.organization,
                     assignees: data.assignees,
@@ -274,7 +274,7 @@ export default class WalletProvider extends React.Component<{}, WalletProviderSt
         clientsGithub: {},
         loadClientsGithub: async () => {
             const rawIssues = await this.state.githubOcto.issues.listForRepo({
-                owner: config.githubClientOwner,
+                owner: config.lotusNodes[this.state.networkIndex].clientOwner,
                 repo: config.lotusNodes[this.state.networkIndex].clientRepo,
                 state: 'closed',
                 labels: 'state:Granted'

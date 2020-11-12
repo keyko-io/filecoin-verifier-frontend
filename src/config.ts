@@ -3,25 +3,28 @@ export const config = {
     apiToken: process.env.REACT_APP_API_TOKEN || '',
     verifiers: process.env.REACT_APP_VERIFIERS || 'DEV',
     onboardingClientRepo: process.env.REACT_ONBOARDING_REPO ||'filecoin-clients-onboarding-test',
+    onboardingOwner: 'keyko-io',
     githubApp: process.env.REACT_APP_GITHUB_APP || 'Iv1.10e7aaed4654db3c',
     oauthUri: process.env.REACT_APP_OAUTH_URI || 'http://localhost:3000/oauth/',
     networks: process.env.NETWORKS || 'Mainnet,Nerpanet',
-    githubNotaryOwner: process.env.REACT_APP_NOTARY_OWNER || 'keyko-io',
-    githubClientOwner: process.env.REACT_APP_CLIENT_OWNER || 'keyko-io',
     lotusNodes: [{
         name: 'Mainnet',
         code: 461,
         url: 'https://api.node.glif.io',
         token: process.env.REACT_APP_MAINNET_TOKEN,
         clientRepo: 'filecoin-clients-onboarding',
-        notaryRepo: 'filecoin-notaries-onboarding'
+        notaryRepo: 'notary-governance',
+        clientOwner: 'keyko-io',
+        notaryOwner: 'filecoin-project'
     },{
         name: 'Nerpanet',
         code: 1,
         url: 'https://beta-verify.filecoin.io/api/rpc/v0',
         token: process.env.REACT_APP_NERPANET_TOKEN,
         clientRepo: 'filecoin-clients-onboarding-test',
-        notaryRepo: 'filecoin-notaries-onboarding'
+        notaryRepo: 'filecoin-notaries-onboarding',
+        clientOwner: 'keyko-io',
+        notaryOwner: 'keyko-io'
     },{
         name: 'Localhost',
         code: 1,
@@ -29,6 +32,8 @@ export const config = {
         token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBbGxvdyI6WyJyZWFkIiwid3JpdGUiLCJzaWduIiwiYWRtaW4iXX0.OJlFIgYG3D23RjWWXfjdTluG6Qx2EOgwMeWQxnUQrMM',
         clientRepo: 'filecoin-clients-onboarding-test',
         notaryRepo: 'filecoin-notaries-onboarding',
+        clientOwner: 'keyko-io',
+        notaryOwner: 'keyko-io'
     }],
     datacapExt: [
         { value: "1", name: "B" },
