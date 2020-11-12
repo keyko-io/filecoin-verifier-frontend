@@ -13,9 +13,9 @@ export const config = {
         url: 'https://api.node.glif.io',
         token: process.env.REACT_APP_MAINNET_TOKEN,
         clientRepo: 'filecoin-clients-onboarding',
-        notaryRepo: 'notary-governance',
+        notaryRepo: 'filecoin-notaries-onboarding',
         clientOwner: 'keyko-io',
-        notaryOwner: 'filecoin-project'
+        notaryOwner: 'keyko-io'
     },{
         name: 'Nerpanet',
         code: 1,
