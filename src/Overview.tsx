@@ -181,11 +181,14 @@ export default class Overview extends Component<{}, OverviewStates> {
                         repo: config.lotusNodes[this.context.networkIndex].notaryRepo,
                         issue_number: request.number,
                     })
+
+                    let label = config.lotusNodes[this.context.networkIndex].rkhtreshold > 1 ? 'status:ProposedByRKH' : 'status:ApprovedByRKH'
+                    
                     await this.context.githubOcto.issues.addLabels({
                         owner: config.lotusNodes[this.context.networkIndex].notaryOwner,
                         repo: config.lotusNodes[this.context.networkIndex].notaryRepo,
                         issue_number: request.number,
-                        labels: ['status:Proposed'],
+                        labels: [label],
                     })
 
                     await this.context.loadVerifierRequests()
@@ -208,7 +211,7 @@ export default class Overview extends Component<{}, OverviewStates> {
             owner: config.lotusNodes[this.context.networkIndex].notaryOwner,
             repo: config.lotusNodes[this.context.networkIndex].notaryRepo,
             state: 'open',
-            labels: 'status:Proposed'
+            labels: 'status:ProposedByRKH'
         })
         const issues: any = {}
         for (const rawIssue of rawIssues.data) {
@@ -228,15 +231,15 @@ export default class Overview extends Component<{}, OverviewStates> {
         }
         // go over transactions
         try {
+            const multisigInfo = await this.context.api.multisigInfo(config.lotusNodes[this.context.networkIndex].rkhMultisig)
             for (let tx of this.state.pendingverifiers) {
                 if (this.state.selectedTransactions.includes(tx.id)) {
                     const datacap = BigInt(tx.datacap)
                     await this.context.api.approveVerifier(tx.verifier, datacap, tx.signer, tx.id, this.context.walletIndex);
-                    const multisigInfo = await this.context.api.multisigInfo(tx.verifier)
                     // check if we have github issue, and all info
                     if (
                         multisigInfo && multisigInfo.signers &&
-                        multisigInfo.signers > config.rkhtreshold &&
+                        multisigInfo.signers > config.lotusNodes[this.context.networkIndex].rkhtreshold &&
                         issues[tx.verifier]
                     ) {
                         // github update
@@ -249,7 +252,7 @@ export default class Overview extends Component<{}, OverviewStates> {
                             owner: config.lotusNodes[this.context.networkIndex].notaryOwner,
                             repo: config.lotusNodes[this.context.networkIndex].notaryRepo,
                             issue_number: issues[tx.verifier].number,
-                            labels: ['status:onchain'],
+                            labels: ['status:ApprovedByRHK'],
                         })
                     }
                 }

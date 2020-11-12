@@ -15,7 +15,9 @@ export const config = {
         clientRepo: 'filecoin-clients-onboarding',
         notaryRepo: 'filecoin-notaries-onboarding',
         clientOwner: 'keyko-io',
-        notaryOwner: 'keyko-io'
+        notaryOwner: 'keyko-io',
+        rkhMultisig: 't080',
+        rkhtreshold: 4
     },{
         name: 'Nerpanet',
         code: 1,
@@ -24,7 +26,9 @@ export const config = {
         clientRepo: 'filecoin-clients-onboarding-test',
         notaryRepo: 'filecoin-notaries-onboarding',
         clientOwner: 'keyko-io',
-        notaryOwner: 'keyko-io'
+        notaryOwner: 'keyko-io',
+        rkhMultisig: 't080',
+        rkhtreshold: 1
     },{
         name: 'Localhost',
         code: 1,
@@ -33,7 +37,9 @@ export const config = {
         clientRepo: 'filecoin-clients-onboarding-test',
         notaryRepo: 'filecoin-notaries-onboarding',
         clientOwner: 'keyko-io',
-        notaryOwner: 'keyko-io'
+        notaryOwner: 'keyko-io',
+        rkhMultisig: 't080',
+        rkhtreshold: 2
     }],
     datacapExt: [
         { value: "1", name: "B" },
@@ -57,6 +63,5 @@ export const config = {
         { value: "ZiB", name: "ZiB" },
         { value: "YiB", name: "YiB" }
     ],
-    dataSource: process.env.REACT_APP_VERIFIES_DATA || 'verifiers-dev',
-    rkhtreshold: 1
+    dataSource: process.env.REACT_APP_VERIFIES_DATA || 'verifiers-dev'
 }
