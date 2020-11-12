@@ -8,9 +8,13 @@ export function datacapFilter (input: string) {
     if(input===""){
         return "0 B"
     }
+    const pointLoc = input.indexOf(".")
+    if(pointLoc >= 0){
+        input = input.substr(0, pointLoc)
+    }
     const inputLength = input.length
     if(inputLength > config.datacapExt[config.datacapExt.length-1].value.length+3){
-        return `9999+ ${config.datacapExt[config.datacapExt.length-1].name}`
+        return `999+ ${config.datacapExt[config.datacapExt.length-1].name}`
     }
     for(let i = config.datacapExt.length-1; i>=0; i--){
         if(config.datacapExt[i].value.length <= inputLength){
