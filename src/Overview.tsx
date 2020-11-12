@@ -37,66 +37,68 @@ export default class Overview extends Component<{}, OverviewStates> {
 
     componentDidMount() {
         this.loadData()
-        setInterval(()=>{ this.loadData() }, 5000);
+        setInterval(() => { this.loadData() }, 5000);
     }
 
     showPending = async () => {
-        this.setState({tabs: "1"})
+        this.setState({ tabs: "1" })
     }
 
     showApproved = async () => {
-        this.setState({tabs: "2"})
+        this.setState({ tabs: "2" })
     }
 
     showVerifiedClients = async () => {
-        this.setState({tabs: "2"})
+        this.setState({ tabs: "2" })
     }
 
     showVerifierRequests = async () => {
-        this.setState({tabs: "0"})
+        this.setState({ tabs: "0" })
     }
 
     showClientRequests = async () => {
-        this.setState({tabs: "1"})
+        this.setState({ tabs: "1" })
     }
 
     requestDatacap = () => {
-        dispatchCustomEvent({ name: "create-modal", detail: {
-            id: Math.random().toString(36).replace(/[^a-z]+/g, '').substr(0, 5),
-            modal: <AddClientModal/>
-        }})
+        dispatchCustomEvent({
+            name: "create-modal", detail: {
+                id: Math.random().toString(36).replace(/[^a-z]+/g, '').substr(0, 5),
+                modal: <AddClientModal />
+            }
+        })
     }
 
-    verifyClients = async() => {
-        for(const request of this.context.clientRequests){
-            if(this.state.selectedClientRequests.includes(request.number)){
-                try{
+    verifyClients = async () => {
+        for (const request of this.context.clientRequests) {
+            if (this.state.selectedClientRequests.includes(request.number)) {
+                try {
                     let prepDatacap = '1'
                     let prepDatacapExt = 'B'
                     const dataext = config.datacapExt.reverse()
-                    for(const entry of dataext){
-                        if(request.data.datacap.endsWith(entry.name)){
+                    for (const entry of dataext) {
+                        if (request.data.datacap.endsWith(entry.name)) {
                             prepDatacapExt = entry.value
-                            prepDatacap = request.data.datacap.substring(0, request.data.datacap.length-entry.name.length)
+                            prepDatacap = request.data.datacap.substring(0, request.data.datacap.length - entry.name.length)
                             break
                         }
                     }
                     const datacap = parseFloat(prepDatacap)
                     const fullDatacap = BigInt(datacap * parseFloat(prepDatacapExt))
                     let address = request.data.address
-                    if(address.length < 12){
+                    if (address.length < 12) {
                         address = await this.context.api.actorKey(address)
                     }
                     let messageID = await this.context.api.verifyClient(address, fullDatacap, this.context.walletIndex)
                     // github update
                     await this.context.githubOcto.issues.removeAllLabels({
-                        owner: 'keyko-io',
-                        repo:  config.lotusNodes[this.context.networkIndex].clientRepo,
+                        owner: config.lotusNodes[this.context.networkIndex].clientOwner,
+                        repo: config.lotusNodes[this.context.networkIndex].clientRepo,
                         issue_number: request.number,
                     })
                     await this.context.githubOcto.issues.addLabels({
-                        owner: 'keyko-io',
-                        repo:  config.lotusNodes[this.context.networkIndex].clientRepo,
+                        owner: config.lotusNodes[this.context.networkIndex].clientOwner,
+                        repo: config.lotusNodes[this.context.networkIndex].clientRepo,
                         issue_number: request.number,
                         labels: ['state:Granted'],
                     })
@@ -112,12 +114,12 @@ export default class Overview extends Component<{}, OverviewStates> {
 
     selectRow = (transactionId: string) => {
         let selectedTxs = this.state.selectedTransactions
-        if(selectedTxs.includes(transactionId)){
+        if (selectedTxs.includes(transactionId)) {
             selectedTxs = selectedTxs.filter(item => item !== transactionId)
         } else {
             selectedTxs.push(transactionId)
         }
-        this.setState({selectedTransactions:selectedTxs})
+        this.setState({ selectedTransactions: selectedTxs })
     }
 
     selectNotaryRow = (number: string) => {
@@ -126,63 +128,71 @@ export default class Overview extends Component<{}, OverviewStates> {
 
     selectClientRow = (number: string) => {
         let selectedTxs = this.state.selectedClientRequests
-        if(selectedTxs.includes(number)){
+        if (selectedTxs.includes(number)) {
             selectedTxs = selectedTxs.filter(item => item !== number)
         } else {
             selectedTxs.push(number)
         }
-        this.setState({selectedClientRequests:selectedTxs})
+        this.setState({ selectedClientRequests: selectedTxs })
     }
 
     proposeVerifier = async () => {
-        dispatchCustomEvent({ name: "create-modal", detail: {
-            id: Math.random().toString(36).replace(/[^a-z]+/g, '').substr(0, 5),
-            modal: <AddVerifierModal/>
-        }})
+        dispatchCustomEvent({
+            name: "create-modal", detail: {
+                id: Math.random().toString(36).replace(/[^a-z]+/g, '').substr(0, 5),
+                modal: <AddVerifierModal />
+            }
+        })
     }
 
     requestVerifier = async () => {
-        dispatchCustomEvent({ name: "create-modal", detail: {
-            id: Math.random().toString(36).replace(/[^a-z]+/g, '').substr(0, 5),
-            modal: <RequestVerifierModal/>
-        }})
+        dispatchCustomEvent({
+            name: "create-modal", detail: {
+                id: Math.random().toString(36).replace(/[^a-z]+/g, '').substr(0, 5),
+                modal: <RequestVerifierModal />
+            }
+        })
     }
 
     acceptRequestVerifier = async () => {
-        for(const request of this.context.verifierRequests){
-            if(this.context.selectedNotaryRequests.includes(request.number)){
+        for (const request of this.context.verifierRequests) {
+            if (this.context.selectedNotaryRequests.includes(request.number)) {
                 try {
                     let prepDatacap = '1'
                     let prepDatacapExt = 'B'
                     const dataext = config.datacapExt.reverse()
-                    for(const entry of dataext){
-                        if(request.datacap.endsWith(entry.name)){
+                    for (const entry of dataext) {
+                        if (request.datacap.endsWith(entry.name)) {
                             prepDatacapExt = entry.value
-                            prepDatacap = request.datacap.substring(0, request.datacap.length-entry.name.length)
+                            prepDatacap = request.datacap.substring(0, request.datacap.length - entry.name.length)
                             break
                         }
                     }
                     const datacap = parseFloat(prepDatacap)
                     const fullDatacap = BigInt(datacap * parseFloat(prepDatacapExt))
                     let address = request.address
-                    if(address.length < 12){
+                    if (address.length < 12) {
                         address = await this.context.api.actorKey(address)
                     }
                     let messageID = await this.context.api.proposeVerifier(address, fullDatacap, this.context.walletIndex)
                     // github update
                     await this.context.githubOcto.issues.removeAllLabels({
-                        owner: 'keyko-io',
-                        repo: 'filecoin-notary-onboarding',
+                        owner: config.lotusNodes[this.context.networkIndex].notaryOwner,
+                        repo: config.lotusNodes[this.context.networkIndex].notaryRepo,
                         issue_number: request.number,
                     })
                     await this.context.githubOcto.issues.addLabels({
-                        owner: 'keyko-io',
-                        repo: 'filecoin-notary-onboarding',
+                        owner: config.lotusNodes[this.context.networkIndex].notaryOwner,
+                        repo: config.lotusNodes[this.context.networkIndex].notaryRepo,
                         issue_number: request.number,
                         labels: ['status:Proposed'],
                     })
+
+                    await this.context.loadVerifierRequests()
                     // send notifications
-                    this.context.dispatchNotification('Accepting Message sent with ID: ' + messageID)
+                    this.context.dispatchNotification('Accepting Message sent with ID: ' + messageID)     
+
+                    
                 } catch (e) {
                     this.context.dispatchNotification('Verification failed: ' + e.message)
                     console.log(e.stack)
@@ -195,56 +205,56 @@ export default class Overview extends Component<{}, OverviewStates> {
         this.setState({ approveLoading: true })
         // load github issues
         const rawIssues = await this.context.githubOcto.issues.listForRepo({
-            owner: 'keyko-io',
-            repo: 'filecoin-notary-onboarding',
+            owner: config.lotusNodes[this.context.networkIndex].notaryOwner,
+            repo: config.lotusNodes[this.context.networkIndex].notaryRepo,
             state: 'open',
             labels: 'status:Proposed'
         })
         const issues: any = {}
-        for(const rawIssue of rawIssues.data){
+        for (const rawIssue of rawIssues.data) {
             const data = utils.parseIssue(rawIssue.body)
             try {
                 const address = await this.context.api.actorKey(data.address)
-                if(data.correct && address){
-                    issues[address]= {
+                if (data.correct && address) {
+                    issues[address] = {
                         number: rawIssue.number,
                         url: rawIssue.html_url,
                         data
                     }
                 }
-            } catch(e) {
+            } catch (e) {
                 console.log('retrieval', e)
             }
         }
         // go over transactions
         try {
-            for(let tx of this.state.pendingverifiers){
-                if(this.state.selectedTransactions.includes(tx.id)){
+            for (let tx of this.state.pendingverifiers) {
+                if (this.state.selectedTransactions.includes(tx.id)) {
                     const datacap = BigInt(tx.datacap)
                     await this.context.api.approveVerifier(tx.verifier, datacap, tx.signer, tx.id, this.context.walletIndex);
                     const multisigInfo = await this.context.api.multisigInfo(tx.verifier)
                     // check if we have github issue, and all info
-                    if(
+                    if (
                         multisigInfo && multisigInfo.signers &&
                         multisigInfo.signers > config.rkhtreshold &&
                         issues[tx.verifier]
-                    ){
+                    ) {
                         // github update
                         await this.context.githubOcto.issues.removeAllLabels({
-                            owner: 'keyko-io',
-                            repo: 'filecoin-notary-onboarding',
+                            owner: config.lotusNodes[this.context.networkIndex].notaryOwner,
+                            repo: config.lotusNodes[this.context.networkIndex].notaryRepo,
                             issue_number: issues[tx.verifier].number,
                         })
                         await this.context.githubOcto.issues.addLabels({
-                            owner: 'keyko-io',
-                            repo: 'filecoin-notary-onboarding',
+                            owner: config.lotusNodes[this.context.networkIndex].notaryOwner,
+                            repo: config.lotusNodes[this.context.networkIndex].notaryRepo,
                             issue_number: issues[tx.verifier].number,
                             labels: ['status:onchain'],
                         })
                     }
                 }
             }
-            this.setState({ selectedTransactions:[], approveLoading: false })
+            this.setState({ selectedTransactions: [], approveLoading: false })
             this.context.dispatchNotification('Transactions confirmed')
         } catch (e) {
             this.setState({ approveLoading: false })
@@ -264,7 +274,7 @@ export default class Overview extends Component<{}, OverviewStates> {
         // pending verififers
         let pendingTxs = await this.context.api.pendingRootTransactions()
         let pendingverifiers: any[] = []
-        for(let txs in pendingTxs){
+        for (let txs in pendingTxs) {
             const verifierAccount = await this.context.api.actorKey(pendingTxs[txs].parsed.params.verifier)
             pendingverifiers.push({
                 id: pendingTxs[txs].id,
@@ -276,7 +286,7 @@ export default class Overview extends Component<{}, OverviewStates> {
             })
         }
         let clientsamount = 0
-        for(const txs of clients){
+        for (const txs of clients) {
             clientsamount = clientsamount + Number(txs.datacap)
             txs['key'] = await this.context.api.actorKey(txs.verified)
         }
@@ -287,7 +297,7 @@ export default class Overview extends Component<{}, OverviewStates> {
         })
     }
 
-    public render(){
+    public render() {
         return (
             <div className="page">
                 <div className="info">
@@ -315,16 +325,16 @@ export default class Overview extends Component<{}, OverviewStates> {
                     <div className="main">
                         <div className="tabsholder">
                             <div className="tabs">
-                                <div className={this.state.tabs === "0" ? "selected" : ""} onClick={()=>{this.showVerifierRequests()}}>Notaries Approved by Governance ({this.context.verifierRequests.length})</div>
-                                <div className={this.state.tabs === "1" ? "selected" : ""} onClick={()=>{this.showPending()}}>Notaries Pending to Approve Onchain ({this.state.pendingverifiers.length})</div>
-                                <div className={this.state.tabs === "2" ? "selected" : ""} onClick={()=>{this.showApproved()}}>Accepted Notaries ({this.context.verified.length})</div>
+                                <div className={this.state.tabs === "0" ? "selected" : ""} onClick={() => { this.showVerifierRequests() }}>Notaries Approved by Governance ({this.context.verifierRequests.length})</div>
+                                <div className={this.state.tabs === "1" ? "selected" : ""} onClick={() => { this.showPending() }}>Notaries Pending to Approve Onchain ({this.state.pendingverifiers.length})</div>
+                                <div className={this.state.tabs === "2" ? "selected" : ""} onClick={() => { this.showApproved() }}>Accepted Notaries ({this.context.verified.length})</div>
                             </div>
                             <div className="tabssadd">
-                                {this.state.tabs === "0" ? <ButtonPrimary onClick={()=>this.acceptRequestVerifier()}>Propose Onchain</ButtonPrimary> : null}
-                                {this.state.tabs === "1" ? <ButtonPrimary onClick={()=>this.handleSubmitApprove()}>Approve Onchain</ButtonPrimary> : null}
+                                {this.state.tabs === "0" ? <ButtonPrimary onClick={() => this.acceptRequestVerifier()}>Propose Onchain</ButtonPrimary> : null}
+                                {this.state.tabs === "1" ? <ButtonPrimary onClick={() => this.handleSubmitApprove()}>Approve Onchain</ButtonPrimary> : null}
                             </div>
                         </div>
-                        { this.state.tabs === "0" && this.context.githubLogged ?
+                        {this.state.tabs === "0" && this.context.githubLogged ?
                             <div>
                                 <table>
                                     <thead>
@@ -337,9 +347,9 @@ export default class Overview extends Component<{}, OverviewStates> {
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        {this.context.verifierRequests.map((notaryReq:any, index:any) => 
+                                        {this.context.verifierRequests.map((notaryReq: any, index: any) =>
                                             <tr key={index}>
-                                                <td><input type="checkbox" onChange={()=>this.selectNotaryRow(notaryReq.number)} checked={this.context.selectedNotaryRequests.includes(notaryReq.number)}/></td>
+                                                <td><input type="checkbox" onChange={() => this.selectNotaryRow(notaryReq.number)} checked={this.context.selectedNotaryRequests.includes(notaryReq.number)} /></td>
                                                 <td>{notaryReq.data.name}</td>
                                                 <td>{notaryReq.address}</td>
                                                 <td>{notaryReq.datacap}</td>
@@ -350,23 +360,23 @@ export default class Overview extends Component<{}, OverviewStates> {
                                 </table>
                                 {this.context.verifierRequests.length === 0 ? <div className="nodata">No public requests yet</div> : null}
                             </div>
-                        : null }
-                        { this.state.tabs === "0" && !this.context.githubLogged ?
+                            : null}
+                        {this.state.tabs === "0" && !this.context.githubLogged ?
                             <div id="githublogin">
                                 <LoginGithub
                                     clientId={config.githubApp}
                                     redirectUri={config.oauthUri}
                                     scope="repo"
-                                    onSuccess={(response:any)=>{
+                                    onSuccess={(response: any) => {
                                         this.context.loginGithub(response.code)
                                     }}
-                                    onFailure={(response:any)=>{
+                                    onFailure={(response: any) => {
                                         console.log('failure', response)
                                     }}
                                 />
                             </div>
-                        : null }
-                        { this.state.tabs === "2" ?
+                            : null}
+                        {this.state.tabs === "2" ?
                             <div>
                                 <table>
                                     <thead>
@@ -377,7 +387,7 @@ export default class Overview extends Component<{}, OverviewStates> {
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        {this.context.verified.map((transaction:any, index:any) => 
+                                        {this.context.verified.map((transaction: any, index: any) =>
                                             <tr key={index}>
                                                 <td>{transaction.verifier}</td>
                                                 <td>{transaction.verifierAccount}</td>
@@ -387,11 +397,11 @@ export default class Overview extends Component<{}, OverviewStates> {
                                     </tbody>
                                 </table>
                                 {this.context.verified.length === 0 ? <div className="nodata">No notaries yet</div> : null}
-                            </div>:null
+                            </div> : null
                         }
-                        { this.state.tabs === "1" ?
+                        {this.state.tabs === "1" ?
                             <div>
-                                
+
                                 <table>
                                     <thead>
                                         <tr>
@@ -402,11 +412,11 @@ export default class Overview extends Component<{}, OverviewStates> {
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        {this.state.pendingverifiers.map((transaction:any, index:any) => 
+                                        {this.state.pendingverifiers.map((transaction: any, index: any) =>
                                             <tr
                                                 key={index}
-                                                onClick={()=>this.selectRow(transaction.id)}
-                                                className={this.state.selectedTransactions.includes(transaction.id)?'selected':''}
+                                                onClick={() => this.selectRow(transaction.id)}
+                                                className={this.state.selectedTransactions.includes(transaction.id) ? 'selected' : ''}
                                             >
                                                 <td>{transaction.type}</td>
                                                 <td>{transaction.verifier}</td>
@@ -417,22 +427,22 @@ export default class Overview extends Component<{}, OverviewStates> {
                                     </tbody>
                                 </table>
                                 {this.state.pendingverifiers.length === 0 ? <div className="nodata">No pending notaries yet</div> : null}
-                            </div>:null
+                            </div> : null
                         }
                     </div>
-                :
+                    :
                     <div className="main">
                         <div className="tabsholder">
                             <div className="tabs">
-                                <div className={this.state.tabs === "1" ? "selected" : ""} onClick={()=>{this.showClientRequests()}}>Public Requests ({this.context.clientRequests.length})</div>
-                                <div className={this.state.tabs === "2" ? "selected" : ""} onClick={()=>{this.showVerifiedClients()}}>Verified clients ({this.state.clients.length})</div>
+                                <div className={this.state.tabs === "1" ? "selected" : ""} onClick={() => { this.showClientRequests() }}>Public Requests ({this.context.clientRequests.length})</div>
+                                <div className={this.state.tabs === "2" ? "selected" : ""} onClick={() => { this.showVerifiedClients() }}>Verified clients ({this.state.clients.length})</div>
                             </div>
                             <div className="tabssadd">
-                                <ButtonPrimary onClick={()=>this.requestDatacap()}>Approve Private Request</ButtonPrimary>
-                                <ButtonPrimary onClick={()=>this.verifyClients()}>Verify client</ButtonPrimary>
+                                <ButtonPrimary onClick={() => this.requestDatacap()}>Approve Private Request</ButtonPrimary>
+                                <ButtonPrimary onClick={() => this.verifyClients()}>Verify client</ButtonPrimary>
                             </div>
                         </div>
-                        { this.state.tabs === "1" && this.context.githubLogged ?
+                        {this.state.tabs === "1" && this.context.githubLogged ?
                             <div>
                                 <table>
                                     <thead>
@@ -445,9 +455,9 @@ export default class Overview extends Component<{}, OverviewStates> {
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        {this.context.clientRequests.map((clientReq:any, index:any) => 
-                                             <tr key={index}>
-                                                <td><input type="checkbox" onChange={()=>this.selectClientRow(clientReq.number)} checked={this.state.selectedClientRequests.includes(clientReq.number)}/></td>
+                                        {this.context.clientRequests.map((clientReq: any, index: any) =>
+                                            <tr key={index}>
+                                                <td><input type="checkbox" onChange={() => this.selectClientRow(clientReq.number)} checked={this.state.selectedClientRequests.includes(clientReq.number)} /></td>
                                                 <td>{clientReq.data.name}</td>
                                                 <td>{clientReq.data.address}</td>
                                                 <td>{clientReq.data.datacap}</td>
@@ -458,22 +468,22 @@ export default class Overview extends Component<{}, OverviewStates> {
                                 </table>
                                 {this.context.clientRequests.length === 0 ? <div className="nodata">No client requests yet</div> : null}
                             </div>
-                        : null }
-                        { this.state.tabs === "1" && !this.context.githubLogged ?
+                            : null}
+                        {this.state.tabs === "1" && !this.context.githubLogged ?
                             <div id="githublogin">
                                 <LoginGithub
                                     clientId={config.githubApp}
                                     scope="repo"
-                                    onSuccess={(response:any)=>{
+                                    onSuccess={(response: any) => {
                                         this.context.loginGithub(response.code)
                                     }}
-                                    onFailure={(response:any)=>{
+                                    onFailure={(response: any) => {
                                         console.log('failure', response)
                                     }}
                                 />
                             </div>
-                        : null }
-                        { this.state.tabs === "2" ?
+                            : null}
+                        {this.state.tabs === "2" ?
                             <div>
                                 <table>
                                     <thead>
@@ -486,18 +496,18 @@ export default class Overview extends Component<{}, OverviewStates> {
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        {this.state.clients.map((transaction:any, index:any) => 
+                                        {this.state.clients.map((transaction: any, index: any) =>
                                             <tr
                                                 key={index}
-                                                // onClick={()=>this.selectRow(transaction.id)}
-                                                /*className={this.state.selectedTransactions.includes(transaction.id)?'selected':''}*/
+                                            // onClick={()=>this.selectRow(transaction.id)}
+                                            /*className={this.state.selectedTransactions.includes(transaction.id)?'selected':''}*/
                                             >
 
                                                 <td>{this.context.clientsGithub[transaction.verified] ? this.context.clientsGithub[transaction.verified].data.name : null}</td>
                                                 <td>{transaction.verified}</td>
                                                 <td>{transaction.key}</td>
                                                 <td>{datacapFilter(transaction.datacap)}</td>
-                                                <td>{this.context.clientsGithub[transaction.verified] ? <a target="_blank" rel="noopener noreferrer" href={this.context.clientsGithub[transaction.verified].url}>#{this.context.clientsGithub[transaction.verified].number}</a>:null}</td>
+                                                <td>{this.context.clientsGithub[transaction.verified] ? <a target="_blank" rel="noopener noreferrer" href={this.context.clientsGithub[transaction.verified].url}>#{this.context.clientsGithub[transaction.verified].number}</a> : null}</td>
 
                                             </tr>
                                         )}
@@ -505,7 +515,7 @@ export default class Overview extends Component<{}, OverviewStates> {
                                 </table>
                                 {this.state.clients.length === 0 ? <div className="nodata">No verified clients yet</div> : null}
                             </div>
-                        : null }
+                            : null}
                     </div>
                 }
             </div>
