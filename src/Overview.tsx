@@ -265,6 +265,7 @@ export default class Overview extends Component<{}, OverviewStates> {
 
     loadData = async () => {
         await this.context.loadVerified() // loaded into context
+        await this.context.loadVerifierRequests()
         const clients = await this.context.api.listVerifiedClients()
         // pending verififers
         let pendingTxs = await this.context.api.pendingRootTransactions()
