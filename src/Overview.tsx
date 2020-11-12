@@ -264,17 +264,23 @@ export default class Overview extends Component<{}, OverviewStates> {
     }
 
     loadData = async () => {
-        await this.context.loadVerified() // loaded into context
-        await this.context.loadVerifierRequests()
+        if(this.context.githubLogged){
+            this.context.loadVerifierRequests()
+            this.context.loadClientsGithub()
+            this.context.loadClientRequests()
+        }
+        this.context.loadVerified()
         const clients = await this.context.api.listVerifiedClients()
         // pending verififers
         let pendingTxs = await this.context.api.pendingRootTransactions()
         let pendingverifiers: any[] = []
         for (let txs in pendingTxs) {
+            const verifierAccount = await this.context.api.actorKey(pendingTxs[txs].parsed.params.verifier)
             pendingverifiers.push({
                 id: pendingTxs[txs].id,
                 type: pendingTxs[txs].parsed.params.cap.toString() === '0' ? 'Revoke' : 'Add',
                 verifier: pendingTxs[txs].parsed.params.verifier,
+                verifierAccount,
                 datacap: pendingTxs[txs].parsed.params.cap.toString(),
                 signer: pendingTxs[txs].signers[0]
             })
@@ -282,6 +288,7 @@ export default class Overview extends Component<{}, OverviewStates> {
         let clientsamount = 0
         for (const txs of clients) {
             clientsamount = clientsamount + Number(txs.datacap)
+            txs['key'] = await this.context.api.actorKey(txs.verified)
         }
         this.setState({
             clients,
@@ -375,6 +382,7 @@ export default class Overview extends Component<{}, OverviewStates> {
                                     <thead>
                                         <tr>
                                             <td>Notary</td>
+                                            <td>Address</td>
                                             <td>Datacap</td>
                                         </tr>
                                     </thead>
@@ -382,6 +390,7 @@ export default class Overview extends Component<{}, OverviewStates> {
                                         {this.context.verified.map((transaction: any, index: any) =>
                                             <tr key={index}>
                                                 <td>{transaction.verifier}</td>
+                                                <td>{transaction.verifierAccount}</td>
                                                 <td>{datacapFilter(transaction.datacap)}</td>
                                             </tr>
                                         )}
@@ -481,6 +490,7 @@ export default class Overview extends Component<{}, OverviewStates> {
                                         <tr>
                                             <td>Name</td>
                                             <td>Address</td>
+                                            <td>Address</td>
                                             <td>Datacap</td>
                                             <td>Audit trail</td>
                                         </tr>
@@ -495,6 +505,7 @@ export default class Overview extends Component<{}, OverviewStates> {
 
                                                 <td>{this.context.clientsGithub[transaction.verified] ? this.context.clientsGithub[transaction.verified].data.name : null}</td>
                                                 <td>{transaction.verified}</td>
+                                                <td>{transaction.key}</td>
                                                 <td>{datacapFilter(transaction.datacap)}</td>
                                                 <td>{this.context.clientsGithub[transaction.verified] ? <a target="_blank" rel="noopener noreferrer" href={this.context.clientsGithub[transaction.verified].url}>#{this.context.clientsGithub[transaction.verified].number}</a> : null}</td>
 
