@@ -192,7 +192,7 @@ export default class Overview extends Component<{}, OverviewStates> {
                         repo: config.lotusNodes[this.context.networkIndex].notaryRepo,
                         issue_number: request.number,
                     })
-
+                    await this.timeout(1000)
                     let label = config.lotusNodes[this.context.networkIndex].rkhtreshold > 1 ? 'status:ProposedByRKH' : 'status:ApprovedByRKH'
                     
                     await this.context.githubOcto.issues.addLabels({
@@ -201,7 +201,7 @@ export default class Overview extends Component<{}, OverviewStates> {
                         issue_number: request.number,
                         labels: [label],
                     })
-
+                    await this.timeout(1000)
                     await this.context.loadVerifierRequests()
                     // send notifications
                     this.context.dispatchNotification('Accepting Message sent with ID: ' + messageID)     
@@ -275,6 +275,10 @@ export default class Overview extends Component<{}, OverviewStates> {
             this.context.dispatchNotification('Approval failed: ' + e.message)
             console.log('error', e.stack)
         }
+    }
+
+    timeout(delay: number) {
+        return new Promise( res => setTimeout(res, delay) );
     }
 
     loadData = async () => {
