@@ -103,7 +103,7 @@ export default class Overview extends Component<{}, OverviewStates> {
                         labels: ['state:Granted'],
                     })
 
-                    let commentContent = `## Request Approved\nYour Datacap Allocation Request has been approved by the Notary\n#### Message sent to Filecoin Network\n>${messageID} \n#### Address \n> ${address}\n#### Datacap Allocated\n> ${prepDatacap}${prepDatacapExt}`
+                    let commentContent = `## Request Approved\nYour Datacap Allocation Request has been approved by the Notary\n#### Message sent to Filecoin Network\n>${messageID} \n#### Address \n> ${address}\n#### Datacap Allocated\n> ${request.data.datacap}`
 
                     await this.context.githubOcto.issues.createComment({
                         owner: config.lotusNodes[this.context.networkIndex].clientOwner,
