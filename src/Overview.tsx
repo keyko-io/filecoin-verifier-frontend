@@ -193,8 +193,7 @@ export default class Overview extends Component<{}, OverviewStates> {
                         issue_number: request.number,
                     })
                     await this.timeout(1000)
-                    let label = config.lotusNodes[this.context.networkIndex].rkhtreshold > 1 ? 'status:ProposedByRKH' : 'status:ApprovedByRKH'
-                    
+                    let label = config.lotusNodes[this.context.networkIndex].rkhtreshold > 1 ? 'status:StartSignOnchain' : 'status:AddedOnchain'
                     await this.context.githubOcto.issues.addLabels({
                         owner: config.lotusNodes[this.context.networkIndex].notaryOwner,
                         repo: config.lotusNodes[this.context.networkIndex].notaryRepo,
@@ -222,7 +221,7 @@ export default class Overview extends Component<{}, OverviewStates> {
             owner: config.lotusNodes[this.context.networkIndex].notaryOwner,
             repo: config.lotusNodes[this.context.networkIndex].notaryRepo,
             state: 'open',
-            labels: 'status:ProposedByRKH'
+            labels: 'status:StartSignOnchain'
         })
         const issues: any = {}
         for (const rawIssue of rawIssues.data) {
@@ -263,7 +262,7 @@ export default class Overview extends Component<{}, OverviewStates> {
                             owner: config.lotusNodes[this.context.networkIndex].notaryOwner,
                             repo: config.lotusNodes[this.context.networkIndex].notaryRepo,
                             issue_number: issues[tx.verifier].number,
-                            labels: ['status:ApprovedByRHK'],
+                            labels: ['status:AddedOnchain'],
                         })
                     }
                 }
@@ -344,12 +343,12 @@ export default class Overview extends Component<{}, OverviewStates> {
                         <div className="tabsholder">
                             <div className="tabs">
                                 <div className={this.state.tabs === "0" ? "selected" : ""} onClick={() => { this.showVerifierRequests() }}>Notaries Approved by Governance ({this.context.verifierRequests.length})</div>
-                                <div className={this.state.tabs === "1" ? "selected" : ""} onClick={() => { this.showPending() }}>Notaries Pending to Approve Onchain ({this.state.pendingverifiers.length})</div>
+                                <div className={this.state.tabs === "1" ? "selected" : ""} onClick={() => { this.showPending() }}>Notaries Pending to Sign Onchain ({this.state.pendingverifiers.length})</div>
                                 <div className={this.state.tabs === "2" ? "selected" : ""} onClick={() => { this.showApproved() }}>Accepted Notaries ({this.context.verified.length})</div>
                             </div>
                             <div className="tabssadd">
                                 {this.state.tabs === "0" ? <ButtonPrimary onClick={() => this.acceptRequestVerifier()}>Propose Onchain</ButtonPrimary> : null}
-                                {this.state.tabs === "1" ? <ButtonPrimary onClick={() => this.handleSubmitApprove()}>Approve Onchain</ButtonPrimary> : null}
+                                {this.state.tabs === "1" ? <ButtonPrimary onClick={() => this.handleSubmitApprove()}>Sign Onchain</ButtonPrimary> : null}
                             </div>
                         </div>
                         {this.state.tabs === "0" && this.context.githubLogged ?
