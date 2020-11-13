@@ -5,7 +5,9 @@ import MakeRequestModal from '../MakeRequestModal';
 import { config } from '../config'
 
 import jsonVerifiers from '../data/verifiers.json';
-import jsonvVerifiersProd from '../data/verifiers-prod.json';
+import jsonvVerifiersBeta from '../data/verifiers-beta.json';
+import jsonvVerifiersRegistry from '../data/verifiers-registry.json';
+
 
 export default class TableVerifiers extends Component {
 
@@ -38,12 +40,13 @@ export default class TableVerifiers extends Component {
     }
 
     getList = async () => {
-
         let verifiers
         if (config.verifiers === 'DEV') {
             verifiers = jsonVerifiers.notaries
         } else {
-            verifiers = jsonvVerifiersProd.notaries
+            window.location.href.includes("filecoinproregistry") ?
+                verifiers = jsonvVerifiersRegistry.notaries :
+                verifiers = jsonvVerifiersBeta.notaries
         }
         this.setState({ verifiers })
     }
