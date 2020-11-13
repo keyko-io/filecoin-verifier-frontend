@@ -345,7 +345,7 @@ export default class Overview extends Component<{}, OverviewStates> {
                             </div>
                             <div className="tabssadd">
                                 {this.state.tabs === "0" ? <ButtonPrimary onClick={() => this.acceptRequestVerifier()}>Propose Onchain</ButtonPrimary> : null}
-                                {this.state.tabs === "1" ? <ButtonPrimary onClick={() => this.handleSubmitApprove()}>Approve Onchain</ButtonPrimary> : null}
+                                {this.state.tabs === "1" ? <ButtonPrimary onClick={() => this.handleSubmitApprove()}>Sign Onchain</ButtonPrimary> : null}
                             </div>
                         </div>
                         {this.state.tabs === "0" && this.context.githubLogged ?
