@@ -102,8 +102,19 @@ export default class Overview extends Component<{}, OverviewStates> {
                         issue_number: request.number,
                         labels: ['state:Granted'],
                     })
+
+                    let commentContent = `## Request Approved\nYour Datacap Allocation Request has been approved by the Notary\n#### Message sent to Filecoin Network\n>${messageID} \n#### Address \n> ${address}\n#### Datacap Allocated\n> ${prepDatacap}${prepDatacapExt}`
+
+                    await this.context.githubOcto.issues.createComment({
+                        owner: config.lotusNodes[this.context.networkIndex].clientOwner,
+                        repo: config.lotusNodes[this.context.networkIndex].clientRepo,
+                        issue_number: request.number,
+                        body: commentContent,
+                    })
+
                     // send notifications
                     this.context.dispatchNotification('Verify Client Message sent with ID: ' + messageID)
+                    this.context.loadClientRequests()
                 } catch (e) {
                     this.context.dispatchNotification('Verification failed: ' + e.message)
                     console.log(e.stack)

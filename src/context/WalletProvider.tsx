@@ -186,7 +186,9 @@ export default class WalletProvider extends React.Component<{}, WalletProviderSt
             const rawIssues = await this.state.githubOcto.issues.listForRepo({
                 owner: config.lotusNodes[this.state.networkIndex].clientOwner,
                 repo: config.lotusNodes[this.state.networkIndex].clientRepo,
-                assignee: user.data.login
+                assignee: user.data.login,
+                state: 'open',
+                labels: 'state:Verifying'
             })
             const issues: any[] = []
             for (const rawIssue of rawIssues.data) {
