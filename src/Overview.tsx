@@ -10,7 +10,7 @@ import { datacapFilter } from "./Filters"
 // @ts-ignore
 import LoginGithub from 'react-login-github';
 import { config } from './config'
-const utils = require('@keyko-io/filecoin-verifier-tools/utils/issue-parser')
+const parser = require('@keyko-io/filecoin-verifier-tools/utils/notary-issue-parser')
 
 type OverviewStates = {
     tabs: string
@@ -200,6 +200,16 @@ export default class Overview extends Component<{}, OverviewStates> {
                         issue_number: request.number,
                         labels: [label],
                     })
+
+                    let commentContent = `## The request has been signed by a new Root Key Holder\n#### Message sent to Filecoin Network\n>${messageID}`
+
+                    await this.context.githubOcto.issues.createComment({
+                        owner: config.lotusNodes[this.context.networkIndex].notaryOwner,
+                        repo: config.lotusNodes[this.context.networkIndex].notaryRepo,
+                        issue_number: request.number,
+                        body: commentContent,
+                    })
+
                     await this.timeout(1000)
                     await this.context.loadVerifierRequests()
                     // send notifications
@@ -225,7 +235,7 @@ export default class Overview extends Component<{}, OverviewStates> {
         })
         const issues: any = {}
         for (const rawIssue of rawIssues.data) {
-            const data = utils.parseIssue(rawIssue.body)
+            const data = parser.parseIssue(rawIssue.body)
             try {
                 const address = await this.context.api.actorKey(data.address)
                 if (data.correct && address) {
@@ -245,7 +255,16 @@ export default class Overview extends Component<{}, OverviewStates> {
             for (let tx of this.state.pendingverifiers) {
                 if (this.state.selectedTransactions.includes(tx.id)) {
                     const datacap = BigInt(tx.datacap)
-                    await this.context.api.approveVerifier(tx.verifier, datacap, tx.signer, tx.id, this.context.walletIndex);
+                    let messageID = await this.context.api.approveVerifier(tx.verifier, datacap, tx.signer, tx.id, this.context.walletIndex);
+
+                    let commentContent = `## The request has been signed by a new Root Key Holder\n#### Message sent to Filecoin Network\n>${messageID}`
+
+                    await this.context.githubOcto.issues.createComment({
+                        owner: config.lotusNodes[this.context.networkIndex].notaryOwner,
+                        repo: config.lotusNodes[this.context.networkIndex].notaryRepo,
+                        issue_number: issues[tx.verifier].number,
+                        body: commentContent,
+                    })
                     // check if we have github issue, and all info
                     if (
                         multisigInfo && multisigInfo.signers &&
