@@ -1,12 +1,8 @@
 import React, { Component } from 'react';
 // @ts-ignore
-import { Table, CheckBox, dispatchCustomEvent } from "slate-react-system";
+import { dispatchCustomEvent } from "slate-react-system";
 import MakeRequestModal from '../MakeRequestModal';
 import { config } from '../config'
-
-import jsonVerifiers from '../data/verifiers.json';
-import jsonvVerifiersBeta from '../data/verifiers-beta.json';
-import jsonvVerifiersRegistry from '../data/verifiers-registry.json';
 
 
 export default class TableVerifiers extends Component {
@@ -40,15 +36,8 @@ export default class TableVerifiers extends Component {
     }
 
     getList = async () => {
-        let verifiers
-        if (config.verifiers === 'DEV') {
-            verifiers = jsonVerifiers.notaries
-        } else {
-            window.location.href.includes("filecoinproregistry") ?
-                verifiers = jsonvVerifiersRegistry.notaries :
-                verifiers = jsonvVerifiersBeta.notaries
-        }
-        this.setState({ verifiers })
+        const verifiers = require(`../data/${config.dataSource}.json`);
+        this.setState({ verifiers: verifiers.notaries })
     }
 
     updateChecks = (e: any) => {

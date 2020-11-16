@@ -1,12 +1,11 @@
 export const config = {
     apiUri: process.env.REACT_APP_API_URI || 'http://localhost:4000',
     apiToken: process.env.REACT_APP_API_TOKEN || '',
-    verifiers: process.env.REACT_APP_VERIFIERS || 'DEV',
-    onboardingClientRepo: process.env.REACT_ONBOARDING_REPO ||'filecoin-clients-onboarding-test',
+    onboardingClientRepo: process.env.REACT_APP_ONBOARDING_REPO ||'filecoin-clients-onboarding-test',
     onboardingOwner: 'keyko-io',
     githubApp: process.env.REACT_APP_GITHUB_APP || 'Iv1.10e7aaed4654db3c',
     oauthUri: process.env.REACT_APP_OAUTH_URI || 'http://localhost:3000/oauth/',
-    networks: process.env.NETWORKS || 'Mainnet,Nerpanet',
+    networks: process.env.REACT_APP_NETWORKS || 'Mainnet,Nerpanet',
     lotusNodes: [{
         name: 'Mainnet',
         code: 461,
@@ -63,5 +62,5 @@ export const config = {
         { value: "ZiB", name: "ZiB" },
         { value: "YiB", name: "YiB" }
     ],
-    dataSource: process.env.REACT_APP_VERIFIES_DATA || 'verifiers-dev'
+    dataSource: process.env.REACT_APP_VERIFIES_DATA || 'verifiers'
 }
