@@ -36,7 +36,9 @@ export default class TableVerifiers extends Component {
     }
 
     getList = async () => {
-        const verifiers = require(`../data/${config.dataSource}.json`);
+        const dataSource = config.dataSource;
+        console.log(`../data/${dataSource}.json`)
+        const verifiers = require(`../data/${dataSource}.json`);
         this.setState({ verifiers: verifiers.notaries })
     }
 
