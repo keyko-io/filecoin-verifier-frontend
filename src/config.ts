@@ -51,6 +51,17 @@ export const config = {
         { value: "1000000000000000000000", name: "ZiB" },
         { value: "1000000000000000000000000", name: "YiB" }
     ],
+    datacapExtNotary: [
+        { value: "1", name: "B" },
+        { value: "1000", name: "KB" },
+        { value: "1000000", name: "MB" },
+        { value: "1000000000", name: "GB" },
+        { value: "1000000000000", name: "TB" },
+        { value: "1000000000000000", name: "PB" },
+        { value: "1000000000000000000", name: "EB" },
+        { value: "1000000000000000000000", name: "ZB" },
+        { value: "1000000000000000000000000", name: "YB" }
+    ],
     datacapExtName: [
         { value: "1B", name: "B" },
         { value: "KiB", name: "KiB" },
@@ -61,6 +72,17 @@ export const config = {
         { value: "EiB", name: "EiB" },
         { value: "ZiB", name: "ZiB" },
         { value: "YiB", name: "YiB" }
+    ],
+    datacapExtNotaryName: [
+        { value: "1B", name: "B" },
+        { value: "KiB", name: "KB" },
+        { value: "MiB", name: "MB" },
+        { value: "GiB", name: "GB" },
+        { value: "TiB", name: "TB" },
+        { value: "PiB", name: "PB" },
+        { value: "EiB", name: "EB" },
+        { value: "ZiB", name: "ZB" },
+        { value: "YiB", name: "YB" }
     ],
     dataSource: process.env.REACT_APP_VERIFIES_DATA || 'verifiers'
 }
