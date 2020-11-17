@@ -3,7 +3,7 @@ return `
 ---
 
 # Client Allocation Questions 
-For Clients, please note that your responses (past the Core Information section) are entirely optional. However, without answering in detail your total approved DataCap may be limited. 
+
 ## Core Information
 - Name: ${data.organization}
 - Website / Social Media: ${data.publicprofile}
