@@ -171,7 +171,7 @@ export default class Overview extends Component<{}, OverviewStates> {
                 try {
                     let prepDatacap = '1'
                     let prepDatacapExt = 'B'
-                    const dataext = config.datacapExtNotary.reverse()
+                    const dataext = config.datacapExt.reverse()
                     for (const entry of dataext) {
                         if (request.datacap.endsWith(entry.name)) {
                             prepDatacapExt = entry.value
