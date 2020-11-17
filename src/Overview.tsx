@@ -197,6 +197,8 @@ export default class Overview extends Component<{}, OverviewStates> {
                         console.log("calling actorKey method")
                         address = await this.context.api.actorKey(address)
                         console.log("result of  actorKey method: " + address)
+                        const address2= await this.context.api.actorAddress(address)
+                        console.log("result of  actorAddress method: " + address2)
                     }
 
                     console.log(" address to send: " + address)
