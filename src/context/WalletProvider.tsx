@@ -266,6 +266,7 @@ export default class WalletProvider extends React.Component<{}, WalletProviderSt
                 if (issue.status === 201) {
                     this.state.dispatchNotification('Request submited as #' + issue.data.number)
                     this.state.loadClientRequests()
+                    return issue.data.html_url
                 } else {
                     this.state.dispatchNotification('Something went wrong.')
                 }

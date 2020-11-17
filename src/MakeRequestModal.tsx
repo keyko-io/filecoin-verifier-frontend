@@ -114,7 +114,7 @@ class MakeRequestModal extends Component<ModalProps, States> {
 
     handleGithubSubmit = async () => {
         this.setState({ submitLoading: true })
-        this.context.createRequest({
+        const response = await this.context.createRequest({
             address: this.state.address,
             datacap: this.state.datacap + this.state.datacapExt,
             organization: this.state.organization,
@@ -123,7 +123,14 @@ class MakeRequestModal extends Component<ModalProps, States> {
             assignees: [this.props.verifier.github_user],
             onboarding: true
         })
-        dispatchCustomEvent({ name: "delete-modal", detail: {} })
+        if (response) {
+            dispatchCustomEvent({
+                name: "create-modal", detail: {
+                    id: Math.random().toString(36).replace(/[^a-z]+/g, '').substr(0, 5),
+                    modal: <ConfirmModal url={response} />
+                }
+            })
+        }
         this.setState({ submitLoading: false })
     }
 
