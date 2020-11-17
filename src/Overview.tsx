@@ -190,10 +190,14 @@ export default class Overview extends Component<{}, OverviewStates> {
                     console.log("fullDatacap: " + fullDatacap)
 
                     let address = request.address
+                    console.log("request address: " + request.address)
                     if (address.length < 12) {
                         address = await this.context.api.actorKey(address)
                     }
 
+                    console.log(" address to send: " + address)
+
+                    /*
                     let messageID = await this.context.api.proposeVerifier(address, fullDatacap, this.context.walletIndex)
                     // github update
                     await this.context.githubOcto.issues.removeAllLabels({
@@ -222,7 +226,8 @@ export default class Overview extends Component<{}, OverviewStates> {
                     await this.timeout(1000)
                     await this.context.loadVerifierRequests()
                     // send notifications
-                    this.context.dispatchNotification('Accepting Message sent with ID: ' + messageID)   
+                    this.context.dispatchNotification('Accepting Message sent with ID: ' + messageID)  
+                    */ 
                     
                 } catch (e) {
                     this.context.dispatchNotification('Verification failed: ' + e.message)
