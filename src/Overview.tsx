@@ -191,7 +191,9 @@ export default class Overview extends Component<{}, OverviewStates> {
 
                     let address = request.address
                     console.log("request address: " + request.address)
-                    if (address.length < 12) {
+                    //if (address.length < 12) {
+
+                    if (address.startsWith("t1") || address.startsWith("f1")) {
                         address = await this.context.api.actorKey(address)
                     }
 
