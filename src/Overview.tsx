@@ -171,16 +171,11 @@ export default class Overview extends Component<{}, OverviewStates> {
                 try {
                     let prepDatacap = '1'
                     let prepDatacapExt = 'B'
-
                     console.log("request.datacap: " + request.datacap)
-
                     const dataext = config.datacapExtNotary.reverse()
                     for (const entry of dataext) {
-                        console.log("entry.name: " + entry.name)
-                        console.log("entry.value: " + entry.value)
-
                         if (request.datacap.endsWith(entry.name)) {
-                            console.log("FOUND: " + entry.name)
+                            console.log("found unit: " + entry.name)
                             prepDatacapExt = entry.value
                             prepDatacap = request.datacap.substring(0, request.datacap.length - entry.name.length)
                             break
@@ -191,8 +186,6 @@ export default class Overview extends Component<{}, OverviewStates> {
                     console.log("prepDatacapExt: " + prepDatacapExt)
 
                     const datacap = parseFloat(prepDatacap)
-                    console.log("datacap: " + datacap)
-
                     const fullDatacap = BigInt(datacap * parseFloat(prepDatacapExt))
                     console.log("fullDatacap: " + fullDatacap)
 
@@ -201,7 +194,6 @@ export default class Overview extends Component<{}, OverviewStates> {
                         address = await this.context.api.actorKey(address)
                     }
 
-                    /*
                     let messageID = await this.context.api.proposeVerifier(address, fullDatacap, this.context.walletIndex)
                     // github update
                     await this.context.githubOcto.issues.removeAllLabels({
@@ -231,8 +223,6 @@ export default class Overview extends Component<{}, OverviewStates> {
                     await this.context.loadVerifierRequests()
                     // send notifications
                     this.context.dispatchNotification('Accepting Message sent with ID: ' + messageID)   
-                    */  
-
                     
                 } catch (e) {
                     this.context.dispatchNotification('Verification failed: ' + e.message)
@@ -274,21 +264,21 @@ export default class Overview extends Component<{}, OverviewStates> {
                 if (this.state.selectedTransactions.includes(tx.id)) {
                     const datacap = BigInt(tx.datacap)
                     let messageID = await this.context.api.approveVerifier(tx.verifier, datacap, tx.signer, tx.id, this.context.walletIndex);
-
-                    let commentContent = `## The request has been signed by a new Root Key Holder\n#### Message sent to Filecoin Network\n>${messageID}`
-
-                    await this.context.githubOcto.issues.createComment({
-                        owner: config.lotusNodes[this.context.networkIndex].notaryOwner,
-                        repo: config.lotusNodes[this.context.networkIndex].notaryRepo,
-                        issue_number: issues[tx.verifier].number,
-                        body: commentContent,
-                    })
+  
                     // check if we have github issue, and all info
                     if (
                         multisigInfo && multisigInfo.signers &&
                         multisigInfo.signers > config.lotusNodes[this.context.networkIndex].rkhtreshold &&
                         issues[tx.verifier]
                     ) {
+                        let commentContent = `## The request has been signed by a new Root Key Holder\n#### Message sent to Filecoin Network\n>${messageID}`
+
+                        await this.context.githubOcto.issues.createComment({
+                            owner: config.lotusNodes[this.context.networkIndex].notaryOwner,
+                            repo: config.lotusNodes[this.context.networkIndex].notaryRepo,
+                            issue_number: issues[tx.verifier].number,
+                            body: commentContent,
+                        })
                         // github update
                         await this.context.githubOcto.issues.removeAllLabels({
                             owner: config.lotusNodes[this.context.networkIndex].notaryOwner,
