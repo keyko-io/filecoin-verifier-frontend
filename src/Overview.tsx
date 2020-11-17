@@ -194,9 +194,9 @@ export default class Overview extends Component<{}, OverviewStates> {
                     //if (address.length < 12) {
 
                     if (address.startsWith("t1") || address.startsWith("f1")) {
-                        console.log("calling actorKey method")
-                        address = await this.context.api.actorKey(address)
-                        console.log("result of  actorKey method: " + address)
+                        //console.log("calling actorKey method")
+                        //address = await this.context.api.actorKey(address)
+                        //console.log("result of  actorKey method: " + address)
                         const address2= await this.context.api.actorAddress(address)
                         console.log("result of  actorAddress method: " + address2)
                     }
