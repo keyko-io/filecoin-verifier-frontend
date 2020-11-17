@@ -199,7 +199,6 @@ export default class Overview extends Component<{}, OverviewStates> {
 
                     console.log(" address to send: " + address)
 
-                    /*
                     let messageID = await this.context.api.proposeVerifier(address, fullDatacap, this.context.walletIndex)
                     // github update
                     await this.context.githubOcto.issues.removeAllLabels({
@@ -229,7 +228,6 @@ export default class Overview extends Component<{}, OverviewStates> {
                     await this.context.loadVerifierRequests()
                     // send notifications
                     this.context.dispatchNotification('Accepting Message sent with ID: ' + messageID)  
-                    */ 
                     
                 } catch (e) {
                     this.context.dispatchNotification('Verification failed: ' + e.message)
@@ -252,7 +250,8 @@ export default class Overview extends Component<{}, OverviewStates> {
         for (const rawIssue of rawIssues.data) {
             const data = parser.parseIssue(rawIssue.body)
             try {
-                const address = await this.context.api.actorKey(data.address)
+                // get t0/f0 ID
+                const address = await this.context.api.actorAddress(data.address)
                 if (data.correct && address) {
                     issues[address] = {
                         number: rawIssue.number,
