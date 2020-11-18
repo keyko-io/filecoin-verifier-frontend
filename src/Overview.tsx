@@ -75,7 +75,7 @@ export default class Overview extends Component<{}, OverviewStates> {
                 try {
                     let prepDatacap = '1'
                     let prepDatacapExt = 'B'
-                    const dataext = config.datacapExt.reverse()
+                    const dataext = config.datacapExt.slice().reverse()
                     for (const entry of dataext) {
                         if (request.data.datacap.endsWith(entry.name)) {
                             prepDatacapExt = entry.value
@@ -173,7 +173,7 @@ export default class Overview extends Component<{}, OverviewStates> {
                     let prepDatacap = '1'
                     let prepDatacapExt = 'B'
                     console.log("request.datacap: " + request.datacap)
-                    const dataext = config.datacapExtNotary.reverse()
+                    const dataext = config.datacapExtNotary.slice().reverse()
                     for (const entry of dataext) {
                         if (request.datacap.endsWith(entry.name)) {
                             console.log("found unit: " + entry.name)
