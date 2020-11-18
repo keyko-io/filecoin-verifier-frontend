@@ -69,6 +69,15 @@ export default class Overview extends Component<{}, OverviewStates> {
         })
     }
 
+    verifyNewDatacap = () => {
+        dispatchCustomEvent({
+            name: "create-modal", detail: {
+                id: Math.random().toString(36).replace(/[^a-z]+/g, '').substr(0, 5),
+                modal: <AddClientModal newDatacap={true} address={this.context.clientRequests[0]}/>
+            }
+        })
+    }
+
     verifyClients = async () => {
         for (const request of this.context.clientRequests) {
             if (this.state.selectedClientRequests.includes(request.number)) {
@@ -91,26 +100,7 @@ export default class Overview extends Component<{}, OverviewStates> {
                     }
                     let messageID = await this.context.api.verifyClient(address, fullDatacap, this.context.walletIndex)
                     // github update
-                    await this.context.githubOcto.issues.removeAllLabels({
-                        owner: config.lotusNodes[this.context.networkIndex].clientOwner,
-                        repo: config.lotusNodes[this.context.networkIndex].clientRepo,
-                        issue_number: request.number,
-                    })
-                    await this.context.githubOcto.issues.addLabels({
-                        owner: config.lotusNodes[this.context.networkIndex].clientOwner,
-                        repo: config.lotusNodes[this.context.networkIndex].clientRepo,
-                        issue_number: request.number,
-                        labels: ['state:Granted'],
-                    })
-
-                    let commentContent = `## Request Approved\nYour Datacap Allocation Request has been approved by the Notary\n#### Message sent to Filecoin Network\n>${messageID} \n#### Address \n> ${address}\n#### Datacap Allocated\n> ${request.data.datacap}`
-
-                    await this.context.githubOcto.issues.createComment({
-                        owner: config.lotusNodes[this.context.networkIndex].clientOwner,
-                        repo: config.lotusNodes[this.context.networkIndex].clientRepo,
-                        issue_number: request.number,
-                        body: commentContent,
-                    })
+                    this.context.updateGithubVerified(request.number, messageID, address, request.data.datacap)
 
                     // send notifications
                     this.context.dispatchNotification('Verify Client Message sent with ID: ' + messageID)
@@ -476,6 +466,7 @@ export default class Overview extends Component<{}, OverviewStates> {
                             <div className="tabssadd">
                                 <ButtonPrimary onClick={() => this.requestDatacap()}>Approve Private Request</ButtonPrimary>
                                 <ButtonPrimary onClick={() => this.verifyClients()}>Verify client</ButtonPrimary>
+                                <ButtonPrimary onClick={() => this.verifyNewDatacap()}>Verify new datacap</ButtonPrimary>
                             </div>
                         </div>
                         {this.state.tabs === "1" && this.context.githubLogged ?
