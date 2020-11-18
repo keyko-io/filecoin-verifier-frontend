@@ -197,8 +197,8 @@ export default class Overview extends Component<{}, OverviewStates> {
                         console.log("getting t0/f0 ID. Result of  actorAddress method: " + address)
                     }
 
-                    console.log("address to send: " + address)
-                    console.log("fullDatacap: " + fullDatacap)
+                    console.log("address to propose: " + address)
+                    console.log("fullDatacap to propose: " + fullDatacap)
 
                     let messageID = await this.context.api.proposeVerifier(address, fullDatacap, this.context.walletIndex)
                     // github update
