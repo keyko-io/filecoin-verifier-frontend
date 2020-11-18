@@ -96,13 +96,14 @@ export default class Overview extends Component<{}, OverviewStates> {
                         repo: config.lotusNodes[this.context.networkIndex].clientRepo,
                         issue_number: request.number,
                     })
+                    await this.timeout(1000)
                     await this.context.githubOcto.issues.addLabels({
                         owner: config.lotusNodes[this.context.networkIndex].clientOwner,
                         repo: config.lotusNodes[this.context.networkIndex].clientRepo,
                         issue_number: request.number,
                         labels: ['state:Granted'],
                     })
-
+                    await this.timeout(1000)
                     let commentContent = `## Request Approved\nYour Datacap Allocation Request has been approved by the Notary\n#### Message sent to Filecoin Network\n>${messageID} \n#### Address \n> ${address}\n#### Datacap Allocated\n> ${request.data.datacap}`
 
                     await this.context.githubOcto.issues.createComment({
@@ -285,12 +286,13 @@ export default class Overview extends Component<{}, OverviewStates> {
                             issue_number: issues[tx.verifier].number,
                             body: commentContent,
                         })
-                        // github update
+                        await this.timeout(1000)
                         await this.context.githubOcto.issues.removeAllLabels({
                             owner: config.lotusNodes[this.context.networkIndex].notaryOwner,
                             repo: config.lotusNodes[this.context.networkIndex].notaryRepo,
                             issue_number: issues[tx.verifier].number,
                         })
+                        await this.timeout(1000)
                         await this.context.githubOcto.issues.addLabels({
                             owner: config.lotusNodes[this.context.networkIndex].notaryOwner,
                             repo: config.lotusNodes[this.context.networkIndex].notaryRepo,
@@ -455,6 +457,7 @@ export default class Overview extends Component<{}, OverviewStates> {
                                 <table>
                                     <thead>
                                         <tr>
+                                            <td></td>
                                             <td>Type</td>
                                             <td>Notary</td>
                                             <td>Datacap</td>
@@ -462,12 +465,9 @@ export default class Overview extends Component<{}, OverviewStates> {
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        {this.state.pendingverifiers.map((transaction: any, index: any) =>
-                                            <tr
-                                                key={index}
-                                                onClick={() => this.selectRow(transaction.id)}
-                                                className={this.state.selectedTransactions.includes(transaction.id) ? 'selected' : ''}
-                                            >
+                                        {this.state.pendingverifiers.map((transaction: any) =>
+                                            <tr key={transaction.id}>
+                                                <td><input type="checkbox" onChange={() => this.selectRow(transaction.id)} checked={this.context.selectedTransactions.includes(transaction.id)} /></td>
                                                 <td>{transaction.type}</td>
                                                 <td>{transaction.verifier}</td>
                                                 <td>{datacapFilter(transaction.datacap)}</td>
