@@ -273,12 +273,8 @@ export default class Overview extends Component<{}, OverviewStates> {
                     const datacap = BigInt(tx.datacap)
                     let messageID = await this.context.api.approveVerifier(tx.verifier, datacap, tx.signer, tx.id, this.context.walletIndex);
   
-                    // check if we have github issue, and all info
-                    if (
-                        multisigInfo && multisigInfo.signers &&
-                        multisigInfo.signers > config.lotusNodes[this.context.networkIndex].rkhtreshold &&
-                        issues[tx.verifier]
-                    ) {
+                    // check if we have github issue
+                    if (issues[tx.verifier]) {
                         let commentContent = `## The request has been signed by a new Root Key Holder\n#### Message sent to Filecoin Network\n>${messageID}`
 
                         await this.context.githubOcto.issues.createComment({
@@ -287,19 +283,25 @@ export default class Overview extends Component<{}, OverviewStates> {
                             issue_number: issues[tx.verifier].number,
                             body: commentContent,
                         })
-                        await this.timeout(1000)
-                        await this.context.githubOcto.issues.removeAllLabels({
-                            owner: config.lotusNodes[this.context.networkIndex].notaryOwner,
-                            repo: config.lotusNodes[this.context.networkIndex].notaryRepo,
-                            issue_number: issues[tx.verifier].number,
-                        })
-                        await this.timeout(1000)
-                        await this.context.githubOcto.issues.addLabels({
-                            owner: config.lotusNodes[this.context.networkIndex].notaryOwner,
-                            repo: config.lotusNodes[this.context.networkIndex].notaryRepo,
-                            issue_number: issues[tx.verifier].number,
-                            labels: ['status:AddedOnchain'],
-                        })
+
+                        if (multisigInfo && 
+                            multisigInfo.signers && 
+                            multisigInfo.signers > config.lotusNodes[this.context.networkIndex].rkhtreshold) {
+                                
+                            await this.timeout(1000)
+                            await this.context.githubOcto.issues.removeAllLabels({
+                                owner: config.lotusNodes[this.context.networkIndex].notaryOwner,
+                                repo: config.lotusNodes[this.context.networkIndex].notaryRepo,
+                                issue_number: issues[tx.verifier].number,
+                            })
+                            await this.timeout(1000)
+                            await this.context.githubOcto.issues.addLabels({
+                                owner: config.lotusNodes[this.context.networkIndex].notaryOwner,
+                                repo: config.lotusNodes[this.context.networkIndex].notaryRepo,
+                                issue_number: issues[tx.verifier].number,
+                                labels: ['status:AddedOnchain'],
+                            })
+                        }
                     }
                 }
             }
