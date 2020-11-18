@@ -187,7 +187,7 @@ export default class Overview extends Component<{}, OverviewStates> {
 
                     const datacap = parseFloat(prepDatacap)
                     const fullDatacap = BigInt(datacap * parseFloat(prepDatacapExt))
-                    console.log("fullDatacap: " + fullDatacap)
+                    
 
                     let address = request.address
                     console.log("request address: " + request.address)
@@ -197,7 +197,8 @@ export default class Overview extends Component<{}, OverviewStates> {
                         console.log("getting t0/f0 ID. Result of  actorAddress method: " + address)
                     }
 
-                    console.log(" address to send: " + address)
+                    console.log("address to send: " + address)
+                    console.log("fullDatacap: " + fullDatacap)
 
                     let messageID = await this.context.api.proposeVerifier(address, fullDatacap, this.context.walletIndex)
                     // github update
