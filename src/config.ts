@@ -16,7 +16,7 @@ export const config = {
         clientOwner: 'keyko-io',
         notaryOwner: 'filecoin-project',
         rkhMultisig: 't080',
-        rkhtreshold: 4
+        rkhtreshold: 2
     },{
         name: 'Nerpanet',
         code: 1,
