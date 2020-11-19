@@ -19,11 +19,17 @@ export class LedgerWallet {
     public loadWallet = async(networkIndex: number) => {
       this.networkIndex = networkIndex
       this.lotusNode = config.lotusNodes[networkIndex]
-      this.api= new VerifyAPI(VerifyAPI.browserProvider(this.lotusNode.url, {
-        token: async () => {
-            return this.lotusNode.token
-        }
-      }), {sign: this.sign, getAccounts: this.getAccounts})
+      this.api = new VerifyAPI(
+        VerifyAPI.browserProvider(this.lotusNode.url
+            , {
+            token: async () => {
+                return this.lotusNode.token
+            }})
+            , {sign: this.sign, getAccounts: this.getAccounts}
+            , this.lotusNode.name !== "Mainnet" // if node != Mainnet => testnet = true
+        )
+
+
       let transport
       try {
           transport = await TransportWebUSB.create();
