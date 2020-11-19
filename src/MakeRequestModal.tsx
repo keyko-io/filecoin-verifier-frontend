@@ -141,9 +141,7 @@ class MakeRequestModal extends Component<ModalProps, States> {
         if (e.target.name === 'emailMethod') {
             this.setState({ gitHubMethod: false })
         }
-        if (e.target.name !== 'gitHubMethod') {
-            this.setState({ [e.target.name]: e.target.value } as any)
-        }
+        this.setState({ [e.target.name]: e.target.value } as any)
     }
 
     render() {
@@ -204,24 +202,37 @@ class MakeRequestModal extends Component<ModalProps, States> {
                             </div>
                             <div className="methodselection">
                                 <div className="methodlabel">Select the method to send your request</div>
-                                <CheckBox
-                                    name="gitHubMethod"
-                                    value={this.state.gitHubMethod}
-                                    onChange={this.handleChange}
-                                >Github - create issue </CheckBox>
+                                <div className="methodtype">
+                                    <input
+                                        type="radio"
+                                        name="gitHubMethod"
+                                        checked={this.state.gitHubMethod}
+                                        onChange={this.handleChange}
+                                    /> Github - create issue
+                                </div>
+                                {this.props.verifier.private_request === "true" ?
+                                    <div className="methodtype">
+                                        <input
+                                            type="radio"
+                                            name="emailMethod"
+                                            checked={this.state.emailMethod}
+                                            onChange={this.handleChange}
+                                        /> Email - private request
+                                </div>
+                                    : null
+                                }
                             </div>
                         </div>
 
                     </div>
                     <div className="centerbutton">
-                        {this.context.githubLogged ?
+                        {this.context.githubLogged || this.state.emailMethod ?
                             <ButtonPrimary onClick={this.handleSubmit}>{this.state.submitLoading ? <LoaderSpinner /> : 'Send Request'}</ButtonPrimary>
                             : null
                         }
                     </div>
                 </form>
-                {this.context.githubLogged ?
-                    null :
+                {!this.context.githubLogged && this.state.gitHubMethod ?
                     <>
                         <div id="githublogin">
                             <LoginGithub
@@ -238,6 +249,7 @@ class MakeRequestModal extends Component<ModalProps, States> {
                         </div>
                         <div className="loginwarn">Github sign in required</div>
                     </>
+                    : null
                 }
             </div>
         )

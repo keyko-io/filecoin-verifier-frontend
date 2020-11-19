@@ -94,7 +94,7 @@ export default class Overview extends Component<{}, OverviewStates> {
                 try {
                     let prepDatacap = '1'
                     let prepDatacapExt = 'B'
-                    const dataext = config.datacapExt.reverse()
+                    const dataext = config.datacapExt.slice().reverse()
                     for (const entry of dataext) {
                         if (request.data.datacap.endsWith(entry.name)) {
                             prepDatacapExt = entry.value
@@ -171,20 +171,35 @@ export default class Overview extends Component<{}, OverviewStates> {
                 try {
                     let prepDatacap = '1'
                     let prepDatacapExt = 'B'
-                    const dataext = config.datacapExt.reverse()
+                    console.log("request.datacap: " + request.datacap)
+                    const dataext = config.datacapExtNotary.slice().reverse()
                     for (const entry of dataext) {
                         if (request.datacap.endsWith(entry.name)) {
+                            console.log("found unit: " + entry.name)
                             prepDatacapExt = entry.value
                             prepDatacap = request.datacap.substring(0, request.datacap.length - entry.name.length)
                             break
                         }
                     }
+
+                    console.log("prepDatacap: " + prepDatacap)
+                    console.log("prepDatacapExt: " + prepDatacapExt)
+
                     const datacap = parseFloat(prepDatacap)
                     const fullDatacap = BigInt(datacap * parseFloat(prepDatacapExt))
+                    
+
                     let address = request.address
-                    if (address.length < 12) {
-                        address = await this.context.api.actorKey(address)
+                    console.log("request address: " + request.address)
+                    
+                    if (address.startsWith("t1") || address.startsWith("f1")) {
+                        address= await this.context.api.actorAddress(address)
+                        console.log("getting t0/f0 ID. Result of  actorAddress method: " + address)
                     }
+
+                    console.log("address to propose: " + address)
+                    console.log("fullDatacap to propose: " + fullDatacap)
+
                     let messageID = await this.context.api.proposeVerifier(address, fullDatacap, this.context.walletIndex)
                     // github update
                     await this.context.githubOcto.issues.removeAllLabels({
@@ -214,8 +229,6 @@ export default class Overview extends Component<{}, OverviewStates> {
                     await this.context.loadVerifierRequests()
                     // send notifications
                     this.context.dispatchNotification('Accepting Message sent with ID: ' + messageID)
-
-
                 } catch (e) {
                     this.context.dispatchNotification('Verification failed: ' + e.message)
                     console.log(e.stack)
@@ -237,7 +250,8 @@ export default class Overview extends Component<{}, OverviewStates> {
         for (const rawIssue of rawIssues.data) {
             const data = parser.parseIssue(rawIssue.body)
             try {
-                const address = await this.context.api.actorKey(data.address)
+                // get t0/f0 ID
+                const address = await this.context.api.actorAddress(data.address)
                 if (data.correct && address) {
                     issues[address] = {
                         number: rawIssue.number,
@@ -256,33 +270,36 @@ export default class Overview extends Component<{}, OverviewStates> {
                 if (this.state.selectedTransactions.includes(tx.id)) {
                     const datacap = BigInt(tx.datacap)
                     let messageID = await this.context.api.approveVerifier(tx.verifier, datacap, tx.signer, tx.id, this.context.walletIndex);
+  
+                    // check if we have github issue
+                    if (issues[tx.verifier]) {
+                        let commentContent = `## The request has been signed by a new Root Key Holder\n#### Message sent to Filecoin Network\n>${messageID}`
 
-                    let commentContent = `## The request has been signed by a new Root Key Holder\n#### Message sent to Filecoin Network\n>${messageID}`
-
-                    await this.context.githubOcto.issues.createComment({
-                        owner: config.lotusNodes[this.context.networkIndex].notaryOwner,
-                        repo: config.lotusNodes[this.context.networkIndex].notaryRepo,
-                        issue_number: issues[tx.verifier].number,
-                        body: commentContent,
-                    })
-                    // check if we have github issue, and all info
-                    if (
-                        multisigInfo && multisigInfo.signers &&
-                        multisigInfo.signers > config.lotusNodes[this.context.networkIndex].rkhtreshold &&
-                        issues[tx.verifier]
-                    ) {
-                        // github update
-                        await this.context.githubOcto.issues.removeAllLabels({
+                        await this.context.githubOcto.issues.createComment({
                             owner: config.lotusNodes[this.context.networkIndex].notaryOwner,
                             repo: config.lotusNodes[this.context.networkIndex].notaryRepo,
                             issue_number: issues[tx.verifier].number,
+                            body: commentContent,
                         })
-                        await this.context.githubOcto.issues.addLabels({
-                            owner: config.lotusNodes[this.context.networkIndex].notaryOwner,
-                            repo: config.lotusNodes[this.context.networkIndex].notaryRepo,
-                            issue_number: issues[tx.verifier].number,
-                            labels: ['status:AddedOnchain'],
-                        })
+
+                        if (multisigInfo && 
+                            multisigInfo.signers && 
+                            multisigInfo.signers > config.lotusNodes[this.context.networkIndex].rkhtreshold) {
+                                
+                            await this.timeout(1000)
+                            await this.context.githubOcto.issues.removeAllLabels({
+                                owner: config.lotusNodes[this.context.networkIndex].notaryOwner,
+                                repo: config.lotusNodes[this.context.networkIndex].notaryRepo,
+                                issue_number: issues[tx.verifier].number,
+                            })
+                            await this.timeout(1000)
+                            await this.context.githubOcto.issues.addLabels({
+                                owner: config.lotusNodes[this.context.networkIndex].notaryOwner,
+                                repo: config.lotusNodes[this.context.networkIndex].notaryRepo,
+                                issue_number: issues[tx.verifier].number,
+                                labels: ['status:AddedOnchain'],
+                            })
+                        }
                     }
                 }
             }
@@ -441,6 +458,7 @@ export default class Overview extends Component<{}, OverviewStates> {
                                 <table>
                                     <thead>
                                         <tr>
+                                            <td></td>
                                             <td>Type</td>
                                             <td>Notary</td>
                                             <td>Datacap</td>
@@ -448,12 +466,9 @@ export default class Overview extends Component<{}, OverviewStates> {
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        {this.state.pendingverifiers.map((transaction: any, index: any) =>
-                                            <tr
-                                                key={index}
-                                                onClick={() => this.selectRow(transaction.id)}
-                                                className={this.state.selectedTransactions.includes(transaction.id) ? 'selected' : ''}
-                                            >
+                                        {this.state.pendingverifiers.map((transaction: any) =>
+                                            <tr key={transaction.id}>
+                                                <td><input type="checkbox" onChange={() => this.selectRow(transaction.id)} checked={this.context.selectedTransactions.includes(transaction.id)} /></td>
                                                 <td>{transaction.type}</td>
                                                 <td>{transaction.verifier}</td>
                                                 <td>{datacapFilter(transaction.datacap)}</td>
