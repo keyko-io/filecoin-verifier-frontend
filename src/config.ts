@@ -9,14 +9,14 @@ export const config = {
     lotusNodes: [{
         name: 'Mainnet',
         code: 461,
-        url: 'https://api.node.glif.io',
+        url: 'https://node.glif.io/space06/lotus/rpc/v0',
         token: process.env.REACT_APP_MAINNET_TOKEN,
         clientRepo: 'filecoin-clients-onboarding',
         notaryRepo: 'notary-governance',
         clientOwner: 'keyko-io',
         notaryOwner: 'filecoin-project',
         rkhMultisig: 't080',
-        rkhtreshold: 4
+        rkhtreshold: 2
     },{
         name: 'Nerpanet',
         code: 1,
@@ -51,6 +51,17 @@ export const config = {
         { value: "1000000000000000000000", name: "ZiB" },
         { value: "1000000000000000000000000", name: "YiB" }
     ],
+    datacapExtNotary: [
+        { value: "1", name: "B" },
+        { value: "1000", name: "KB" },
+        { value: "1000000", name: "MB" },
+        { value: "1000000000", name: "GB" },
+        { value: "1000000000000", name: "TB" },
+        { value: "1000000000000000", name: "PB" },
+        { value: "1000000000000000000", name: "EB" },
+        { value: "1000000000000000000000", name: "ZB" },
+        { value: "1000000000000000000000000", name: "YB" }
+    ],
     datacapExtName: [
         { value: "1B", name: "B" },
         { value: "KiB", name: "KiB" },
@@ -61,6 +72,17 @@ export const config = {
         { value: "EiB", name: "EiB" },
         { value: "ZiB", name: "ZiB" },
         { value: "YiB", name: "YiB" }
+    ],
+    datacapExtNotaryName: [
+        { value: "1B", name: "B" },
+        { value: "KiB", name: "KB" },
+        { value: "MiB", name: "MB" },
+        { value: "GiB", name: "GB" },
+        { value: "TiB", name: "TB" },
+        { value: "PiB", name: "PB" },
+        { value: "EiB", name: "EB" },
+        { value: "ZiB", name: "ZB" },
+        { value: "YiB", name: "YB" }
     ],
     dataSource: process.env.REACT_APP_VERIFIES_DATA || 'verifiers'
 }
