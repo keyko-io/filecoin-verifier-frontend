@@ -7,6 +7,7 @@ import history from '../context/History'
 import Welcome from '../components/Welcome'
 import Header from '../components/Header';
 import LearnMore from '../components/LearnMore';
+import Footer from '../components/Footer'
 
 type States = {
 }
@@ -75,6 +76,7 @@ class Onboarding extends Component<{}, States> {
           </div>
           <LearnMore/>
         </div>
+        <Footer></Footer>
       </div>
     );
   }
