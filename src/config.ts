@@ -9,7 +9,7 @@ export const config = {
     lotusNodes: [{
         name: 'Mainnet',
         code: 461,
-        url: 'https://node.glif.io/space06/lotus/rpc/v0',
+        url: 'https://node.glif.io/space07/lotus/rpc/v0',
         token: process.env.REACT_APP_MAINNET_TOKEN,
         clientRepo: 'filecoin-clients-onboarding',
         notaryRepo: 'notary-governance',
