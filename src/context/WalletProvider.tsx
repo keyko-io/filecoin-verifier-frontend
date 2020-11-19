@@ -44,6 +44,7 @@ interface WalletProviderStates {
     balance: number
     message: string
     dispatchNotification: any
+    updateGithubVerified: any
 }
 
 async function getActiveAccounts(api: any, accounts: any) {
@@ -127,6 +128,8 @@ export default class WalletProvider extends React.Component<{}, WalletProviderSt
         this.loadGithub()
         return true
     }
+
+
 
     initNetworkIndex = () => {
 
@@ -391,6 +394,28 @@ export default class WalletProvider extends React.Component<{}, WalletProviderSt
                 case 'Burner':
                     return this.loadBurner()
             }
+        },
+        updateGithubVerified : async (requestNumber: any, messageID: string, address: string, datacap: any) => {
+            await this.context.githubOcto.issues.removeAllLabels({
+                owner: config.lotusNodes[this.context.networkIndex].clientOwner,
+                repo: config.lotusNodes[this.context.networkIndex].clientRepo,
+                issue_number: requestNumber,
+            })
+            await this.context.githubOcto.issues.addLabels({
+                owner: config.lotusNodes[this.context.networkIndex].clientOwner,
+                repo: config.lotusNodes[this.context.networkIndex].clientRepo,
+                issue_number: requestNumber,
+                labels: ['state:Granted'],
+            })
+    
+            let commentContent = `## Request Approved\nYour Datacap Allocation Request has been approved by the Notary\n#### Message sent to Filecoin Network\n>${messageID} \n#### Address \n> ${address}\n#### Datacap Allocated\n> ${datacap}`
+    
+            await this.context.githubOcto.issues.createComment({
+                owner: config.lotusNodes[this.context.networkIndex].clientOwner,
+                repo: config.lotusNodes[this.context.networkIndex].clientRepo,
+                issue_number: requestNumber,
+                body: commentContent,
+            })
         }
     }
 

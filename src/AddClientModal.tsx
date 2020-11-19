@@ -11,13 +11,19 @@ type States = {
     submitLoading: boolean
 };
 
-class AddClientModal extends Component<{}, States> {
+type ModalProps = {
+    newDatacap?: boolean,
+    address?: any,
+    requestNumber?: any
+}
+
+class AddClientModal extends Component<ModalProps, States> {
     public static contextType = Wallet
 
     constructor(props: {}) {
         super(props);
         this.state = {
-            address: '',
+            address: this.props.address.data.address || '',
             datacap: '1',
             datacapExt: '1000000000000',
             submitLoading: false
@@ -37,6 +43,11 @@ class AddClientModal extends Component<{}, States> {
         const datacap = parseFloat(this.state.datacap)
         const fullDatacap = BigInt(datacap * parseFloat(this.state.datacapExt))
         let messageID = await this.context.api.verifyClient(this.state.address, fullDatacap, this.context.walletIndex);
+
+        if(this.props.newDatacap){
+            this.context.updateGithubVerified(this.props.requestNumber, messageID, this.state.address, fullDatacap)
+        }
+
         this.setState({
             address: '',
             datacap: '1',
@@ -65,7 +76,7 @@ class AddClientModal extends Component<{}, States> {
     return (
       <div className="addmodal">
         <form>
-            <H4>Approve Private Request</H4>
+            {this.props.newDatacap ? <H4>Set new Datacap</H4> : <H4>Approve Private Request</H4>}
             <div>
                 <div>
                     <div className="inputholder">
