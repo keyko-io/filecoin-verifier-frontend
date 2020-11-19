@@ -86,6 +86,7 @@ class AddClientModal extends Component<ModalProps, States> {
                                     value={this.state.address}
                                     placeholder="XXXXXXXXXXX"
                                     onChange={this.handleChange}
+                                    readOnly={this.props.user ? true : false}
                                 />
                             </div>
                             <div className="datacapholder">

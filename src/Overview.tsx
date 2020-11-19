@@ -10,6 +10,7 @@ import { datacapFilter } from "./Filters"
 // @ts-ignore
 import LoginGithub from 'react-login-github';
 import { config } from './config'
+import WarnModal from './modals/WarnModal';
 const parser = require('@keyko-io/filecoin-verifier-tools/utils/notary-issue-parser')
 
 type OverviewStates = {
@@ -70,12 +71,21 @@ export default class Overview extends Component<{}, OverviewStates> {
     }
 
     verifyNewDatacap = () => {
-        dispatchCustomEvent({
-            name: "create-modal", detail: {
-                id: Math.random().toString(36).replace(/[^a-z]+/g, '').substr(0, 5),
-                modal: <AddClientModal newDatacap={true} user={this.context.clientRequests[0]}/>
-            }
-        })
+        if (this.context.clientRequests.length == 0 || this.context.clientRequests.length > 1) {
+            dispatchCustomEvent({
+                name: "create-modal", detail: {
+                    id: Math.random().toString(36).replace(/[^a-z]+/g, '').substr(0, 5),
+                    modal: <WarnModal message = {'Please select only one address'}/>
+                }
+            })
+        } else {
+            dispatchCustomEvent({
+                name: "create-modal", detail: {
+                    id: Math.random().toString(36).replace(/[^a-z]+/g, '').substr(0, 5),
+                    modal: <AddClientModal newDatacap={true} user={this.context.clientRequests[0]} />
+                }
+            })
+        }
     }
 
     verifyClients = async () => {
@@ -203,9 +213,9 @@ export default class Overview extends Component<{}, OverviewStates> {
                     await this.timeout(1000)
                     await this.context.loadVerifierRequests()
                     // send notifications
-                    this.context.dispatchNotification('Accepting Message sent with ID: ' + messageID)     
+                    this.context.dispatchNotification('Accepting Message sent with ID: ' + messageID)
 
-                    
+
                 } catch (e) {
                     this.context.dispatchNotification('Verification failed: ' + e.message)
                     console.log(e.stack)
@@ -286,7 +296,7 @@ export default class Overview extends Component<{}, OverviewStates> {
     }
 
     timeout(delay: number) {
-        return new Promise( res => setTimeout(res, delay) );
+        return new Promise(res => setTimeout(res, delay));
     }
 
     loadData = async () => {
@@ -465,8 +475,11 @@ export default class Overview extends Component<{}, OverviewStates> {
                             </div>
                             <div className="tabssadd">
                                 <ButtonPrimary onClick={() => this.requestDatacap()}>Approve Private Request</ButtonPrimary>
-                                <ButtonPrimary onClick={() => this.verifyClients()}>Verify client</ButtonPrimary>
-                                <ButtonPrimary onClick={() => this.verifyNewDatacap()}>Verify new datacap</ButtonPrimary>
+                                {this.state.tabs === "1" ? <>
+                                    <ButtonPrimary onClick={() => this.verifyClients()}>Verify client</ButtonPrimary>
+                                    <ButtonPrimary onClick={() => this.verifyNewDatacap()}>Verify new datacap</ButtonPrimary>
+                                </>
+                                    : null}
                             </div>
                         </div>
                         {this.state.tabs === "1" && this.context.githubLogged ?
