@@ -73,7 +73,7 @@ export default class Overview extends Component<{}, OverviewStates> {
         dispatchCustomEvent({
             name: "create-modal", detail: {
                 id: Math.random().toString(36).replace(/[^a-z]+/g, '').substr(0, 5),
-                modal: <AddClientModal newDatacap={true} address={this.context.clientRequests[0]}/>
+                modal: <AddClientModal newDatacap={true} user={this.context.clientRequests[0]}/>
             }
         })
     }
