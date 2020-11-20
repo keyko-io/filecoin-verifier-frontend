@@ -401,7 +401,7 @@ export default class WalletProvider extends React.Component<{}, WalletProviderSt
                 repo: config.lotusNodes[this.state.networkIndex].clientRepo,
                 issue_number: requestNumber,
             })
-            await this.context.githubOcto.state.addLabels({
+            await this.state.githubOcto.state.addLabels({
                 owner: config.lotusNodes[this.state.networkIndex].clientOwner,
                 repo: config.lotusNodes[this.state.networkIndex].clientRepo,
                 issue_number: requestNumber,
