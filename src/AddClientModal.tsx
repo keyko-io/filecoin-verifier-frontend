@@ -13,7 +13,7 @@ type States = {
 
 type ModalProps = {
     newDatacap?: boolean,
-    user?: any,
+    clientRequest?: any,
     requestNumber?: any
 }
 
@@ -23,7 +23,7 @@ class AddClientModal extends Component<ModalProps, States> {
     constructor(props: {}) {
         super(props);
         this.state = {
-            address: this.props.user ? this.props.user.data.address : '',
+            address: this.props.clientRequest ? this.props.clientRequest.data.address : '',
             datacap: '1',
             datacapExt: '1000000000000',
             submitLoading: false
@@ -48,7 +48,7 @@ class AddClientModal extends Component<ModalProps, States> {
             console.log("fullDatacap: " + fullDatacap)
 
             if (this.props.newDatacap) {
-                this.context.updateGithubVerified(this.props.requestNumber, messageID, this.state.address, fullDatacap)
+                this.context.updateGithubVerified(this.props.clientRequest.number, messageID, this.state.address, fullDatacap)
             }
 
             this.setState({
@@ -89,6 +89,7 @@ class AddClientModal extends Component<ModalProps, States> {
                                     value={this.state.address}
                                     placeholder="XXXXXXXXXXX"
                                     onChange={this.handleChange}
+                                    readOnly={this.props.user ? true : false}
                                 />
                             </div>
                             <div className="datacapholder">
