@@ -71,21 +71,22 @@ export default class Overview extends Component<{}, OverviewStates> {
     }
 
     verifyNewDatacap = () => {
-        if (this.context.clientRequests.length == 0 || this.context.clientRequests.length > 1) {
-            dispatchCustomEvent({
-                name: "create-modal", detail: {
-                    id: Math.random().toString(36).replace(/[^a-z]+/g, '').substr(0, 5),
-                    modal: <WarnModal message={'Please select only one address'} />
-                }
-            })
-        } else {
+        // if (this.context.clientRequests.length == 0 || this.context.clientRequests.length > 1) {
+        //     dispatchCustomEvent({
+        //         name: "create-modal", detail: {
+        //             id: Math.random().toString(36).replace(/[^a-z]+/g, '').substr(0, 5),
+        //             modal: <WarnModal message={'Please select only one address'} />
+        //         }
+        //     })
+        // } else {
+        console.log("request size: " +this.context.clientRequests.length)    
             dispatchCustomEvent({
                 name: "create-modal", detail: {
                     id: Math.random().toString(36).replace(/[^a-z]+/g, '').substr(0, 5),
                     modal: <AddClientModal newDatacap={true} clientRequest={this.context.clientRequests[0]}/>
                 }
             })
-        }
+        // }
     }
 
     verifyClients = async () => {
