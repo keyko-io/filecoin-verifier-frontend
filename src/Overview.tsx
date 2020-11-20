@@ -5,7 +5,7 @@ import AddVerifierModal from './AddVerifierModal';
 import RequestVerifierModal from './RequestVerifierModal';
 import AddSelectedVerifiersModal from './AddSelectedVerifiersModal';
 // @ts-ignore
-import { ButtonPrimary, dispatchCustomEvent, CheckBox } from "slate-react-system";
+import { ButtonPrimary, dispatchCustomEvent, CheckBox, ButtonSecondary } from "slate-react-system";
 import { datacapFilter } from "./Filters"
 // @ts-ignore
 import LoginGithub from 'react-login-github';
@@ -416,6 +416,9 @@ export default class Overview extends Component<{}, OverviewStates> {
                                     </tbody>
                                 </table>
                                 {this.context.verifierRequests.length === 0 ? <div className="nodata">No public requests yet</div> : null}
+                                <div className="alignright">
+                                    <ButtonSecondary className="buttonsecondary" onClick={() => this.context.logoutGithub()}>Logout GitHub</ButtonSecondary>
+                                </div>
                             </div>
                             : null}
                         {this.state.tabs === "0" && !this.context.githubLogged ?
@@ -526,6 +529,9 @@ export default class Overview extends Component<{}, OverviewStates> {
                                     </tbody>
                                 </table>
                                 {this.context.clientRequests.length === 0 ? <div className="nodata">No client requests yet</div> : null}
+                                <div className="alignright">
+                                    <ButtonSecondary className="buttonsecondary" onClick={() => this.context.logoutGithub()}>Logout GitHub</ButtonSecondary>
+                                </div>
                             </div>
                             : null}
                         {this.state.tabs === "1" && !this.context.githubLogged ?
