@@ -9,12 +9,14 @@ type States = {
     datacap: string
     datacapExt: string
     submitLoading: boolean
+    issueNumber: string
 };
 
 type ModalProps = {
     newDatacap?: boolean,
-    clientRequest?: any,
+    clientRequest?: any[],
     requestNumber?: any
+    selected?: any[]
 }
 
 class AddClientModal extends Component<ModalProps, States> {
@@ -23,15 +25,24 @@ class AddClientModal extends Component<ModalProps, States> {
     constructor(props: {}) {
         super(props);
         this.state = {
-            address: this.props.clientRequest ? this.props.clientRequest.data.address : '',
+            address: '',
             datacap: '1',
             datacapExt: '1000000000000',
-            submitLoading: false
+            submitLoading: false,
+            issueNumber: ''
         }
     }
 
     componentDidMount() {
+        if (this.props.clientRequest && this.props.selected) {
+            const requestSelected = this.props.selected || ''
+            const request = this.props.clientRequest.find(element => element.number == requestSelected);
+            this.setState({
+                issueNumber: request.number,
+                address: request.data.address
+            })
 
+        }
     }
 
     handleSubmit = async (e: any) => {
@@ -42,13 +53,13 @@ class AddClientModal extends Component<ModalProps, States> {
 
             const datacap = parseFloat(this.state.datacap)
             const fullDatacap = BigInt(datacap * parseFloat(this.state.datacapExt))
-         //   let messageID = await this.context.api.verifyClient(this.state.address, fullDatacap, this.context.walletIndex);
-         // testing
-            let messageID = "byaabbb" 
+            //   let messageID = await this.context.api.verifyClient(this.state.address, fullDatacap, this.context.walletIndex);
+            // testing
+            let messageID = "byaabbb"
             console.log("fullDatacap: " + fullDatacap)
 
             if (this.props.newDatacap) {
-                this.context.updateGithubVerified(this.props.clientRequest.number, messageID, this.state.address, fullDatacap)
+                this.context.updateGithubVerified(this.state.issueNumber, messageID, this.state.address, fullDatacap)
             }
 
             this.setState({
