@@ -7,6 +7,7 @@ import { dispatchCustomEvent } from "slate-react-system";
 import { Octokit } from '@octokit/rest'
 import { IssueBody } from '../IssueBody'
 import { config } from '../config';
+import {datacapFilter} from '../Filters'
 const utils = require('@keyko-io/filecoin-verifier-tools/utils/issue-parser')
 const parser = require('@keyko-io/filecoin-verifier-tools/utils/notary-issue-parser')
 
@@ -44,6 +45,7 @@ interface WalletProviderStates {
     balance: number
     message: string
     dispatchNotification: any
+    updateGithubVerified: any
 }
 
 async function getActiveAccounts(api: any, accounts: any) {
@@ -127,6 +129,8 @@ export default class WalletProvider extends React.Component<{}, WalletProviderSt
         this.loadGithub()
         return true
     }
+
+
 
     initNetworkIndex = () => {
 
@@ -391,6 +395,28 @@ export default class WalletProvider extends React.Component<{}, WalletProviderSt
                 case 'Burner':
                     return this.loadBurner()
             }
+        },
+        updateGithubVerified : async (requestNumber: any, messageID: string, address: string, datacap: any) => {
+            await this.state.githubOcto.issues.removeAllLabels({
+                owner: config.lotusNodes[this.state.networkIndex].clientOwner,
+                repo: config.lotusNodes[this.state.networkIndex].clientRepo,
+                issue_number: requestNumber,
+            })
+            await this.state.githubOcto.issues.addLabels({
+                owner: config.lotusNodes[this.state.networkIndex].clientOwner,
+                repo: config.lotusNodes[this.state.networkIndex].clientRepo,
+                issue_number: requestNumber,
+                labels: ['state:Granted'],
+            })
+    
+            let commentContent = `## Request Approved\nYour Datacap Allocation Request has been approved by the Notary\n#### Message sent to Filecoin Network\n>${messageID} \n#### Address \n> ${address}\n#### Datacap Allocated\n> ${datacapFilter(String(datacap))}`
+    
+            await this.state.githubOcto.issues.createComment({
+                owner: config.lotusNodes[this.state.networkIndex].clientOwner,
+                repo: config.lotusNodes[this.state.networkIndex].clientRepo,
+                issue_number: requestNumber,
+                body: commentContent,
+            })
         }
     }
 

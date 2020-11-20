@@ -32,6 +32,17 @@
             "email": "notaryb@a.com",
             "github_user": "josepablofm78",
             "private_request": "false"
+        },
+        {
+            "id": 4,
+            "name": "Ivan",
+            "use_case":  ["Long-term backups"],
+            "location": "EUR",
+            "website": "google.com",
+            "max_datacap_allocation": "100 PB",
+            "email": "notaryb@a.com",
+            "github_user": "ialberquilla",
+            "private_request": "false"
         }
     ]
 }

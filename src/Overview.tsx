@@ -10,6 +10,7 @@ import { datacapFilter } from "./Filters"
 // @ts-ignore
 import LoginGithub from 'react-login-github';
 import { config } from './config'
+import WarnModal from './modals/WarnModal';
 const parser = require('@keyko-io/filecoin-verifier-tools/utils/notary-issue-parser')
 
 type OverviewStates = {
@@ -69,6 +70,28 @@ export default class Overview extends Component<{}, OverviewStates> {
         })
     }
 
+    verifyNewDatacap = () => {
+        if (this.state.selectedClientRequests.length == 0 || this.state.selectedClientRequests.length > 1) {
+            dispatchCustomEvent({
+                name: "create-modal", detail: {
+                    id: Math.random().toString(36).replace(/[^a-z]+/g, '').substr(0, 5),
+                    modal: <WarnModal message={'Please select only one address'} />
+                }
+            })
+        } else {
+            const selected = this.state.selectedClientRequests[0]
+            this.setState({
+                selectedClientRequests: []
+            })
+            dispatchCustomEvent({
+                name: "create-modal", detail: {
+                    id: Math.random().toString(36).replace(/[^a-z]+/g, '').substr(0, 5),
+                    modal: <AddClientModal newDatacap={true} clientRequest={this.context.clientRequests} selected={selected}/>
+                }
+            })
+        }
+    }
+
     verifyClients = async () => {
         for (const request of this.context.clientRequests) {
             if (this.state.selectedClientRequests.includes(request.number)) {
@@ -91,27 +114,7 @@ export default class Overview extends Component<{}, OverviewStates> {
                     }
                     let messageID = await this.context.api.verifyClient(address, fullDatacap, this.context.walletIndex)
                     // github update
-                    await this.context.githubOcto.issues.removeAllLabels({
-                        owner: config.lotusNodes[this.context.networkIndex].clientOwner,
-                        repo: config.lotusNodes[this.context.networkIndex].clientRepo,
-                        issue_number: request.number,
-                    })
-                    await this.timeout(1000)
-                    await this.context.githubOcto.issues.addLabels({
-                        owner: config.lotusNodes[this.context.networkIndex].clientOwner,
-                        repo: config.lotusNodes[this.context.networkIndex].clientRepo,
-                        issue_number: request.number,
-                        labels: ['state:Granted'],
-                    })
-                    await this.timeout(1000)
-                    let commentContent = `## Request Approved\nYour Datacap Allocation Request has been approved by the Notary\n#### Message sent to Filecoin Network\n>${messageID} \n#### Address \n> ${address}\n#### Datacap Allocated\n> ${request.data.datacap}`
-
-                    await this.context.githubOcto.issues.createComment({
-                        owner: config.lotusNodes[this.context.networkIndex].clientOwner,
-                        repo: config.lotusNodes[this.context.networkIndex].clientRepo,
-                        issue_number: request.number,
-                        body: commentContent,
-                    })
+                    this.context.updateGithubVerified(request.number, messageID, address, fullDatacap)
 
                     // send notifications
                     this.context.dispatchNotification('Verify Client Message sent with ID: ' + messageID)
@@ -229,8 +232,7 @@ export default class Overview extends Component<{}, OverviewStates> {
                     await this.timeout(1000)
                     await this.context.loadVerifierRequests()
                     // send notifications
-                    this.context.dispatchNotification('Accepting Message sent with ID: ' + messageID)  
-                    
+                    this.context.dispatchNotification('Accepting Message sent with ID: ' + messageID)
                 } catch (e) {
                     this.context.dispatchNotification('Verification failed: ' + e.message)
                     console.log(e.stack)
@@ -315,11 +317,11 @@ export default class Overview extends Component<{}, OverviewStates> {
     }
 
     timeout(delay: number) {
-        return new Promise( res => setTimeout(res, delay) );
+        return new Promise(res => setTimeout(res, delay));
     }
 
     loadData = async () => {
-        if(this.context.githubLogged){
+        if (this.context.githubLogged) {
             this.context.loadVerifierRequests()
             this.context.loadClientsGithub()
             this.context.loadClientRequests()
@@ -492,7 +494,11 @@ export default class Overview extends Component<{}, OverviewStates> {
                             </div>
                             <div className="tabssadd">
                                 <ButtonPrimary onClick={() => this.requestDatacap()}>Approve Private Request</ButtonPrimary>
-                                <ButtonPrimary onClick={() => this.verifyClients()}>Verify client</ButtonPrimary>
+                                {this.state.tabs === "1" ? <>
+                                    <ButtonPrimary onClick={() => this.verifyClients()}>Verify client</ButtonPrimary>
+                                    <ButtonPrimary onClick={() => this.verifyNewDatacap()}>Verify new datacap</ButtonPrimary>
+                                </>
+                                    : null}
                             </div>
                         </div>
                         {this.state.tabs === "1" && this.context.githubLogged ?
