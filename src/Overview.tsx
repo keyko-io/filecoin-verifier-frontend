@@ -75,14 +75,14 @@ export default class Overview extends Component<{}, OverviewStates> {
             dispatchCustomEvent({
                 name: "create-modal", detail: {
                     id: Math.random().toString(36).replace(/[^a-z]+/g, '').substr(0, 5),
-                    modal: <WarnModal message = {'Please select only one address'}/>
+                    modal: <WarnModal message={'Please select only one address'} />
                 }
             })
         } else {
             dispatchCustomEvent({
                 name: "create-modal", detail: {
                     id: Math.random().toString(36).replace(/[^a-z]+/g, '').substr(0, 5),
-                    modal: <AddClientModal newDatacap={true} user={this.context.clientRequests[0]} />
+                    modal: <AddClientModal newDatacap={true} clientRequest={this.context.clientRequests[0]}/>
                 }
             })
         }
@@ -300,7 +300,7 @@ export default class Overview extends Component<{}, OverviewStates> {
     }
 
     loadData = async () => {
-        if(this.context.githubLogged){
+        if (this.context.githubLogged) {
             this.context.loadVerifierRequests()
             this.context.loadClientsGithub()
             this.context.loadClientRequests()
