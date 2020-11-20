@@ -7,6 +7,7 @@ import { dispatchCustomEvent } from "slate-react-system";
 import { Octokit } from '@octokit/rest'
 import { IssueBody } from '../IssueBody'
 import { config } from '../config';
+import {datacapFilter} from '../Filters'
 const utils = require('@keyko-io/filecoin-verifier-tools/utils/issue-parser')
 const parser = require('@keyko-io/filecoin-verifier-tools/utils/notary-issue-parser')
 
@@ -408,7 +409,7 @@ export default class WalletProvider extends React.Component<{}, WalletProviderSt
                 labels: ['state:Granted'],
             })
     
-            let commentContent = `## Request Approved\nYour Datacap Allocation Request has been approved by the Notary\n#### Message sent to Filecoin Network\n>${messageID} \n#### Address \n> ${address}\n#### Datacap Allocated\n> ${datacap}`
+            let commentContent = `## Request Approved\nYour Datacap Allocation Request has been approved by the Notary\n#### Message sent to Filecoin Network\n>${messageID} \n#### Address \n> ${address}\n#### Datacap Allocated\n> ${datacapFilter(String(datacap))}`
     
             await this.state.githubOcto.issues.createComment({
                 owner: config.lotusNodes[this.state.networkIndex].clientOwner,
