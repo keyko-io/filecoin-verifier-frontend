@@ -114,7 +114,7 @@ export default class Overview extends Component<{}, OverviewStates> {
                     }
                     let messageID = await this.context.api.verifyClient(address, fullDatacap, this.context.walletIndex)
                     // github update
-                    this.context.updateGithubVerified(request.number, messageID, address, request.data.datacap)
+                    this.context.updateGithubVerified(request.number, messageID, address, fullDatacap)
 
                     // send notifications
                     this.context.dispatchNotification('Verify Client Message sent with ID: ' + messageID)
