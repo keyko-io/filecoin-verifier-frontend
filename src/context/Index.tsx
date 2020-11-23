@@ -7,6 +7,7 @@ export const Wallet = React.createContext({
     githubOcto: {},
     loginGithub: async (code: string, onboarding?: boolean) => {},
     initGithubOcto: async (token: string, onboarding?: boolean) => {},
+    logoutGithub: async () =>{},
     loadClientRequests: async () => {},
     clientRequests: [],
     loadVerifierRequests: async () => {},

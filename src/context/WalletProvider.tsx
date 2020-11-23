@@ -18,6 +18,7 @@ interface WalletProviderStates {
     githubOcto: any
     loginGithub: any
     initGithubOcto: any
+    logoutGithub: any
     loadClientRequests: any
     clientRequests: any[]
     loadVerifierRequests: any
@@ -165,6 +166,16 @@ export default class WalletProvider extends React.Component<{}, WalletProviderSt
                 this.state.dispatchNotification('Failed to login. Try again later.')
             }
         },
+        logoutGithub: async () => {
+            localStorage.removeItem('githubToken')
+            this.setState({
+                githubLogged: false,
+                githubOcto: undefined,
+                clientRequests: [],
+                clientsGithub: [],
+                verifierRequests: []
+            })
+        },
         initGithubOcto: async (token: string, onboarding?: boolean) => {
             const octokit = new Octokit({
                 auth: token
@@ -181,7 +192,6 @@ export default class WalletProvider extends React.Component<{}, WalletProviderSt
             }, () => {
                 this.state.loadClientRequests()
                 this.state.loadClientsGithub()
-                this.state.loadVerified()
                 this.state.loadVerifierRequests()
             })
         },
