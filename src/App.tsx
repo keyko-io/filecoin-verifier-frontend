@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import Overview from './Overview'
-import Landing from './Landing'
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { fab } from '@fortawesome/free-brands-svg-icons'
@@ -14,9 +13,11 @@ import WalletModal from './WalletModal'
 import copy from 'copy-text-to-clipboard'
 import './App.scss';
 // @ts-ignore
-import { Input, dispatchCustomEvent, Toggle, SVG, LoaderSpinner } from "slate-react-system"
+import { dispatchCustomEvent, Toggle, SVG, LoaderSpinner } from "slate-react-system"
 import { config } from './config'
 import Blockies from 'react-blockies'
+import history from './context/History'
+
 
 library.add(fab, far, fas)
 
@@ -39,7 +40,11 @@ class App extends Component<{}, States> {
   }
 
   componentDidMount() {
-
+    if (this.context.isLogged === false) {
+      history.push({
+        pathname: "/"
+      })
+    }
   }
 
   openNetworkSelect = (e: any) => {
@@ -54,7 +59,7 @@ class App extends Component<{}, States> {
     })
   }
 
-  switchNetwork = async (index:number) => {
+  switchNetwork = async (index: number) => {
     this.context.selectNetwork(index)
     this.refresh()
   }
@@ -64,7 +69,7 @@ class App extends Component<{}, States> {
   }
 
   switchRoot = () => {
-    if(this.context.switchview){
+    if (this.context.switchview) {
       this.context.switchview()
     }
   }
@@ -173,10 +178,7 @@ class App extends Component<{}, States> {
         </div>
         { this.context.isLoading === true ?
           <div className="walletpicker"><LoaderSpinner /></div>
-          : this.context.isLogged === false ?
-            <Landing />
-            :
-            <Overview ref={this.child} />
+          : <Overview ref={this.child} />
         }
       </div>
     );
