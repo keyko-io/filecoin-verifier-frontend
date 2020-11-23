@@ -174,7 +174,7 @@ class MakeRequestModal extends Component<ModalProps, States> {
                         <div>
                             <div className="inputholder">
                                 <Input
-                                    description="Address"
+                                    description="Filecoin Address"
                                     name="address"
                                     value={this.state.address}
                                     placeholder="XXXXXXXXXXX"
