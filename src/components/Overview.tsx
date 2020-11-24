@@ -1,16 +1,16 @@
 import React, { Component } from 'react';
-import { Wallet } from './context/Index';
-import AddClientModal from './AddClientModal';
-import AddVerifierModal from './AddVerifierModal';
-import RequestVerifierModal from './RequestVerifierModal';
-import AddSelectedVerifiersModal from './AddSelectedVerifiersModal';
+import { Wallet } from '../context/Index';
+import AddClientModal from '../modals/AddClientModal';
+import AddVerifierModal from '../modals/AddVerifierModal';
+import RequestVerifierModal from '../modals/RequestVerifierModal';
+import AddSelectedVerifiersModal from '../modals/AddSelectedVerifiersModal';
 // @ts-ignore
 import { ButtonPrimary, dispatchCustomEvent, CheckBox, ButtonSecondary } from "slate-react-system";
-import { datacapFilter } from "./Filters"
+import { datacapFilter } from "../utils/Filters"
 // @ts-ignore
 import LoginGithub from 'react-login-github';
-import { config } from './config'
-import WarnModal from './modals/WarnModal';
+import { config } from '../config'
+import WarnModal from '../modals/WarnModal';
 const parser = require('@keyko-io/filecoin-verifier-tools/utils/notary-issue-parser')
 
 type OverviewStates = {

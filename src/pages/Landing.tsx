@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 // @ts-ignore
-import TiB from './svg/tib.svg';
-import MorePiB from './svg/morepib.svg';
+import TiB from '../svg/tib.svg';
+import MorePiB from '../svg/morepib.svg';
 import Option from '../components/Option'
 import Welcome from '../components/Welcome'
 import history from '../context/History'

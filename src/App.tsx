@@ -1,15 +1,15 @@
 import React, { Component } from 'react';
-import Overview from './Overview'
+import Overview from './components/Overview'
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { fab } from '@fortawesome/free-brands-svg-icons'
 import { far } from '@fortawesome/free-regular-svg-icons'
 import { fas } from '@fortawesome/free-solid-svg-icons'
-import Logo from './logo.svg';
-import Network from './pages/svg/filecoin-network.svg';
+import Logo from './svg/logo.svg';
+import Network from './svg/filecoin-network.svg';
 import { Wallet } from './context/Index'
-import { addressFilter, datacapFilter } from './Filters'
-import WalletModal from './WalletModal'
+import { addressFilter, datacapFilter } from './utils/Filters'
+import WalletModal from './modals/WalletModal'
 import copy from 'copy-text-to-clipboard'
 import './App.scss';
 // @ts-ignore

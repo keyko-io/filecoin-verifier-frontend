@@ -5,9 +5,9 @@ import { BurnerWallet } from './BurnerWallet'
 // @ts-ignore
 import { dispatchCustomEvent } from "slate-react-system";
 import { Octokit } from '@octokit/rest'
-import { IssueBody } from '../IssueBody'
+import { IssueBody } from '../utils/IssueBody'
 import { config } from '../config';
-import {datacapFilter} from '../Filters'
+import {datacapFilter} from '../utils/Filters'
 const utils = require('@keyko-io/filecoin-verifier-tools/utils/issue-parser')
 const parser = require('@keyko-io/filecoin-verifier-tools/utils/notary-issue-parser')
 

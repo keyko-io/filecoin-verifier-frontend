@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import { Wallet } from './context/Index'
-import { config } from './config'
+import { Wallet } from '../context/Index'
+import { config } from '../config'
 // @ts-ignore
 import { Table, H1, H2, Input, ButtonPrimary, ButtonSecondary, LoaderSpinner, SelectMenu } from "slate-react-system";
 

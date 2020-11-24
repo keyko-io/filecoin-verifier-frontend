@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 // @ts-ignore
 import { dispatchCustomEvent } from "slate-react-system";
-import MakeRequestModal from '../MakeRequestModal';
+import MakeRequestModal from '../modals/MakeRequestModal';
 import { config } from '../config'
 
 

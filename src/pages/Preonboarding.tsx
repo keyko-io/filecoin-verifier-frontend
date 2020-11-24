@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 // @ts-ignore
 import { ButtonPrimary } from "slate-react-system";
-import RootKey from './svg/root-key.svg';
-import Verifiers from './svg/verifier-wallet.svg';
+import RootKey from '../svg/root-key.svg';
+import Verifiers from '../svg/verifier-wallet.svg';
 import Welcome from '../components/Welcome'
 import { Location } from 'history';
 import history from '../context/History'

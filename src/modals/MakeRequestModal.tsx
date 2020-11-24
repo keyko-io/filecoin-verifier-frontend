@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
-import { Wallet } from './context/Index'
-import { config } from './config'
+import { Wallet } from '../context/Index'
+import { config } from '../config'
 // @ts-ignore
 import { dispatchCustomEvent, Input, ButtonPrimary, SelectMenu, LoaderSpinner, CheckBox } from "slate-react-system";
-import ConfirmModal from './pages/ConfirmModal';
+import ConfirmModal from '../pages/ConfirmModal';
 // @ts-ignore
 import LoginGithub from 'react-login-github';
 
