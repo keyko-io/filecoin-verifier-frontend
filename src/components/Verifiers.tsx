@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Wallet } from './context/Index'
+import { Wallet } from '../context/Index'
 // @ts-ignore
 import { Table, H1, ButtonSecondary } from "slate-react-system";
 
