@@ -42,25 +42,25 @@ export const config = {
     }],
     datacapExt: [
         { value: "1", name: "B" },
-        { value: "1000", name: "KiB" },
-        { value: "1000000", name: "MiB" },
-        { value: "1000000000", name: "GiB" },
-        { value: "1000000000000", name: "TiB" },
-        { value: "1000000000000000", name: "PiB" },
-        { value: "1000000000000000000", name: "EiB" },
-        { value: "1000000000000000000000", name: "ZiB" },
-        { value: "1000000000000000000000000", name: "YiB" }
+        { value: "1024", name: "KiB" },
+        { value: "1048576", name: "MiB" },
+        { value: "1073741824", name: "GiB" },
+        { value: "1099511627776", name: "TiB" },
+        { value: "1125899906842624", name: "PiB" },
+        { value: "1152921504606847000", name: "EiB" },
+        { value: "1180591620717411303424", name: "ZiB" },
+        { value: "1208925819614629174706151275", name: "YiB" }
     ],
     datacapExtNotary: [
         { value: "1", name: "B" },
-        { value: "1000", name: "KB" },
-        { value: "1000000", name: "MB" },
-        { value: "1000000000", name: "GB" },
-        { value: "1000000000000", name: "TB" },
-        { value: "1000000000000000", name: "PB" },
-        { value: "1000000000000000000", name: "EB" },
-        { value: "1000000000000000000000", name: "ZB" },
-        { value: "1000000000000000000000000", name: "YB" }
+        { value: "1024", name: "KiB" },
+        { value: "1048576", name: "MiB" },
+        { value: "1073741824", name: "GiB" },
+        { value: "1099511627776", name: "TiB" },
+        { value: "1125899906842624", name: "PiB" },
+        { value: "1152921504606847000", name: "EiB" },
+        { value: "1180591620717411303424", name: "ZiB" },
+        { value: "1208925819614629174706151275", name: "YiB" }
     ],
     datacapExtName: [
         { value: "1B", name: "B" },
@@ -72,17 +72,6 @@ export const config = {
         { value: "EiB", name: "EiB" },
         { value: "ZiB", name: "ZiB" },
         { value: "YiB", name: "YiB" }
-    ],
-    datacapExtNotaryName: [
-        { value: "1B", name: "B" },
-        { value: "KiB", name: "KB" },
-        { value: "MiB", name: "MB" },
-        { value: "GiB", name: "GB" },
-        { value: "TiB", name: "TB" },
-        { value: "PiB", name: "PB" },
-        { value: "EiB", name: "EB" },
-        { value: "ZiB", name: "ZB" },
-        { value: "YiB", name: "YB" }
     ],
     dataSource: process.env.REACT_APP_VERIFIES_DATA || 'verifiers'
 }

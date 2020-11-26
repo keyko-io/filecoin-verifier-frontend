@@ -27,7 +27,7 @@ class AddClientModal extends Component<ModalProps, States> {
         this.state = {
             address: '',
             datacap: '1',
-            datacapExt: '1000000000000',
+            datacapExt: '1099511627776', // 1 TiB
             submitLoading: false,
             issueNumber: ''
         }
@@ -53,6 +53,7 @@ class AddClientModal extends Component<ModalProps, States> {
 
             const datacap = parseFloat(this.state.datacap)
             const fullDatacap = BigInt(datacap * parseFloat(this.state.datacapExt))
+            console.log("full datacap: " + fullDatacap)
             let messageID = await this.context.api.verifyClient(this.state.address, fullDatacap, this.context.walletIndex);
            
             if (this.props.newDatacap) {
@@ -62,7 +63,7 @@ class AddClientModal extends Component<ModalProps, States> {
             this.setState({
                 address: '',
                 datacap: '1',
-                datacapExt: '1000000000000',
+                datacapExt: '1099511627776', // 1 TiB
                 submitLoading: false
             })
             this.context.dispatchNotification('Verify Client Message sent with ID: ' + messageID)
@@ -106,7 +107,7 @@ class AddClientModal extends Component<ModalProps, States> {
                                         description="Datacap Request"
                                         name="datacap"
                                         value={this.state.datacap}
-                                        placeholder="1000000000000"
+                                        placeholder="1099511627776"
                                         onChange={this.handleChange}
                                     />
                                 </div>

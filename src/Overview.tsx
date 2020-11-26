@@ -108,6 +108,7 @@ export default class Overview extends Component<{}, OverviewStates> {
                     }
                     const datacap = parseFloat(prepDatacap)
                     const fullDatacap = BigInt(datacap * parseFloat(prepDatacapExt))
+                    console.log("full datacap: " + fullDatacap)
                     let address = request.data.address
                     if (address.length < 12) {
                         address = await this.context.api.actorKey(address)
