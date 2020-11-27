@@ -6,7 +6,7 @@ import Verifiers from '../svg/verifier-wallet.svg';
 import Welcome from '../components/Welcome'
 import { Location } from 'history';
 import history from '../context/History'
-import { Wallet } from '../context/Index'
+import { Data } from '../context/Data/Index'
 import Header from '../components/Header';
 import LearnMore from '../components/LearnMore';
 
@@ -20,7 +20,7 @@ type LocationState = {
 
 
 class Preonboarding extends Component<{}, PreonboardingStates, LocationState> {
-  public static contextType = Wallet
+  public static contextType = Data
 
   constructor(props: { location: LocationState }) {
     super(props);
@@ -42,7 +42,7 @@ class Preonboarding extends Component<{}, PreonboardingStates, LocationState> {
   }
 
   loadLedgerWallet = async () => {
-    const logged = await this.context.loadWallet('Ledger')
+    const logged = await this.context.wallet.loadWallet('Ledger')
     if (logged) {
       if (this.state.tabs === "0" && this.context.viewroot === false) {
         this.context.switchview()
@@ -54,7 +54,7 @@ class Preonboarding extends Component<{}, PreonboardingStates, LocationState> {
   }
 
   loadBurnerWallet = async () => {
-    const logged = await this.context.loadWallet('Burner')
+    const logged = await this.context.wallet.loadWallet('Burner')
     if (logged) {
       if (this.state.tabs === "0" && this.context.viewroot === false) {
         this.context.switchview()

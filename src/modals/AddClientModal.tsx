@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Wallet } from '../context/Index'
+import { Wallet } from '../context/Wallet/Index'
 import { config } from '../config'
 // @ts-ignore
 import { dispatchCustomEvent, H4, Input, ButtonPrimary, SelectMenu, LoaderSpinner } from "slate-react-system";

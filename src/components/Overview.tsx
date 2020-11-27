@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Wallet } from '../context/Index';
+import { Data } from '../context/Data/Index';
 import AddClientModal from '../modals/AddClientModal';
 import AddVerifierModal from '../modals/AddVerifierModal';
 import RequestVerifierModal from '../modals/RequestVerifierModal';
@@ -24,7 +24,7 @@ type OverviewStates = {
 }
 
 export default class Overview extends Component<{}, OverviewStates> {
-    public static contextType = Wallet
+    public static contextType = Data
 
     state = {
         selectedTransactions: [] as any[],
@@ -321,15 +321,15 @@ export default class Overview extends Component<{}, OverviewStates> {
     }
 
     loadData = async () => {
-        if (this.context.githubLogged) {
+        if (this.context.github.githubLogged) {
             this.context.loadVerifierRequests()
             this.context.loadClientsGithub()
             this.context.loadClientRequests()
         }
         this.context.loadVerified()
-        const clients = await this.context.api.listVerifiedClients()
+        const clients = await this.context.wallet.api.listVerifiedClients()
         // pending verififers
-        let pendingTxs = await this.context.api.pendingRootTransactions()
+        let pendingTxs = await this.context.wallet.api.pendingRootTransactions()
         let pendingverifiers: any[] = []
         for (let txs in pendingTxs) {
             const verifierAccount = await this.context.api.actorKey(pendingTxs[txs].parsed.params.verifier)
@@ -345,7 +345,7 @@ export default class Overview extends Component<{}, OverviewStates> {
         let clientsamount = 0
         for (const txs of clients) {
             clientsamount = clientsamount + Number(txs.datacap)
-            txs['key'] = await this.context.api.actorKey(txs.verified)
+            txs['key'] = await this.context.wallet.api.actorKey(txs.verified)
         }
         this.setState({
             clients,
@@ -391,7 +391,7 @@ export default class Overview extends Component<{}, OverviewStates> {
                                 {this.state.tabs === "1" ? <ButtonPrimary onClick={() => this.handleSubmitApprove()}>Sign Onchain</ButtonPrimary> : null}
                             </div>
                         </div>
-                        {this.state.tabs === "0" && this.context.githubLogged ?
+                        {this.state.tabs === "0" && this.context.github.githubLogged ?
                             <div>
                                 <table>
                                     <thead>
@@ -417,18 +417,24 @@ export default class Overview extends Component<{}, OverviewStates> {
                                 </table>
                                 {this.context.verifierRequests.length === 0 ? <div className="nodata">No public requests yet</div> : null}
                                 <div className="alignright">
-                                    <ButtonSecondary className="buttonsecondary" onClick={() => this.context.logoutGithub()}>Logout GitHub</ButtonSecondary>
+                                    <ButtonSecondary className="buttonsecondary" onClick={async () => {
+                                        await this.context.github.logoutGithub()
+                                        await this.context.refreshGithubData()
+                                    }}>
+                                        Logout GitHub
+                                    </ButtonSecondary>
                                 </div>
                             </div>
                             : null}
-                        {this.state.tabs === "0" && !this.context.githubLogged ?
+                        {this.state.tabs === "0" && !this.context.github.githubLogged ?
                             <div id="githublogin">
                                 <LoginGithub
                                     clientId={config.githubApp}
                                     redirectUri={config.oauthUri}
                                     scope="repo"
-                                    onSuccess={(response: any) => {
-                                        this.context.loginGithub(response.code)
+                                    onSuccess={async (response: any) => {
+                                        await this.context.github.loginGithub(response.code)
+                                        await this.context.refreshGithubData()
                                     }}
                                     onFailure={(response: any) => {
                                         console.log('failure', response)
@@ -504,7 +510,7 @@ export default class Overview extends Component<{}, OverviewStates> {
                                     : null}
                             </div>
                         </div>
-                        {this.state.tabs === "1" && this.context.githubLogged ?
+                        {this.state.tabs === "1" && this.context.github.githubLogged ?
                             <div>
                                 <table>
                                     <thead>
@@ -530,17 +536,23 @@ export default class Overview extends Component<{}, OverviewStates> {
                                 </table>
                                 {this.context.clientRequests.length === 0 ? <div className="nodata">No client requests yet</div> : null}
                                 <div className="alignright">
-                                    <ButtonSecondary className="buttonsecondary" onClick={() => this.context.logoutGithub()}>Logout GitHub</ButtonSecondary>
+                                    <ButtonSecondary className="buttonsecondary" onClick={async () => {
+                                        await this.context.github.logoutGithub()
+                                        await this.context.refreshGithubData()
+                                    }}>
+                                        Logout GitHub
+                                    </ButtonSecondary>
                                 </div>
                             </div>
                             : null}
-                        {this.state.tabs === "1" && !this.context.githubLogged ?
+                        {this.state.tabs === "1" && !this.context.github.githubLogged ?
                             <div id="githublogin">
                                 <LoginGithub
                                     clientId={config.githubApp}
                                     scope="repo"
-                                    onSuccess={(response: any) => {
-                                        this.context.loginGithub(response.code)
+                                    onSuccess={async (response: any) => {
+                                        await this.context.github.loginGithub(response.code)
+                                        await this.context.refreshGithubData()
                                     }}
                                     onFailure={(response: any) => {
                                         console.log('failure', response)

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Wallet } from '../context/Index'
+import { Wallet } from '../context/Wallet/Index'
 // @ts-ignore
 import { dispatchCustomEvent, H3, Input, ButtonPrimary } from "slate-react-system";
 

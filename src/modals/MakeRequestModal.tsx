@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Wallet } from '../context/Index'
+import { Wallet } from '../context/Wallet/Index'
 import { config } from '../config'
 // @ts-ignore
 import { dispatchCustomEvent, Input, ButtonPrimary, SelectMenu, LoaderSpinner, CheckBox } from "slate-react-system";
@@ -226,13 +226,13 @@ class MakeRequestModal extends Component<ModalProps, States> {
 
                     </div>
                     <div className="centerbutton">
-                        {this.context.githubLogged || this.state.emailMethod ?
+                        {this.context.github.githubLogged || this.state.emailMethod ?
                             <ButtonPrimary onClick={this.handleSubmit}>{this.state.submitLoading ? <LoaderSpinner /> : 'Send Request'}</ButtonPrimary>
                             : null
                         }
                     </div>
                 </form>
-                {!this.context.githubLogged && this.state.gitHubMethod ?
+                {!this.context.github.githubLogged && this.state.gitHubMethod ?
                     <>
                         <div id="githublogin">
                             <LoginGithub

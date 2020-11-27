@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Wallet } from '../context/Index'
+import { Data } from '../context/Data/Index'
 import { config } from '../config'
 // @ts-ignore
 import { Table, H1, H2, Input, ButtonPrimary, ButtonSecondary, LoaderSpinner, SelectMenu } from "slate-react-system";
@@ -13,7 +13,7 @@ type States = {
 };
 
 export default class Verifiedclients extends Component<{},States> {
-    public static contextType = Wallet
+    public static contextType = Data
 
     columns = [
         { key: "verified", name: "Verified client" },
@@ -36,7 +36,7 @@ export default class Verifiedclients extends Component<{},States> {
     }
 
     getList = async () => {
-        const verifiers = await this.context.api.listVerifiedClients()
+        const verifiers = await this.context.wallet.api.listVerifiedClients()
         this.setState({verifiers})
     }
 
@@ -46,7 +46,7 @@ export default class Verifiedclients extends Component<{},States> {
         try{
             const datacap = parseFloat(this.state.datacap)
             const fullDatacap = BigInt(datacap * parseFloat(this.state.datacapExt))
-            let messageID = await this.context.api.verifyClient(this.state.address, fullDatacap, this.context.walletIndex);
+            let messageID = await this.context.wallet.api.verifyClient(this.state.address, fullDatacap, this.context.wallet.walletIndex);
             this.setState({
                 address: '',
                 datacap: '1',
