@@ -427,6 +427,13 @@ export default class WalletProvider extends React.Component<{}, WalletProviderSt
                 issue_number: requestNumber,
                 body: commentContent,
             })
+
+            await this.state.githubOcto.issues.update({
+                owner: config.lotusNodes[this.state.networkIndex].clientOwner,
+                repo: config.lotusNodes[this.state.networkIndex].clientRepo,
+                issue_number: requestNumber,
+                state: 'closed',
+            })
         }
     }
 
