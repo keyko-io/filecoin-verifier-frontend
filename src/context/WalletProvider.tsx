@@ -274,6 +274,7 @@ export default class WalletProvider extends React.Component<{}, WalletProviderSt
                     owner: data.onboarding ? 'keyko-io' : config.lotusNodes[this.state.networkIndex].clientOwner,
                     repo: data.onboarding ? config.onboardingClientRepo : config.lotusNodes[this.state.networkIndex].clientRepo,
                     title: 'Client Allocation Request for: ' + data.organization,
+                    assignees: data.assignees,
                     body: IssueBody(data)
                 });
                 if (issue.status === 201) {
