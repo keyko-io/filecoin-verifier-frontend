@@ -9,6 +9,7 @@ return `
 - Website / Social Media: ${data.publicprofile}
 - DataCap Requested: ${data.datacap}
 - Addresses to be Notarized: ${data.address}
+- Notary Requested: ${data.assignees}
 
 `
 }
