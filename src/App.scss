@@ -350,7 +350,7 @@
     }
 
     .alignright {
-      width:100%;
+      width: 100%;
       text-align: right;
 
       .buttonsecondary {
@@ -492,7 +492,7 @@
     }
   }
 
-  .loginwarn{
+  .loginwarn {
     margin-top: -60px;
     position: absolute;
     margin-left: 380px;
@@ -830,7 +830,8 @@
   .learnmore {
     top: 855px !important;
   }
-  .buttonsholder{
+
+  .buttonsholder {
     padding-left: 120px !important;
   }
 
@@ -862,6 +863,7 @@
   display: block !important;
 
 }
+
 .verifiers {
 
   .tableverifiers {
@@ -1161,11 +1163,12 @@
 }
 
 
-.warnmodal{
+.warnmodal {
   height: 200px;
   width: 350px;
   display: inline-block;
   text-align: center;
+
   h3 {
     position: absolute;
     top: 50%;
@@ -1178,11 +1181,41 @@
 }
 
 .footer {
-  position:absolute;
-  bottom:0;
-  width:150px;
-  height:15px;   
+  position: absolute;
+  bottom: 0;
+  width: 150px;
+  height: 15px;
   left: 0;
   font-size: 12px;
+}
 
+
+.notaryinfoModal {
+  height: 400px;
+  width: 550px;
+  display: inline-block;
+  text-align: center;
+
+  p {
+    position: absolute;
+    top: 50%;
+    -ms-transform: translateY(-50%);
+    transform: translateY(-50%);
+    text-align: center;
+    left: 0;
+    right: 0;
+  }
+  .title{
+    font-weight: bold;
+    font-family: Inter;
+    font-style: normal;
+    font-weight: 600;
+    font-size: 16px;
+    line-height: 24px;
+    padding-bottom: 20px;
+  }
+}
+
+.notaryinfo {
+  float: right;
 }
