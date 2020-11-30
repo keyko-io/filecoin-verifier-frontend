@@ -142,9 +142,9 @@ export default class RootKeyHolder extends Component<RootKeyHolderProps, RootKey
                     await this.timeout(1000)
                     await this.context.loadVerifierRequests()
                     // send notifications
-                    this.context.dispatchNotification('Accepting Message sent with ID: ' + messageID)
+                    this.context.wallet.dispatchNotification('Accepting Message sent with ID: ' + messageID)
                 } catch (e) {
-                    this.context.dispatchNotification('Verification failed: ' + e.message)
+                    this.context.wallet.dispatchNotification('Verification failed: ' + e.message)
                     console.log(e.stack)
                 }
             }
@@ -218,10 +218,10 @@ export default class RootKeyHolder extends Component<RootKeyHolderProps, RootKey
                 }
             }
             this.setState({ selectedTransactions: [], approveLoading: false })
-            this.context.dispatchNotification('Transactions confirmed')
+            this.context.wallet.dispatchNotification('Transactions confirmed')
         } catch (e) {
             this.setState({ approveLoading: false })
-            this.context.dispatchNotification('Approval failed: ' + e.message)
+            this.context.wallet.dispatchNotification('Approval failed: ' + e.message)
             console.log('error', e.stack)
         }
     }
