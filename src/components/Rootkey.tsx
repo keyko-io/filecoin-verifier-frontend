@@ -90,7 +90,7 @@ export default class Rootkey  extends Component<{},States> {
         this.setState({ proposeLoading: true })
         try {
             const fullDatacap = BigInt(0)
-            let messageID = await this.context.wallet.api.proposeVerifier(this.state.revokedVerifierAccountID, fullDatacap, this.context.walletIndex);
+            let messageID = await this.context.wallet.api.proposeVerifier(this.state.revokedVerifierAccountID, fullDatacap, this.context.wallet.walletIndex);
             this.setState({
                 revokedVerifierAccountID: '',
                 proposeLoading: false
@@ -110,7 +110,7 @@ export default class Rootkey  extends Component<{},States> {
             for(const tx of this.state.transactions){
                 if(this.state.selectedTransactions.includes(tx.id)){
                     const datacap = BigInt(tx.cap)
-                    await this.context.wallet.api.approveVerifier(tx.verifier, datacap, tx.signer, tx.id, this.context.walletIndex);
+                    await this.context.wallet.api.approveVerifier(tx.verifier, datacap, tx.signer, tx.id, this.context.wallet.walletIndex);
                 }
             }
             this.setState({ selectedTransactions:[], approveLoading: false })

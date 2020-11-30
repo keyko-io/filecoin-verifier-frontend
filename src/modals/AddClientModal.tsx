@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Wallet } from '../context/Wallet/Index'
+import { Data } from '../context/Data/Index'
 import { config } from '../config'
 // @ts-ignore
 import { dispatchCustomEvent, H4, Input, ButtonPrimary, SelectMenu, LoaderSpinner } from "slate-react-system";
@@ -20,7 +20,7 @@ type ModalProps = {
 }
 
 class AddClientModal extends Component<ModalProps, States> {
-    public static contextType = Wallet
+    public static contextType = Data
 
     constructor(props: {}) {
         super(props);
@@ -53,7 +53,7 @@ class AddClientModal extends Component<ModalProps, States> {
 
             const datacap = parseFloat(this.state.datacap)
             const fullDatacap = BigInt(datacap * parseFloat(this.state.datacapExt))
-            let messageID = await this.context.api.verifyClient(this.state.address, fullDatacap, this.context.walletIndex);
+            let messageID = await this.context.wallet.api.verifyClient(this.state.address, fullDatacap, this.context.wallet.walletIndex);
            
             if (this.props.newDatacap) {
                 this.context.updateGithubVerified(this.state.issueNumber, messageID, this.state.address, fullDatacap)

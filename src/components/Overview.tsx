@@ -14,6 +14,7 @@ type OverviewStates = {
 
 export default class Overview extends Component<{}, OverviewStates> {
     public static contextType = Data
+    interval: any
 
     state = {
         tabs: '1',
@@ -24,7 +25,11 @@ export default class Overview extends Component<{}, OverviewStates> {
 
     componentDidMount() {
         this.loadData()
-        setInterval(() => { this.loadData() }, 5000);
+        this.interval = setInterval(() => { this.loadData() }, 15000);
+    }
+
+    componentWillUnmount() {
+        clearInterval(this.interval)
     }
 
     loadData = async () => {
