@@ -158,7 +158,7 @@ export default class Notary extends Component<NotaryProps, NotaryStates> {
                             : null}
                     </div>
                 </div>
-                {this.state.tabs === "1" && this.context.githubLogged ?
+                {this.state.tabs === "1" && this.context.github.githubLogged ?
                     <div>
                         <table>
                             <thead>
@@ -193,7 +193,7 @@ export default class Notary extends Component<NotaryProps, NotaryStates> {
                         </div>
                     </div>
                     : null}
-                {this.state.tabs === "1" && !this.context.githubLogged ?
+                {this.state.tabs === "1" && !this.context.github.githubLogged ?
                     <div id="githublogin">
                         <LoginGithub
                             clientId={config.githubApp}
