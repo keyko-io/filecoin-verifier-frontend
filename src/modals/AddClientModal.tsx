@@ -53,10 +53,10 @@ class AddClientModal extends Component<ModalProps, States> {
 
             const datacap = parseFloat(this.state.datacap)
             const fullDatacap = BigInt(datacap * parseFloat(this.state.datacapExt))
-            let messageID = await this.context.api.verifyClient(this.state.address, fullDatacap, this.context.walletIndex);
+            //let messageID = await this.context.api.verifyClient(this.state.address, fullDatacap, this.context.walletIndex);
            
             if (this.props.newDatacap) {
-                this.context.updateGithubVerified(this.state.issueNumber, messageID, this.state.address, fullDatacap)
+                this.context.updateGithubVerified(this.state.issueNumber, "messageID", this.state.address, fullDatacap)
             }
 
             this.setState({
@@ -65,7 +65,7 @@ class AddClientModal extends Component<ModalProps, States> {
                 datacapExt: '1099511627776', // 1 TiB
                 submitLoading: false
             })
-            this.context.dispatchNotification('Verify Client Message sent with ID: ' + messageID)
+            this.context.dispatchNotification('Verify Client Message sent with ID: ' + "messageID")
             dispatchCustomEvent({ name: "delete-modal", detail: {} })
             this.setState({ submitLoading: false })
         } catch (e) {

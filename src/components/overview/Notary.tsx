@@ -98,10 +98,10 @@ export default class Notary extends Component<NotaryProps, NotaryStates> {
                     this.context.updateGithubVerified(request.number, messageID, address, fullDatacap)
 
                     // send notifications
-                    this.context.dispatchNotification('Verify Client Message sent with ID: ' + messageID)
+                    this.context.wallet.dispatchNotification('Verify Client Message sent with ID: ' + messageID)
                     this.context.loadClientRequests()
                 } catch (e) {
-                    this.context.dispatchNotification('Verification failed: ' + e.message)
+                    this.context.wallet.dispatchNotification('Verification failed: ' + e.message)
                     console.log(e.stack)
                 }
             }
