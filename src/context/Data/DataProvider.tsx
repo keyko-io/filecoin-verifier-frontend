@@ -149,6 +149,13 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
                     issue_number: requestNumber,
                     body: commentContent,
                 })
+
+                await this.props.github.githubOcto.issues.update({
+                    owner: config.lotusNodes[this.props.wallet.networkIndex].clientOwner,
+                    repo: config.lotusNodes[this.props.wallet.networkIndex].clientRepo,
+                    issue_number: requestNumber,
+                    state: 'closed',
+                })
             },
             createRequest: async (data: any) => {
                 try {
