@@ -240,7 +240,7 @@ class MakeRequestModal extends Component<ModalProps, States> {
                                 clientId={config.githubApp}
                                 scope="repo"
                                 onSuccess={(response: any) => {
-                                    this.context.loginGithub(response.code, true)
+                                    this.context.github.loginGithub(response.code, true)
                                 }}
                                 onFailure={(response: any) => {
                                     console.log('failure', response)
