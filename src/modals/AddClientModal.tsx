@@ -54,7 +54,6 @@ class AddClientModal extends Component<ModalProps, States> {
             const datacap = parseFloat(this.state.datacap)
             const fullDatacap = BigInt(datacap * parseFloat(this.state.datacapExt))
             let messageID = await this.context.wallet.api.verifyClient(this.state.address, fullDatacap, this.context.wallet.walletIndex);
-           
             if (this.props.newDatacap) {
                 this.context.updateGithubVerified(this.state.issueNumber, messageID, this.state.address, fullDatacap)
             }
@@ -65,12 +64,12 @@ class AddClientModal extends Component<ModalProps, States> {
                 datacapExt: '1099511627776', // 1 TiB
                 submitLoading: false
             })
-            this.context.dispatchNotification('Verify Client Message sent with ID: ' + messageID)
+            this.context.wallet.dispatchNotification('Verify Client Message sent with ID: ' + messageID)
             dispatchCustomEvent({ name: "delete-modal", detail: {} })
             this.setState({ submitLoading: false })
         } catch (e) {
             this.setState({ submitLoading: false })
-            this.context.dispatchNotification('Client verification failed: ' + e.message)
+            this.context.wallet.dispatchNotification('Client verification failed: ' + e.message)
             console.log(e.stack)
             dispatchCustomEvent({ name: "delete-modal", detail: {} })
 
