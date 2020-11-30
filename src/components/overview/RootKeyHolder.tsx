@@ -114,7 +114,7 @@ export default class RootKeyHolder extends Component<RootKeyHolderProps, RootKey
                     console.log("address to propose: " + address)
                     console.log("fullDatacap to propose: " + fullDatacap)
 
-                    let messageID = await this.context.wallet.api.proposeVerifier(address, fullDatacap, this.context.walletIndex)
+                    let messageID = await this.context.wallet.api.proposeVerifier(address, fullDatacap, this.context.wallet.walletIndex)
                     // github update
                     await this.context.githubOcto.issues.removeAllLabels({
                         owner: config.lotusNodes[this.context.networkIndex].notaryOwner,
@@ -183,7 +183,7 @@ export default class RootKeyHolder extends Component<RootKeyHolderProps, RootKey
             for (let tx of this.state.pendingverifiers) {
                 if (this.state.selectedTransactions.includes(tx.id)) {
                     const datacap = BigInt(tx.datacap)
-                    let messageID = await this.context.wallet.api.approveVerifier(tx.verifier, datacap, tx.signer, tx.id, this.context.walletIndex);
+                    let messageID = await this.context.wallet.api.approveVerifier(tx.verifier, datacap, tx.signer, tx.id, this.context.wallet.walletIndex);
 
                     // check if we have github issue
                     if (issues[tx.verifier]) {
