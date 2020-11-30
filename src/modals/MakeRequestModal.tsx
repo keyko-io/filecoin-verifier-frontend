@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Wallet } from '../context/Wallet/Index'
+import { Data } from '../context/Data/Index'
 import { config } from '../config'
 // @ts-ignore
 import { dispatchCustomEvent, Input, ButtonPrimary, SelectMenu, LoaderSpinner, CheckBox } from "slate-react-system";
@@ -36,7 +36,7 @@ type ModalProps = {
 }
 
 class MakeRequestModal extends Component<ModalProps, States> {
-    public static contextType = Wallet
+    public static contextType = Data
 
     constructor(props: ModalProps) {
         super(props);
