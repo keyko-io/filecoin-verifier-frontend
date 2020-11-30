@@ -116,25 +116,25 @@ export default class RootKeyHolder extends Component<RootKeyHolderProps, RootKey
 
                     let messageID = await this.context.wallet.api.proposeVerifier(address, fullDatacap, this.context.wallet.walletIndex)
                     // github update
-                    await this.context.githubOcto.issues.removeAllLabels({
-                        owner: config.lotusNodes[this.context.networkIndex].notaryOwner,
-                        repo: config.lotusNodes[this.context.networkIndex].notaryRepo,
+                    await this.context.github.githubOcto.issues.removeAllLabels({
+                        owner: config.lotusNodes[this.context.wallet.networkIndex].notaryOwner,
+                        repo: config.lotusNodes[this.context.wallet.networkIndex].notaryRepo,
                         issue_number: request.number,
                     })
                     await this.timeout(1000)
-                    let label = config.lotusNodes[this.context.networkIndex].rkhtreshold > 1 ? 'status:StartSignOnchain' : 'status:AddedOnchain'
-                    await this.context.githubOcto.issues.addLabels({
-                        owner: config.lotusNodes[this.context.networkIndex].notaryOwner,
-                        repo: config.lotusNodes[this.context.networkIndex].notaryRepo,
+                    let label = config.lotusNodes[this.context.wallet.networkIndex].rkhtreshold > 1 ? 'status:StartSignOnchain' : 'status:AddedOnchain'
+                    await this.context.github.githubOcto.issues.addLabels({
+                        owner: config.lotusNodes[this.context.wallet.networkIndex].notaryOwner,
+                        repo: config.lotusNodes[this.context.wallet.networkIndex].notaryRepo,
                         issue_number: request.number,
                         labels: [label],
                     })
 
                     let commentContent = `## The request has been signed by a new Root Key Holder\n#### Message sent to Filecoin Network\n>${messageID}`
 
-                    await this.context.githubOcto.issues.createComment({
-                        owner: config.lotusNodes[this.context.networkIndex].notaryOwner,
-                        repo: config.lotusNodes[this.context.networkIndex].notaryRepo,
+                    await this.context.github.githubOcto.issues.createComment({
+                        owner: config.lotusNodes[this.context.wallet.networkIndex].notaryOwner,
+                        repo: config.lotusNodes[this.context.wallet.networkIndex].notaryRepo,
                         issue_number: request.number,
                         body: commentContent,
                     })
@@ -154,9 +154,9 @@ export default class RootKeyHolder extends Component<RootKeyHolderProps, RootKey
     handleSubmitApprove = async () => {
         this.setState({ approveLoading: true })
         // load github issues
-        const rawIssues = await this.context.githubOcto.issues.listForRepo({
-            owner: config.lotusNodes[this.context.networkIndex].notaryOwner,
-            repo: config.lotusNodes[this.context.networkIndex].notaryRepo,
+        const rawIssues = await this.context.github.githubOcto.issues.listForRepo({
+            owner: config.lotusNodes[this.context.wallet.networkIndex].notaryOwner,
+            repo: config.lotusNodes[this.context.wallet.networkIndex].notaryRepo,
             state: 'open',
             labels: 'status:StartSignOnchain'
         })
@@ -179,7 +179,7 @@ export default class RootKeyHolder extends Component<RootKeyHolderProps, RootKey
         }
         // go over transactions
         try {
-            const multisigInfo = await this.context.wallet.api.multisigInfo(config.lotusNodes[this.context.networkIndex].rkhMultisig)
+            const multisigInfo = await this.context.wallet.api.multisigInfo(config.lotusNodes[this.context.wallet.networkIndex].rkhMultisig)
             for (let tx of this.state.pendingverifiers) {
                 if (this.state.selectedTransactions.includes(tx.id)) {
                     const datacap = BigInt(tx.datacap)
@@ -189,27 +189,27 @@ export default class RootKeyHolder extends Component<RootKeyHolderProps, RootKey
                     if (issues[tx.verifier]) {
                         let commentContent = `## The request has been signed by a new Root Key Holder\n#### Message sent to Filecoin Network\n>${messageID}`
 
-                        await this.context.githubOcto.issues.createComment({
-                            owner: config.lotusNodes[this.context.networkIndex].notaryOwner,
-                            repo: config.lotusNodes[this.context.networkIndex].notaryRepo,
+                        await this.context.github.githubOcto.issues.createComment({
+                            owner: config.lotusNodes[this.context.wallet.networkIndex].notaryOwner,
+                            repo: config.lotusNodes[this.context.wallet.networkIndex].notaryRepo,
                             issue_number: issues[tx.verifier].number,
                             body: commentContent,
                         })
 
                         if (multisigInfo &&
                             multisigInfo.signers &&
-                            multisigInfo.signers > config.lotusNodes[this.context.networkIndex].rkhtreshold) {
+                            multisigInfo.signers > config.lotusNodes[this.context.wallet.networkIndex].rkhtreshold) {
 
                             await this.timeout(1000)
-                            await this.context.githubOcto.issues.removeAllLabels({
-                                owner: config.lotusNodes[this.context.networkIndex].notaryOwner,
-                                repo: config.lotusNodes[this.context.networkIndex].notaryRepo,
+                            await this.context.github.githubOcto.issues.removeAllLabels({
+                                owner: config.lotusNodes[this.context.wallet.networkIndex].notaryOwner,
+                                repo: config.lotusNodes[this.context.wallet.networkIndex].notaryRepo,
                                 issue_number: issues[tx.verifier].number,
                             })
                             await this.timeout(1000)
-                            await this.context.githubOcto.issues.addLabels({
-                                owner: config.lotusNodes[this.context.networkIndex].notaryOwner,
-                                repo: config.lotusNodes[this.context.networkIndex].notaryRepo,
+                            await this.context.github.githubOcto.issues.addLabels({
+                                owner: config.lotusNodes[this.context.wallet.networkIndex].notaryOwner,
+                                repo: config.lotusNodes[this.context.wallet.networkIndex].notaryRepo,
                                 issue_number: issues[tx.verifier].number,
                                 labels: ['status:AddedOnchain'],
                             })
