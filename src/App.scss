@@ -1186,3 +1186,34 @@
   font-size: 12px;
 
 }
+
+
+.notaryinfoModal {
+  height: 400px;
+  width: 550px;
+  display: inline-block;
+  text-align: center;
+
+  p {
+    position: absolute;
+    top: 50%;
+    -ms-transform: translateY(-50%);
+    transform: translateY(-50%);
+    text-align: center;
+    left: 0;
+    right: 0;
+  }
+  .title{
+    font-weight: bold;
+    font-family: Inter;
+    font-style: normal;
+    font-weight: 600;
+    font-size: 16px;
+    line-height: 24px;
+    padding-bottom: 20px;
+  }
+}
+
+.notaryinfo {
+  float: right;
+}

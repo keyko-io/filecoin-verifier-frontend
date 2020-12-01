@@ -2,7 +2,9 @@ import React, { Component } from 'react';
 // @ts-ignore
 import { dispatchCustomEvent } from "slate-react-system";
 import MakeRequestModal from '../modals/MakeRequestModal';
+import NotaryInfoModal from '../modals/NotaryInfoModal';
 import { config } from '../config'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
 
 export default class TableVerifiers extends Component {
@@ -53,6 +55,16 @@ export default class TableVerifiers extends Component {
         this.setState({ selectedVerifier: Number(e.target.name) })
     }
 
+    showNotaryInfo = (e: any) => {
+        const verifier: any = this.state.verifiers[Number(e.currentTarget.id)]
+        dispatchCustomEvent({
+            name: "create-modal", detail: {
+                id: Math.random().toString(36).replace(/[^a-z]+/g, '').substr(0, 5),
+                modal: <NotaryInfoModal message={verifier.info} />
+            }
+        })
+    }
+
     contactVerifier = async () => {
         let verifier: any = this.state.verifiers[this.state.selectedVerifier]
         dispatchCustomEvent({
@@ -90,7 +102,13 @@ export default class TableVerifiers extends Component {
                                                     onChange={(e) => this.updateChecks(e)}
                                                 />
                                             </td>
-                                            <td>{verifier.name}</td>
+                                            <td>{verifier.name}
+                                            <div className="notaryinfo" id={i.toString()}
+                                                    onClick={(e) => this.showNotaryInfo(e)}>
+                                                    <FontAwesomeIcon icon={["fas", "info-circle"]}
+                                                    />
+                                                </div>
+                                            </td>
                                             <td>{verifier.use_case.map((useCase: any) =>
                                                 <p style={{ padding: 3 }}>{useCase}</p>
                                             )}</td>
