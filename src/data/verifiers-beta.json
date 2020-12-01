@@ -31,7 +31,8 @@
             "max_datacap_allocation": "100 PB",
             "email": "notaryb@a.com",
             "github_user": "josepablofm78",
-            "private_request": "false"
+            "private_request": "false",
+            "info": "👨‍⚖️Notary<br/>🌍 Located in europe.<br/>🏯Belongs <a href=\"https:\/\/www.keyko.io/\">keyko.io <a/>organization"
         },
         {
             "id": 4,
@@ -42,7 +43,8 @@
             "max_datacap_allocation": "100 PB",
             "email": "notaryb@a.com",
             "github_user": "ialberquilla",
-            "private_request": "false"
+            "private_request": "false",
+            "info": "👨‍⚖️Notary<br/>🌍 Located in europe.<br/>🏯Belongs <a href=\"https:\/\/www.keyko.io/\">keyko.io <a/>organization"
         }
     ]
 }
