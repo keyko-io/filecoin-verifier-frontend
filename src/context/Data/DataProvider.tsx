@@ -203,7 +203,6 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
                 for (const rawIssue of rawIssues.data) {
                     const data = utils.parseIssue(rawIssue.body)
                     try {
-                        console.log('address', data.address)
                         const address = await this.props.wallet.api.actorKey(data.address)
                         if (data.correct && address) {
                             issues[address] = {
