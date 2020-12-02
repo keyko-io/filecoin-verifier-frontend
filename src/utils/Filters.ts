@@ -1,4 +1,4 @@
-import { config } from './config'
+import { config } from '../config'
 
 export function addressFilter (input: string) {
     return `${input.substr(0, 5)}...${input.substr(-5, 5)}`

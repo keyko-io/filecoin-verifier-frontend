@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import { Wallet } from './context/Index'
-import { config } from './config'
+import { Data } from '../context/Data/Index'
+import { config } from '../config'
 // @ts-ignore
 import { H1, Input, ButtonPrimary, ButtonSecondary, LoaderSpinner, SelectMenu } from "slate-react-system";
 
@@ -21,7 +21,7 @@ type States = {
 };
 
 export default class Rootkey  extends Component<{},States> {
-    public static contextType = Wallet
+    public static contextType = Data
 
     constructor(props: {}) {
         super(props);
@@ -47,7 +47,7 @@ export default class Rootkey  extends Component<{},States> {
     }
 
     getList = async () => {
-        let pendingTxs = await this.context.api.pendingRootTransactions()
+        let pendingTxs = await this.context.wallet.api.pendingRootTransactions()
         let transactions: any[] = []
         for(let txs in pendingTxs){
             if (!pendingTxs[txs].parsed || pendingTxs[txs].parsed.name !== 'addVerifier') {
@@ -70,7 +70,7 @@ export default class Rootkey  extends Component<{},States> {
         try {
             const datacap = parseFloat(this.state.datacap)
             const fullDatacap = BigInt(datacap * parseFloat(this.state.datacapExt))
-            let messageID = await this.context.api.proposeVerifier(this.state.verifierAccountID, fullDatacap, this.context.walletIndex);
+            let messageID = await this.context.wallet.api.proposeVerifier(this.state.verifierAccountID, fullDatacap, this.context.wallet.walletIndex);
             this.setState({
                 verifierAccountID: '',
                 datacap: '1',
@@ -90,7 +90,7 @@ export default class Rootkey  extends Component<{},States> {
         this.setState({ proposeLoading: true })
         try {
             const fullDatacap = BigInt(0)
-            let messageID = await this.context.api.proposeVerifier(this.state.revokedVerifierAccountID, fullDatacap, this.context.walletIndex);
+            let messageID = await this.context.wallet.api.proposeVerifier(this.state.revokedVerifierAccountID, fullDatacap, this.context.wallet.walletIndex);
             this.setState({
                 revokedVerifierAccountID: '',
                 proposeLoading: false
@@ -110,7 +110,7 @@ export default class Rootkey  extends Component<{},States> {
             for(const tx of this.state.transactions){
                 if(this.state.selectedTransactions.includes(tx.id)){
                     const datacap = BigInt(tx.cap)
-                    await this.context.api.approveVerifier(tx.verifier, datacap, tx.signer, tx.id, this.context.walletIndex);
+                    await this.context.wallet.api.approveVerifier(tx.verifier, datacap, tx.signer, tx.id, this.context.wallet.walletIndex);
                 }
             }
             this.setState({ selectedTransactions:[], approveLoading: false })

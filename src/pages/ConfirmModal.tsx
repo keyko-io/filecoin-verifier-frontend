@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import Sent from './svg/sent.svg'
+import Sent from '../svg/sent.svg'
 // @ts-ignore
 import { ButtonPrimary, dispatchCustomEvent } from "slate-react-system";
 

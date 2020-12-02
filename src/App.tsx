@@ -1,15 +1,15 @@
 import React, { Component } from 'react';
-import Overview from './Overview'
+import Overview from './components/Overview'
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { fab } from '@fortawesome/free-brands-svg-icons'
 import { far } from '@fortawesome/free-regular-svg-icons'
 import { fas } from '@fortawesome/free-solid-svg-icons'
-import Logo from './logo.svg';
-import Network from './pages/svg/filecoin-network.svg';
-import { Wallet } from './context/Index'
-import { addressFilter, datacapFilter } from './Filters'
-import WalletModal from './WalletModal'
+import Logo from './svg/logo.svg';
+import Network from './svg/filecoin-network.svg';
+import { Data } from './context/Data/Index'
+import { addressFilter, datacapFilter } from './utils/Filters'
+import WalletModal from './modals/WalletModal'
 import copy from 'copy-text-to-clipboard'
 import './App.scss';
 // @ts-ignore
@@ -27,7 +27,7 @@ type States = {
 }
 
 class App extends Component<{}, States> {
-  public static contextType = Wallet
+  public static contextType = Data
   child: any
 
   constructor(props: {}) {
@@ -40,7 +40,7 @@ class App extends Component<{}, States> {
   }
 
   componentDidMount() {
-    if (this.context.isLogged === false) {
+    if (this.context.wallet.isLogged === false) {
       history.push({
         pathname: "/"
       })
@@ -60,12 +60,12 @@ class App extends Component<{}, States> {
   }
 
   switchNetwork = async (index: number) => {
-    this.context.selectNetwork(index)
+    this.context.wallet.selectNetwork(index)
     this.refresh()
   }
 
   switchAccount = (index: number) => {
-    this.context.selectAccount(index)
+    this.context.wallet.selectAccount(index)
   }
 
   switchRoot = () => {
@@ -111,12 +111,12 @@ class App extends Component<{}, States> {
               <div className="networkselectholder">
                 <div className="headertitles">Network Select</div>
                 {config.lotusNodes.filter((node: any, index: number) => config.networks.includes(node.name)).map((node: any, index: number) => {
-                  return <div key={index} style={{ color: index === this.context.networkIndex ? '#003fe3' : 'inherit' }} className="networkentry" onClick={() => this.switchNetwork(index)}>{node.name}</div>
+                  return <div key={index} style={{ color: index === this.context.wallet.networkIndex ? '#003fe3' : 'inherit' }} className="networkentry" onClick={() => this.switchNetwork(index)}>{node.name}</div>
                 })}
               </div>
               : null}
             <div className="headertitles">Network selected</div>
-            <div className="addressholder">{config.lotusNodes[this.context.networkIndex].name}</div>
+            <div className="addressholder">{config.lotusNodes[this.context.wallet.networkIndex].name}</div>
           </div>
           <div className="refresh" onClick={() => this.refresh()}>
             <FontAwesomeIcon icon={["fas", "redo"]} flip="vertical" transform={{ rotate: 135 }} />
@@ -138,12 +138,12 @@ class App extends Component<{}, States> {
                   </div>
                 </div>
                 <div className="headertitles">Account addresses</div>
-                {this.context.accounts.map((account: any, index: number) => {
-                  return <div key={index} className="accountentry" style={{ backgroundColor: index === this.context.walletIndex ? '#C7C7C7' : 'inherit' }}>
+                {this.context.wallet.accounts.map((account: any, index: number) => {
+                  return <div key={index} className="accountentry" style={{ backgroundColor: index === this.context.wallet.walletIndex ? '#C7C7C7' : 'inherit' }}>
                     <div>
                       <div className="datacapdata" onClick={() => this.switchAccount(index)} >
                         {this.context.viewroot === false ? <span className="datacap">Datacap: {datacapFilter(this.getVerifierAmount(account))}</span> : <span className="datacap"></span>}
-                        {this.context.accountsActive[account] ?
+                        {this.context.wallet.accountsActive[account] ?
                           <img src={Network} alt="network" />
                           : null}
                       </div>
@@ -154,19 +154,19 @@ class App extends Component<{}, States> {
                     </div>
                   </div>
                 })}
-                {this.context.wallet !== 'ledger' ?
+                {this.context.wallet.wallet !== 'ledger' ?
                   <div className="importseedphrase" onClick={() => { this.openWallet() }}>Import seedphrase</div>
                   : null
                 }
               </div>
               : null}
             <div className="headertitles">{this.context.viewroot ? 'Rootkey Holder ID' : 'Approved Notary ID'}</div>
-            <div>{addressFilter(this.context.activeAccount)}</div>
+            <div>{addressFilter(this.context.wallet.activeAccount)}</div>
           </div>
           <div className="wallet">
             <div className="WalletMenu">
               <Blockies
-                seed={this.context.activeAccount}
+                seed={this.context.wallet.activeAccount}
                 size={10}
                 scale={4}
                 color="#dfe"
@@ -176,7 +176,7 @@ class App extends Component<{}, States> {
             </div>
           </div>
         </div>
-        { this.context.isLoading === true ?
+        { this.context.wallet.isLoading === true || this.context.wallet.isLogged === false ?
           <div className="walletpicker"><LoaderSpinner /></div>
           : <Overview ref={this.child} />
         }

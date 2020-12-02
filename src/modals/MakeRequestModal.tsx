@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
-import { Wallet } from './context/Index'
-import { config } from './config'
+import { Data } from '../context/Data/Index'
+import { config } from '../config'
 // @ts-ignore
 import { dispatchCustomEvent, Input, ButtonPrimary, SelectMenu, LoaderSpinner, CheckBox } from "slate-react-system";
-import ConfirmModal from './pages/ConfirmModal';
+import ConfirmModal from '../pages/ConfirmModal';
 // @ts-ignore
 import LoginGithub from 'react-login-github';
 
@@ -36,7 +36,7 @@ type ModalProps = {
 }
 
 class MakeRequestModal extends Component<ModalProps, States> {
-    public static contextType = Wallet
+    public static contextType = Data
 
     constructor(props: ModalProps) {
         super(props);
@@ -226,13 +226,13 @@ class MakeRequestModal extends Component<ModalProps, States> {
 
                     </div>
                     <div className="centerbutton">
-                        {this.context.githubLogged || this.state.emailMethod ?
+                        {this.context.github.githubLogged || this.state.emailMethod ?
                             <ButtonPrimary onClick={this.handleSubmit}>{this.state.submitLoading ? <LoaderSpinner /> : 'Send Request'}</ButtonPrimary>
                             : null
                         }
                     </div>
                 </form>
-                {!this.context.githubLogged && this.state.gitHubMethod ?
+                {!this.context.github.githubLogged && this.state.gitHubMethod ?
                     <>
                         <div id="githublogin">
                             <LoginGithub
@@ -240,7 +240,7 @@ class MakeRequestModal extends Component<ModalProps, States> {
                                 clientId={config.githubApp}
                                 scope="repo"
                                 onSuccess={(response: any) => {
-                                    this.context.loginGithub(response.code, true)
+                                    this.context.github.loginGithub(response.code, true)
                                 }}
                                 onFailure={(response: any) => {
                                     console.log('failure', response)

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 // @ts-ignore
-import RootKey from './svg/rkh-verifiers.svg';
-import Cients from './svg/client-miners.svg';
+import RootKey from '../svg/rkh-verifiers.svg';
+import Cients from '../svg/client-miners.svg';
 import Option from '../components/Option'
 import history from '../context/History'
 import Welcome from '../components/Welcome'

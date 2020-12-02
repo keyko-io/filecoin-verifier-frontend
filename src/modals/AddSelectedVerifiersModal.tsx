@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import { Wallet } from './context/Index'
-import { config } from './config'
+import { Data } from '../context/Data/Index'
+import { config } from '../config'
 // @ts-ignore
 import { dispatchCustomEvent, H3, Input, ButtonPrimary, SelectMenu, LoaderSpinner } from "slate-react-system";
 
@@ -12,7 +12,7 @@ type States = {
 };
 
 class AddVerifierModal extends Component<{}, States> {
-    public static contextType = Wallet
+    public static contextType = Data
 
     constructor(props: {}) {
         super(props);
@@ -36,9 +36,9 @@ class AddVerifierModal extends Component<{}, States> {
             const fullDatacap = BigInt(datacap * parseFloat(this.state.datacapExt))
             let verifierAccountID = this.state.verifierAccountID
             if(verifierAccountID.length < 12){
-                verifierAccountID = await this.context.api.actorKey(verifierAccountID)
+                verifierAccountID = await this.context.wallet.api.actorKey(verifierAccountID)
             }
-            let messageID = await this.context.api.proposeVerifier(verifierAccountID, fullDatacap, this.context.walletIndex);
+            let messageID = await this.context.wallet.api.proposeVerifier(verifierAccountID, fullDatacap, this.context.wallet.walletIndex);
             this.setState({
                 verifierAccountID: '',
                 datacap: '1',

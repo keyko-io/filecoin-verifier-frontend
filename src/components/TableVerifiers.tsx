@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 // @ts-ignore
 import { dispatchCustomEvent } from "slate-react-system";
-import MakeRequestModal from '../MakeRequestModal';
+import MakeRequestModal from '../modals/MakeRequestModal';
 import NotaryInfoModal from '../modals/NotaryInfoModal';
 import { config } from '../config'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -103,7 +103,7 @@ export default class TableVerifiers extends Component {
                                                 />
                                             </td>
                                             <td>{verifier.name}
-                                                <div className="notaryinfo" id={i.toString()}
+                                            <div className="notaryinfo" id={i.toString()}
                                                     onClick={(e) => this.showNotaryInfo(e)}>
                                                     <FontAwesomeIcon icon={["fas", "info-circle"]}
                                                     />

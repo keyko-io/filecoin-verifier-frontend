@@ -2,7 +2,11 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.scss';
 import App from './App';
-import WalletProvider from './context/WalletProvider'
+import WalletProvider from './context/Wallet/WalletProvider'
+import GithubProvider from './context/Github/GithubProvider'
+import DataProvider from './context/Data/DataProvider'
+import { Wallet } from './context/Wallet/Index'
+import { Github } from './context/Github/Index'
 import { Router, Route, Switch } from 'react-router-dom'
 // @ts-ignore
 import { GlobalNotification, GlobalModal } from "slate-react-system";
@@ -16,17 +20,29 @@ import Verifiers from './pages/Verifiers';
 ReactDOM.render(
   <React.StrictMode>
     <WalletProvider>
-      <Router history={history}>
-        <Switch>
-          <Route exact path={'/'} component={Onboarding} ></Route>
-          <Route path={'/app'} component={App} ></Route>
-          <Route path={'/wallet'} component={Preonboarding} ></Route>
-          <Route path={'/landing'} component={Landing} ></Route>
-          <Route path={'/verifiers'} component={Verifiers} ></Route>
-        </Switch>
-      </Router>
-      <GlobalNotification style={{ bottom: 0, right: 0 }} />
-      <GlobalModal style={{ maxWidth: "none" }} />
+        <GithubProvider>
+          <Wallet.Consumer>
+            {wallet => (
+              <Github.Consumer>
+                {github => (
+                  <DataProvider wallet={wallet} github={github}>
+                    <Router history={history}>
+                      <Switch>
+                        <Route exact path={'/'} component={Onboarding} ></Route>
+                        <Route path={'/app'} component={App} ></Route>
+                        <Route path={'/wallet'} component={Preonboarding} ></Route>
+                        <Route path={'/landing'} component={Landing} ></Route>
+                        <Route path={'/verifiers'} component={Verifiers} ></Route>
+                      </Switch>
+                    </Router>
+                    <GlobalNotification style={{ bottom: 0, right: 0 }} />
+                    <GlobalModal style={{ maxWidth: "none" }} />
+                  </DataProvider>
+                )}
+              </Github.Consumer>
+            )}
+          </Wallet.Consumer>
+        </GithubProvider>
     </WalletProvider>
   </React.StrictMode>,
   document.getElementById('root')

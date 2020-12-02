@@ -1,6 +1,6 @@
 import { mapSeries } from 'bluebird'
 
-import { config } from '../config'
+import { config } from '../../config'
 // @ts-ignore
 import TransportWebUSB from '@ledgerhq/hw-transport-webusb'
 // @ts-ignore
