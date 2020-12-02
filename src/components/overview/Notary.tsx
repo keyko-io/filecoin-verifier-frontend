@@ -12,7 +12,6 @@ import WarnModal from '../../modals/WarnModal';
 
 type NotaryStates = {
     tabs: string
-    clients: any[]
     selectedTransactions: any[]
     selectedClientRequests: any[]
 }
@@ -27,8 +26,7 @@ export default class Notary extends Component<NotaryProps, NotaryStates> {
     state = {
         selectedTransactions: [] as any[],
         selectedClientRequests: [] as any[],
-        tabs: '1',
-        clients: this.props.clients,
+        tabs: '1'
     }
 
     componentDidMount() {
@@ -147,7 +145,7 @@ export default class Notary extends Component<NotaryProps, NotaryStates> {
                 <div className="tabsholder">
                     <div className="tabs">
                         <div className={this.state.tabs === "1" ? "selected" : ""} onClick={() => { this.showClientRequests() }}>Public Requests ({this.context.clientRequests.length})</div>
-                        <div className={this.state.tabs === "2" ? "selected" : ""} onClick={() => { this.showVerifiedClients() }}>Verified clients ({this.state.clients.length})</div>
+                        <div className={this.state.tabs === "2" ? "selected" : ""} onClick={() => { this.showVerifiedClients() }}>Verified clients ({this.props.clients.length})</div>
                     </div>
                     <div className="tabssadd">
                         <ButtonPrimary onClick={() => this.requestDatacap()}>Approve Private Request</ButtonPrimary>
@@ -221,7 +219,7 @@ export default class Notary extends Component<NotaryProps, NotaryStates> {
                                 </tr>
                             </thead>
                             <tbody>
-                                {this.state.clients.map((transaction: any, index: any) =>
+                                {this.props.clients.map((transaction: any, index: any) =>
                                     <tr
                                         key={index}
                                     // onClick={()=>this.selectRow(transaction.id)}
@@ -238,7 +236,7 @@ export default class Notary extends Component<NotaryProps, NotaryStates> {
                                 )}
                             </tbody>
                         </table>
-                        {this.state.clients.length === 0 ? <div className="nodata">No verified clients yet</div> : null}
+                        {this.props.clients.length === 0 ? <div className="nodata">No verified clients yet</div> : null}
                     </div>
                     : null}
             </div>
