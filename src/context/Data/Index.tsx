@@ -16,6 +16,7 @@ export const Data = React.createContext({
     selectNotaryRequest: any,
     clientsGithub: any,
     loadClientsGithub: any,
+    search: any,
     refreshGithubData: any,
     // passed by props
     github: {} as any,

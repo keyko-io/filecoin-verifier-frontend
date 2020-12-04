@@ -13,7 +13,7 @@ import WalletModal from './modals/WalletModal'
 import copy from 'copy-text-to-clipboard'
 import './App.scss';
 // @ts-ignore
-import { dispatchCustomEvent, Toggle, SVG, LoaderSpinner } from "slate-react-system"
+import { dispatchCustomEvent, Toggle, SVG, LoaderSpinner, Input } from "slate-react-system"
 import { config } from './config'
 import Blockies from 'react-blockies'
 import history from './context/History'
@@ -24,6 +24,7 @@ library.add(fab, far, fas)
 type States = {
   networkSelect: boolean
   accountSelect: boolean
+  search: string
 }
 
 class App extends Component<{}, States> {
@@ -34,7 +35,8 @@ class App extends Component<{}, States> {
     super(props);
     this.state = {
       networkSelect: false,
-      accountSelect: false
+      accountSelect: false,
+      search: ''
     }
     this.child = React.createRef();
   }
@@ -101,6 +103,19 @@ class App extends Component<{}, States> {
     return '0'
   }
 
+  handleChange = (e:any) => {
+    this.setState({ [e.target.name]: e.target.value } as any)
+  }
+
+  search = async (event: any) => {
+    event.preventDefault()
+    // search from context
+    const results = await this.context.github.githubOcto.search.issuesAndPullRequests({
+      q: encodeURIComponent(`${this.state.search} in:comment repo:keyko-io/filecoin-clients-onboarding-test`)
+    });
+    // console.log('results', results)
+  }
+
   render() {
     return (
       <div className="App">
@@ -117,6 +132,16 @@ class App extends Component<{}, States> {
               : null}
             <div className="headertitles">Network selected</div>
             <div className="addressholder">{config.lotusNodes[this.context.wallet.networkIndex].name}</div>
+          </div>
+          <div className="search">
+            <form onSubmit={this.search}>
+              <Input
+                name="search"
+                placeholder="Search"
+                onChange={this.handleChange}
+              />
+            </form>
+            <FontAwesomeIcon icon={["fas", "search"]}/>
           </div>
           <div className="refresh" onClick={() => this.refresh()}>
             <FontAwesomeIcon icon={["fas", "redo"]} flip="vertical" transform={{ rotate: 135 }} />

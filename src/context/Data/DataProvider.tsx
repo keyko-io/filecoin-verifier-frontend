@@ -22,6 +22,7 @@ interface DataProviderStates {
     selectNotaryRequest: any
     clientsGithub: any
     loadClientsGithub: any
+    search: any
     refreshGithubData: any
 }
 
@@ -218,6 +219,16 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
                 this.setState({
                     clientsGithub: issues
                 })
+            },
+            search: async (query: string) => {
+                if(this.props.github.githubLogged === false){
+                    return []
+                }
+                const results = await this.props.github.githubOcto.search.issuesAndPullRequests({
+                    q: encodeURIComponent(`${query} in:comment repo:keyko-io/filecoin-clients-onboarding-test`)
+                })
+                console.log(results)
+                return results
             },
             refreshGithubData: async () => {
                 this.state.loadClientRequests()
