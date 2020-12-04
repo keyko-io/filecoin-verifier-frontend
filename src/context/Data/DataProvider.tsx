@@ -222,6 +222,7 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
             },
             search: async (query: string) => {
                 if(this.props.github.githubLogged === false){
+                    console.log('not logged')
                     return []
                 }
                 const results = await this.props.github.githubOcto.search.issuesAndPullRequests({

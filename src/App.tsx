@@ -113,7 +113,7 @@ class App extends Component<{}, States> {
     const results = await this.context.github.githubOcto.search.issuesAndPullRequests({
       q: encodeURIComponent(`${this.state.search} in:comment repo:keyko-io/filecoin-clients-onboarding-test`)
     });
-    // console.log('results', results)
+    console.log('results', results)
   }
 
   render() {
