@@ -109,11 +109,7 @@ class App extends Component<{}, States> {
 
   search = async (event: any) => {
     event.preventDefault()
-    // search from context
-    const results = await this.context.github.githubOcto.search.issuesAndPullRequests({
-      q: encodeURIComponent(`${this.state.search} in:comment repo:keyko-io/filecoin-clients-onboarding-test`)
-    });
-    console.log('results', results)
+    this.context.search(this.state.search)
   }
 
   render() {

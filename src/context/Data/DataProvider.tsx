@@ -223,12 +223,18 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
             search: async (query: string) => {
                 if(this.props.github.githubLogged === false){
                     console.log('not logged')
-                    return []
                 }
-                const results = await this.props.github.githubOcto.search.issuesAndPullRequests({
-                    q: encodeURIComponent(`${query} in:comment repo:keyko-io/filecoin-clients-onboarding-test`)
-                })
-                console.log(results)
+                let results:any[] = []
+                if(this.state.viewroot){
+                    results = await this.props.github.githubOcto.search.issuesAndPullRequests({
+                        q: encodeURIComponent(`${query} in:body is:issue repo:${config.lotusNodes[this.props.wallet.networkIndex].notaryOwner}/${config.lotusNodes[this.props.wallet.networkIndex].notaryRepo}`)
+                    })
+                }else{
+                    results = await this.props.github.githubOcto.search.issuesAndPullRequests({
+                        q: encodeURIComponent(`${query} in:body is:issue repo:${config.lotusNodes[this.props.wallet.networkIndex].clientOwner}/${config.lotusNodes[this.props.wallet.networkIndex].clientRepo}`)
+                    })
+                }
+                console.log('results', results)
                 return results
             },
             refreshGithubData: async () => {
