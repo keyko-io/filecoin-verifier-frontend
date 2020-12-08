@@ -227,11 +227,11 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
                 let results:any[] = []
                 if(this.state.viewroot){
                     results = await this.props.github.githubOcto.search.issuesAndPullRequests({
-                        q: encodeURIComponent(`${query} in:body is:issue repo:${config.lotusNodes[this.props.wallet.networkIndex].notaryOwner}/${config.lotusNodes[this.props.wallet.networkIndex].notaryRepo}`)
+                        q: `${query} in:body is:issue repo:${config.lotusNodes[this.props.wallet.networkIndex].notaryOwner}/${config.lotusNodes[this.props.wallet.networkIndex].notaryRepo}`
                     })
                 }else{
                     results = await this.props.github.githubOcto.search.issuesAndPullRequests({
-                        q: encodeURIComponent(`${query} in:body is:issue repo:${config.lotusNodes[this.props.wallet.networkIndex].clientOwner}/${config.lotusNodes[this.props.wallet.networkIndex].clientRepo}`)
+                        q: `${query} in:body is:issue repo:${config.lotusNodes[this.props.wallet.networkIndex].clientOwner}/${config.lotusNodes[this.props.wallet.networkIndex].clientRepo}`
                     })
                 }
                 console.log('results', results)
