@@ -71,6 +71,7 @@ class Onboarding extends Component<{}, States> {
                 desc={option.desc}
                 imgSrc={option.imgSrc}
                 onClick={this.changeActive.bind(this)}
+                buttonName="Proceed"
               />
             })}
           </div>
