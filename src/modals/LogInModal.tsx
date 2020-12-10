@@ -7,7 +7,7 @@ import history from '../context/History'
 import { Data } from '../context/Data/Index'
 
 // @ts-ignore
-import { ButtonPrimary } from "slate-react-system";
+import { ButtonPrimary, dispatchCustomEvent } from "slate-react-system";
 
 
 type ModalProps = {
@@ -32,6 +32,9 @@ class LogInModal extends Component<ModalProps> {
             if (this.context.viewroot === false) {
                 this.context.switchview()
             }
+
+            dispatchCustomEvent({ name: "delete-modal", detail: {} })
+
             history.push({
                 pathname: "/app"
             })
@@ -44,6 +47,9 @@ class LogInModal extends Component<ModalProps> {
             if (this.context.viewroot === false) {
                 this.context.switchview()
             }
+
+            dispatchCustomEvent({ name: "delete-modal", detail: {} })
+
             history.push({
                 pathname: "/app"
             })
