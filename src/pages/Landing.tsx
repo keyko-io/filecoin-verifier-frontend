@@ -84,6 +84,7 @@ class Landing extends Component<{}, States> {
                 imgSrc={option.imgSrc}
                 active={this.state.optionSelected[index]}
                 onClick={this.changeActive.bind(this)}
+                buttonName="Get Verified"
               />
             })}
           </div>

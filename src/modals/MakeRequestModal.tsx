@@ -149,91 +149,89 @@ class MakeRequestModal extends Component<ModalProps, States> {
             <div className="addmodal">
                 <form>
                     <div className="title">Datacap Allocation Request</div>
-                    <div className="twopanel">
-
-                        <div>
-                            <div className="inputholder">
+                    <div className="makerequest">
+                        <div className="inputholder">
+                            <Input
+                                description="Organization or Personal Name"
+                                name="organization"
+                                value={this.state.organization}
+                                placeholder="Name of organization"
+                                onChange={this.handleChange}
+                            />
+                        </div>
+                        <div className="inputholder">
+                            <Input
+                                description="Website / Social Media"
+                                name="publicprofile"
+                                value={this.state.publicprofile}
+                                placeholder="XXXXXXXXXXX"
+                                onChange={this.handleChange}
+                            />
+                        </div>
+                        <div className="inputholder">
+                            <Input
+                                description="Filecoin Address"
+                                name="address"
+                                value={this.state.address}
+                                placeholder="XXXXXXXXXXX"
+                                onChange={this.handleChange}
+                            />
+                        </div>
+                        <div className="datacapholder">
+                            <div className="datacap">
                                 <Input
-                                    description="Organization or Personal Name"
-                                    name="organization"
-                                    value={this.state.organization}
-                                    placeholder="Name of organization"
+                                    description="Datacap Request"
+                                    name="datacap"
+                                    value={this.state.datacap}
+                                    placeholder="1000000000000"
                                     onChange={this.handleChange}
                                 />
                             </div>
-                            <div className="inputholder">
-                                <Input
-                                    description="Website / Social Media"
-                                    name="publicprofile"
-                                    value={this.state.publicprofile}
-                                    placeholder="XXXXXXXXXXX"
+                            <div className="datacapext">
+                                <SelectMenu
+                                    name="datacapExt"
+                                    value={this.state.datacapExt}
                                     onChange={this.handleChange}
+                                    options={config.datacapExtName}
                                 />
                             </div>
                         </div>
-                        <div>
-                            <div className="inputholder">
-                                <Input
-                                    description="Filecoin Address"
-                                    name="address"
-                                    value={this.state.address}
-                                    placeholder="XXXXXXXXXXX"
+                        <div className="methodselection">
+                            <div className="methodlabel">Select the method to send your request</div>
+                            <div className="methodtype">
+                                <input
+                                    type="radio"
+                                    name="gitHubMethod"
+                                    checked={this.state.gitHubMethod}
                                     onChange={this.handleChange}
-                                />
-                            </div>
-                            <div className="datacapholder">
-                                <div className="datacap">
-                                    <Input
-                                        description="Datacap Request"
-                                        name="datacap"
-                                        value={this.state.datacap}
-                                        placeholder="1000000000000"
-                                        onChange={this.handleChange}
-                                    />
+                                /> Github - create issue
                                 </div>
-                                <div className="datacapext">
-                                    <SelectMenu
-                                        name="datacapExt"
-                                        value={this.state.datacapExt}
-                                        onChange={this.handleChange}
-                                        options={config.datacapExtName}
-                                    />
-                                </div>
-                            </div>
-                            <div className="methodselection">
-                                <div className="methodlabel">Select the method to send your request</div>
+                            {this.props.verifier.private_request === "true" ?
                                 <div className="methodtype">
                                     <input
                                         type="radio"
-                                        name="gitHubMethod"
-                                        checked={this.state.gitHubMethod}
+                                        name="emailMethod"
+                                        checked={this.state.emailMethod}
                                         onChange={this.handleChange}
-                                    /> Github - create issue
+                                    /> Email - private request
                                 </div>
-                                {this.props.verifier.private_request === "true" ?
-                                    <div className="methodtype">
-                                        <input
-                                            type="radio"
-                                            name="emailMethod"
-                                            checked={this.state.emailMethod}
-                                            onChange={this.handleChange}
-                                        /> Email - private request
-                                </div>
-                                    : null
-                                }
-                            </div>
+                                : null
+                            }
                         </div>
 
                     </div>
                     <div className="centerbutton">
-                        {this.context.github.githubLogged || this.state.emailMethod ?
-                            <ButtonPrimary onClick={this.handleSubmit}>{this.state.submitLoading ? <LoaderSpinner /> : 'Send Request'}</ButtonPrimary>
-                            : null
-                        }
+                        <div id="sendbutton">
+                            {this.context.github.githubLogged || this.state.emailMethod ?
+                                <ButtonPrimary onClick={this.handleSubmit}>{this.state.submitLoading ? <LoaderSpinner /> : 'Send Request'}</ButtonPrimary>
+                                : null
+                            }
+                        </div>
                     </div>
                 </form>
                 {!this.context.github.githubLogged && this.state.gitHubMethod ?
-                    <>
+                    <div className="centerbutton">
+
                         <div id="githublogin">
                             <LoginGithub
                                 redirectUri={config.oauthUri}
@@ -248,7 +246,7 @@ class MakeRequestModal extends Component<ModalProps, States> {
                             />
                         </div>
                         <div className="loginwarn">Github sign in required</div>
-                    </>
+                    </div>
                     : null
                 }
             </div>

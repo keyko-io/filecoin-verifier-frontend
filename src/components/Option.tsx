@@ -1,4 +1,7 @@
 import React, { Component } from 'react';
+// @ts-ignore
+import { ButtonPrimary } from "slate-react-system";
+
 
 type OptionProps = {
     head?: string
@@ -8,6 +11,7 @@ type OptionProps = {
     imgSrc: string,
     active?: boolean,
     available?: string,
+    buttonName?: string
     id: number,
     onClick: (target: any) => void;
 }
@@ -35,6 +39,14 @@ class Option extends Component<OptionProps> {
                     <div className="optionavailable">{this.props.available}</div>
                     : null
                 }
+                <div className="buttonoption">
+                    {!this.props.available ?
+                        <ButtonPrimary id={this.props.id.toString()}
+                            onClick={(e: any) => this.props.onClick(e)}>
+                            {this.props.buttonName}
+                        </ButtonPrimary>
+                        : null}
+                </div>
             </div>
         )
     }
