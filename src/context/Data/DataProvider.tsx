@@ -161,7 +161,7 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
             createRequest: async (data: any) => {
                 try {
                     const issue = await this.props.github.githubOcto.issues.create({
-                        owner: data.onboarding ? 'keyko-io' : config.lotusNodes[this.props.wallet.networkIndex].clientOwner,
+                        owner: data.onboarding ? config.onboardingOwner : config.lotusNodes[this.props.wallet.networkIndex].clientOwner,
                         repo: data.onboarding ? config.onboardingClientRepo : config.lotusNodes[this.props.wallet.networkIndex].clientRepo,
                         title: 'Client Allocation Request for: ' + data.organization,
                         assignees: data.assignees,
