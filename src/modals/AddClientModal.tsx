@@ -121,7 +121,7 @@ class AddClientModal extends Component<ModalProps, States> {
                         </div>
 
                     </div>
-                    <div className="centerbutton">
+                    <div className="centerbutton buttonverify">
                         <ButtonPrimary onClick={this.handleSubmit}>{this.state.submitLoading ? <LoaderSpinner /> : 'Send Request'}</ButtonPrimary>
                     </div>
                 </form>
