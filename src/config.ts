@@ -2,7 +2,7 @@ export const config = {
     apiUri: process.env.REACT_APP_API_URI || 'http://localhost:4000',
     apiToken: process.env.REACT_APP_API_TOKEN || '',
     onboardingClientRepo: process.env.REACT_APP_ONBOARDING_REPO ||'filecoin-clients-onboarding-test',
-    onboardingOwner: 'keyko-io',
+    onboardingOwner: process.env.REACT_APP_ONBOARDING_REPO_OWNER || 'keyko-io',
     githubApp: process.env.REACT_APP_GITHUB_APP || 'Iv1.10e7aaed4654db3c',
     oauthUri: process.env.REACT_APP_OAUTH_URI || 'http://localhost:3000/oauth/',
     networks: process.env.REACT_APP_NETWORKS || 'Mainnet,Nerpanet',
