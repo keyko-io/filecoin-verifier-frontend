@@ -11,9 +11,9 @@ export const config = {
         code: 461,
         url: 'https://node.glif.io/space06/lotus/rpc/v0',
         token: process.env.REACT_APP_MAINNET_TOKEN,
-        clientRepo: 'filecoin-clients-onboarding',
+        clientRepo: 'filecoin-plus-client-onboarding',
         notaryRepo: 'notary-governance',
-        clientOwner: 'keyko-io',
+        clientOwner: 'filecoin-project',
         notaryOwner: 'filecoin-project',
         rkhMultisig: 't080',
         rkhtreshold: 2

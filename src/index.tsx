@@ -16,6 +16,7 @@ import Onboarding from './pages/Onboarding';
 import Landing from './pages/Landing';
 import history from './context/History';
 import Verifiers from './pages/Verifiers';
+import './fonts/SuisseIntl-Regular.woff'
 
 ReactDOM.render(
   <React.StrictMode>
