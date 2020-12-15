@@ -29,7 +29,7 @@ class LogInModal extends Component<ModalProps> {
     loadLedgerWallet = async () => {
         const logged = await this.context.wallet.loadWallet('Ledger')
         if (logged) {
-            if (this.context.viewroot === false) {
+            if (this.context.viewroot === false && this.props.type == '0') {
                 this.context.switchview()
             }
 
@@ -44,7 +44,7 @@ class LogInModal extends Component<ModalProps> {
     loadBurnerWallet = async () => {
         const logged = await this.context.wallet.loadWallet('Burner')
         if (logged) {
-            if (this.context.viewroot === false) {
+            if (this.context.viewroot === false && this.props.type == '0') {
                 this.context.switchview()
             }
 
