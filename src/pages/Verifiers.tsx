@@ -20,7 +20,7 @@ class Verifiers extends Component<{}> {
   }
 
   navigate = () => {
-    window.open('https://github.com/filecoin-project/notary-governance', '_blank')
+    window.open('https://github.com/filecoin-project/filecoin-plus-client-onboarding', '_blank')
 }
 
   render() {
