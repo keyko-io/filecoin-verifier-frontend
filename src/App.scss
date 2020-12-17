@@ -741,7 +741,6 @@
         padding-top: 60px;
       }
 
-
       .optionsubtitle {
         font-family: "suisseintl";
         font-style: normal;
@@ -900,7 +899,7 @@
   left: 0px;
   right: 0px;
   top: calc(50% - 20px / 2);
-  font-family: Inter;
+  font-family: "suisseintl";
   font-style: normal;
   font-weight: 600;
   font-size: 14px;
@@ -957,6 +956,7 @@
 
       td {
         padding: 12px;
+        font-family: "suisseintl";
       }
     }
 
@@ -1037,7 +1037,7 @@
     cursor: pointer;
     float: left;
     margin: 25px 20px;
-    font-family: Inter;
+    font-family: "suisseintl";
     font-style: normal;
     font-weight: 600;
     font-size: 16px;
@@ -1159,7 +1159,7 @@
 
   .tabletitle {
     padding: 20px 100px;
-    font-family: Inter;
+    font-family: "suisseintl";
     font-style: normal;
     font-weight: 600;
     font-size: 16px;
@@ -1196,7 +1196,7 @@
     -ms-transform: translate(-50%);
     transform: translate(-50%);
     height: 20px;
-    font-family: Inter;
+    font-family: "suisseintl";
     font-style: normal;
     font-weight: 600;
     font-size: 14px;
@@ -1361,7 +1361,7 @@
       box-sizing: border-box;
       border-radius: 4px;
       background: #ffffff;
-      font-family: Suisse Int;
+      font-family: "suisseintl";
       font-style: normal;
       font-weight: bold;
       font-size: 14px;
@@ -1395,4 +1395,14 @@
 .buttonverify {
   margin-top: 10px !important;
   margin-bottom: 0px !important;
+}
+
+.minerslogin {
+  margin-top: 180px;
+}
+
+.minersinfomodal {
+  height: 400px;
+  width: 550px;
+  display: inline-block;
 }
