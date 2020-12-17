@@ -234,7 +234,7 @@ class MakeRequestModal extends Component<ModalProps, States> {
 
                         <div id="githublogin">
                             <LoginGithub
-                                redirectUri={config.oauthUri}
+                                redirectUri={`https://${window.location.host}/oauth`}
                                 clientId={config.githubApp}
                                 scope="repo"
                                 onSuccess={(response: any) => {
