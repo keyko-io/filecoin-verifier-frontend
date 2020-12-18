@@ -8,6 +8,7 @@ import { datacapFilter } from "../../utils/Filters"
 // @ts-ignore
 import LoginGithub from 'react-login-github';
 import { config } from '../../config'
+import { selectGitubApp } from '../../utils/HostDetect';
 const parser = require('@keyko-io/filecoin-verifier-tools/utils/notary-issue-parser')
 
 type RootKeyHolderState = {
@@ -288,8 +289,8 @@ export default class RootKeyHolder extends Component<RootKeyHolderProps, RootKey
                 {this.state.tabs === "0" && !this.context.github.githubLogged ?
                     <div id="githublogin">
                         <LoginGithub
-                            clientId={config.githubApp}
-                            redirectUri={config.oauthUri}
+                            redirectUri={selectGitubApp().uri}
+                            clientId={selectGitubApp().app}
                             scope="repo"
                             onSuccess={async (response: any) => {
                                 await this.context.github.loginGithub(response.code)
