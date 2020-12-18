@@ -25,7 +25,7 @@ export default class Overview extends Component<{}, OverviewStates> {
 
     componentDidMount() {
         this.loadData()
-        this.interval = setInterval(() => { this.loadData() }, 15000);
+        this.interval = setInterval(() => { this.loadData() }, 5 * 60 * 1000);
     }
 
     componentWillUnmount() {
@@ -33,11 +33,7 @@ export default class Overview extends Component<{}, OverviewStates> {
     }
 
     loadData = async () => {
-        if (this.context.github.githubLogged) {
-            this.context.loadVerifierRequests()
-            this.context.loadClientsGithub()
-            this.context.loadClientRequests()
-        }
+        this.context.refreshGithubData()
         this.context.loadVerified()
         const clients = await this.context.wallet.api.listVerifiedClients()
         // pending verififers
