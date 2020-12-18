@@ -6,7 +6,7 @@ export const config = {
     githubApp: process.env.REACT_APP_GITHUB_APP || 'Iv1.10e7aaed4654db3c',
     oauthUri: process.env.REACT_APP_OAUTH_URI || 'http://localhost:3000/oauth/',
     githubAppSecondary: process.env.REACT_APP_GITHUB_APP_SECOND || 'Iv1.36a0f639ac2fc9de',
-    oauthUriSecondary: process.env.REACT_APP_OAUTH_URI_SECOND || 'http://localhost:3000/oauth/',
+    oauthUriSecondary: process.env.REACT_APP_OAUTH_URI_SECOND || 'https://filecoinplus.on.fleek.co/oauth/',
     networks: process.env.REACT_APP_NETWORKS || 'Mainnet,Nerpanet',
     lotusNodes: [{
         name: 'Mainnet',
