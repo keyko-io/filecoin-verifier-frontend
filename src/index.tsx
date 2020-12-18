@@ -17,6 +17,7 @@ import Landing from './pages/Landing';
 import history from './context/History';
 import Verifiers from './pages/Verifiers';
 import './fonts/SuisseIntl-Regular.woff'
+import Miners from './pages/Miners';
 
 ReactDOM.render(
   <React.StrictMode>
@@ -34,6 +35,7 @@ ReactDOM.render(
                         <Route path={'/wallet'} component={Preonboarding} ></Route>
                         <Route path={'/landing'} component={Landing} ></Route>
                         <Route path={'/verifiers'} component={Verifiers} ></Route>
+                        <Route path={'/miners'} component={Miners} ></Route>
                       </Switch>
                     </Router>
                     <GlobalNotification style={{ bottom: 0, right: 0 }} />
