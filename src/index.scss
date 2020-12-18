@@ -192,6 +192,11 @@ $theme_pageText: $system_black;
   font-family: 'jet-brains-bold';
   src: url('/public/JetBrainsMono-Bold.woff');
 }
+
+@font-face {
+  font-family: "suisseintl";
+  src: url("./fonts/SuisseIntl-Regular.woff");
+}
 html, body, div, span, applet, object, iframe,
 h1, h2, h3, h4, h5, h6, p, blockquote, pre,
 a, abbr, acronym, address, big, cite, code,
