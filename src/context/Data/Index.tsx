@@ -5,6 +5,7 @@ export const Data = React.createContext({
     loadClientRequests: async () => {},
     clientRequests: [] as any,
     loadVerifierRequests: async () => {},
+    loadMiners: async () => {},
     verifierRequests: [] as any,
     viewroot: false,
     switchview: async () => {},

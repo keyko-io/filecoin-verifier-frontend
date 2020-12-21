@@ -1,14 +1,14 @@
 export const config = {
     apiUri: process.env.REACT_APP_API_URI || 'http://localhost:4000',
     apiToken: process.env.REACT_APP_API_TOKEN || '',
-    onboardingClientRepo: process.env.REACT_APP_ONBOARDING_REPO ||'filecoin-clients-onboarding-test',
+    onboardingClientRepo: process.env.REACT_APP_ONBOARDING_REPO || 'filecoin-clients-onboarding-test',
     onboardingOwner: process.env.REACT_APP_ONBOARDING_REPO_OWNER || 'keyko-io',
-    minersOwner: process.env.REACT_APP_MINERS_REPO ||'keyko-io',
-    minersRepo:process.env.REACT_APP_MINERS_REPO || 'filecoin-clients-onboarding-test',
-    minersIssueNumber: process.env.REACT_APP_MINERS_ISSUE ||105,
     githubApp: process.env.REACT_APP_GITHUB_APP || 'Iv1.10e7aaed4654db3c',
+    githubAppSecondary: process.env.REACT_APP_GITHUB_APP_SECOND || 'Iv1.36a0f639ac2fc9de',
+    oauthUriSecondary: process.env.REACT_APP_OAUTH_URI_SECOND || 'https://filecoinproregistry.on.fleek.co/oauth/',
     oauthUri: process.env.REACT_APP_OAUTH_URI || 'http://localhost:3000/oauth/',
     networks: process.env.REACT_APP_NETWORKS || 'Mainnet,Nerpanet',
+    minersUrl: 'https://raw.githubusercontent.com/filecoin-project/filecoin-plus-client-onboarding/main/miners.md',
     lotusNodes: [{
         name: 'Mainnet',
         code: 461,
@@ -20,7 +20,7 @@ export const config = {
         notaryOwner: 'filecoin-project',
         rkhMultisig: 't080',
         rkhtreshold: 2
-    },{
+    }, {
         name: 'Nerpanet',
         code: 1,
         url: 'https://beta-verify.filecoin.io/api/rpc/v0',
@@ -31,7 +31,7 @@ export const config = {
         notaryOwner: 'keyko-io',
         rkhMultisig: 't080',
         rkhtreshold: 1
-    },{
+    }, {
         name: 'Localhost',
         code: 1,
         url: 'ws://localhost:1234/rpc/v0',
