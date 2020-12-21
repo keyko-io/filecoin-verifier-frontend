@@ -18,8 +18,8 @@ import history from './context/History';
 import Verifiers from './pages/Verifiers';
 import './fonts/SuisseIntl-Regular.woff'
 
-console.log("host: "+ window.location.host)
-    if (window.location.host.includes('fleek')) {
+
+  if (window.location.host.includes('fleek')) {
       console.log("redirecting")
       window.location.href = "https://beta-verify.filecoin.io/";
   
