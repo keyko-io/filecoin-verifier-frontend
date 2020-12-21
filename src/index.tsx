@@ -18,6 +18,12 @@ import history from './context/History';
 import Verifiers from './pages/Verifiers';
 import './fonts/SuisseIntl-Regular.woff'
 
+if (window.location.host.includes('fleek')) {
+  console.log("redirecting")
+  window.location.href = "https://plus.fil.org/";
+
+}
+
 ReactDOM.render(
   <React.StrictMode>
     <WalletProvider>
