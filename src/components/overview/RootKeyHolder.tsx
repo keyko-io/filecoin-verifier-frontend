@@ -116,6 +116,8 @@ export default class RootKeyHolder extends Component<RootKeyHolderProps, RootKey
 
                     let messageID = await this.context.wallet.api.proposeVerifier(address, fullDatacap, this.context.wallet.walletIndex)
                     // github update
+                    // DISABLED temporaly until we can use a generic token to avoid exposing RKH Identity
+                    /*
                     await this.context.github.githubOcto.issues.removeAllLabels({
                         owner: config.lotusNodes[this.context.wallet.networkIndex].notaryOwner,
                         repo: config.lotusNodes[this.context.wallet.networkIndex].notaryRepo,
@@ -140,6 +142,7 @@ export default class RootKeyHolder extends Component<RootKeyHolderProps, RootKey
                     })
 
                     await this.timeout(1000)
+                    */
                     await this.context.loadVerifierRequests()
                     // send notifications
                     this.context.wallet.dispatchNotification('Accepting Message sent with ID: ' + messageID)
@@ -186,6 +189,8 @@ export default class RootKeyHolder extends Component<RootKeyHolderProps, RootKey
                     let messageID = await this.context.wallet.api.approveVerifier(tx.verifier, datacap, tx.signer, tx.id, this.context.wallet.walletIndex);
 
                     // check if we have github issue
+                     // DISABLED temporaly until we can use a generic token to avoid exposing RKH Identity
+                     /*
                     if (issues[tx.verifier]) {
                         let commentContent = `## The request has been signed by a new Root Key Holder\n#### Message sent to Filecoin Network\n>${messageID}`
 
@@ -215,6 +220,7 @@ export default class RootKeyHolder extends Component<RootKeyHolderProps, RootKey
                             })
                         }
                     }
+                    */
                 }
             }
             this.setState({ selectedTransactions: [], approveLoading: false })
