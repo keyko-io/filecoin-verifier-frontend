@@ -45,6 +45,62 @@
             "github_user": "ialberquilla",
             "private_request": "false",
             "info": "👨‍⚖️Notary<br/>🌍 Located in europe.<br/>🏯Belongs <a href=\"https:\/\/www.keyko.io/\">keyko.io <a/>organization"
+        },
+        {
+            "id": 5,
+            "name": "Steven Li",
+            "use_case": ["Open datasets that serve as a foundation for humanities most important information", "Data affiliated with strategic growth initiatives of the Filecoin project",
+            "Data from centralized cloud storage clients looking to switch to Filecoin network", "Personal public data for copyright/property authentication"],
+            "location": "Greater China",
+            "github_user": "steven004",
+            "max_datacap_allocation": " ",
+            "info": "",
+            "website": "",
+            "private_request": "false"
+        },
+        {
+            "id": 6,
+            "name": "Blotocol",
+            "use_case": ["Media and Entertainment"],
+            "location": "Asia excl. Greater China",
+            "github_user": "MasaakiNawatani",
+            "max_datacap_allocation": " ",
+            "info": "",
+            "website": "https://blotocol.com/",
+            "private_request": "false"
+        },
+        {
+            "id": 7,
+            "name": "Performanive",
+            "use_case": ["General"],
+            "location": "N. America",
+            "github_user": "Broz221",
+            "max_datacap_allocation": " ",
+            "info": "",
+            "website": "https://performive.com/",
+            "private_request": "false"
+        },
+        {
+            "id": 8,
+            "name": "MathWallet",
+            "use_case": ["General","Blockchain Data","Web3 Dapp"],
+            "location": "Asia excl. Greater China",
+            "github_user": "rayshitou",
+            "max_datacap_allocation": " ",
+            "info": "",
+            "website": "mathwallet.org",
+            "private_request": "false"
+        },
+        {
+            "id": 9,
+            "name": "1475-simon",
+            "use_case": ["General"],
+            "location": "Greater China",
+            "github_user": "ozhtdong",
+            "max_datacap_allocation": " ",
+            "info": "",
+            "website": "",
+            "private_request": "false"
         }
     ]
 }
