@@ -442,7 +442,7 @@
 
   .css-1pck2x {
     margin-bottom: 1px !important;
-    font-family: Suisse Int;
+    font-family: "suisseintl";
     font-size: 14px;
     font-style: normal;
     font-weight: 700;
@@ -497,6 +497,9 @@
 
     #sendbutton {
       margin-top: -40px;
+      button {
+        font-family: "suisseintl";
+      }
     }
   }
 
@@ -505,6 +508,11 @@
 
     .methodlabel {
       margin-bottom: 8px;
+      font-family: "suisseintl";
+    }
+
+    .methodtype {
+      font-family: "suisseintl";
     }
 
     label {
@@ -1255,7 +1263,7 @@
 
   .title {
     font-weight: bold;
-    font-family: Inter;
+    font-family: "suisseintl";
     font-style: normal;
     font-weight: 600;
     font-size: 16px;
@@ -1269,6 +1277,7 @@
   width: 550px;
   display: inline-block;
   text-align: center;
+  font-family: "suisseintl";
 
   p {
     position: absolute;

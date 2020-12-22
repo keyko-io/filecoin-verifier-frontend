@@ -6,6 +6,7 @@ export const config = {
     githubApp: process.env.REACT_APP_GITHUB_APP || 'Iv1.10e7aaed4654db3c',
     oauthUri: 'https://plus.fil.org/oauth/',
     networks: process.env.REACT_APP_NETWORKS || 'Mainnet,Nerpanet',
+    domain: process.env.DOMAIN || "https://plus.fil.org/",
     lotusNodes: [{
         name: 'Mainnet',
         code: 461,

@@ -194,6 +194,7 @@ export default class Notary extends Component<NotaryProps, NotaryStates> {
                 {this.state.tabs === "1" && !this.context.github.githubLogged ?
                     <div id="githublogin">
                         <LoginGithub
+                            redirectUri={config.oauthUri}
                             clientId={config.githubApp}
                             scope="repo"
                             onSuccess={async (response: any) => {

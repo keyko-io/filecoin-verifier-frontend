@@ -288,8 +288,8 @@ export default class RootKeyHolder extends Component<RootKeyHolderProps, RootKey
                 {this.state.tabs === "0" && !this.context.github.githubLogged ?
                     <div id="githublogin">
                         <LoginGithub
-                            clientId={config.githubApp}
                             redirectUri={config.oauthUri}
+                            clientId={config.githubApp}
                             scope="repo"
                             onSuccess={async (response: any) => {
                                 await this.context.github.loginGithub(response.code)
