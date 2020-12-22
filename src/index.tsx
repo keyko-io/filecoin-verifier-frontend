@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.scss';
+import { config } from './config';
 import App from './App';
 import WalletProvider from './context/Wallet/WalletProvider'
 import GithubProvider from './context/Github/GithubProvider'
@@ -19,11 +20,10 @@ import Verifiers from './pages/Verifiers';
 import './fonts/SuisseIntl-Regular.woff'
 
 
-  if (window.location.host.includes('fleek')) {
-      console.log("redirecting")
-      window.location.href = "https://beta-verify.filecoin.io/";
-  
-    }
+// redirect to domain if user access fleek url
+if (window.location.host.includes('fleek')) {
+  window.location.href = config.domain;
+}
 
 ReactDOM.render(
   <React.StrictMode>

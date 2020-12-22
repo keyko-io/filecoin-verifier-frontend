@@ -8,6 +8,7 @@ export const config = {
     githubAppSecondary: process.env.REACT_APP_GITHUB_APP_SECOND || 'Iv1.36a0f639ac2fc9de',
     oauthUriSecondary: process.env.REACT_APP_OAUTH_URI_SECOND || 'https://filecoinproregistry.on.fleek.co/oauth/',
     networks: process.env.REACT_APP_NETWORKS || 'Mainnet,Nerpanet',
+    domain: process.env.DOMAIN || "https://beta-verify.filecoin.io/",
     lotusNodes: [{
         name: 'Mainnet',
         code: 461,
