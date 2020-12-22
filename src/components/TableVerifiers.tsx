@@ -119,7 +119,6 @@ export default class TableVerifiers extends Component {
                                     <td>Use case</td>
                                     <td>Location</td>
                                     <td>Website</td>
-                                    <td>Max Datacap Allocation</td>
                                     <td>Private Requests</td>
                                 </tr>
                             </thead>
@@ -146,7 +145,6 @@ export default class TableVerifiers extends Component {
                                                 )}</td>
                                                 <td>{verifier.location}</td>
                                                 <td>{verifier.website}</td>
-                                                <td>{verifier.max_datacap_allocation}</td>
                                                 <td>{verifier.private_request}</td>
                                             </tr>
                                             : null
