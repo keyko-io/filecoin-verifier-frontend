@@ -6,7 +6,6 @@ import { dispatchCustomEvent, Input, ButtonPrimary, SelectMenu, LoaderSpinner, C
 import ConfirmModal from '../pages/ConfirmModal';
 // @ts-ignore
 import LoginGithub from 'react-login-github';
-import { selectGitubApp } from '../utils/HostDetect';
 
 type States = {
     address: string
@@ -236,8 +235,8 @@ class MakeRequestModal extends Component<ModalProps, States> {
 
                         <div id="githublogin">
                             <LoginGithub
-                                redirectUri={selectGitubApp().uri}
-                                clientId={selectGitubApp().app}
+                                redirectUri={config.oauthUri}
+                                clientId={config.githubApp}
                                 scope="repo"
                                 onSuccess={(response: any) => {
                                     this.context.github.loginGithub(response.code, true)
