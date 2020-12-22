@@ -9,8 +9,6 @@ import { datacapFilter } from "../../utils/Filters"
 import LoginGithub from 'react-login-github';
 import { config } from '../../config'
 import WarnModal from '../../modals/WarnModal';
-import { selectGitubApp } from '../../utils/HostDetect';
-
 
 type NotaryStates = {
     tabs: string
@@ -196,8 +194,8 @@ export default class Notary extends Component<NotaryProps, NotaryStates> {
                 {this.state.tabs === "1" && !this.context.github.githubLogged ?
                     <div id="githublogin">
                         <LoginGithub
-                            redirectUri={selectGitubApp().uri}
-                            clientId={selectGitubApp().app}
+                            redirectUri={config.oauthUri}
+                            clientId={config.githubApp}
                             scope="repo"
                             onSuccess={async (response: any) => {
                                 await this.context.github.loginGithub(response.code)
