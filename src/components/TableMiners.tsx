@@ -1,12 +1,11 @@
 import React, { Component } from 'react';
 // @ts-ignore
-import { dispatchCustomEvent } from "slate-react-system";
-import MinersInfoModal from '../modals/MinersInfoModal';
 import { config } from '../config'
 import { Data } from '../context/Data/Index'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import parse from 'html-react-parser';
-
+import ReactMarkdown from 'react-markdown'
+import parserMarkdown from '../utils/Markdown'
+// @ts-ignore
+import { parser } from "himalaya";
 
 
 export default class TableVerifiers extends Component {
@@ -29,53 +28,34 @@ export default class TableVerifiers extends Component {
 
     componentDidMount() {
         this.loadData()
-        this.context.loadMiners()
     }
+
 
     loadData = async () => {
-        this.getList()
-        let initialChecks = [] as any[]
-        this.setState({ checks: initialChecks })
+        const result = await this.getMiners();
+        console.log(result)
     }
 
-    getList = async () => {
-        const miners = await this.context.loadMiners()
-        console.log(miners.data)
-        this.setState({ miners: miners.data })
-    }
+    getMiners = async () => {
+        const response = await fetch(config.minersUrl)
+        const text = await response.text()
 
-    updateChecks = (e: any) => {
-        let checks = [] as any[]
-        this.state.checks.forEach((_, i) => {
-            checks.push(Number(e.target.name) === i ?
-                e.target.value :
-                false)
-        })
-        this.setState({ checks: checks })
-        this.setState({ selectedVerifier: Number(e.target.name) })
-    }
+        const html = parserMarkdown.render(text)
+        const json = parser(html);
 
-    showMinerInfo = (e: any) => {
-        const miner: any = this.context.miners[Number(e.currentTarget.id)]
-        console.log(miner)
-        dispatchCustomEvent({
-            name: "create-modal", detail: {
-                id: Math.random().toString(36).replace(/[^a-z]+/g, '').substr(0, 5),
-                modal: <MinersInfoModal message={miner.body} />
-            }
-        })
+        return json
     }
 
 
     public render() {
         return (
             <div className="verifiers">
-                <div className="tableverifiers">
+                <div className="tableverifiers miners">
                     {this.state.miners !== '' ?
                         <div>
-                            {parse(this.state.miners)}
+
                         </div>
-                        : <div className="nodata">There are not available notaries yet</div>}
+                        : <div className="nodata">There are not available miners yet</div>}
                 </div>
             </div>
         )

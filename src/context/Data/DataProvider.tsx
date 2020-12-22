@@ -11,7 +11,6 @@ interface DataProviderStates {
     loadClientRequests: any
     clientRequests: any[]
     loadVerifierRequests: any
-    loadMiners: any
     verifierRequests: any[]
     viewroot: boolean
     switchview: any
@@ -106,15 +105,6 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
                 this.setState({
                     verifierRequests: issues
                 })
-            },
-            loadMiners: async () => {
-                const response = await fetch(config.minersUrl)
-                const text = await response.text()
-                const mk = await this.props.github.githubOcto.markdown.render({
-                    text
-                });
-
-                return mk
             },
             verifierRequests: [],
             viewroot: false,
