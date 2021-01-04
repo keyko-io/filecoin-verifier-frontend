@@ -2,48 +2,61 @@ import React, { Component } from 'react';
 // @ts-ignore
 import { config } from '../config'
 import { Data } from '../context/Data/Index'
-import ReactMarkdown from 'react-markdown'
 import parserMarkdown from '../utils/Markdown'
 // @ts-ignore
-import { parser } from "himalaya";
+import { parse } from "himalaya";
+import TableCell from '../components/TableCell'
 
 
 export default class TableVerifiers extends Component {
     public static contextType = Data
 
-    columns = [
-        { key: "name", name: "Notary Name", type: "FILE_LINK", width: "98px" },
-        { key: "use_case", name: "Use Case" },
-        { key: "location", name: "Location" },
-        { key: "website", name: "website" },
-        { key: "max_datacap_allocation", name: "Max Datacap Allocation" },
-        { key: "private_request", name: "Available for Private Request" }
-    ]
-
     state = {
         selectedVerifier: 0,
         checks: [],
-        miners: '',
+        miners: [],
+        verifiers: [],
+        initialIndex: 0,
+        finalIndex: 5,
+        pages: [],
+        actualPage: 1
     }
 
     componentDidMount() {
         this.loadData()
     }
 
-
-    loadData = async () => {
-        const result = await this.getMiners();
-        console.log(result)
+    setPage = (e: any) => {
+        const actualPage = Number(e.target.id)
+        this.setState({ finalIndex: actualPage * 5 })
+        this.setState({ initialIndex: (actualPage * 5) - 5 })
+        this.setState({ actualPage })
     }
 
-    getMiners = async () => {
+    checkIndex = (index: number) => {
+        return (index >= this.state.initialIndex && index < this.state.finalIndex)
+    }
+
+    movePage = (index: number) => {
+        const page = this.state.actualPage + index
+        if (page <= this.state.pages.length && page >= 1) {
+            this.setState({ finalIndex: page * 5 })
+            this.setState({ initialIndex: (page * 5) - 5 })
+            this.setState({ actualPage: page })
+        }
+    }
+
+
+    loadData = async () => {
         const response = await fetch(config.minersUrl)
         const text = await response.text()
 
         const html = parserMarkdown.render(text)
-        const json = parser(html);
+        const json = parse(html);
+        const miners = json[2].children[3].children.
+            filter((ele: any) => ele.type === "element")
 
-        return json
+        this.setState({ miners })
     }
 
 
@@ -51,11 +64,62 @@ export default class TableVerifiers extends Component {
         return (
             <div className="verifiers">
                 <div className="tableverifiers miners">
-                    {this.state.miners !== '' ?
-                        <div>
-
+                    <table>
+                        <thead>
+                            <tr>
+                                <td>Miner</td>
+                                <td>Location</td>
+                                <td>Miner ID</td>
+                                <td>Contact Information</td>
+                                <td>Special Offering</td>
+                                <td>Features</td>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {this.state.miners.map((miner: any, i) =>
+                            this.checkIndex(i) ?
+                                <tr key={i}>
+                                    <td>
+                                        {miner.children[1].children[0].content}
+                                    </td>
+                                    <td>
+                                        <TableCell
+                                            text={miner.children[3].children[0].content} />
+                                    </td>
+                                    <td>
+                                        <TableCell
+                                            text={miner.children[5].children[0].content} />
+                                    </td>
+                                    <td>
+                                        <TableCell
+                                            text={miner.children[7].children[0].content} />
+                                    </td>
+                                    <td>
+                                        <TableCell
+                                            text={miner.children[9].children[0].content} />
+                                    </td>
+                                    <td>
+                                        <TableCell
+                                            text={miner.children[11].children[0].content} />
+                                    </td>
+                                </tr>
+                                : null
+                            )
+                            }
+                        </tbody>
+                    </table>
+                </div>
+                <div className="pagination">
+                    <div className="pagenumber paginator" onClick={e => this.movePage(-1)}>{"<"}</div>
+                    {this.state.pages.map((page: any, i) =>
+                        <div className="pagenumber"
+                            style={this.state.actualPage == i + 1 ? { backgroundColor: "#33A7FF", color: 'white' } : {}}
+                            id={(i + 1).toString()}
+                            onClick={e => this.setPage(e)}>
+                            {page}
                         </div>
-                        : <div className="nodata">There are not available miners yet</div>}
+                    )}
+                    <div className="pagenumber paginator" onClick={e => this.movePage(1)}>{">"}</div>
                 </div>
             </div>
         )
