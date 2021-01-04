@@ -35,7 +35,6 @@
     "react-dom": "^16.13.1",
     "react-fontawesome": "^1.7.1",
     "react-login-github": "^1.0.6",
-    "react-markdown": "^5.0.3",
     "react-router-dom": "^5.2.0",
     "react-scripts": "3.4.1",
     "sass-loader": "^9.0.2",
