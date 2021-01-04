@@ -15,7 +15,6 @@ export default class TableVerifiers extends Component {
         selectedVerifier: 0,
         checks: [],
         miners: [],
-        verifiers: [],
         initialIndex: 0,
         finalIndex: 5,
         pages: [],
@@ -57,6 +56,12 @@ export default class TableVerifiers extends Component {
             filter((ele: any) => ele.type === "element")
 
         this.setState({ miners })
+        const numerOfPages = Math.ceil(this.state.miners.length / 5)
+        let pages = []
+        for (let index = 0; index < numerOfPages; index++) {
+            pages.push(index + 1)
+        }
+        this.setState({ pages })
     }
 
 
@@ -77,33 +82,33 @@ export default class TableVerifiers extends Component {
                         </thead>
                         <tbody>
                             {this.state.miners.map((miner: any, i) =>
-                            this.checkIndex(i) ?
-                                <tr key={i}>
-                                    <td>
-                                        {miner.children[1].children[0].content}
-                                    </td>
-                                    <td>
-                                        <TableCell
-                                            text={miner.children[3].children[0].content} />
-                                    </td>
-                                    <td>
-                                        <TableCell
-                                            text={miner.children[5].children[0].content} />
-                                    </td>
-                                    <td>
-                                        <TableCell
-                                            text={miner.children[7].children[0].content} />
-                                    </td>
-                                    <td>
-                                        <TableCell
-                                            text={miner.children[9].children[0].content} />
-                                    </td>
-                                    <td>
-                                        <TableCell
-                                            text={miner.children[11].children[0].content} />
-                                    </td>
-                                </tr>
-                                : null
+                                this.checkIndex(i) ?
+                                    <tr key={i}>
+                                        <td>
+                                            {miner.children[1].children[0].content}
+                                        </td>
+                                        <td>
+                                            <TableCell
+                                                text={miner.children[3].children[0].content} />
+                                        </td>
+                                        <td>
+                                            <TableCell
+                                                text={miner.children[5].children[0].content} />
+                                        </td>
+                                        <td>
+                                            <TableCell
+                                                text={miner.children[7].children[0].content} />
+                                        </td>
+                                        <td>
+                                            <TableCell
+                                                text={miner.children[9].children[0].content} />
+                                        </td>
+                                        <td>
+                                            <TableCell
+                                                text={miner.children[11].children[0].content} />
+                                        </td>
+                                    </tr>
+                                    : null
                             )
                             }
                         </tbody>
