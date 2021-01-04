@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.scss';
+import { config } from './config';
 import App from './App';
 import WalletProvider from './context/Wallet/WalletProvider'
 import GithubProvider from './context/Github/GithubProvider'
@@ -18,6 +19,12 @@ import history from './context/History';
 import Verifiers from './pages/Verifiers';
 import './fonts/SuisseIntl-Regular.woff'
 import Miners from './pages/Miners';
+
+
+// redirect to domain if user access fleek url
+if (window.location.host.includes('fleek')) {
+  window.location.href = config.domain;
+}
 
 ReactDOM.render(
   <React.StrictMode>

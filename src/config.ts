@@ -9,6 +9,7 @@ export const config = {
     oauthUri: process.env.REACT_APP_OAUTH_URI || 'http://localhost:3000/oauth/',
     networks: process.env.REACT_APP_NETWORKS || 'Mainnet,Nerpanet',
     minersUrl: 'https://raw.githubusercontent.com/filecoin-project/filecoin-plus-client-onboarding/main/miners.md',
+    domain: process.env.DOMAIN || "https://beta-verify.filecoin.io/",
     lotusNodes: [{
         name: 'Mainnet',
         code: 461,

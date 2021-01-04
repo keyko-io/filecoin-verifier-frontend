@@ -230,6 +230,7 @@ class MakeRequestModal extends Component<ModalProps, States> {
                     </div>
                 </form>
                 {!this.context.github.githubLogged && this.state.gitHubMethod ?
+
                     <div className="centerbutton">
 
                         <div id="githublogin">
