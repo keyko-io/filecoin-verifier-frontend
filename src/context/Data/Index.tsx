@@ -4,8 +4,12 @@ import React from 'react'
 export const Data = React.createContext({
     loadClientRequests: async () => {},
     clientRequests: [] as any,
+    loadNotificationClientRequests: async () => {},
+    notificationClientRequests: [] as any,
     loadVerifierRequests: async () => {},
     verifierRequests: [] as any,
+    loadNotificationVerifierRequests: any,
+    notificationVerifierRequests: [] as any,
     viewroot: false,
     switchview: async () => {},
     verified: [] as any,
