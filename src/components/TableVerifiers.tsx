@@ -70,7 +70,7 @@ export default class TableVerifiers extends Component {
         dispatchCustomEvent({
             name: "create-modal", detail: {
                 id: Math.random().toString(36).replace(/[^a-z]+/g, '').substr(0, 5),
-                modal: <NotaryInfoModal message={verifier.info} />
+                modal: <NotaryInfoModal message={verifier.info} markdown={verifier.info_markdown} />
             }
         })
     }

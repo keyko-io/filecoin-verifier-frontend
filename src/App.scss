@@ -1251,15 +1251,6 @@
   display: inline-block;
   text-align: center;
 
-  p {
-    position: absolute;
-    top: 50%;
-    -ms-transform: translateY(-50%);
-    transform: translateY(-50%);
-    text-align: center;
-    left: 0;
-    right: 0;
-  }
 
   .title {
     font-weight: bold;
@@ -1279,14 +1270,18 @@
   text-align: center;
   font-family: "suisseintl";
 
-  p {
-    position: absolute;
-    top: 50%;
-    -ms-transform: translateY(-50%);
-    transform: translateY(-50%);
-    text-align: center;
-    left: 0;
-    right: 0;
+  p{
+    padding-bottom: 20px;
+  }
+
+  .markdown{
+    width: 800px;
+    text-align: left;
+    table {
+      padding-top: 20px;
+      padding-bottom: 20px;
+      text-align: center;
+    }
   }
 
   .title {
@@ -1297,6 +1292,11 @@
     font-size: 16px;
     line-height: 24px;
     padding-bottom: 20px;
+  }
+
+  .content{
+    max-height: 380px;
+    overflow: scroll;
   }
 }
 
