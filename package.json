@@ -27,6 +27,8 @@
     "@zondax/ledger-filecoin": "^0.11.1",
     "bluebird": "^3.7.2",
     "copy-text-to-clipboard": "^2.2.0",
+    "himalaya": "^1.1.0",
+    "markdown-it": "^12.0.4",
     "node-sass": "^4.14.1",
     "react": "^16.13.1",
     "react-blockies": "^1.4.1",
@@ -61,10 +63,10 @@
     ]
   },
   "devDependencies": {
-    "jest":  "^24.9.0",
-    "babel-jest": "^24.9.0",
     "@types/bluebird": "^3.5.32",
     "@types/react-blockies": "^1.4.0",
-    "@types/react-router-dom": "^5.1.5"
+    "@types/react-router-dom": "^5.1.5",
+    "babel-jest": "^24.9.0",
+    "jest": "^24.9.0"
   }
 }
