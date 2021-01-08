@@ -26,6 +26,11 @@ interface DataProviderStates {
     selectNotaryRequest: any
     clientsGithub: any
     loadClientsGithub: any
+    loadClients: any
+    clients: any[]
+    clientsAmount: string,
+    loadPendingVerifiers: any
+    pendingVerifiers: any[]
     search: any
     refreshGithubData: any
 }
@@ -209,6 +214,32 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
                 }
                 this.setState({ verified })
             },
+            loadClients: async () => {
+                const clients = await this.props.wallet.api.listVerifiedClients()
+                let clientsamount = 0
+                for (const txs of clients) {
+                    clientsamount = clientsamount + Number(txs.datacap)
+                    txs['key'] = await this.props.wallet.api.actorKey(txs.verified)
+                }
+                this.setState({clients, clientsAmount: clientsamount.toString()})
+            },
+            loadPendingVerifiers: async () => {
+                // pending verififers
+                let pendingTxs = await this.props.wallet.api.pendingRootTransactions()
+                let pendingVerifiers: any[] = []
+                for (let txs in pendingTxs) {
+                    const verifierAccount = await this.props.wallet.api.actorKey(pendingTxs[txs].parsed.params.verifier)
+                    pendingVerifiers.push({
+                        id: pendingTxs[txs].id,
+                        type: pendingTxs[txs].parsed.params.cap.toString() === '0' ? 'Revoke' : 'Add',
+                        verifier: pendingTxs[txs].parsed.params.verifier,
+                        verifierAccount,
+                        datacap: pendingTxs[txs].parsed.params.cap.toString(),
+                        signer: pendingTxs[txs].signers[0]
+                    })
+                }
+                this.setState({pendingVerifiers})
+            },
             updateGithubVerified: async (requestNumber: any, messageID: string, address: string, datacap: any) => {
                 await this.props.github.githubOcto.issues.removeAllLabels({
                     owner: config.lotusNodes[this.props.wallet.networkIndex].clientOwner,
@@ -268,6 +299,9 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
                 }
                 this.setState({ selectedNotaryRequests: selectedTxs })
             },
+            clients: [],
+            clientsAmount: '',
+            pendingVerifiers: [],
             clientsGithub: {},
             loadClientsGithub: async () => {
                 if (this.props.github.githubLogged === false) {
