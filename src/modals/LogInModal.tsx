@@ -97,6 +97,7 @@ class LogInModal extends Component<ModalProps> {
                             <img src={Ledger} alt={'Ledger'} />
                             Load Ledger Wallet
                         </ButtonPrimary>
+                        <p>Please ensure you have “expert mode” enabled</p>
                     </div>
                 </div>
             </div>
