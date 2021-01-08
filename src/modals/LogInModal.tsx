@@ -8,6 +8,7 @@ import { Data } from '../context/Data/Index'
 
 // @ts-ignore
 import { ButtonPrimary, dispatchCustomEvent } from "slate-react-system";
+import { config } from '../config';
 
 
 type ModalProps = {
@@ -60,11 +61,11 @@ class LogInModal extends Component<ModalProps> {
         return (
             <div className="loginmodal">
                 <div className="imgheader">
-                {this.props.type === '0' ?
-                            <img src={RootKey} alt={'RootKey'} />
-                            :
-                            <img src={Verifiers} alt={'Verifiers'} />
-                        }
+                    {this.props.type === '0' ?
+                        <img src={RootKey} alt={'RootKey'} />
+                        :
+                        <img src={Verifiers} alt={'Verifiers'} />
+                    }
                 </div>
                 <div className="info">
                     <div className="title">
@@ -83,13 +84,15 @@ class LogInModal extends Component<ModalProps> {
                     </div>
                 </div>
                 <div className="buttons">
-                    <div className="button left">
-                        <ButtonPrimary onClick={this.loadBurnerWallet}>
-                            <img src={Logo} alt={'Logo'} />
+                    {!config.networks.includes('Mainnet') ?
+                        <div className="button left">
+                            <ButtonPrimary onClick={this.loadBurnerWallet}>
+                                <img src={Logo} alt={'Logo'} />
                             Load Browser Wallet
                         </ButtonPrimary>
-                    </div>
-                    <div className="button right">
+                        </div>
+                        : null}
+                    <div className={config.networks.includes('Mainnet') ? "button center" : "button right"}>
                         <ButtonPrimary onClick={this.loadLedgerWallet}>
                             <img src={Ledger} alt={'Ledger'} />
                             Load Ledger Wallet
