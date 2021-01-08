@@ -103,7 +103,7 @@
         border-radius: 8px;
         background-color: #fff;
         z-index: 1;
-    
+
         .notificationentry {
           padding-top: 10px;
           white-space: nowrap;
@@ -677,7 +677,7 @@
 
     .description {
       padding-top: 10px;
-      font-family: Inter;
+      font-family: "suisseintl";
       font-style: normal;
       font-weight: normal;
       font-size: 16px;
@@ -1277,7 +1277,6 @@
   display: inline-block;
   text-align: center;
 
-
   .title {
     font-weight: bold;
     font-family: "suisseintl";
@@ -1296,11 +1295,11 @@
   text-align: center;
   font-family: "suisseintl";
 
-  p{
+  p {
     padding-bottom: 20px;
   }
 
-  .markdown{
+  .markdown {
     width: 800px;
     text-align: left;
     table {
@@ -1320,7 +1319,7 @@
     padding-bottom: 20px;
   }
 
-  .content{
+  .content {
     max-height: 380px;
     overflow: scroll;
   }
@@ -1424,6 +1423,13 @@
       width: 50%;
       float: right;
     }
+
+    .center {
+      max-width: 220px;
+      left: 0;
+      right: 0;
+      margin: auto;
+    }
   }
 }
 
@@ -1466,9 +1472,8 @@
     line-height: 20px;
     letter-spacing: 0px;
     padding-top: 10px;
-    
   }
-  .paginator{
-    color: #33A7FF;
+  .paginator {
+    color: #33a7ff;
   }
 }
