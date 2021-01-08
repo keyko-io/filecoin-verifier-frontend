@@ -1068,7 +1068,7 @@
 
   .title {
     text-align: center;
-    font-family: Inter;
+    font-family: "suisseintl";
     font-style: normal;
     font-weight: bold;
     font-size: 16px;
@@ -1077,7 +1077,7 @@
 
   .description {
     text-align: center;
-    font-family: Inter;
+    font-family: "suisseintl";
     font-style: normal;
     font-weight: normal;
     font-size: 16px;
@@ -1397,6 +1397,13 @@
     .right {
       width: 50%;
       float: right;
+    }
+
+    .center {
+      max-width: 220px;
+      left: 0;
+      right: 0;
+      margin: auto;
     }
   }
 }

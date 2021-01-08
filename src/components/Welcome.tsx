@@ -11,6 +11,7 @@ class Welcome extends Component<WelcomeProps> {
         return (
             <div className="welcome">
                 <div className="title">{this.props.title}</div>
+                <div className="description">Filecoin Plus is a layer of social trust on top of the Filecoin Network to help incentivize the storage of real data.</div>
             </div>
         )
     }
