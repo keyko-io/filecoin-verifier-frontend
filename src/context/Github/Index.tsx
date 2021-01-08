@@ -1,3 +1,4 @@
+import { any } from 'bluebird'
 import React from 'react'
 
 export const Github = React.createContext({
@@ -5,5 +6,6 @@ export const Github = React.createContext({
     githubOcto: {},
     loginGithub: async (code: string, onboarding?: boolean) => {},
     initGithubOcto: async (token: string, onboarding?: boolean) => {},
-    logoutGithub: async () =>{}
+    logoutGithub: async () =>{},
+    githubOctoGeneric: async () => {}
 })

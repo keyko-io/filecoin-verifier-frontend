@@ -32,6 +32,20 @@ export default class RootKeyHolder extends Component<RootKeyHolderProps, RootKey
     }
 
     componentDidMount() {
+
+        const getProvider = async () => {
+        const githubGeneric = await this.context.github.githubOctoGeneric()
+        const rawIssues = await githubGeneric.issues.listForRepo({
+            owner: config.lotusNodes[1].notaryOwner,
+            repo: config.lotusNodes[1].notaryRepo,
+            state: 'open',
+            labels: 'status:StartSignOnchain'
+        })
+        console.log('rawIssues')
+        console.log(rawIssues)
+        }
+
+        getProvider()
     }
 
     showPending = async () => {
@@ -115,17 +129,20 @@ export default class RootKeyHolder extends Component<RootKeyHolderProps, RootKey
                     console.log("fullDatacap to propose: " + fullDatacap)
 
                     let messageID = await this.context.wallet.api.proposeVerifier(address, fullDatacap, this.context.wallet.walletIndex)
+
+                    const githubGeneric = await this.context.github.githubOctoGeneric()
+
                     // github update
                     // DISABLED temporaly until we can use a generic token to avoid exposing RKH Identity
                     /*
-                    await this.context.github.githubOcto.issues.removeAllLabels({
+                    await githubGeneric.issues.removeAllLabels({
                         owner: config.lotusNodes[this.context.wallet.networkIndex].notaryOwner,
                         repo: config.lotusNodes[this.context.wallet.networkIndex].notaryRepo,
                         issue_number: request.number,
                     })
                     await this.timeout(1000)
                     let label = config.lotusNodes[this.context.wallet.networkIndex].rkhtreshold > 1 ? 'status:StartSignOnchain' : 'status:AddedOnchain'
-                    await this.context.github.githubOcto.issues.addLabels({
+                    await githubGeneric.issues.addLabels({
                         owner: config.lotusNodes[this.context.wallet.networkIndex].notaryOwner,
                         repo: config.lotusNodes[this.context.wallet.networkIndex].notaryRepo,
                         issue_number: request.number,
@@ -134,7 +151,7 @@ export default class RootKeyHolder extends Component<RootKeyHolderProps, RootKey
 
                     let commentContent = `## The request has been signed by a new Root Key Holder\n#### Message sent to Filecoin Network\n>${messageID}`
 
-                    await this.context.github.githubOcto.issues.createComment({
+                    await githubGeneric.issues.createComment({
                         owner: config.lotusNodes[this.context.wallet.networkIndex].notaryOwner,
                         repo: config.lotusNodes[this.context.wallet.networkIndex].notaryRepo,
                         issue_number: request.number,

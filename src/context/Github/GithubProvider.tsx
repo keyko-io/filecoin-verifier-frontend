@@ -2,6 +2,8 @@ import React from 'react'
 import { Github } from './Index'
 // @ts-ignore
 import { Octokit } from '@octokit/rest'
+// @ts-ignore
+import { createAppAuth } from '@octokit/auth-app'
 import { config } from '../../config';
 
 interface WalletProviderStates {
@@ -10,6 +12,7 @@ interface WalletProviderStates {
     loginGithub: any
     initGithubOcto: any
     logoutGithub: any
+    githubOctoGeneric: any
 }
 
 export default class WalletProvider extends React.Component<{}, WalletProviderStates> {
@@ -21,11 +24,11 @@ export default class WalletProvider extends React.Component<{}, WalletProviderSt
 
     initNetworkIndex = () => {
 
-    const activeIndex= config.lotusNodes
-        .map((node: any, index: number) => {return {name: node.name, index:index}})
-        .filter((node: any, index: number) => config.networks.includes(node.name))
-       
-    return activeIndex[0].index
+        const activeIndex = config.lotusNodes
+            .map((node: any, index: number) => { return { name: node.name, index: index } })
+            .filter((node: any, index: number) => config.networks.includes(node.name))
+
+        return activeIndex[0].index
     }
 
     state = {
@@ -65,6 +68,12 @@ export default class WalletProvider extends React.Component<{}, WalletProviderSt
                 githubLogged: false,
                 githubOcto: undefined
             })
+        },
+        githubOctoGeneric: async () => {
+            const octokit = new Octokit({
+                auth: "a02c67a07770737cbf165415b3385665e790667e",
+            });
+            return octokit
         }
     }
 
@@ -78,6 +87,10 @@ export default class WalletProvider extends React.Component<{}, WalletProviderSt
     async componentDidMount() {
         this.loadGithub()
     }
+
+
+
+
 
     render() {
         return (
