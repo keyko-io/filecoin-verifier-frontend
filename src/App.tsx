@@ -24,6 +24,7 @@ library.add(fab, far, fas)
 type States = {
   networkSelect: boolean
   accountSelect: boolean
+  notificationsOpen: boolean
   search: string
 }
 
@@ -36,6 +37,7 @@ class App extends Component<{}, States> {
     this.state = {
       networkSelect: false,
       accountSelect: false,
+      notificationsOpen: false,
       search: ''
     }
     this.child = React.createRef();
@@ -58,6 +60,12 @@ class App extends Component<{}, States> {
   openAccountSelect = (e: any) => {
     this.setState({
       accountSelect: this.state.accountSelect === false ? true : false
+    })
+  }
+
+  openNotifications = (e: any) => {
+    this.setState({
+      notificationsOpen: this.state.notificationsOpen === false ? true : false
     })
   }
 
@@ -142,7 +150,36 @@ class App extends Component<{}, States> {
           <div className="refresh" onClick={() => this.refresh()}>
             <FontAwesomeIcon icon={["fas", "redo"]} flip="vertical" transform={{ rotate: 135 }} />
           </div>
-          <div className="notification"><FontAwesomeIcon icon={["far", "bell"]} /></div>
+          {this.context.viewroot === true ?
+            <div className="notification" onClick={this.openNotifications}><FontAwesomeIcon icon={["far", "bell"]} />
+              {this.state.notificationsOpen ?
+                <div className="notificationholder">
+                  {this.context.notificationVerifierRequests.map((entry: any, index: number) => {
+                    return <div key={index} className="notificationentry">
+                      <div onClick={()=> window.open(entry.url, "_blank")}>
+                        Issue: {entry.number}
+                      </div>
+                    </div>
+                  })}
+                </div>
+              : null}
+            </div>
+          : null}
+          {this.context.viewroot === false ?
+            <div className="notification" onClick={this.openNotifications}><FontAwesomeIcon icon={["far", "bell"]} />
+              {this.state.notificationsOpen ?
+                <div className="notificationholder">
+                  {this.context.notificationClientRequests.map((entry: any, index: number) => {
+                    return <div key={index} className="notificationentry">
+                      <div onClick={()=> window.open(entry.url, "_blank")}>
+                        Issue: {entry.number}
+                      </div>
+                    </div>
+                  })}
+                </div>
+              : null}
+            </div>
+          : null}
           <div className="accountholder" onClick={this.openAccountSelect}>
             {this.state.accountSelect ?
               <div className="accountselectholder">
