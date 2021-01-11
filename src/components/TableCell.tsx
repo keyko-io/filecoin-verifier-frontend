@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 
 type TableCellProps = {
     text: string,
+    type?: string
 }
 
 
@@ -25,7 +26,11 @@ class TableCell extends Component<TableCellProps> {
     render() {
         return (
             <>
-                {this.state.cellContent.map((ele, i) => <p key={i}>{ele}</p>)}
+                {this.state.cellContent.map((ele: string, i) => <p key={i}>{
+                    this.props.type == 'Location' ?
+                        <><p>{ele.split(',')[0]}</p><p>{ele.split(',')[1]}</p> </>
+                        : ele
+                }</p>)}
             </>
         )
     }

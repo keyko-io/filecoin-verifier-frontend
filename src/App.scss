@@ -103,7 +103,7 @@
         border-radius: 8px;
         background-color: #fff;
         z-index: 1;
-    
+
         .notificationentry {
           padding-top: 10px;
           white-space: nowrap;
@@ -1026,6 +1026,10 @@
       }
     }
   }
+  .miners {
+    top: 0px !important;
+    text-align: left;
+  }
 }
 
 .preonboarding {
@@ -1277,7 +1281,6 @@
   display: inline-block;
   text-align: center;
 
-
   .title {
     font-weight: bold;
     font-family: "suisseintl";
@@ -1296,11 +1299,11 @@
   text-align: center;
   font-family: "suisseintl";
 
-  p{
+  p {
     padding-bottom: 20px;
   }
 
-  .markdown{
+  .markdown {
     width: 800px;
     text-align: left;
     table {
@@ -1320,7 +1323,7 @@
     padding-bottom: 20px;
   }
 
-  .content{
+  .content {
     max-height: 380px;
     overflow: scroll;
   }
@@ -1466,9 +1469,12 @@
     line-height: 20px;
     letter-spacing: 0px;
     padding-top: 10px;
-    
   }
-  .paginator{
-    color: #33A7FF;
+  .paginator {
+    color: #33a7ff;
   }
+}
+
+.paginationminers {
+  top: 630px !important;
 }
