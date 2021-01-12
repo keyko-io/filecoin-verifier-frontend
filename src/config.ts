@@ -7,6 +7,7 @@ export const config = {
     oauthUri: process.env.REACT_APP_OAUTH_URI || 'https://plus.fil.org/oauth/',
     networks: process.env.REACT_APP_NETWORKS || 'Mainnet,Nerpanet',
     domain: process.env.REACT_APP_DOMAIN || "https://plus.fil.org/",
+    defaultAssign: ['philippbanhardt'],
     lotusNodes: [{
         name: 'Mainnet',
         code: 461,
