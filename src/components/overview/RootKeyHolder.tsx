@@ -242,12 +242,12 @@ export default class RootKeyHolder extends Component<RootKeyHolderProps, RootKey
                 <div className="tabsholder">
                     <div className="tabs">
                         <div className={this.state.tabs === "0" ? "selected" : ""} onClick={() => { this.showVerifierRequests() }}>Notaries Approved by Governance ({this.context.verifierRequests.length})</div>
-                        <div className={this.state.tabs === "1" ? "selected" : ""} onClick={() => { this.showPending() }}>Notaries Pending to Sign Onchain ({this.state.pendingverifiers.length})</div>
+                        <div className={this.state.tabs === "1" ? "selected" : ""} onClick={() => { this.showPending() }}>Notaries Pending to Sign On-chain ({this.state.pendingverifiers.length})</div>
                         <div className={this.state.tabs === "2" ? "selected" : ""} onClick={() => { this.showApproved() }}>Accepted Notaries ({this.context.verified.length})</div>
                     </div>
                     <div className="tabssadd">
-                        {this.state.tabs === "0" ? <ButtonPrimary onClick={() => this.acceptRequestVerifier()}>Propose Onchain</ButtonPrimary> : null}
-                        {this.state.tabs === "1" ? <ButtonPrimary onClick={() => this.handleSubmitApprove()}>Sign Onchain</ButtonPrimary> : null}
+                        {this.state.tabs === "0" ? <ButtonPrimary onClick={() => this.acceptRequestVerifier()}>Propose On-chain</ButtonPrimary> : null}
+                        {this.state.tabs === "1" ? <ButtonPrimary onClick={() => this.handleSubmitApprove()}>Sign On-chain</ButtonPrimary> : null}
                     </div>
                 </div>
                 {this.state.tabs === "0" && this.context.github.githubLogged ?
