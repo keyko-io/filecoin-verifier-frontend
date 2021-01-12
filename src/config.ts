@@ -10,6 +10,7 @@ export const config = {
     networks: process.env.REACT_APP_NETWORKS || 'Mainnet,Nerpanet',
     minersUrl: 'https://raw.githubusercontent.com/filecoin-project/filecoin-plus-client-onboarding/main/miners.md',
     domain: process.env.REACT_APP_DOMAIN || "https://beta-verify.filecoin.io/",
+    defaultAssign: ['philippbanhardt'],
     lotusNodes: [{
         name: 'Mainnet',
         code: 461,
