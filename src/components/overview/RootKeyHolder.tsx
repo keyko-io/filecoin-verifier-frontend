@@ -107,7 +107,7 @@ export default class RootKeyHolder extends Component<RootKeyHolderProps, RootKey
 
 
                         let address = request.addresses[i]
-                        console.log("request address: " + request.address)
+                        console.log("request address: " + address)
 
                         if (address.startsWith("t1") || address.startsWith("f1")) {
                             address = await this.context.wallet.api.actorAddress(address)
