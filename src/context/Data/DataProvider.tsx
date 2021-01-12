@@ -285,7 +285,21 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
                         // this.state.dispatchNotification('Something went wrong.')
                     }
                 } catch (error) {
-                    // this.state.dispatchNotification(error.toString())
+                    if(error.errors[0].field ==='assignees' && error.errors[0].code==='invalid'){
+                        console.log('There was an error on assign, trying with user...')
+                        const issue = await this.props.github.githubOcto.issues.create({
+                            owner: data.onboarding ? config.onboardingOwner : config.lotusNodes[this.props.wallet.networkIndex].clientOwner,
+                            repo: data.onboarding ? config.onboardingClientRepo : config.lotusNodes[this.props.wallet.networkIndex].clientRepo,
+                            title: 'Client Allocation Request for: ' + data.organization,
+                            assignees: config.defaultAssign,
+                            body: IssueBody(data)
+                        });
+                        if (issue.status === 201) {
+                            // this.state.dispatchNotification('Request submited as #' + issue.data.number)
+                            this.state.loadClientRequests()
+                            return issue.data.html_url
+                        }
+                    }
                 }
             },
             selectedNotaryRequests: [] as any[],
