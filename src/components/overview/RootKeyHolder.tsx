@@ -182,7 +182,7 @@ export default class RootKeyHolder extends Component<RootKeyHolderProps, RootKey
             }
         }
         // go over transactions
-        try {
+         try {
             const multisigInfo = await this.context.wallet.api.multisigInfo(config.lotusNodes[this.context.wallet.networkIndex].rkhMultisig)
             for (let tx of this.state.pendingverifiers) {
                 if (this.state.selectedTransactions.includes(tx.id)) {
@@ -267,8 +267,16 @@ export default class RootKeyHolder extends Component<RootKeyHolderProps, RootKey
                                     <tr key={index}>
                                         <td><input type="checkbox" onChange={() => this.selectNotaryRow(notaryReq.number)} checked={this.context.selectedNotaryRequests.includes(notaryReq.number)} /></td>
                                         <td>{notaryReq.data.name}</td>
-                                        <td>{notaryReq.address}</td>
-                                        <td>{notaryReq.datacap}</td>
+                                        <td>
+                                            {notaryReq.addresses.map((address: any, index: any) =>
+                                                <div key={index}>{address}</div>
+                                            )}
+                                        </td>
+                                        <td>
+                                            {notaryReq.datacaps.map((datacap: any, index: any) =>
+                                                <div key={index}>{datacap}</div>
+                                            )}
+                                        </td>
                                         <td><a target="_blank" rel="noopener noreferrer" href={notaryReq.url}>#{notaryReq.number}</a></td>
                                     </tr>
                                 )}

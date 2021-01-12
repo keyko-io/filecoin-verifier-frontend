@@ -139,8 +139,8 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
                                 issues.push({
                                     number: rawIssue.number,
                                     url: rawIssue.html_url,
-                                    address: comment.address,
-                                    datacap: comment.datacap,
+                                    addresses: comment.addresses,
+                                    datacaps: comment.datacaps,
                                     data
                                 })
                                 break
