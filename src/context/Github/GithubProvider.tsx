@@ -12,6 +12,7 @@ interface WalletProviderStates {
     loginGithub: any
     initGithubOcto: any
     logoutGithub: any
+    githubOctoGenericLogin: any
     githubOctoGeneric: any
 }
 
@@ -34,6 +35,7 @@ export default class WalletProvider extends React.Component<{}, WalletProviderSt
     state = {
         githubLogged: false,
         githubOcto: {} as any,
+        githubOctoGeneric: { logged: false } as any,
         loginGithub: async (code: string, onboarding?: boolean) => {
             try {
                 const authrequest = await fetch(config.apiUri + '/api/v1/github', {
@@ -69,11 +71,13 @@ export default class WalletProvider extends React.Component<{}, WalletProviderSt
                 githubOcto: undefined
             })
         },
-        githubOctoGeneric: async () => {
-            const octokit = new Octokit({
-                auth: "a02c67a07770737cbf165415b3385665e790667e",
-            });
-            return octokit
+        githubOctoGenericLogin: async () => {
+            if (this.state.githubOctoGeneric.logged === false) {
+                const octokit = await new Octokit({
+                    auth: "a02c67a07770737cbf165415b3385665e790667e",
+                });
+                this.setState({ githubOctoGeneric: { logged: true, octokit } })
+            }
         }
     }
 

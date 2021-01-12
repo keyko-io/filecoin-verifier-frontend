@@ -108,11 +108,10 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
             },
             notificationClientRequests: [],
             loadVerifierRequests: async () => {
-                if (this.props.github.githubLogged === false) {
-                    this.setState({ verifierRequests: [] })
-                    return
+                if (this.props.github.githubOctoGeneric.logged === false) {
+                    await this.props.github.githubOctoGenericLogin()
                 }
-                const rawIssues = await this.props.github.githubOcto.issues.listForRepo({
+                const rawIssues = await this.props.github.githubOctoGeneric.octokit.issues.listForRepo({
                     owner: config.lotusNodes[this.props.wallet.networkIndex].notaryOwner,
                     repo: config.lotusNodes[this.props.wallet.networkIndex].notaryRepo,
                     state: 'open',
@@ -124,7 +123,7 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
                     if (data.correct) {
 
                         // get comments
-                        const rawComments = await this.props.github.githubOcto.issues.listComments({
+                        const rawComments = await this.props.github.githubOctoGeneric.octokit.issues.listComments({
                             owner: config.lotusNodes[this.props.wallet.networkIndex].notaryOwner,
                             repo: config.lotusNodes[this.props.wallet.networkIndex].notaryRepo,
                             issue_number: rawIssue.number,

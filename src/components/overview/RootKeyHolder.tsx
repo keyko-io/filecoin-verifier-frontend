@@ -33,19 +33,6 @@ export default class RootKeyHolder extends Component<RootKeyHolderProps, RootKey
 
     componentDidMount() {
 
-        const getProvider = async () => {
-        const githubGeneric = await this.context.github.githubOctoGeneric()
-        const rawIssues = await githubGeneric.issues.listForRepo({
-            owner: config.lotusNodes[1].notaryOwner,
-            repo: config.lotusNodes[1].notaryRepo,
-            state: 'open',
-            labels: 'status:StartSignOnchain'
-        })
-        console.log('rawIssues')
-        console.log(rawIssues)
-        }
-
-        getProvider()
     }
 
     showPending = async () => {
@@ -130,19 +117,16 @@ export default class RootKeyHolder extends Component<RootKeyHolderProps, RootKey
 
                     let messageID = await this.context.wallet.api.proposeVerifier(address, fullDatacap, this.context.wallet.walletIndex)
 
-                    const githubGeneric = await this.context.github.githubOctoGeneric()
+                    await this.context.github.githubOctoGenericLogin()
 
-                    // github update
-                    // DISABLED temporaly until we can use a generic token to avoid exposing RKH Identity
-                    /*
-                    await githubGeneric.issues.removeAllLabels({
+                    await this.context.github.githubOctoGeneric.octokit.issues.removeAllLabels({
                         owner: config.lotusNodes[this.context.wallet.networkIndex].notaryOwner,
                         repo: config.lotusNodes[this.context.wallet.networkIndex].notaryRepo,
                         issue_number: request.number,
                     })
                     await this.timeout(1000)
                     let label = config.lotusNodes[this.context.wallet.networkIndex].rkhtreshold > 1 ? 'status:StartSignOnchain' : 'status:AddedOnchain'
-                    await githubGeneric.issues.addLabels({
+                    await this.context.github.githubOctoGeneric.octokit.issues.addLabels({
                         owner: config.lotusNodes[this.context.wallet.networkIndex].notaryOwner,
                         repo: config.lotusNodes[this.context.wallet.networkIndex].notaryRepo,
                         issue_number: request.number,
@@ -151,7 +135,7 @@ export default class RootKeyHolder extends Component<RootKeyHolderProps, RootKey
 
                     let commentContent = `## The request has been signed by a new Root Key Holder\n#### Message sent to Filecoin Network\n>${messageID}`
 
-                    await githubGeneric.issues.createComment({
+                    await this.context.github.githubOctoGeneric.octokit.issues.createComment({
                         owner: config.lotusNodes[this.context.wallet.networkIndex].notaryOwner,
                         repo: config.lotusNodes[this.context.wallet.networkIndex].notaryRepo,
                         issue_number: request.number,
@@ -159,7 +143,7 @@ export default class RootKeyHolder extends Component<RootKeyHolderProps, RootKey
                     })
 
                     await this.timeout(1000)
-                    */
+                
                     await this.context.loadVerifierRequests()
                     // send notifications
                     this.context.wallet.dispatchNotification('Accepting Message sent with ID: ' + messageID)
@@ -205,13 +189,12 @@ export default class RootKeyHolder extends Component<RootKeyHolderProps, RootKey
                     const datacap = BigInt(tx.datacap)
                     let messageID = await this.context.wallet.api.approveVerifier(tx.verifier, datacap, tx.signer, tx.id, this.context.wallet.walletIndex);
 
-                    // check if we have github issue
-                     // DISABLED temporaly until we can use a generic token to avoid exposing RKH Identity
-                     /*
+                    await this.context.github.githubOctoGenericLogin()
+
                     if (issues[tx.verifier]) {
                         let commentContent = `## The request has been signed by a new Root Key Holder\n#### Message sent to Filecoin Network\n>${messageID}`
 
-                        await this.context.github.githubOcto.issues.createComment({
+                        await this.context.github.githubOctoGeneric.octokit.issues.createComment({
                             owner: config.lotusNodes[this.context.wallet.networkIndex].notaryOwner,
                             repo: config.lotusNodes[this.context.wallet.networkIndex].notaryRepo,
                             issue_number: issues[tx.verifier].number,
@@ -223,13 +206,13 @@ export default class RootKeyHolder extends Component<RootKeyHolderProps, RootKey
                             multisigInfo.signers > config.lotusNodes[this.context.wallet.networkIndex].rkhtreshold) {
 
                             await this.timeout(1000)
-                            await this.context.github.githubOcto.issues.removeAllLabels({
+                            await this.context.github.githubOctoGeneric.octokit.issues.removeAllLabels({
                                 owner: config.lotusNodes[this.context.wallet.networkIndex].notaryOwner,
                                 repo: config.lotusNodes[this.context.wallet.networkIndex].notaryRepo,
                                 issue_number: issues[tx.verifier].number,
                             })
                             await this.timeout(1000)
-                            await this.context.github.githubOcto.issues.addLabels({
+                            await this.context.github.githubOctoGeneric.octokit.issues.addLabels({
                                 owner: config.lotusNodes[this.context.wallet.networkIndex].notaryOwner,
                                 repo: config.lotusNodes[this.context.wallet.networkIndex].notaryRepo,
                                 issue_number: issues[tx.verifier].number,
@@ -237,7 +220,7 @@ export default class RootKeyHolder extends Component<RootKeyHolderProps, RootKey
                             })
                         }
                     }
-                    */
+                
                 }
             }
             this.setState({ selectedTransactions: [], approveLoading: false })
@@ -267,7 +250,7 @@ export default class RootKeyHolder extends Component<RootKeyHolderProps, RootKey
                         {this.state.tabs === "1" ? <ButtonPrimary onClick={() => this.handleSubmitApprove()}>Sign Onchain</ButtonPrimary> : null}
                     </div>
                 </div>
-                {this.state.tabs === "0" && this.context.github.githubLogged ?
+                {this.state.tabs === "0" ?
                     <div>
                         <table>
                             <thead>
@@ -292,30 +275,6 @@ export default class RootKeyHolder extends Component<RootKeyHolderProps, RootKey
                             </tbody>
                         </table>
                         {this.context.verifierRequests.length === 0 ? <div className="nodata">No public requests yet</div> : null}
-                        <div className="alignright">
-                            <ButtonSecondary className="buttonsecondary" onClick={async () => {
-                                await this.context.github.logoutGithub()
-                                await this.context.refreshGithubData()
-                            }}>
-                                Logout GitHub
-                            </ButtonSecondary>
-                        </div>
-                    </div>
-                    : null}
-                {this.state.tabs === "0" && !this.context.github.githubLogged ?
-                    <div id="githublogin">
-                        <LoginGithub
-                            redirectUri={config.oauthUri}
-                            clientId={config.githubApp}
-                            scope="repo"
-                            onSuccess={async (response: any) => {
-                                await this.context.github.loginGithub(response.code)
-                                await this.context.refreshGithubData()
-                            }}
-                            onFailure={(response: any) => {
-                                console.log('failure', response)
-                            }}
-                        />
                     </div>
                     : null}
                 {this.state.tabs === "2" ?

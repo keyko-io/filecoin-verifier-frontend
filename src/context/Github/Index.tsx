@@ -7,5 +7,6 @@ export const Github = React.createContext({
     loginGithub: async (code: string, onboarding?: boolean) => {},
     initGithubOcto: async (token: string, onboarding?: boolean) => {},
     logoutGithub: async () =>{},
-    githubOctoGeneric: async () => {}
+    githubOctoGenericLogin: async () => {},
+    githubOctoGeneric: {},
 })
