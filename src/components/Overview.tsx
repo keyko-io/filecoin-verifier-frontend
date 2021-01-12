@@ -7,9 +7,6 @@ import Notary from './overview/Notary';
 
 type OverviewStates = {
     tabs: string
-    pendingverifiers: any[]
-    clientsamount: string
-    clients: any[]
 }
 
 export default class Overview extends Component<{}, OverviewStates> {
@@ -17,10 +14,7 @@ export default class Overview extends Component<{}, OverviewStates> {
     interval: any
 
     state = {
-        tabs: '1',
-        pendingverifiers: [] as any[],
-        clientsamount: '',
-        clients: [] as any[],
+        tabs: '1'
     }
 
     componentDidMount() {
@@ -35,31 +29,8 @@ export default class Overview extends Component<{}, OverviewStates> {
     loadData = async () => {
         this.context.refreshGithubData()
         this.context.loadVerified()
-        const clients = await this.context.wallet.api.listVerifiedClients()
-        // pending verififers
-        let pendingTxs = await this.context.wallet.api.pendingRootTransactions()
-        let pendingverifiers: any[] = []
-        for (let txs in pendingTxs) {
-            const verifierAccount = await this.context.wallet.api.actorKey(pendingTxs[txs].parsed.params.verifier)
-            pendingverifiers.push({
-                id: pendingTxs[txs].id,
-                type: pendingTxs[txs].parsed.params.cap.toString() === '0' ? 'Revoke' : 'Add',
-                verifier: pendingTxs[txs].parsed.params.verifier,
-                verifierAccount,
-                datacap: pendingTxs[txs].parsed.params.cap.toString(),
-                signer: pendingTxs[txs].signers[0]
-            })
-        }
-        let clientsamount = 0
-        for (const txs of clients) {
-            clientsamount = clientsamount + Number(txs.datacap)
-            txs['key'] = await this.context.wallet.api.actorKey(txs.verified)
-        }
-        this.setState({
-            clients,
-            pendingverifiers,
-            clientsamount: clientsamount.toString()
-        })
+        this.context.loadClients()
+        this.context.loadPendingVerifiers()
     }
 
     public render() {
@@ -72,11 +43,11 @@ export default class Overview extends Component<{}, OverviewStates> {
                         </div>
                         <div className="textinfodata">
                             <div className="textinfodatablock">
-                                <div className="data">{datacapFilter(this.state.clientsamount)}</div>
+                                <div className="data">{datacapFilter(this.context.clientsAmount)}</div>
                                 <div className="text">Datacap Granted</div>
                             </div>
                             <div className="textinfodatablock">
-                                <div className="data">{this.state.pendingverifiers.length}</div>
+                                <div className="data">{this.context.pendingVerifiers.length}</div>
                                 <div className="text">Pending Notaries</div>
                             </div>
                             <div className="textinfodatablock">
@@ -88,11 +59,11 @@ export default class Overview extends Component<{}, OverviewStates> {
                 </div>
                 {this.context.viewroot ?
                     <RootKeyHolder
-                        pendingverifiers={this.state.pendingverifiers}
+                        pendingverifiers={this.context.pendingVerifiers}
                     />
                     :
                     <Notary
-                        clients={this.state.clients}
+                        clients={this.context.clients}
                     />
                 }
             </div>
