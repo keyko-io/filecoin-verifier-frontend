@@ -17,8 +17,8 @@ export const config = {
         token: process.env.REACT_APP_MAINNET_TOKEN,
         clientRepo: 'filecoin-clients-onboarding',
         clientOwner: 'keyko-io', 
-        notaryRepo: 'notary-governance',
-        notaryOwner: 'filecoin-project',
+        notaryRepo: 'filecoin-notaries-onboarding',
+        notaryOwner: 'keyko-io',
         rkhMultisig: 't080',
         rkhtreshold: 2
     }, {

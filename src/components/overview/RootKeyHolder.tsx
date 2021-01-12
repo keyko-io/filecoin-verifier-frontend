@@ -82,39 +82,49 @@ export default class RootKeyHolder extends Component<RootKeyHolderProps, RootKey
     acceptRequestVerifier = async () => {
         for (const request of this.context.verifierRequests) {
             if (this.context.selectedNotaryRequests.includes(request.number)) {
-                try {
-                    let prepDatacap = '1'
-                    let prepDatacapExt = 'B'
-                    console.log("request.datacap: " + request.datacap)
-                    const dataext = config.datacapExtNotary.slice().reverse()
-                    for (const entry of dataext) {
-                        if (request.datacap.endsWith(entry.name)) {
-                            console.log("found unit: " + entry.name)
-                            prepDatacapExt = entry.value
-                            prepDatacap = request.datacap.substring(0, request.datacap.length - entry.name.length)
-                            break
+                for (let i = 0; i < request.datacaps.length; i++) {
+                    const reqDatacap = request.datacaps[i]
+
+                    try {
+                        let prepDatacap = '1'
+                        let prepDatacapExt = 'B'
+                        console.log("request.datacap: " + reqDatacap)
+                        const dataext = config.datacapExtNotary.slice().reverse()
+                        for (const entry of dataext) {
+                            if (reqDatacap.endsWith(entry.name)) {
+                                console.log("found unit: " + entry.name)
+                                prepDatacapExt = entry.value
+                                prepDatacap = reqDatacap.substring(0, reqDatacap.length - entry.name.length)
+                                break
+                            }
                         }
+
+                        console.log("prepDatacap: " + prepDatacap)
+                        console.log("prepDatacapExt: " + prepDatacapExt)
+
+                        const datacap = parseFloat(prepDatacap)
+                        const fullDatacap = BigInt(datacap * parseFloat(prepDatacapExt))
+
+
+                        let address = request.addresses[i]
+                        console.log("request address: " + request.address)
+
+                        if (address.startsWith("t1") || address.startsWith("f1")) {
+                            address = await this.context.wallet.api.actorAddress(address)
+                            console.log("getting t0/f0 ID. Result of  actorAddress method: " + address)
+                        }
+
+                        console.log("address to propose: " + address)
+                        console.log("fullDatacap to propose: " + fullDatacap)
+
+                        let messageID = await this.context.wallet.api.proposeVerifier(address, fullDatacap, this.context.wallet.walletIndex)
+                        // send notifications
+                        this.context.wallet.dispatchNotification('Accepting Message sent with ID: ' + messageID)
+                    } catch (e) {
+                        this.context.wallet.dispatchNotification('Verification failed: ' + e.message)
+                        console.log(e.stack)
                     }
 
-                    console.log("prepDatacap: " + prepDatacap)
-                    console.log("prepDatacapExt: " + prepDatacapExt)
-
-                    const datacap = parseFloat(prepDatacap)
-                    const fullDatacap = BigInt(datacap * parseFloat(prepDatacapExt))
-
-
-                    let address = request.address
-                    console.log("request address: " + request.address)
-
-                    if (address.startsWith("t1") || address.startsWith("f1")) {
-                        address = await this.context.wallet.api.actorAddress(address)
-                        console.log("getting t0/f0 ID. Result of  actorAddress method: " + address)
-                    }
-
-                    console.log("address to propose: " + address)
-                    console.log("fullDatacap to propose: " + fullDatacap)
-
-                    let messageID = await this.context.wallet.api.proposeVerifier(address, fullDatacap, this.context.wallet.walletIndex)
                     // github update
                     // DISABLED temporaly until we can use a generic token to avoid exposing RKH Identity
                     /*
@@ -144,11 +154,7 @@ export default class RootKeyHolder extends Component<RootKeyHolderProps, RootKey
                     await this.timeout(1000)
                     */
                     await this.context.loadVerifierRequests()
-                    // send notifications
-                    this.context.wallet.dispatchNotification('Accepting Message sent with ID: ' + messageID)
-                } catch (e) {
-                    this.context.wallet.dispatchNotification('Verification failed: ' + e.message)
-                    console.log(e.stack)
+
                 }
             }
         }
@@ -267,8 +273,16 @@ export default class RootKeyHolder extends Component<RootKeyHolderProps, RootKey
                                     <tr key={index}>
                                         <td><input type="checkbox" onChange={() => this.selectNotaryRow(notaryReq.number)} checked={this.context.selectedNotaryRequests.includes(notaryReq.number)} /></td>
                                         <td>{notaryReq.data.name}</td>
-                                        <td>{notaryReq.address}</td>
-                                        <td>{notaryReq.datacap}</td>
+                                        <td>
+                                            {notaryReq.addresses.map((address: any, index: any) =>
+                                                <div key={index}>{address}</div>
+                                            )}
+                                        </td>
+                                        <td>
+                                            {notaryReq.datacaps.map((datacap: any, index: any) =>
+                                                <div key={index}>{datacap}</div>
+                                            )}
+                                        </td>
                                         <td><a target="_blank" rel="noopener noreferrer" href={notaryReq.url}>#{notaryReq.number}</a></td>
                                     </tr>
                                 )}
