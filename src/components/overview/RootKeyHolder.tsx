@@ -106,7 +106,7 @@ export default class RootKeyHolder extends Component<RootKeyHolderProps, RootKey
                         const fullDatacap = BigInt(datacap * parseFloat(prepDatacapExt))
 
 
-                        let address = request.address
+                        let address = request.addresses[i]
                         console.log("request address: " + request.address)
 
                         if (address.startsWith("t1") || address.startsWith("f1")) {
@@ -121,7 +121,7 @@ export default class RootKeyHolder extends Component<RootKeyHolderProps, RootKey
 
                         await this.context.github.githubOctoGenericLogin()
 
-                        let commentContent = `## The request for your address ${address} has been signed by a new Root Key Holder\n#### Message sent to Filecoin Network\n>${messageID}`
+                        let commentContent = `## The request for your address ${request.addresses[i]} has been signed by a new Root Key Holder\n#### Message sent to Filecoin Network\n>${messageID}`
 
                         await this.context.github.githubOctoGeneric.octokit.issues.createComment({
                             owner: config.lotusNodes[this.context.wallet.networkIndex].notaryOwner,
