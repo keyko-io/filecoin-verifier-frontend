@@ -83,74 +83,77 @@ export default class RootKeyHolder extends Component<RootKeyHolderProps, RootKey
     acceptRequestVerifier = async () => {
         for (const request of this.context.verifierRequests) {
             if (this.context.selectedNotaryRequests.includes(request.number)) {
-                try {
-                    let prepDatacap = '1'
-                    let prepDatacapExt = 'B'
-                    console.log("request.datacap: " + request.datacap)
-                    const dataext = config.datacapExtNotary.slice().reverse()
-                    for (const entry of dataext) {
-                        if (request.datacap.endsWith(entry.name)) {
-                            console.log("found unit: " + entry.name)
-                            prepDatacapExt = entry.value
-                            prepDatacap = request.datacap.substring(0, request.datacap.length - entry.name.length)
-                            break
+                for (let i = 0; i < request.datacaps.length; i++) {
+                    const reqDatacap = request.datacaps[i]
+                    try {
+                        let prepDatacap = '1'
+                        let prepDatacapExt = 'B'
+                        console.log("request.datacap: " + reqDatacap)
+                        const dataext = config.datacapExtNotary.slice().reverse()
+                        for (const entry of dataext) {
+                            if (reqDatacap.endsWith(entry.name)) {
+                                console.log("found unit: " + entry.name)
+                                prepDatacapExt = entry.value
+                                prepDatacap = reqDatacap.substring(0, reqDatacap.length - entry.name.length)
+                                break
+                            }
                         }
+
+                        console.log("prepDatacap: " + prepDatacap)
+                        console.log("prepDatacapExt: " + prepDatacapExt)
+
+                        const datacap = parseFloat(prepDatacap)
+                        const fullDatacap = BigInt(datacap * parseFloat(prepDatacapExt))
+
+
+                        let address = request.addresses[i]
+                        console.log("request address: " + request.address)
+
+                        if (address.startsWith("t1") || address.startsWith("f1")) {
+                            address = await this.context.wallet.api.actorAddress(address)
+                            console.log("getting t0/f0 ID. Result of  actorAddress method: " + address)
+                        }
+
+                        console.log("address to propose: " + address)
+                        console.log("fullDatacap to propose: " + fullDatacap)
+
+                        let messageID = await this.context.wallet.api.proposeVerifier(address, fullDatacap, this.context.wallet.walletIndex)
+
+                        await this.context.github.githubOctoGenericLogin()
+
+                        let commentContent = `## The request for your address ${request.addresses[i]} has been signed by a new Root Key Holder\n#### Message sent to Filecoin Network\n>${messageID}`
+
+                        await this.context.github.githubOctoGeneric.octokit.issues.createComment({
+                            owner: config.lotusNodes[this.context.wallet.networkIndex].notaryOwner,
+                            repo: config.lotusNodes[this.context.wallet.networkIndex].notaryRepo,
+                            issue_number: request.number,
+                            body: commentContent,
+                        })
+
+                        await this.timeout(1000)
+
+                        await this.context.loadVerifierRequests()
+                        // send notifications
+                        this.context.wallet.dispatchNotification('Accepting Message sent with ID: ' + messageID)
+                    } catch (e) {
+                        this.context.wallet.dispatchNotification('Verification failed: ' + e.message)
+                        console.log(e.stack)
                     }
-
-                    console.log("prepDatacap: " + prepDatacap)
-                    console.log("prepDatacapExt: " + prepDatacapExt)
-
-                    const datacap = parseFloat(prepDatacap)
-                    const fullDatacap = BigInt(datacap * parseFloat(prepDatacapExt))
-
-
-                    let address = request.address
-                    console.log("request address: " + request.address)
-
-                    if (address.startsWith("t1") || address.startsWith("f1")) {
-                        address = await this.context.wallet.api.actorAddress(address)
-                        console.log("getting t0/f0 ID. Result of  actorAddress method: " + address)
-                    }
-
-                    console.log("address to propose: " + address)
-                    console.log("fullDatacap to propose: " + fullDatacap)
-
-                    let messageID = await this.context.wallet.api.proposeVerifier(address, fullDatacap, this.context.wallet.walletIndex)
-
-                    await this.context.github.githubOctoGenericLogin()
-
-                    await this.context.github.githubOctoGeneric.octokit.issues.removeAllLabels({
-                        owner: config.lotusNodes[this.context.wallet.networkIndex].notaryOwner,
-                        repo: config.lotusNodes[this.context.wallet.networkIndex].notaryRepo,
-                        issue_number: request.number,
-                    })
-                    await this.timeout(1000)
-                    let label = config.lotusNodes[this.context.wallet.networkIndex].rkhtreshold > 1 ? 'status:StartSignOnchain' : 'status:AddedOnchain'
-                    await this.context.github.githubOctoGeneric.octokit.issues.addLabels({
-                        owner: config.lotusNodes[this.context.wallet.networkIndex].notaryOwner,
-                        repo: config.lotusNodes[this.context.wallet.networkIndex].notaryRepo,
-                        issue_number: request.number,
-                        labels: [label],
-                    })
-
-                    let commentContent = `## The request has been signed by a new Root Key Holder\n#### Message sent to Filecoin Network\n>${messageID}`
-
-                    await this.context.github.githubOctoGeneric.octokit.issues.createComment({
-                        owner: config.lotusNodes[this.context.wallet.networkIndex].notaryOwner,
-                        repo: config.lotusNodes[this.context.wallet.networkIndex].notaryRepo,
-                        issue_number: request.number,
-                        body: commentContent,
-                    })
-
-                    await this.timeout(1000)
-                
-                    await this.context.loadVerifierRequests()
-                    // send notifications
-                    this.context.wallet.dispatchNotification('Accepting Message sent with ID: ' + messageID)
-                } catch (e) {
-                    this.context.wallet.dispatchNotification('Verification failed: ' + e.message)
-                    console.log(e.stack)
                 }
+
+                await this.context.github.githubOctoGeneric.octokit.issues.removeAllLabels({
+                    owner: config.lotusNodes[this.context.wallet.networkIndex].notaryOwner,
+                    repo: config.lotusNodes[this.context.wallet.networkIndex].notaryRepo,
+                    issue_number: request.number,
+                })
+                await this.timeout(1000)
+                let label = config.lotusNodes[this.context.wallet.networkIndex].rkhtreshold > 1 ? 'status:StartSignOnchain' : 'status:AddedOnchain'
+                await this.context.github.githubOctoGeneric.octokit.issues.addLabels({
+                    owner: config.lotusNodes[this.context.wallet.networkIndex].notaryOwner,
+                    repo: config.lotusNodes[this.context.wallet.networkIndex].notaryRepo,
+                    issue_number: request.number,
+                    labels: [label],
+                })
             }
         }
     }
@@ -182,7 +185,7 @@ export default class RootKeyHolder extends Component<RootKeyHolderProps, RootKey
             }
         }
         // go over transactions
-         try {
+        try {
             const multisigInfo = await this.context.wallet.api.multisigInfo(config.lotusNodes[this.context.wallet.networkIndex].rkhMultisig)
             for (let tx of this.state.pendingverifiers) {
                 if (this.state.selectedTransactions.includes(tx.id)) {
@@ -220,7 +223,7 @@ export default class RootKeyHolder extends Component<RootKeyHolderProps, RootKey
                             })
                         }
                     }
-                
+
                 }
             }
             this.setState({ selectedTransactions: [], approveLoading: false })
