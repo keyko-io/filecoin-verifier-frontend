@@ -121,7 +121,7 @@ export default class RootKeyHolder extends Component<RootKeyHolderProps, RootKey
 
                         await this.context.github.githubOctoGenericLogin()
 
-                        let commentContent = `## The request has been signed by a new Root Key Holder\n#### Message sent to Filecoin Network\n>${messageID}`
+                        let commentContent = `## The request for your address ${address} has been signed by a new Root Key Holder\n#### Message sent to Filecoin Network\n>${messageID}`
 
                         await this.context.github.githubOctoGeneric.octokit.issues.createComment({
                             owner: config.lotusNodes[this.context.wallet.networkIndex].notaryOwner,
@@ -140,7 +140,7 @@ export default class RootKeyHolder extends Component<RootKeyHolderProps, RootKey
                         console.log(e.stack)
                     }
                 }
-                
+
                 await this.context.github.githubOctoGeneric.octokit.issues.removeAllLabels({
                     owner: config.lotusNodes[this.context.wallet.networkIndex].notaryOwner,
                     repo: config.lotusNodes[this.context.wallet.networkIndex].notaryRepo,
