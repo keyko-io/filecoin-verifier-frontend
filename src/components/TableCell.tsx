@@ -1,8 +1,11 @@
 import React, { Component } from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+
 
 type TableCellProps = {
     text: string,
-    type?: string
+    type?: string,
+    href?: any,
 }
 
 
@@ -24,11 +27,24 @@ class TableCell extends Component<TableCellProps> {
     }
 
     renderContact = (data: any) => {
-        console.log(data)
         const contactElements = data.split(':')
-        if(data.includes('Slack')){
+        if (contactElements[0].includes('Website')) {
+            return <div className="contacvalue" >
+                <a href={this.props.href.attributes[0].value}>{contactElements[0]}</a>
+            </div>
         }
-        return <>{contactElements[0]}</>
+        if (contactElements[0].includes('Slack')) {
+            return <div className="contacvalue">{contactElements[0]}
+                <FontAwesomeIcon title={contactElements[1]} icon={["fas", "info-circle"]} />
+            </div>
+        }
+        if (contactElements[0].includes('Email')) {
+            return <div className="contacvalue">
+                <a href={this.props.href.attributes[0].value}>{contactElements[0]} </a>
+            </div>
+        }
+        return <div className="contacvalue">{contactElements[0]}</div>
+
     }
 
     render() {

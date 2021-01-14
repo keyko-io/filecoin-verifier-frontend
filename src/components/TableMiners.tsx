@@ -99,6 +99,7 @@ export default class TableVerifiers extends Component {
                                         <td>
                                             <TableCell
                                                 text={miner.children[7].children[0].content} 
+                                                href={miner.children[7].children[1]} 
                                                 type="Contact"/>
                                         </td>
                                         <td>
