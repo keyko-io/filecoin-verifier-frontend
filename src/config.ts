@@ -15,8 +15,6 @@ export const config = {
         code: 461,
         url: 'https://node.glif.io/space06/lotus/rpc/v0',
         token: process.env.REACT_APP_MAINNET_TOKEN,
-        clientRepo: 'filecoin-clients-onboarding',
-        clientOwner: 'keyko-io', 
         notaryRepo: 'filecoin-notaries-onboarding',
         notaryOwner: 'keyko-io',
         rkhMultisig: 't080',
@@ -26,9 +24,7 @@ export const config = {
         code: 1,
         url: 'https://beta-verify.filecoin.io/api/rpc/v0',
         token: process.env.REACT_APP_NERPANET_TOKEN,
-        clientRepo: 'filecoin-clients-onboarding-test',
         notaryRepo: 'filecoin-notaries-onboarding',
-        clientOwner: 'keyko-io',
         notaryOwner: 'keyko-io',
         rkhMultisig: 't080',
         rkhtreshold: 1
@@ -37,9 +33,7 @@ export const config = {
         code: 1,
         url: 'ws://localhost:1234/rpc/v0',
         token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBbGxvdyI6WyJyZWFkIiwid3JpdGUiLCJzaWduIiwiYWRtaW4iXX0.OJlFIgYG3D23RjWWXfjdTluG6Qx2EOgwMeWQxnUQrMM',
-        clientRepo: 'filecoin-clients-onboarding-test',
         notaryRepo: 'filecoin-notaries-onboarding',
-        clientOwner: 'keyko-io',
         notaryOwner: 'keyko-io',
         rkhMultisig: 't080',
         rkhtreshold: 2
