@@ -1026,6 +1026,16 @@
       }
     }
   }
+  .miners {
+    top: 0px !important;
+    text-align: left;
+    a{
+      color: #000;
+    }
+    svg{
+      padding-left: 3px;
+    }
+  }
 }
 
 .preonboarding {
@@ -1534,4 +1544,7 @@
 
 .twooptionsbelow{
   top: 820px !important;
+}
+.paginationminers {
+  top: 630px !important;
 }
