@@ -29,7 +29,6 @@ const options: OptionsType = [
     title: "Automatic Verification",
     subtitle: "Get Verified by verify.glif.io",
     desc: "Receive small data allowances (8GB) by connecting to any GitHub account over 180 days old",
-    available: "Currently unavailable",
     imgSrc: TiB.toString()
   },
   {
