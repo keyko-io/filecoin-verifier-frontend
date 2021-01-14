@@ -23,13 +23,23 @@ class TableCell extends Component<TableCellProps> {
         }
     }
 
+    renderContact = (data: any) => {
+        console.log(data)
+        const contactElements = data.split(':')
+        if(data.includes('Slack')){
+        }
+        return <>{contactElements[0]}</>
+    }
+
     render() {
         return (
             <>
-                {this.state.cellContent.map((ele: string, i) => <p key={i}>{
+                {this.state.cellContent.map((ele: any, i) => <p key={i}>{
                     this.props.type == 'Location' ?
                         <><p>{ele.split(',')[0]}</p><p>{ele.split(',')[1]}</p> </>
-                        : ele
+                        :
+                        this.props.type == 'Contact' ? this.renderContact(ele)
+                            : ele
                 }</p>)}
             </>
         )
