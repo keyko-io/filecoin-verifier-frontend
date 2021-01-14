@@ -1228,6 +1228,7 @@
   border-left: 1px solid #0091ff;
   border-bottom: 1px solid #0091ff;
 
+
   button,
   button:checked,
   button:active,
@@ -1252,6 +1253,59 @@
     width: 180px;
     background: #fff;
     color: #0091ff;
+  }
+}
+
+.learnmoreoptions {
+  position: absolute;
+  margin-left: auto;
+  margin-right: auto;
+  max-width: 1280px;
+  height: 60px;
+  left: 0;
+  right: 0;
+  background: #fff;
+  top: 815px;
+  text-align: center;
+  display: flex;
+  border-top: 1px solid #0091ff;
+  border-right: 1px solid #0091ff;
+  border-left: 1px solid #0091ff;
+  border-bottom: 1px solid #0091ff;
+
+  button,
+  button:checked,
+  button:active,
+  button:hover,
+  button:visited,
+  button:checked {
+    position: absolute;
+    top: 10px;
+    -ms-transform: translate(-50%);
+    transform: translate(-50%);
+    height: 20px;
+    font-family: "suisseintl";
+    font-style: normal;
+    font-weight: 600;
+    font-size: 14px;
+    line-height: 20px;
+    border-right: 1px solid #0091ff;
+    border-top: 1px solid #0091ff;
+    border-left: 1px solid #0091ff;
+    border-bottom: 1px solid #0091ff;
+    width: 180px;
+    background: #fff;
+    color: #0091ff;
+  }
+
+  .learnleft{
+    padding-left: 34%;
+  }
+  .learncenter{
+    padding-left: 16%;
+  }
+  .learnright{
+    padding-left: 16%;
   }
 }
 
@@ -1488,6 +1542,9 @@
   }
 }
 
+.twooptionsbelow{
+  top: 820px !important;
+}
 .paginationminers {
   top: 630px !important;
 }
