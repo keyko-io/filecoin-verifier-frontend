@@ -115,6 +115,7 @@ export default class RootKeyHolder extends Component<RootKeyHolderProps, RootKey
                     console.log("fullDatacap to propose: " + fullDatacap)
 
                     let messageID = await this.context.wallet.api.proposeVerifier(address, fullDatacap, this.context.wallet.walletIndex)
+                    console.log("messageID: " + messageID)
                     // github update
                     // DISABLED temporaly until we can use a generic token to avoid exposing RKH Identity
                     /*
