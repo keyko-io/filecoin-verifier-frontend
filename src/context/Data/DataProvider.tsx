@@ -227,6 +227,9 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
                 let pendingTxs = await this.props.wallet.api.pendingRootTransactions()
                 let pendingVerifiers: any[] = []
                 for (let txs in pendingTxs) {
+                    if (pendingTxs[txs].parsed.name !== 'addVerifier') {
+                        continue
+                    }
                     const verifierAccount = await this.props.wallet.api.actorKey(pendingTxs[txs].parsed.params.verifier)
                     pendingVerifiers.push({
                         id: pendingTxs[txs].id,
