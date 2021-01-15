@@ -44,6 +44,9 @@ export default class Overview extends Component<{}, OverviewStates> {
         let pendingTxs = await this.context.wallet.api.pendingRootTransactions()
         let pendingverifiers: any[] = []
         for (let txs in pendingTxs) {
+            if(pendingTxs[txs].parsed.name !== 'addVerifier'){
+                continue;
+            }
             const verifierAccount = await this.context.wallet.api.actorKey(pendingTxs[txs].parsed.params.verifier)
             pendingverifiers.push({
                 id: pendingTxs[txs].id,
