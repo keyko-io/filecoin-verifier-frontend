@@ -12,7 +12,6 @@ const parser = require('@keyko-io/filecoin-verifier-tools/utils/notary-issue-par
 
 type RootKeyHolderState = {
     tabs: string
-    pendingverifiers: any[]
     approveLoading: boolean
     selectedTransactions: any[]
 }
@@ -28,7 +27,6 @@ export default class RootKeyHolder extends Component<RootKeyHolderProps, RootKey
         selectedTransactions: [] as any[],
         approveLoading: false,
         tabs: '1',
-        pendingverifiers: [] as any[],
     }
 
     componentDidMount() {
@@ -184,7 +182,7 @@ export default class RootKeyHolder extends Component<RootKeyHolderProps, RootKey
         // go over transactions
         try {
             const multisigInfo = await this.context.wallet.api.multisigInfo(config.lotusNodes[this.context.wallet.networkIndex].rkhMultisig)
-            for (let tx of this.state.pendingverifiers) {
+            for (let tx of this.props.pendingverifiers) {
                 if (this.state.selectedTransactions.includes(tx.id)) {
                     const datacap = BigInt(tx.datacap)
                     let messageID = await this.context.wallet.api.approveVerifier(tx.verifier, datacap, tx.signer, tx.id, this.context.wallet.walletIndex);
@@ -243,7 +241,7 @@ export default class RootKeyHolder extends Component<RootKeyHolderProps, RootKey
                 <div className="tabsholder">
                     <div className="tabs">
                         <div className={this.state.tabs === "0" ? "selected" : ""} onClick={() => { this.showVerifierRequests() }}>Notaries Approved by Governance ({this.context.verifierRequests.length})</div>
-                        <div className={this.state.tabs === "1" ? "selected" : ""} onClick={() => { this.showPending() }}>Notaries Pending to Sign On-chain ({this.state.pendingverifiers.length})</div>
+                        <div className={this.state.tabs === "1" ? "selected" : ""} onClick={() => { this.showPending() }}>Notaries Pending to Sign On-chain ({this.props.pendingverifiers.length})</div>
                         <div className={this.state.tabs === "2" ? "selected" : ""} onClick={() => { this.showApproved() }}>Accepted Notaries ({this.context.verified.length})</div>
                     </div>
                     <div className="tabssadd">
@@ -339,9 +337,9 @@ export default class RootKeyHolder extends Component<RootKeyHolderProps, RootKey
                                 </tr>
                             </thead>
                             <tbody>
-                                {this.state.pendingverifiers.map((transaction: any) =>
+                                {this.props.pendingverifiers.map((transaction: any) =>
                                     <tr key={transaction.id}>
-                                        <td><input type="checkbox" onChange={() => this.selectRow(transaction.id)} checked={this.context.selectedTransactions.includes(transaction.id)} /></td>
+                                        <td><input type="checkbox" onChange={() => this.selectRow(transaction.id)} checked={this.state.selectedTransactions.includes(transaction.id)} /></td>
                                         <td>{transaction.type}</td>
                                         <td>{transaction.verifier}</td>
                                         <td>{datacapFilter(transaction.datacap)}</td>
@@ -350,7 +348,7 @@ export default class RootKeyHolder extends Component<RootKeyHolderProps, RootKey
                                 )}
                             </tbody>
                         </table>
-                        {this.state.pendingverifiers.length === 0 ? <div className="nodata">No pending notaries yet</div> : null}
+                        {this.props.pendingverifiers.length === 0 ? <div className="nodata">No pending notaries yet</div> : null}
                     </div> : null
                 }
             </div>
