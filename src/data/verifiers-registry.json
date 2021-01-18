@@ -43,17 +43,6 @@
             "email": "notaryb@a.com",
             "github_user": "andrewxhill",
             "private_request": "false"
-        },
-        {
-            "id": 6,
-            "name":"Infinite Scroll",
-            "use_case":  ["Automatic Notary"],
-            "location": "North America",
-            "website": "infinitescroll.org",
-            "max_datacap_allocation": "5 TB",
-            "email": "notaryb@a.com",
-            "github_user": "Schwartz10",
-            "private_request": "false"
         }
     ]
 }
