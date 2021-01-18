@@ -5,10 +5,10 @@ import Logo from '../svg/logo-button.svg';
 import Ledger from '../svg/ledger-logo.svg';
 import history from '../context/History'
 import { Data } from '../context/Data/Index'
-
 // @ts-ignore
 import { ButtonPrimary, dispatchCustomEvent } from "slate-react-system";
 import { config } from '../config';
+import CheckAddressModal from './CheckAddressModal';
 
 
 type ModalProps = {
@@ -27,24 +27,15 @@ class LogInModal extends Component<ModalProps> {
 
     }
 
-    loadLedgerWallet = async () => {
-
-        const logged = await this.context.wallet.loadWallet('Ledger')
-
-        console.log(logged)
-
-        if (logged) {
-            if (this.props.type == '0') {
-                const isVerifier = await this.checkVerifier()
-                if (this.context.viewroot === false && isVerifier) {
-                    this.context.switchview()
-                }
-                isVerifier ? this.grantAccess() : this.showModalNotAccess('verifier')
-            } else {
-                const isRootKey = await this.checkRKH()
-                isRootKey ? this.grantAccess() : this.showModalNotAccess('rootKeyHolder')
+    loadLedgerWallet = async (e: any) => {
+        await e.preventDefault()
+        dispatchCustomEvent({ name: "delete-modal", detail: {} })
+        dispatchCustomEvent({
+            name: "create-modal", detail: {
+                id: Math.random().toString(36).replace(/[^a-z]+/g, '').substr(0, 5),
+                modal: <CheckAddressModal type={this.props.type} />
             }
-        }
+        })
     }
 
     loadBurnerWallet = async () => {
@@ -62,46 +53,6 @@ class LogInModal extends Component<ModalProps> {
         }
     }
 
-    showModalNotAccess = async (type: string) => {
-        console.log('No access')
-    }
-
-    grantAccess = async () => {
-        dispatchCustomEvent({ name: "delete-modal", detail: {} })
-
-        history.push({
-            pathname: "/app"
-        })
-    }
-
-    checkRKH = async () => {
-        let isRootKey = false
-        await this.context.loadRKH()
-        const accounts = await this.context.wallet.getAccounts()
-        const rootKeyHolders = await this.context.rootKeyHolders
-        console.log(rootKeyHolders)
-        for (const account of accounts) {
-            if (rootKeyHolders.includes(account)) {
-                isRootKey = true
-                break;
-            }
-        }
-        return isRootKey
-    }
-
-    checkVerifier = async () => {
-        let isVerifier = false
-        await this.context.loadVerified()
-        const accounts = await this.context.wallet.getAccounts()
-        const verifiers = await this.context.verified
-        for (const account of accounts) {
-            if (verifiers.includes(account)) {
-                isVerifier = true
-                break;
-            }
-        }
-        return isVerifier
-    }
 
     render() {
         return (
