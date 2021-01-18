@@ -238,7 +238,7 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
                 this.setState({ clients, clientsAmount: clientsamount.toString() })
             },
             loadPendingVerifiers: async () => {
-                pending verififers
+                // pending verififers
                 let pendingTxs = await this.props.wallet.api.pendingRootTransactions()
                 let pendingVerifiers: any[] = []
                 for (let txs in pendingTxs) {
