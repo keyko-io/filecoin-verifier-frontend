@@ -19,7 +19,9 @@ interface DataProviderStates {
     viewroot: boolean
     switchview: any
     verified: any[]
+    rootKeyHolders: any[]
     loadVerified: any,
+    loadRKH: any,
     updateGithubVerified: any
     createRequest: any
     selectedNotaryRequests: any[]
@@ -75,8 +77,8 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
             },
             clientRequests: [],
             loadNotificationClientRequests: async () => {
-                if(this.props.github.githubLogged === false){
-                    this.setState({clientRequests: []})
+                if (this.props.github.githubLogged === false) {
+                    this.setState({ clientRequests: [] })
                     return
                 }
                 const rawIssues = await this.props.github.githubOcto.issues.listForRepo({
@@ -92,12 +94,12 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
                             repo: config.onboardingClientRepo,
                             issue_number: rawIssue.number,
                         })
-                        if(
+                        if (
                             rawComments.data.length > 0 && (
-                                rawComments.data[rawComments.data.length-1].user.login.endsWith("[bot]") === false &&
-                                rawComments.data[rawComments.data.length-1].user.login !== rawIssue.assignee.login
+                                rawComments.data[rawComments.data.length - 1].user.login.endsWith("[bot]") === false &&
+                                rawComments.data[rawComments.data.length - 1].user.login !== rawIssue.assignee.login
                             )
-                        ){
+                        ) {
                             issues.push({
                                 number: rawIssue.number,
                                 url: rawIssue.html_url
@@ -154,8 +156,8 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
             },
             verifierRequests: [],
             loadNotificationVerifierRequests: async () => {
-                if(this.props.github.githubLogged === false){
-                    this.setState({clientRequests: []})
+                if (this.props.github.githubLogged === false) {
+                    this.setState({ clientRequests: [] })
                     return
                 }
                 const rawIssues = await this.props.github.githubOcto.issues.listForRepo({
@@ -171,12 +173,12 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
                             repo: config.lotusNodes[this.props.wallet.networkIndex].notaryRepo,
                             issue_number: rawIssue.number,
                         })
-                        if(
+                        if (
                             rawComments.data.length > 0 && (
-                                rawComments.data[rawComments.data.length-1].user.login.endsWith("[bot]") === false &&
-                                rawComments.data[rawComments.data.length-1].user.login !== rawIssue.assignee.login
+                                rawComments.data[rawComments.data.length - 1].user.login.endsWith("[bot]") === false &&
+                                rawComments.data[rawComments.data.length - 1].user.login !== rawIssue.assignee.login
                             )
-                        ){
+                        ) {
                             issues.push({
                                 number: rawIssue.number,
                                 url: rawIssue.html_url
@@ -211,7 +213,20 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
                         datacap: verifiedAddress.datacap
                     })
                 }
+                console.log(verified)
                 this.setState({ verified })
+            },
+            rootKeyHolders: [],
+            loadRKH: async () => {
+                const approvedrkhs = await this.props.wallet.api.listRootkeys()
+                let rootKeyHolders = []
+                for (const approvedrkh of approvedrkhs) {
+                    console.log(approvedrkh)
+                    const rootKeyHolderAccount = await this.props.wallet.api.actorKey(approvedrkh)
+                    console.log(rootKeyHolderAccount)
+                    rootKeyHolders.push(rootKeyHolderAccount)
+                }
+                this.setState({ rootKeyHolders })
             },
             loadClients: async () => {
                 const clients = await this.props.wallet.api.listVerifiedClients()
@@ -220,14 +235,15 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
                     clientsamount = clientsamount + Number(txs.datacap)
                     txs['key'] = await this.props.wallet.api.actorKey(txs.verified)
                 }
-                this.setState({clients, clientsAmount: clientsamount.toString()})
+                this.setState({ clients, clientsAmount: clientsamount.toString() })
             },
             loadPendingVerifiers: async () => {
-                // pending verififers
+                pending verififers
                 let pendingTxs = await this.props.wallet.api.pendingRootTransactions()
                 let pendingVerifiers: any[] = []
                 for (let txs in pendingTxs) {
                     const verifierAccount = await this.props.wallet.api.actorKey(pendingTxs[txs].parsed.params.verifier)
+                    console.log(verifierAccount)
                     pendingVerifiers.push({
                         id: pendingTxs[txs].id,
                         type: pendingTxs[txs].parsed.params.cap.toString() === '0' ? 'Revoke' : 'Add',
@@ -285,7 +301,7 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
                         // this.state.dispatchNotification('Something went wrong.')
                     }
                 } catch (error) {
-                    if(error.errors[0].field ==='assignees' && error.errors[0].code==='invalid'){
+                    if (error.errors[0].field === 'assignees' && error.errors[0].code === 'invalid') {
                         console.log('There was an error on assign, trying with user...')
                         const issue = await this.props.github.githubOcto.issues.create({
                             owner: config.onboardingOwner,

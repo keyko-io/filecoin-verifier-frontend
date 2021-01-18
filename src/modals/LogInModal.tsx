@@ -28,17 +28,22 @@ class LogInModal extends Component<ModalProps> {
     }
 
     loadLedgerWallet = async () => {
+
         const logged = await this.context.wallet.loadWallet('Ledger')
+
+        console.log(logged)
+
         if (logged) {
-            if (this.context.viewroot === false && this.props.type == '0') {
-                this.context.switchview()
+            if (this.props.type == '0') {
+                const isVerifier = await this.checkVerifier()
+                if (this.context.viewroot === false && isVerifier) {
+                    this.context.switchview()
+                }
+                isVerifier ? this.grantAccess() : this.showModalNotAccess('verifier')
+            } else {
+                const isRootKey = await this.checkRKH()
+                isRootKey ? this.grantAccess() : this.showModalNotAccess('rootKeyHolder')
             }
-
-            dispatchCustomEvent({ name: "delete-modal", detail: {} })
-
-            history.push({
-                pathname: "/app"
-            })
         }
     }
 
@@ -55,6 +60,47 @@ class LogInModal extends Component<ModalProps> {
                 pathname: "/app"
             })
         }
+    }
+
+    showModalNotAccess = async (type: string) => {
+        console.log('No access')
+    }
+
+    grantAccess = async () => {
+        dispatchCustomEvent({ name: "delete-modal", detail: {} })
+
+        history.push({
+            pathname: "/app"
+        })
+    }
+
+    checkRKH = async () => {
+        let isRootKey = false
+        await this.context.loadRKH()
+        const accounts = await this.context.wallet.getAccounts()
+        const rootKeyHolders = await this.context.rootKeyHolders
+        console.log(rootKeyHolders)
+        for (const account of accounts) {
+            if (rootKeyHolders.includes(account)) {
+                isRootKey = true
+                break;
+            }
+        }
+        return isRootKey
+    }
+
+    checkVerifier = async () => {
+        let isVerifier = false
+        await this.context.loadVerified()
+        const accounts = await this.context.wallet.getAccounts()
+        const verifiers = await this.context.verified
+        for (const account of accounts) {
+            if (verifiers.includes(account)) {
+                isVerifier = true
+                break;
+            }
+        }
+        return isVerifier
     }
 
     render() {
