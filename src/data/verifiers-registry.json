@@ -10,6 +10,50 @@
             "email": "notaryb@a.com",
             "github_user": "philippbanhardt",
             "private_request": "false"
+        },
+        {
+            "id": 3,
+            "name": "Fenbushi Capital",
+            "use_case":  ["General"],
+            "location": "Greater China",
+            "website": "https://fenbushi.vc",
+            "max_datacap_allocation": "5 TB",
+            "email": "notaryb@a.com",
+            "github_user": "Rin-huang",
+            "private_request": "false"
+        },
+        {
+            "id": 4,
+            "name":"Fleek",
+            "use_case":  ["Web3 Developers & End Users"],
+            "location": "North America",
+            "website": "fleek.co",
+            "max_datacap_allocation": "5 TB",
+            "email": "notaryb@a.com",
+            "github_user": "jsonsivar",
+            "private_request": "false"
+        },
+        {
+            "id": 5,
+            "name":"Textile",
+            "use_case":  ["Web3", "Web2 integrations", "Data Warehousing"],
+            "location": "North America",
+            "website": "textile.io",
+            "max_datacap_allocation": "5 TB",
+            "email": "notaryb@a.com",
+            "github_user": "andrewxhill",
+            "private_request": "false"
+        },
+        {
+            "id": 6,
+            "name":"Infinite Scroll",
+            "use_case":  ["Automatic Notary"],
+            "location": "North America",
+            "website": "infinitescroll.org",
+            "max_datacap_allocation": "5 TB",
+            "email": "notaryb@a.com",
+            "github_user": "Schwartz10",
+            "private_request": "false"
         }
     ]
 }
