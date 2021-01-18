@@ -39,7 +39,10 @@ export default class Overview extends Component<{}, OverviewStates> {
             this.context.loadClientRequests()
         }
         this.context.loadVerified()
-        const clients = await this.context.wallet.api.listVerifiedClients()
+        // VerifiedClients call is not working. We set this to [] to allow to load pending tx
+        //const clients = await this.context.wallet.api.listVerifiedClients()
+        const clients:any[] = []
+
         // pending verififers
         let pendingTxs = await this.context.wallet.api.pendingRootTransactions()
         let pendingverifiers: any[] = []
