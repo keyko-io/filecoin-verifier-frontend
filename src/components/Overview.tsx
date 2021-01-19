@@ -41,7 +41,7 @@ export default class Overview extends Component<{}, OverviewStates> {
         this.context.loadVerified()
         const clients = await this.context.wallet.api.listVerifiedClients()
     
-        // pending verififers
+        // pending verifiers 
         let pendingTxs = await this.context.wallet.api.pendingRootTransactions()
         let pendingverifiers: any[] = []
         for (let txs in pendingTxs) {
