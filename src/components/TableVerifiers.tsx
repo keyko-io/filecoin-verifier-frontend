@@ -21,7 +21,11 @@ export default class TableVerifiers extends Component {
     state = {
         verifiers: [],
         selectedVerifier: 0,
-        checks: []
+        checks: [],
+        initialIndex: 0,
+        finalIndex: 5,
+        pages: [],
+        actualPage: 1
     }
 
     componentDidMount() {
@@ -35,6 +39,12 @@ export default class TableVerifiers extends Component {
             initialChecks.push(false)
         })
         this.setState({ checks: initialChecks })
+        const numerOfPages = Math.ceil(this.state.verifiers.length / 5)
+        let pages = []
+        for (let index = 0; index < numerOfPages; index++) {
+            pages.push(index + 1)
+        }
+        this.setState({ pages })
     }
 
     getList = async () => {
@@ -65,6 +75,10 @@ export default class TableVerifiers extends Component {
         })
     }
 
+    checkIndex = (index: number) => {
+        return (index >= this.state.initialIndex && index < this.state.finalIndex)
+    }
+
     contactVerifier = async () => {
         let verifier: any = this.state.verifiers[this.state.selectedVerifier]
         dispatchCustomEvent({
@@ -74,6 +88,23 @@ export default class TableVerifiers extends Component {
             }
         })
     }
+
+    setPage = (e: any) => {
+        const actualPage = Number(e.target.id)
+        this.setState({ finalIndex: actualPage * 5 })
+        this.setState({ initialIndex: (actualPage * 5) - 5 })
+        this.setState({ actualPage })
+    }
+
+    movePage = (index: number) => {
+        const page = this.state.actualPage + index
+        if (page <= this.state.pages.length && page >= 1) {
+            this.setState({ finalIndex: page * 5 })
+            this.setState({ initialIndex: (page * 5) - 5 })
+            this.setState({ actualPage: page })
+        }
+    }
+
 
     public render() {
         return (
@@ -87,39 +118,55 @@ export default class TableVerifiers extends Component {
                                     <td>Notary Name</td>
                                     <td>Use case</td>
                                     <td>Location</td>
-                                    <td>Website</td>
+                                    <td>Website / Social Media</td>
+                                    <td>Max Datacap Allocation</td>
                                     <td>Private Requests</td>
                                 </tr>
                             </thead>
                             <tbody>
                                 {
                                     this.state.verifiers.map((verifier: any, i) =>
-                                        <tr>
-                                            <td>
-                                                <input type="checkbox" key={i} name={String(i)}
-                                                    checked={this.state.checks[i]}
-                                                    onChange={(e) => this.updateChecks(e)}
-                                                />
-                                            </td>
-                                            <td>{verifier.name}
-                                            <div className="notaryinfo" id={i.toString()}
-                                                    onClick={(e) => this.showNotaryInfo(e)}>
-                                                    <FontAwesomeIcon icon={["fas", "info-circle"]}
+                                        this.checkIndex(i) ?
+                                            <tr>
+                                                <td>
+                                                    <input type="checkbox" key={i} name={String(i)}
+                                                        checked={this.state.checks[i]}
+                                                        onChange={(e) => this.updateChecks(e)}
                                                     />
-                                                </div>
-                                            </td>
-                                            <td>{verifier.use_case.map((useCase: any) =>
-                                                <p style={{ padding: 3 }}>{useCase}</p>
-                                            )}</td>
-                                            <td>{verifier.location}</td>
-                                            <td>{verifier.website}</td>
-                                            <td>{verifier.private_request}</td>
-                                        </tr>
+                                                </td>
+                                                <td>{verifier.name}
+                                                    <div className="notaryinfo" id={i.toString()}
+                                                        onClick={(e) => this.showNotaryInfo(e)}>
+                                                        <FontAwesomeIcon icon={["fas", "info-circle"]}
+                                                        />
+                                                    </div>
+                                                </td>
+                                                <td>{verifier.use_case.map((useCase: any) =>
+                                                    <p style={{ padding: 3 }}>{useCase}</p>
+                                                )}</td>
+                                                <td>{verifier.location}</td>
+                                                <td>{verifier.website}</td>
+                                                <td>{verifier.max_datacap_allocation}</td>
+                                                <td>{verifier.private_request}</td>
+                                            </tr>
+                                            : null
                                     )
                                 }
                             </tbody>
                         </table>
                         : <div className="nodata">There are not available notaries yet</div>}
+                </div>
+                <div className="pagination">
+                    <div className="pagenumber paginator" onClick={e => this.movePage(-1)}>{"<"}</div>
+                    {this.state.pages.map((page: any, i) =>
+                        <div className="pagenumber"
+                            style={this.state.actualPage == i + 1 ? { backgroundColor: "#33A7FF", color: 'white' } : {}}
+                            id={(i + 1).toString()}
+                            onClick={e => this.setPage(e)}>
+                            {page}
+                        </div>
+                    )}
+                    <div className="pagenumber paginator" onClick={e => this.movePage(1)}>{">"}</div>
                 </div>
             </div>
         )

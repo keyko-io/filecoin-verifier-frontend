@@ -43,6 +43,72 @@
             "email": "notaryb@a.com",
             "github_user": "andrewxhill",
             "private_request": "false"
+        },
+        {
+            "id": 6,
+            "name":"Blotocol Japan",
+            "use_case":  ["Media and Entertainment"],
+            "location": "Asia-GCN",
+            "website": "https://blotocol.com/",
+            "max_datacap_allocation": "5 TB",
+            "email": "notaryb@a.com",
+            "github_user": "MasaakiNawatani",
+            "private_request": "false"
+        },
+        {
+            "id": 7,
+            "name":"XnMatrix",
+            "use_case":  ["User Content", "Scientific Datasets", "Media and Entertainment"],
+            "location": "North America",
+            "website": "@ Dr.Ann Shin on Filecoin Slack",
+            "max_datacap_allocation": "5 TB",
+            "email": "notaryb@a.com",
+            "github_user": "ann-shin",
+            "private_request": "false"
+        },
+        {
+            "id": 8,
+            "name":"MathWallet",
+            "use_case":  ["General", "Blockchain Data", "Web3 DApp"],
+            "location": "Asia",
+            "website": "mathwallet.org",
+            "max_datacap_allocation": "5 TB",
+            "email": "notaryb@a.com",
+            "github_user": "ericfish",
+            "private_request": "false"
+        },
+        {
+            "id": 9,
+            "name":"IPFS Force",
+            "use_case":  ["User Content", "Scientific Data", "Media & Entertainment"],
+            "location": "Greater China",
+            "website": "@Steven on Filecoin Slack, @Steven004_Li on Twitter",
+            "max_datacap_allocation": "5 TB",
+            "email": "notaryb@a.com",
+            "github_user": "steven004",
+            "private_request": "false"
+        },
+        {
+            "id": 10,
+            "name":"IPFSMain",
+            "use_case":  ["Personal user storage", "Scientific Datasets", "Video & Music"],
+            "location": "Greater China",
+            "website": "@Neo Ge on Filecoin Slack",
+            "max_datacap_allocation": "5 TB",
+            "email": "notaryb@a.com",
+            "github_user": "NeoGe-IPFSMain",
+            "private_request": "false"
+        },
+        {
+            "id": 11,
+            "name":"Julien NOEL",
+            "use_case":  ["General"],
+            "location": "Europe",
+            "website": "s0nik42 on Filecoin Slack",
+            "max_datacap_allocation": "5 TB",
+            "email": "notaryb@a.com",
+            "github_user": "s0nik42",
+            "private_request": "false"
         }
     ]
 }
