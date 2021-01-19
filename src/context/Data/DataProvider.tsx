@@ -52,8 +52,8 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
                 }
                 const user = await this.props.github.githubOcto.users.getAuthenticated();
                 const rawIssues = await this.props.github.githubOcto.issues.listForRepo({
-                    owner: config.lotusNodes[this.props.wallet.networkIndex].clientOwner,
-                    repo: config.lotusNodes[this.props.wallet.networkIndex].clientRepo,
+                    owner: config.onboardingOwner,
+                    repo: config.onboardingClientRepo,
                     assignee: user.data.login,
                     state: 'open',
                     labels: 'state:Verifying'
@@ -80,16 +80,16 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
                     return
                 }
                 const rawIssues = await this.props.github.githubOcto.issues.listForRepo({
-                    owner: config.lotusNodes[this.props.wallet.networkIndex].clientOwner,
-                    repo: config.lotusNodes[this.props.wallet.networkIndex].clientRepo,
+                    owner: config.onboardingOwner,
+                    repo: config.onboardingClientRepo,
                     state: 'open'
                 })
                 const issues: any[] = []
                 for (const rawIssue of rawIssues.data) {
                     try {
                         const rawComments = await this.props.github.githubOcto.issues.listComments({
-                            owner: config.lotusNodes[this.props.wallet.networkIndex].clientOwner,
-                            repo: config.lotusNodes[this.props.wallet.networkIndex].clientRepo,
+                            owner: config.onboardingOwner,
+                            repo: config.onboardingClientRepo,
                             issue_number: rawIssue.number,
                         })
                         if(
@@ -227,6 +227,9 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
                 let pendingTxs = await this.props.wallet.api.pendingRootTransactions()
                 let pendingVerifiers: any[] = []
                 for (let txs in pendingTxs) {
+                    if (pendingTxs[txs].parsed.name !== 'addVerifier') {
+                        continue
+                    }
                     const verifierAccount = await this.props.wallet.api.actorKey(pendingTxs[txs].parsed.params.verifier)
                     pendingVerifiers.push({
                         id: pendingTxs[txs].id,
@@ -241,13 +244,13 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
             },
             updateGithubVerified: async (requestNumber: any, messageID: string, address: string, datacap: any) => {
                 await this.props.github.githubOcto.issues.removeAllLabels({
-                    owner: config.lotusNodes[this.props.wallet.networkIndex].clientOwner,
-                    repo: config.lotusNodes[this.props.wallet.networkIndex].clientRepo,
+                    owner: config.onboardingOwner,
+                    repo: config.onboardingClientRepo,
                     issue_number: requestNumber,
                 })
                 await this.props.github.githubOcto.issues.addLabels({
-                    owner: config.lotusNodes[this.props.wallet.networkIndex].clientOwner,
-                    repo: config.lotusNodes[this.props.wallet.networkIndex].clientRepo,
+                    owner: config.onboardingOwner,
+                    repo: config.onboardingClientRepo,
                     issue_number: requestNumber,
                     labels: ['state:Granted'],
                 })
@@ -255,15 +258,15 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
                 let commentContent = `## Request Approved\nYour Datacap Allocation Request has been approved by the Notary\n#### Message sent to Filecoin Network\n>${messageID} \n#### Address \n> ${address}\n#### Datacap Allocated\n> ${datacapFilter(String(datacap))}`
 
                 await this.props.github.githubOcto.issues.createComment({
-                    owner: config.lotusNodes[this.props.wallet.networkIndex].clientOwner,
-                    repo: config.lotusNodes[this.props.wallet.networkIndex].clientRepo,
+                    owner: config.onboardingOwner,
+                    repo: config.onboardingClientRepo,
                     issue_number: requestNumber,
                     body: commentContent,
                 })
 
                 await this.props.github.githubOcto.issues.update({
-                    owner: config.lotusNodes[this.props.wallet.networkIndex].clientOwner,
-                    repo: config.lotusNodes[this.props.wallet.networkIndex].clientRepo,
+                    owner: config.onboardingOwner,
+                    repo: config.onboardingClientRepo,
                     issue_number: requestNumber,
                     state: 'closed',
                 })
@@ -271,8 +274,8 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
             createRequest: async (data: any) => {
                 try {
                     const issue = await this.props.github.githubOcto.issues.create({
-                        owner: data.onboarding ? config.onboardingOwner : config.lotusNodes[this.props.wallet.networkIndex].clientOwner,
-                        repo: data.onboarding ? config.onboardingClientRepo : config.lotusNodes[this.props.wallet.networkIndex].clientRepo,
+                        owner: config.onboardingOwner,
+                        repo: config.onboardingClientRepo,
                         title: 'Client Allocation Request for: ' + data.organization,
                         assignees: data.assignees,
                         body: IssueBody(data)
@@ -288,8 +291,8 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
                     if(error.errors[0].field ==='assignees' && error.errors[0].code==='invalid'){
                         console.log('There was an error on assign, trying with user...')
                         const issue = await this.props.github.githubOcto.issues.create({
-                            owner: data.onboarding ? config.onboardingOwner : config.lotusNodes[this.props.wallet.networkIndex].clientOwner,
-                            repo: data.onboarding ? config.onboardingClientRepo : config.lotusNodes[this.props.wallet.networkIndex].clientRepo,
+                            owner: config.onboardingOwner,
+                            repo: config.onboardingClientRepo,
                             title: 'Client Allocation Request for: ' + data.organization,
                             assignees: config.defaultAssign,
                             body: IssueBody(data)
@@ -322,8 +325,8 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
                     return
                 }
                 const rawIssues = await this.props.github.githubOcto.issues.listForRepo({
-                    owner: config.lotusNodes[this.props.wallet.networkIndex].clientOwner,
-                    repo: config.lotusNodes[this.props.wallet.networkIndex].clientRepo,
+                    owner: config.onboardingOwner,
+                    repo: config.onboardingClientRepo,
                     state: 'closed',
                     labels: 'state:Granted'
                 })
@@ -359,7 +362,7 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
                     })
                 } else {
                     results = await this.props.github.githubOcto.search.issuesAndPullRequests({
-                        q: `${query} in:body is:issue repo:${config.lotusNodes[this.props.wallet.networkIndex].clientOwner}/${config.lotusNodes[this.props.wallet.networkIndex].clientRepo}`
+                        q: `${query} in:body is:issue repo:${config.onboardingOwner}/${config.onboardingClientRepo}`
                     })
                 }
                 console.log('results', results)
