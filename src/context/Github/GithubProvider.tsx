@@ -2,6 +2,8 @@ import React from 'react'
 import { Github } from './Index'
 // @ts-ignore
 import { Octokit } from '@octokit/rest'
+// @ts-ignore
+import { createAppAuth } from '@octokit/auth-app'
 import { config } from '../../config';
 
 interface WalletProviderStates {
@@ -10,6 +12,8 @@ interface WalletProviderStates {
     loginGithub: any
     initGithubOcto: any
     logoutGithub: any
+    githubOctoGenericLogin: any
+    githubOctoGeneric: any
 }
 
 export default class WalletProvider extends React.Component<{}, WalletProviderStates> {
@@ -31,6 +35,7 @@ export default class WalletProvider extends React.Component<{}, WalletProviderSt
     state = {
         githubLogged: false,
         githubOcto: {} as any,
+        githubOctoGeneric: { logged: false } as any,
         loginGithub: async (code: string, onboarding?: boolean) => {
             try {
                 const authrequest = await fetch(config.apiUri + '/api/v1/github', {
@@ -50,6 +55,13 @@ export default class WalletProvider extends React.Component<{}, WalletProviderSt
                 // this.state.dispatchNotification('Failed to login. Try again later.')
             }
         },
+        githubOctoGenericLogin: async () => {
+            if (this.state.githubOctoGeneric.logged === false) {
+                const octokit = await new Octokit({
+                    auth: config.githubGenericToken,
+                });
+                this.setState({ githubOctoGeneric: { logged: true, octokit } })
+            }},
         initGithubOcto: async (token: string) => {
             const octokit = new Octokit({
                 auth: token

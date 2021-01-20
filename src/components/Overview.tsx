@@ -34,7 +34,6 @@ export default class Overview extends Component<{}, OverviewStates> {
 
     loadData = async () => {
         if (this.context.github.githubLogged) {
-            this.context.loadVerifierRequests()
             this.context.loadClientsGithub()
             this.context.loadClientRequests()
         }

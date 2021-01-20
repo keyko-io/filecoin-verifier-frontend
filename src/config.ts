@@ -4,6 +4,7 @@ export const config = {
     onboardingClientRepo: process.env.REACT_APP_ONBOARDING_REPO ||'filecoin-clients-onboarding-test',
     onboardingOwner: process.env.REACT_APP_ONBOARDING_REPO_OWNER || 'keyko-io',
     githubApp: process.env.REACT_APP_GITHUB_APP || 'Iv1.10e7aaed4654db3c',
+    githubGenericToken: process.env.REACT_APP_GITHUB_GENERIC_TOKEN,
     oauthUri: process.env.REACT_APP_OAUTH_URI || 'https://plus.fil.org/oauth/',
     networks: process.env.REACT_APP_NETWORKS || 'Mainnet,Nerpanet',
     domain: process.env.REACT_APP_DOMAIN || "https://plus.fil.org/",
