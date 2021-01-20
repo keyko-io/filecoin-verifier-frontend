@@ -40,6 +40,7 @@ export default class Overview extends Component<{}, OverviewStates> {
                     <div className="textinfo">
                         <div className="textinfotext">
                             <h2>Welcome to the Filecoin Plus App</h2>
+                            <div className="description">Filecoin Plus is a layer of social trust on top of the Filecoin Network to help incentivize the storage of real data.</div>
                         </div>
                         <div className="textinfodata">
                             <div className="textinfodatablock">
