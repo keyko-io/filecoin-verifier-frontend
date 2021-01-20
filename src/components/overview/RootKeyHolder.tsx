@@ -158,8 +158,11 @@ export default class RootKeyHolder extends Component<RootKeyHolderProps, RootKey
 
     handleSubmitApprove = async () => {
         this.setState({ approveLoading: true })
+
+        await this.context.github.githubOctoGenericLogin()
+
         // load github issues
-        const rawIssues = await this.context.github.githubOcto.issues.listForRepo({
+        const rawIssues = await this.context.github.githubOctoGeneric.octokit.issues.listForRepo({
             owner: config.lotusNodes[this.context.wallet.networkIndex].notaryOwner,
             repo: config.lotusNodes[this.context.wallet.networkIndex].notaryRepo,
             state: 'open',
