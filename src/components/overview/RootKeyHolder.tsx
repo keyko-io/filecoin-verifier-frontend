@@ -12,7 +12,6 @@ const parser = require('@keyko-io/filecoin-verifier-tools/utils/notary-issue-par
 
 type RootKeyHolderState = {
     tabs: string
-    pendingverifiers: any[]
     approveLoading: boolean
     selectedTransactions: any[]
 }
@@ -28,11 +27,9 @@ export default class RootKeyHolder extends Component<RootKeyHolderProps, RootKey
         selectedTransactions: [] as any[],
         approveLoading: false,
         tabs: '1',
-        pendingverifiers: [] as any[],
     }
 
     componentDidMount() {
-
     }
 
     showPending = async () => {
@@ -83,77 +80,75 @@ export default class RootKeyHolder extends Component<RootKeyHolderProps, RootKey
     acceptRequestVerifier = async () => {
         for (const request of this.context.verifierRequests) {
             if (this.context.selectedNotaryRequests.includes(request.number)) {
-                for (let i = 0; i < request.datacaps.length; i++) {
-                    const reqDatacap = request.datacaps[i]
-                    try {
-                        let prepDatacap = '1'
-                        let prepDatacapExt = 'B'
-                        console.log("request.datacap: " + reqDatacap)
-                        const dataext = config.datacapExtNotary.slice().reverse()
-                        for (const entry of dataext) {
-                            if (reqDatacap.endsWith(entry.name)) {
-                                console.log("found unit: " + entry.name)
-                                prepDatacapExt = entry.value
-                                prepDatacap = reqDatacap.substring(0, reqDatacap.length - entry.name.length)
-                                break
-                            }
+                try {
+                    let prepDatacap = '1'
+                    let prepDatacapExt = 'B'
+                    console.log("request.datacap: " + request.datacap)
+                    const dataext = config.datacapExtNotary.slice().reverse()
+                    for (const entry of dataext) {
+                        if (request.datacap.endsWith(entry.name)) {
+                            console.log("found unit: " + entry.name)
+                            prepDatacapExt = entry.value
+                            prepDatacap = request.datacap.substring(0, request.datacap.length - entry.name.length)
+                            break
                         }
-
-                        console.log("prepDatacap: " + prepDatacap)
-                        console.log("prepDatacapExt: " + prepDatacapExt)
-
-                        const datacap = parseFloat(prepDatacap)
-                        const fullDatacap = BigInt(datacap * parseFloat(prepDatacapExt))
-
-
-                        let address = request.addresses[i]
-                        console.log("request address: " + request.address)
-
-                        if (address.startsWith("t1") || address.startsWith("f1")) {
-                            address = await this.context.wallet.api.actorAddress(address)
-                            console.log("getting t0/f0 ID. Result of  actorAddress method: " + address)
-                        }
-
-                        console.log("address to propose: " + address)
-                        console.log("fullDatacap to propose: " + fullDatacap)
-
-                        let messageID = await this.context.wallet.api.proposeVerifier(address, fullDatacap, this.context.wallet.walletIndex)
-
-                        await this.context.github.githubOctoGenericLogin()
-
-                        let commentContent = `## The request for your address ${request.addresses[i]} has been signed by a new Root Key Holder\n#### Message sent to Filecoin Network\n>${messageID}`
-
-                        await this.context.github.githubOctoGeneric.octokit.issues.createComment({
-                            owner: config.lotusNodes[this.context.wallet.networkIndex].notaryOwner,
-                            repo: config.lotusNodes[this.context.wallet.networkIndex].notaryRepo,
-                            issue_number: request.number,
-                            body: commentContent,
-                        })
-
-                        await this.timeout(1000)
-
-                        await this.context.loadVerifierRequests()
-                        // send notifications
-                        this.context.wallet.dispatchNotification('Accepting Message sent with ID: ' + messageID)
-                    } catch (e) {
-                        this.context.wallet.dispatchNotification('Verification failed: ' + e.message)
-                        console.log(e.stack)
                     }
-                }
 
-                await this.context.github.githubOctoGeneric.octokit.issues.removeAllLabels({
-                    owner: config.lotusNodes[this.context.wallet.networkIndex].notaryOwner,
-                    repo: config.lotusNodes[this.context.wallet.networkIndex].notaryRepo,
-                    issue_number: request.number,
-                })
-                await this.timeout(1000)
-                let label = config.lotusNodes[this.context.wallet.networkIndex].rkhtreshold > 1 ? 'status:StartSignOnchain' : 'status:AddedOnchain'
-                await this.context.github.githubOctoGeneric.octokit.issues.addLabels({
-                    owner: config.lotusNodes[this.context.wallet.networkIndex].notaryOwner,
-                    repo: config.lotusNodes[this.context.wallet.networkIndex].notaryRepo,
-                    issue_number: request.number,
-                    labels: [label],
-                })
+                    console.log("prepDatacap: " + prepDatacap)
+                    console.log("prepDatacapExt: " + prepDatacapExt)
+
+                    const datacap = parseFloat(prepDatacap)
+                    const fullDatacap = BigInt(datacap * parseFloat(prepDatacapExt))
+
+
+                    let address = request.address
+                    console.log("request address: " + request.address)
+
+                    if (address.startsWith("t1") || address.startsWith("f1")) {
+                        address = await this.context.wallet.api.actorAddress(address)
+                        console.log("getting t0/f0 ID. Result of  actorAddress method: " + address)
+                    }
+
+                    console.log("address to propose: " + address)
+                    console.log("fullDatacap to propose: " + fullDatacap)
+
+                    let messageID = await this.context.wallet.api.proposeVerifier(address, fullDatacap, this.context.wallet.walletIndex)
+                    console.log("messageID: " + messageID)
+                    // github update
+                    // DISABLED temporaly until we can use a generic token to avoid exposing RKH Identity
+                    /*
+                    await this.context.github.githubOcto.issues.removeAllLabels({
+                        owner: config.lotusNodes[this.context.wallet.networkIndex].notaryOwner,
+                        repo: config.lotusNodes[this.context.wallet.networkIndex].notaryRepo,
+                        issue_number: request.number,
+                    })
+                    await this.timeout(1000)
+                    let label = config.lotusNodes[this.context.wallet.networkIndex].rkhtreshold > 1 ? 'status:StartSignOnchain' : 'status:AddedOnchain'
+                    await this.context.github.githubOcto.issues.addLabels({
+                        owner: config.lotusNodes[this.context.wallet.networkIndex].notaryOwner,
+                        repo: config.lotusNodes[this.context.wallet.networkIndex].notaryRepo,
+                        issue_number: request.number,
+                        labels: [label],
+                    })
+
+                    let commentContent = `## The request has been signed by a new Root Key Holder\n#### Message sent to Filecoin Network\n>${messageID}`
+
+                    await this.context.github.githubOcto.issues.createComment({
+                        owner: config.lotusNodes[this.context.wallet.networkIndex].notaryOwner,
+                        repo: config.lotusNodes[this.context.wallet.networkIndex].notaryRepo,
+                        issue_number: request.number,
+                        body: commentContent,
+                    })
+
+                    await this.timeout(1000)
+                    */
+                    await this.context.loadVerifierRequests()
+                    // send notifications
+                    this.context.wallet.dispatchNotification('Accepting Message sent with ID: ' + messageID)
+                } catch (e) {
+                    this.context.wallet.dispatchNotification('Verification failed: ' + e.message)
+                    console.log(e.stack)
+                }
             }
         }
     }
@@ -187,17 +182,18 @@ export default class RootKeyHolder extends Component<RootKeyHolderProps, RootKey
         // go over transactions
         try {
             const multisigInfo = await this.context.wallet.api.multisigInfo(config.lotusNodes[this.context.wallet.networkIndex].rkhMultisig)
-            for (let tx of this.state.pendingverifiers) {
+            for (let tx of this.props.pendingverifiers) {
                 if (this.state.selectedTransactions.includes(tx.id)) {
                     const datacap = BigInt(tx.datacap)
                     let messageID = await this.context.wallet.api.approveVerifier(tx.verifier, datacap, tx.signer, tx.id, this.context.wallet.walletIndex);
 
-                    await this.context.github.githubOctoGenericLogin()
-
+                    // check if we have github issue
+                     // DISABLED temporaly until we can use a generic token to avoid exposing RKH Identity
+                     /*
                     if (issues[tx.verifier]) {
                         let commentContent = `## The request has been signed by a new Root Key Holder\n#### Message sent to Filecoin Network\n>${messageID}`
 
-                        await this.context.github.githubOctoGeneric.octokit.issues.createComment({
+                        await this.context.github.githubOcto.issues.createComment({
                             owner: config.lotusNodes[this.context.wallet.networkIndex].notaryOwner,
                             repo: config.lotusNodes[this.context.wallet.networkIndex].notaryRepo,
                             issue_number: issues[tx.verifier].number,
@@ -209,13 +205,13 @@ export default class RootKeyHolder extends Component<RootKeyHolderProps, RootKey
                             multisigInfo.signers > config.lotusNodes[this.context.wallet.networkIndex].rkhtreshold) {
 
                             await this.timeout(1000)
-                            await this.context.github.githubOctoGeneric.octokit.issues.removeAllLabels({
+                            await this.context.github.githubOcto.issues.removeAllLabels({
                                 owner: config.lotusNodes[this.context.wallet.networkIndex].notaryOwner,
                                 repo: config.lotusNodes[this.context.wallet.networkIndex].notaryRepo,
                                 issue_number: issues[tx.verifier].number,
                             })
                             await this.timeout(1000)
-                            await this.context.github.githubOctoGeneric.octokit.issues.addLabels({
+                            await this.context.github.githubOcto.issues.addLabels({
                                 owner: config.lotusNodes[this.context.wallet.networkIndex].notaryOwner,
                                 repo: config.lotusNodes[this.context.wallet.networkIndex].notaryRepo,
                                 issue_number: issues[tx.verifier].number,
@@ -223,7 +219,7 @@ export default class RootKeyHolder extends Component<RootKeyHolderProps, RootKey
                             })
                         }
                     }
-
+                    */
                 }
             }
             this.setState({ selectedTransactions: [], approveLoading: false })
@@ -245,15 +241,15 @@ export default class RootKeyHolder extends Component<RootKeyHolderProps, RootKey
                 <div className="tabsholder">
                     <div className="tabs">
                         <div className={this.state.tabs === "0" ? "selected" : ""} onClick={() => { this.showVerifierRequests() }}>Notaries Approved by Governance ({this.context.verifierRequests.length})</div>
-                        <div className={this.state.tabs === "1" ? "selected" : ""} onClick={() => { this.showPending() }}>Notaries Pending to Sign Onchain ({this.state.pendingverifiers.length})</div>
+                        <div className={this.state.tabs === "1" ? "selected" : ""} onClick={() => { this.showPending() }}>Notaries Pending to Sign On-chain ({this.props.pendingverifiers.length})</div>
                         <div className={this.state.tabs === "2" ? "selected" : ""} onClick={() => { this.showApproved() }}>Accepted Notaries ({this.context.verified.length})</div>
                     </div>
                     <div className="tabssadd">
-                        {this.state.tabs === "0" ? <ButtonPrimary onClick={() => this.acceptRequestVerifier()}>Propose Onchain</ButtonPrimary> : null}
-                        {this.state.tabs === "1" ? <ButtonPrimary onClick={() => this.handleSubmitApprove()}>Sign Onchain</ButtonPrimary> : null}
+                        {this.state.tabs === "0" ? <ButtonPrimary onClick={() => this.acceptRequestVerifier()}>Propose On-chain</ButtonPrimary> : null}
+                        {this.state.tabs === "1" ? <ButtonPrimary onClick={() => this.handleSubmitApprove()}>Sign On-chain</ButtonPrimary> : null}
                     </div>
                 </div>
-                {this.state.tabs === "0" ?
+                {this.state.tabs === "0" && this.context.github.githubLogged ?
                     <div>
                         <table>
                             <thead>
@@ -270,22 +266,38 @@ export default class RootKeyHolder extends Component<RootKeyHolderProps, RootKey
                                     <tr key={index}>
                                         <td><input type="checkbox" onChange={() => this.selectNotaryRow(notaryReq.number)} checked={this.context.selectedNotaryRequests.includes(notaryReq.number)} /></td>
                                         <td>{notaryReq.data.name}</td>
-                                        <td>
-                                            {notaryReq.addresses.map((address: any, index: any) =>
-                                                <div key={index}>{address}</div>
-                                            )}
-                                        </td>
-                                        <td>
-                                            {notaryReq.datacaps.map((datacap: any, index: any) =>
-                                                <div key={index}>{datacap}</div>
-                                            )}
-                                        </td>
+                                        <td>{notaryReq.address}</td>
+                                        <td>{notaryReq.datacap}</td>
                                         <td><a target="_blank" rel="noopener noreferrer" href={notaryReq.url}>#{notaryReq.number}</a></td>
                                     </tr>
                                 )}
                             </tbody>
                         </table>
                         {this.context.verifierRequests.length === 0 ? <div className="nodata">No public requests yet</div> : null}
+                        <div className="alignright">
+                            <ButtonSecondary className="buttonsecondary" onClick={async () => {
+                                await this.context.github.logoutGithub()
+                                await this.context.refreshGithubData()
+                            }}>
+                                Logout GitHub
+                            </ButtonSecondary>
+                        </div>
+                    </div>
+                    : null}
+                {this.state.tabs === "0" && !this.context.github.githubLogged ?
+                    <div id="githublogin">
+                        <LoginGithub
+                            redirectUri={config.oauthUri}
+                            clientId={config.githubApp}
+                            scope="repo"
+                            onSuccess={async (response: any) => {
+                                await this.context.github.loginGithub(response.code)
+                                await this.context.refreshGithubData()
+                            }}
+                            onFailure={(response: any) => {
+                                console.log('failure', response)
+                            }}
+                        />
                     </div>
                     : null}
                 {this.state.tabs === "2" ?
@@ -325,9 +337,9 @@ export default class RootKeyHolder extends Component<RootKeyHolderProps, RootKey
                                 </tr>
                             </thead>
                             <tbody>
-                                {this.state.pendingverifiers.map((transaction: any) =>
+                                {this.props.pendingverifiers.map((transaction: any) =>
                                     <tr key={transaction.id}>
-                                        <td><input type="checkbox" onChange={() => this.selectRow(transaction.id)} checked={this.context.selectedTransactions.includes(transaction.id)} /></td>
+                                        <td><input type="checkbox" onChange={() => this.selectRow(transaction.id)} checked={this.state.selectedTransactions.includes(transaction.id)} /></td>
                                         <td>{transaction.type}</td>
                                         <td>{transaction.verifier}</td>
                                         <td>{datacapFilter(transaction.datacap)}</td>
@@ -336,7 +348,7 @@ export default class RootKeyHolder extends Component<RootKeyHolderProps, RootKey
                                 )}
                             </tbody>
                         </table>
-                        {this.state.pendingverifiers.length === 0 ? <div className="nodata">No pending notaries yet</div> : null}
+                        {this.props.pendingverifiers.length === 0 ? <div className="nodata">No pending notaries yet</div> : null}
                     </div> : null
                 }
             </div>

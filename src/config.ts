@@ -15,9 +15,9 @@ export const config = {
         code: 461,
         url: 'https://node.glif.io/space06/lotus/rpc/v0',
         token: process.env.REACT_APP_MAINNET_TOKEN,
-        notaryRepo: 'filecoin-notaries-onboarding',
-        notaryOwner: 'keyko-io',
-        rkhMultisig: 't080',
+        notaryRepo: 'notary-governance',
+        notaryOwner: 'filecoin-project',
+        rkhMultisig: 'f080',
         rkhtreshold: 2
     }, {
         name: 'Nerpanet',
