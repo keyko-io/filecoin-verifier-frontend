@@ -1476,6 +1476,10 @@
       font-size: 14px;
       line-height: 24px;
       color: #1a1a1a;
+
+      img {
+        padding-right: 10px;
+      }
     }
 
     .left,
@@ -1504,6 +1508,12 @@
       left: 0;
       right: 0;
       margin: auto;
+
+      p {
+        margin-left: -40px;
+        margin-right: -50px;
+        margin-top: 5px;
+      }
     }
   }
 }
