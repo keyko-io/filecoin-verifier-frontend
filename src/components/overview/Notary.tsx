@@ -9,7 +9,6 @@ import { datacapFilter } from "../../utils/Filters"
 import LoginGithub from 'react-login-github';
 import { config } from '../../config'
 import WarnModal from '../../modals/WarnModal';
-import CheckLedgerModal from '../../modals/CheckLedgerModal';
 
 type NotaryStates = {
     tabs: string
@@ -73,46 +72,38 @@ export default class Notary extends Component<NotaryProps, NotaryStates> {
     }
 
     verifyClients = async () => {
-        dispatchCustomEvent({
-            name: "create-modal", detail: {
-                id: Math.random().toString(36).replace(/[^a-z]+/g, '').substr(0, 5),
-                modal: <CheckLedgerModal
-                    clientRequest={this.context.clientRequests}
-                    selectedRequest={this.state.selectedClientRequests} />
-            }
-        })
-        // for (const request of this.context.clientRequests) {
-        //     if (this.state.selectedClientRequests.includes(request.number)) {
-        //         try {
-        //             let prepDatacap = '1'
-        //             let prepDatacapExt = 'B'
-        //             const dataext = config.datacapExt.slice().reverse()
-        //             for (const entry of dataext) {
-        //                 if (request.data.datacap.endsWith(entry.name)) {
-        //                     prepDatacapExt = entry.value
-        //                     prepDatacap = request.data.datacap.substring(0, request.data.datacap.length - entry.name.length)
-        //                     break
-        //                 }
-        //             }
-        //             const datacap = parseFloat(prepDatacap)
-        //             const fullDatacap = BigInt(datacap * parseFloat(prepDatacapExt))
-        //             let address = request.data.address
-        //             if (address.length < 12) {
-        //                 address = await this.context.wallet.api.actorKey(address)
-        //             }
-        //             let messageID = await this.context.wallet.api.verifyClient(address, fullDatacap, this.context.wallet.walletIndex)
-        //             // github update
-        //             this.context.updateGithubVerified(request.number, messageID, address, fullDatacap)
+        for (const request of this.context.clientRequests) {
+            if (this.state.selectedClientRequests.includes(request.number)) {
+                try {
+                    let prepDatacap = '1'
+                    let prepDatacapExt = 'B'
+                    const dataext = config.datacapExt.slice().reverse()
+                    for (const entry of dataext) {
+                        if (request.data.datacap.endsWith(entry.name)) {
+                            prepDatacapExt = entry.value
+                            prepDatacap = request.data.datacap.substring(0, request.data.datacap.length - entry.name.length)
+                            break
+                        }
+                    }
+                    const datacap = parseFloat(prepDatacap)
+                    const fullDatacap = BigInt(datacap * parseFloat(prepDatacapExt))
+                    let address = request.data.address
+                    if (address.length < 12) {
+                        address = await this.context.wallet.api.actorKey(address)
+                    }
+                    let messageID = await this.context.wallet.api.verifyClient(address, fullDatacap, this.context.wallet.walletIndex)
+                    // github update
+                    this.context.updateGithubVerified(request.number, messageID, address, fullDatacap)
 
-        //             // send notifications
-        //             this.context.wallet.dispatchNotification('Verify Client Message sent with ID: ' + messageID)
-        //             this.context.loadClientRequests()
-        //         } catch (e) {
-        //             this.context.wallet.dispatchNotification('Verification failed: ' + e.message)
-        //             console.log(e.stack)
-        //         }
-        //     }
-        // }
+                    // send notifications
+                    this.context.wallet.dispatchNotification('Verify Client Message sent with ID: ' + messageID)
+                    this.context.loadClientRequests()
+                } catch (e) {
+                    this.context.wallet.dispatchNotification('Verification failed: ' + e.message)
+                    console.log(e.stack)
+                }
+            }
+        }
     }
 
     selectRow = (transactionId: string) => {
