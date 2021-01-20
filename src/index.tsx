@@ -19,6 +19,7 @@ import history from './context/History';
 import Verifiers from './pages/Verifiers';
 import './fonts/SuisseIntl-Regular.woff'
 import Miners from './pages/Miners';
+import Title from './components/Title';
 
 
 // redirect to domain if user access fleek url
@@ -26,8 +27,12 @@ if (window.location.host.includes('fleek')) {
   window.location.href = config.domain;
 }
 
+
+
 ReactDOM.render(
+  
   <React.StrictMode>
+    <Title/>
     <WalletProvider>
         <GithubProvider>
           <Wallet.Consumer>
