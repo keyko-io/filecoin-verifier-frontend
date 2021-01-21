@@ -154,11 +154,10 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
             },
             verifierRequests: [],
             loadNotificationVerifierRequests: async () => {
-                if(this.props.github.githubLogged === false){
-                    this.setState({clientRequests: []})
-                    return
+                if (this.props.github.githubOctoGeneric.logged === false) {
+                    await this.props.github.githubOctoGenericLogin()
                 }
-                const rawIssues = await this.props.github.githubOcto.issues.listForRepo({
+                const rawIssues = await this.props.github.githubOctoGeneric.octokit.issues.listForRepo({
                     owner: config.lotusNodes[this.props.wallet.networkIndex].notaryOwner,
                     repo: config.lotusNodes[this.props.wallet.networkIndex].notaryRepo,
                     state: 'open'
@@ -166,7 +165,7 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
                 const issues: any[] = []
                 for (const rawIssue of rawIssues.data) {
                     try {
-                        const rawComments = await this.props.github.githubOcto.issues.listComments({
+                        const rawComments = await this.props.github.githubOctoGeneric.octokit.issues.listComments({
                             owner: config.lotusNodes[this.props.wallet.networkIndex].notaryOwner,
                             repo: config.lotusNodes[this.props.wallet.networkIndex].notaryRepo,
                             issue_number: rawIssue.number,
@@ -351,16 +350,22 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
                 })
             },
             search: async (query: string) => {
-                if (this.props.github.githubLogged === false) {
-                    console.log('not logged')
-                    return
-                }
+                
                 let results: any[] = []
                 if (this.state.viewroot) {
-                    results = await this.props.github.githubOcto.search.issuesAndPullRequests({
+                    
+                    if (this.props.github.githubOctoGeneric.logged === false) {
+                        await this.props.github.githubOctoGenericLogin()
+                    }
+
+                    results = await this.props.github.githubOctoGeneric.octokit.search.issuesAndPullRequests({
                         q: `${query} in:body is:issue repo:${config.lotusNodes[this.props.wallet.networkIndex].notaryOwner}/${config.lotusNodes[this.props.wallet.networkIndex].notaryRepo}`
                     })
                 } else {
+                    if (this.props.github.githubLogged === false) {
+                        console.log('not logged')
+                        return
+                    }
                     results = await this.props.github.githubOcto.search.issuesAndPullRequests({
                         q: `${query} in:body is:issue repo:${config.onboardingOwner}/${config.onboardingClientRepo}`
                     })
