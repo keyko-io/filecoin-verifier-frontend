@@ -6,7 +6,7 @@ import Option from '../components/Option'
 import Welcome from '../components/Welcome'
 import history from '../context/History'
 import Header from '../components/Header';
-import LearnMore from '../components/LearnMore';
+import LearnMoreOptions from '../components/LearnMoreOptions';
 
 type States = {
   optionSelected: boolean[],
@@ -87,7 +87,7 @@ class Landing extends Component<{}, States> {
               />
             })}
           </div>
-          <LearnMore />
+          <LearnMoreOptions />
         </div>
       </div>
     );

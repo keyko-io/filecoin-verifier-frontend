@@ -1,32 +1,30 @@
 export const config = {
     apiUri: process.env.REACT_APP_API_URI || 'http://localhost:4000',
     apiToken: process.env.REACT_APP_API_TOKEN || '',
-    onboardingClientRepo: process.env.REACT_APP_ONBOARDING_REPO ||'filecoin-clients-onboarding-test',
+    onboardingClientRepo: process.env.REACT_APP_ONBOARDING_REPO || 'filecoin-clients-onboarding-test',
     onboardingOwner: process.env.REACT_APP_ONBOARDING_REPO_OWNER || 'keyko-io',
     githubApp: process.env.REACT_APP_GITHUB_APP || 'Iv1.10e7aaed4654db3c',
     oauthUri: process.env.REACT_APP_OAUTH_URI || 'https://plus.fil.org/oauth/',
     networks: process.env.REACT_APP_NETWORKS || 'Mainnet,Nerpanet',
     domain: process.env.REACT_APP_DOMAIN || "https://plus.fil.org/",
+    githubGenericToken: process.env.REACT_APP_GITHUB_GENERIC_TOKEN,
+    minersUrl: 'https://raw.githubusercontent.com/filecoin-project/filecoin-plus-client-onboarding/main/miners.md',
     defaultAssign: ['philippbanhardt'],
     lotusNodes: [{
         name: 'Mainnet',
         code: 461,
         url: 'https://node.glif.io/space06/lotus/rpc/v0',
         token: process.env.REACT_APP_MAINNET_TOKEN,
-        clientRepo: 'filecoin-plus-client-onboarding',
-        clientOwner: 'filecoin-project',
         notaryRepo: 'notary-governance',
         notaryOwner: 'filecoin-project',
         rkhMultisig: 'f080',
         rkhtreshold: 2
-    },{
+    }, {
         name: 'Nerpanet',
         code: 1,
         url: 'https://beta-verify.filecoin.io/api/rpc/v0',
         token: process.env.REACT_APP_NERPANET_TOKEN,
-        clientRepo: 'filecoin-clients-onboarding-test',
         notaryRepo: 'filecoin-notaries-onboarding',
-        clientOwner: 'keyko-io',
         notaryOwner: 'keyko-io',
         rkhMultisig: 't080',
         rkhtreshold: 1
@@ -35,9 +33,7 @@ export const config = {
         code: 1,
         url: 'ws://localhost:1234/rpc/v0',
         token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBbGxvdyI6WyJyZWFkIiwid3JpdGUiLCJzaWduIiwiYWRtaW4iXX0.OJlFIgYG3D23RjWWXfjdTluG6Qx2EOgwMeWQxnUQrMM',
-        clientRepo: 'filecoin-clients-onboarding-test',
         notaryRepo: 'filecoin-notaries-onboarding',
-        clientOwner: 'keyko-io',
         notaryOwner: 'keyko-io',
         rkhMultisig: 't080',
         rkhtreshold: 2

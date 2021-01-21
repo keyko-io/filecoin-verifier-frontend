@@ -18,14 +18,20 @@ import Landing from './pages/Landing';
 import history from './context/History';
 import Verifiers from './pages/Verifiers';
 import './fonts/SuisseIntl-Regular.woff'
+import Miners from './pages/Miners';
+import Title from './components/Title';
 
 // redirect to domain if user access fleek url
 if (window.location.host.includes('fleek')) {
   window.location.href = config.domain;
 }
 
+
+
 ReactDOM.render(
+  
   <React.StrictMode>
+    <Title/>
     <WalletProvider>
         <GithubProvider>
           <Wallet.Consumer>
@@ -40,6 +46,7 @@ ReactDOM.render(
                         <Route path={'/wallet'} component={Preonboarding} ></Route>
                         <Route path={'/landing'} component={Landing} ></Route>
                         <Route path={'/verifiers'} component={Verifiers} ></Route>
+                        <Route path={'/miners'} component={Miners} ></Route>
                       </Switch>
                     </Router>
                     <GlobalNotification style={{ bottom: 0, right: 0 }} />

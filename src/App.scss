@@ -41,6 +41,7 @@
       padding-top: 19px;
       cursor: pointer;
       position: relative;
+      font-family: "suisseintl";
     }
 
     .datacap {
@@ -55,7 +56,7 @@
 
     .headertitles {
       font-weight: bold;
-      font-family: Inter;
+      font-family: "suisseintl";
       font-style: normal;
       font-weight: 600;
       font-size: 16px;
@@ -63,7 +64,7 @@
     }
 
     .accounttype {
-      font-family: Inter;
+      font-family: "suisseintl";
       font-style: normal;
       font-weight: normal;
       font-size: 12px;
@@ -91,8 +92,37 @@
     .notification {
       padding-top: 27px;
       cursor: pointer;
+      position: relative;
+
+      .notificationholder {
+        width: 250px;
+        position: absolute;
+        padding: 5px 16px;
+        top: 70px;
+        left: 0px;
+        border: 1px solid #c7c7c7;
+        border-radius: 8px;
+        background-color: #fff;
+        z-index: 1;
+
+        .notificationentry {
+          padding-top: 10px;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          font-family: monospace;
+          border-style: solid;
+          border-width: 1px;
+          border-radius: 4px;
+          border-color: #c7c7c7;
+          margin: 6px -10px;
+        }
+      }
     }
 
+    #search {
+      font-family: "suisseintl";
+    }
     .search {
       position: relative;
 
@@ -238,6 +268,7 @@
       margin-bottom: 70px;
 
       .textinfo {
+        font-family: "suisseintl";
         position: absolute;
         left: 0;
         right: 0;
@@ -253,12 +284,16 @@
           h2 {
             text-align: center;
           }
+          .description {
+            text-align: center;
+          }
         }
 
         .textinfodata {
           display: flex;
           align-content: stretch;
           border: 1px solid #0090ff;
+          font-family: "suisseintl";
 
           .textinfodatablock {
             text-align: center;
@@ -295,6 +330,7 @@
     .tabsholder {
       display: flex;
       justify-content: space-between;
+      font-family: "suisseintl";
 
       .tabs {
         display: flex;
@@ -314,6 +350,7 @@
 
       .tabssadd {
         button {
+          font-family: "suisseintl";
           margin-left: 10px;
         }
       }
@@ -598,6 +635,7 @@
   font-size: 12px;
   border-collapse: collapse;
   width: 100%;
+  font-family: "suisseintl";
 
   thead {
     font-weight: bold;
@@ -1000,6 +1038,16 @@
       }
     }
   }
+  .miners {
+    top: 0px !important;
+    text-align: left;
+    a {
+      color: #000;
+    }
+    svg {
+      padding-left: 3px;
+    }
+  }
 }
 
 .preonboarding {
@@ -1219,6 +1267,59 @@
   }
 }
 
+.learnmoreoptions {
+  position: absolute;
+  margin-left: auto;
+  margin-right: auto;
+  max-width: 1280px;
+  height: 60px;
+  left: 0;
+  right: 0;
+  background: #fff;
+  top: 815px;
+  text-align: center;
+  display: flex;
+  border-top: 1px solid #0091ff;
+  border-right: 1px solid #0091ff;
+  border-left: 1px solid #0091ff;
+  border-bottom: 1px solid #0091ff;
+
+  button,
+  button:checked,
+  button:active,
+  button:hover,
+  button:visited,
+  button:checked {
+    position: absolute;
+    top: 10px;
+    -ms-transform: translate(-50%);
+    transform: translate(-50%);
+    height: 20px;
+    font-family: "suisseintl";
+    font-style: normal;
+    font-weight: 600;
+    font-size: 14px;
+    line-height: 20px;
+    border-right: 1px solid #0091ff;
+    border-top: 1px solid #0091ff;
+    border-left: 1px solid #0091ff;
+    border-bottom: 1px solid #0091ff;
+    width: 180px;
+    background: #fff;
+    color: #0091ff;
+  }
+
+  .learnleft {
+    padding-left: 34%;
+  }
+  .learncenter {
+    padding-left: 16%;
+  }
+  .learnright {
+    padding-left: 16%;
+  }
+}
+
 .warnmodal {
   height: 200px;
   width: 350px;
@@ -1251,16 +1352,6 @@
   display: inline-block;
   text-align: center;
 
-  p {
-    position: absolute;
-    top: 50%;
-    -ms-transform: translateY(-50%);
-    transform: translateY(-50%);
-    text-align: center;
-    left: 0;
-    right: 0;
-  }
-
   .title {
     font-weight: bold;
     font-family: "suisseintl";
@@ -1280,13 +1371,17 @@
   font-family: "suisseintl";
 
   p {
-    position: absolute;
-    top: 50%;
-    -ms-transform: translateY(-50%);
-    transform: translateY(-50%);
-    text-align: center;
-    left: 0;
-    right: 0;
+    padding-bottom: 20px;
+  }
+
+  .markdown {
+    width: 800px;
+    text-align: left;
+    table {
+      padding-top: 20px;
+      padding-bottom: 20px;
+      text-align: center;
+    }
   }
 
   .title {
@@ -1297,6 +1392,11 @@
     font-size: 16px;
     line-height: 24px;
     padding-bottom: 20px;
+  }
+
+  .content {
+    max-height: 380px;
+    overflow: scroll;
   }
 }
 
@@ -1457,9 +1557,15 @@
     line-height: 20px;
     letter-spacing: 0px;
     padding-top: 10px;
-    
   }
-  .paginator{
-    color: #33A7FF;
+  .paginator {
+    color: #33a7ff;
   }
+}
+
+.twooptionsbelow {
+  top: 820px !important;
+}
+.paginationminers {
+  top: 630px !important;
 }
