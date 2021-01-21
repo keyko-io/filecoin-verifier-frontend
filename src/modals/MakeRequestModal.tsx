@@ -233,7 +233,7 @@ class MakeRequestModal extends Component<ModalProps, States> {
 
                     <div className="centerbutton">
 
-                        <div id="githublogin">
+                        <div id="githublogin" className="githubrequest">
                             <LoginGithub
                                 redirectUri={config.oauthUri}
                                 clientId={config.githubApp}
