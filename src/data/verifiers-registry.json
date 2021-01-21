@@ -2,7 +2,7 @@
     "notaries" : [
         {
             "id": 2,
-            "name": "Philipp B.",
+            "name": "Filecoin Foundation",
             "use_case":  ["General"],
             "location": "Europe",
             "website": "https://fil.org/",
