@@ -16,10 +16,14 @@ class LearnMoreOptions extends Component {
           })
     }
 
+    checkDatacap = () => {
+        window.open('https://verify.glif.io/', '_blank')
+    }
+
     render() {
         return (
             <div className="learnmoreoptions">
-                <div className="learnleft"><ButtonPrimary>Check Datacap</ButtonPrimary></div>
+                <div className="learnleft"><ButtonPrimary onClick={() => this.checkDatacap()}>Check Datacap</ButtonPrimary></div>
                 <div className="learncenter"><ButtonPrimary onClick={() => this.navigate()}>Learn More</ButtonPrimary></div>
                 <div className="learnright"><ButtonPrimary onClick={() => this.miners()}>Miners</ButtonPrimary></div>
             </div >
