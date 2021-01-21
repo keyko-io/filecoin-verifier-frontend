@@ -584,11 +584,15 @@
   }
 }
 
+.githubrequest{
+  margin-top: -80px !important;
+}
+
 #githublogin {
   height: 40px;
   display: flex;
   justify-content: center;
-  margin-top: -80px;
+  margin-top: 10px;
 
   button {
     height: 40px;

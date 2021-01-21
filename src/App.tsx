@@ -186,7 +186,6 @@ class App extends Component<{}, States> {
                 <div className="headertitles">Select Account Type</div>
                 <div>
                   <div>{this.context.viewroot ? 'Rootkey Holder' : 'Approved Notary'}</div>
-                  <div className="accounttype">{this.context.viewroot ? 'Rootkey Holder' : 'Approved Verifier'}</div>
                   <div className="viewswitch">
                     <Toggle
                       active={this.context.viewroot}
