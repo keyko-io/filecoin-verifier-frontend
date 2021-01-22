@@ -73,12 +73,13 @@ export const config = {
     ],
     regions: [
         { value: "Africa", name: "Africa" },
-        { value: "America", name: "America" },
-        { value: "Asia", name: "Asia" },
+        { value: "Asia excl. Greater China", name: "Asia excl. Greater China" },
         { value: "Europe", name: "Europe" },
         { value: "Greater China", name: "Greater China" },
         { value: "North America", name: "North America" },
-        { value: "Oceania", name: "Oceania" }
+        { value: "Oceania", name: "Oceania" },
+        { value: "South america", name: "South america" }
+
     ],
     dataSource: process.env.REACT_APP_VERIFIES_DATA || 'verifiers'
 }
