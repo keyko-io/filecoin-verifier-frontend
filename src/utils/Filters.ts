@@ -1,4 +1,5 @@
 import { config } from '../config'
+import { BigNumber } from "bignumber.js";
 
 export function addressFilter (input: string) {
     return `${input.substr(0, 5)}...${input.substr(-5, 5)}`
@@ -22,3 +23,14 @@ export function datacapFilter (input: string) {
         }
     }
 }
+
+const converter = new BigNumber('1.0995116278')
+
+export function iBtoB (input: string) {
+    let bn = new BigNumber(input)
+    return bn.multipliedBy(converter).toString()
+}
+
+export function BtoiB (input: string) {
+    let bn = new BigNumber(input)
+    return bn.dividedBy(converter).toString()
