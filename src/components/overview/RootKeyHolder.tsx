@@ -304,6 +304,7 @@ export default class RootKeyHolder extends Component<RootKeyHolderProps, RootKey
                         <table>
                             <thead>
                                 <tr>
+                                    <td></td>
                                     <td>Transaction ID</td>
                                     <td>Type</td>
                                     <td>Notary</td>
