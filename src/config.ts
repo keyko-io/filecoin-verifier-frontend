@@ -78,7 +78,7 @@ export const config = {
         { value: "Greater China", name: "Greater China" },
         { value: "North America", name: "North America" },
         { value: "Oceania", name: "Oceania" },
-        { value: "South america", name: "South america" }
+        { value: "South America", name: "South America" }
 
     ],
     dataSource: process.env.REACT_APP_VERIFIES_DATA || 'verifiers'
