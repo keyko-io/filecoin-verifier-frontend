@@ -71,5 +71,15 @@ export const config = {
         { value: "ZiB", name: "ZiB" },
         { value: "YiB", name: "YiB" }
     ],
+    regions: [
+        { value: "Africa", name: "Africa" },
+        { value: "Asia excl. Greater China", name: "Asia excl. Greater China" },
+        { value: "Europe", name: "Europe" },
+        { value: "Greater China", name: "Greater China" },
+        { value: "North America", name: "North America" },
+        { value: "Oceania", name: "Oceania" },
+        { value: "South America", name: "South America" }
+
+    ],
     dataSource: process.env.REACT_APP_VERIFIES_DATA || 'verifiers'
 }

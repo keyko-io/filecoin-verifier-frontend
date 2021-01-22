@@ -558,7 +558,7 @@
   }
 
   .loginwarn {
-    margin-top: -58px;
+    margin-top: 0px;
     position: absolute;
     height: 40px;
     left: 0;
@@ -581,11 +581,21 @@
     .methodselection {
       text-align: center;
     }
+    .regionlabel{
+      margin-bottom: 1px !important;
+      font-family: "suisseintl";
+      font-size: 14px;
+      font-style: normal;
+      font-weight: 700;
+      line-height: 16px;
+      letter-spacing: 0px;
+      text-align: left;
+    }
   }
 }
 
 .githubrequest{
-  margin-top: -80px !important;
+  margin-top: 0px !important;
 }
 
 #githublogin {
