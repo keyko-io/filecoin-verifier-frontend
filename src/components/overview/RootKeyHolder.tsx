@@ -304,7 +304,7 @@ export default class RootKeyHolder extends Component<RootKeyHolderProps, RootKey
                         <table>
                             <thead>
                                 <tr>
-                                    <td></td>
+                                    <td>Transaction ID</td>
                                     <td>Type</td>
                                     <td>Notary</td>
                                     <td>Datacap</td>
@@ -315,6 +315,7 @@ export default class RootKeyHolder extends Component<RootKeyHolderProps, RootKey
                                 {this.props.pendingverifiers.map((transaction: any) =>
                                     <tr key={transaction.id}>
                                         <td><input type="checkbox" onChange={() => this.selectRow(transaction.id)} checked={this.state.selectedTransactions.includes(transaction.id)} /></td>
+                                        <td>{transaction.id}</td>
                                         <td>{transaction.type}</td>
                                         <td>{transaction.verifier}</td>
                                         <td>{datacapFilter(transaction.datacap)}</td>
