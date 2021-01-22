@@ -7,6 +7,7 @@ return `
 ## Core Information
 - Name: ${data.organization}
 - Website / Social Media: ${data.publicprofile}
+- Region: ${data.region}
 - DataCap Requested: ${data.datacap}
 - Addresses to be Notarized: ${data.address}
 - Notary Requested: ${data.assignees}

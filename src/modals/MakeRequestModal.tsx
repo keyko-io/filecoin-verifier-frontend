@@ -18,7 +18,8 @@ type States = {
     verifierName: string
     publicProfile: string
     emailMethod: boolean,
-    gitHubMethod: boolean
+    gitHubMethod: boolean,
+    region: string
 }
 
 type ModalProps = {
@@ -51,7 +52,8 @@ class MakeRequestModal extends Component<ModalProps, States> {
             verifierName: this.props.verifier.name,
             publicProfile: this.props.verifier.website,
             emailMethod: false,
-            gitHubMethod: true
+            gitHubMethod: true,
+            region: 'North America'
         }
     }
 
@@ -118,6 +120,7 @@ class MakeRequestModal extends Component<ModalProps, States> {
             address: this.state.address,
             datacap: this.state.datacap + this.state.datacapExt,
             organization: this.state.organization,
+            region: this.state.region,
             publicprofile: this.state.publicprofile,
             contact: this.state.contact,
             assignees: [this.props.verifier.github_user],
@@ -193,6 +196,17 @@ class MakeRequestModal extends Component<ModalProps, States> {
                                     value={this.state.datacapExt}
                                     onChange={this.handleChange}
                                     options={config.datacapExtName}
+                                />
+                            </div>
+                        </div>
+                        <div className="inputholder">
+                            <div className="regionlabel">Region</div>
+                            <div className="datacapext">
+                                <SelectMenu
+                                    name="region"
+                                    value={this.state.region}
+                                    onChange={this.handleChange}
+                                    options={config.regions}
                                 />
                             </div>
                         </div>
