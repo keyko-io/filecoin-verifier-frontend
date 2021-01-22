@@ -157,7 +157,8 @@ export default class RootKeyHolder extends Component<RootKeyHolderProps, RootKey
     handleSubmitApprove = async () => {
         this.setState({ approveLoading: true })
         // load github issues
-        const rawIssues = await this.context.github.githubOcto.issues.listForRepo({
+        await this.context.github.githubOctoGenericLogin()
+        const rawIssues = await this.context.github.githubOctoGeneric.octokit.issues.listForRepo({
             owner: config.lotusNodes[this.context.wallet.networkIndex].notaryOwner,
             repo: config.lotusNodes[this.context.wallet.networkIndex].notaryRepo,
             state: 'open',
@@ -190,8 +191,6 @@ export default class RootKeyHolder extends Component<RootKeyHolderProps, RootKey
 
                     if (issues[tx.verifier]) {
                         let commentContent = `## The request has been signed by a new Root Key Holder\n#### Message sent to Filecoin Network\n>${messageID}`
-
-                        await this.context.github.githubOctoGenericLogin()
 
                         await this.context.github.githubOctoGeneric.octokit.issues.createComment({
                             owner: config.lotusNodes[this.context.wallet.networkIndex].notaryOwner,
