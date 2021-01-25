@@ -101,17 +101,17 @@ export default class RootKeyHolder extends Component<RootKeyHolderProps, RootKey
                     const datacap = parseFloat(prepDatacap)
                     const fulldatacapunconverted = BigInt(datacap * parseFloat(prepDatacapExt))
                     const fullDatacap = BigInt(iBtoB(fulldatacapunconverted.toString()))
+                    console.log("fullDatacap to propose: " + fullDatacap)
 
                     let address = request.address
                     console.log("request address: " + request.address)
-
+                        
                     if (address.startsWith("t1") || address.startsWith("f1")) {
                         address = await this.context.wallet.api.actorAddress(address)
                         console.log("getting t0/f0 ID. Result of  actorAddress method: " + address)
                     }
 
-                    console.log("address to propose: " + address)
-                    console.log("fullDatacap to propose: " + fullDatacap)
+                    console.log("address to propose: " + address)  
 
                     let messageID = await this.context.wallet.api.proposeVerifier(address, fullDatacap, this.context.wallet.walletIndex)
                     console.log("messageID: " + messageID)
