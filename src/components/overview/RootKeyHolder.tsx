@@ -85,7 +85,7 @@ export default class RootKeyHolder extends Component<RootKeyHolderProps, RootKey
                     let prepDatacap = '1'
                     let prepDatacapExt = 'B'
                     console.log("request.datacap: " + request.datacap)
-                    const dataext = config.datacapExtNotary.slice().reverse()
+                    const dataext = config.datacapExt.slice().reverse()
                     for (const entry of dataext) {
                         if (request.datacap.endsWith(entry.name)) {
                             console.log("found unit: " + entry.name)

@@ -14,12 +14,12 @@ export function datacapFilter (input: string) {
         input = input.substr(0, pointLoc)
     }
     const inputLength = input.length
-    if(inputLength > config.datacapExt[config.datacapExt.length-1].value.length+3){
-        return `999+ ${config.datacapExt[config.datacapExt.length-1].name}`
+    if(inputLength > config.datacapFilterExt[config.datacapFilterExt.length-1].value.length+3){
+        return `999+ ${config.datacapFilterExt[config.datacapFilterExt.length-1].name}`
     }
-    for(let i = config.datacapExt.length-1; i>=0; i--){
-        if(config.datacapExt[i].value.length <= inputLength){
-            return `${input.substring(0, inputLength - (config.datacapExt[i].value.length-1))} ${config.datacapExt[i].name}`
+    for(let i = config.datacapFilterExt.length-1; i>=0; i--){
+        if(config.datacapFilterExt[i].value.length <= inputLength){
+            return `${input.substring(0, inputLength - (config.datacapFilterExt[i].value.length-1))} ${config.datacapFilterExt[i].name}`
         }
     }
 }

@@ -38,18 +38,18 @@ export const config = {
         rkhMultisig: 't080',
         rkhtreshold: 2
     }],
-    datacapExt: [
+    datacapFilterExt: [
         { value: "1", name: "B" },
-        { value: "1024", name: "KiB" },
-        { value: "1048576", name: "MiB" },
-        { value: "1073741824", name: "GiB" },
-        { value: "1099511627776", name: "TiB" },
-        { value: "1125899906842624", name: "PiB" },
-        { value: "1152921504606847000", name: "EiB" },
-        { value: "1180591620717411303424", name: "ZiB" },
-        { value: "1208925819614629174706151275", name: "YiB" }
+        { value: "1024", name: "KB" },
+        { value: "1048576", name: "MB" },
+        { value: "1073741824", name: "GB" },
+        { value: "1099511627776", name: "TB" },
+        { value: "1125899906842624", name: "PB" },
+        { value: "1152921504606847000", name: "EB" },
+        { value: "1180591620717411303424", name: "ZB" },
+        { value: "1208925819614629174706151275", name: "YB" }
     ],
-    datacapExtNotary: [
+    datacapExt: [
         { value: "1", name: "B" },
         { value: "1024", name: "KiB" },
         { value: "1048576", name: "MiB" },
@@ -79,7 +79,6 @@ export const config = {
         { value: "North America", name: "North America" },
         { value: "Oceania", name: "Oceania" },
         { value: "South America", name: "South America" }
-
     ],
     dataSource: process.env.REACT_APP_VERIFIES_DATA || 'verifiers'
 }
