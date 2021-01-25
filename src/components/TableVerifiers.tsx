@@ -118,7 +118,7 @@ export default class TableVerifiers extends Component {
                                     <td>Notary Name</td>
                                     <td>Use case</td>
                                     <td>Location</td>
-                                    <td>Website</td>
+                                    <td>Website / Social Media</td>
                                     <td>Private Requests</td>
                                 </tr>
                             </thead>
