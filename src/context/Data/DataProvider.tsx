@@ -124,7 +124,7 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
                 })
                 const issues: any[] = []
                 for (const rawIssue of rawIssues.data) {
-                    const data = parser.parseIssue(rawIssue.body)
+                    const data = parser.parseIssue(rawIssue.body, rawIssue.title)
                     if (data.correct) {
 
                         // get comments
