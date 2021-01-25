@@ -3,7 +3,7 @@ import { Data } from './Index'
 import { config } from '../../config';
 // @ts-ignore
 import { IssueBody } from '../../utils/IssueBody'
-import { datacapFilter } from '../../utils/Filters'
+import { datacapFilter, BtoiB } from '../../utils/Filters'
 const utils = require('@keyko-io/filecoin-verifier-tools/utils/issue-parser')
 const parser = require('@keyko-io/filecoin-verifier-tools/utils/notary-issue-parser')
 
@@ -207,7 +207,7 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
                     verified.push({
                         verifier: verifiedAddress.verifier,
                         verifierAccount,
-                        datacap: verifiedAddress.datacap
+                        datacap: BtoiB(verifiedAddress.datacap)
                     })
                 }
                 this.setState({ verified })
@@ -216,7 +216,7 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
                 const clients = await this.props.wallet.api.listVerifiedClients()
                 let clientsamount = 0
                 for (const txs of clients) {
-                    clientsamount = clientsamount + Number(txs.datacap)
+                    clientsamount = clientsamount + Number(BtoiB(txs.datacap))
                     txs['key'] = await this.props.wallet.api.actorKey(txs.verified)
                 }
                 this.setState({clients, clientsAmount: clientsamount.toString()})
@@ -235,7 +235,7 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
                         type: pendingTxs[txs].parsed.params.cap.toString() === '0' ? 'Revoke' : 'Add',
                         verifier: pendingTxs[txs].parsed.params.verifier,
                         verifierAccount,
-                        datacap: pendingTxs[txs].parsed.params.cap.toString(),
+                        datacap: BtoiB(pendingTxs[txs].parsed.params.cap.toString()),
                         signer: pendingTxs[txs].signers[0]
                     })
                 }

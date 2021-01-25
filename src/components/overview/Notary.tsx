@@ -4,7 +4,7 @@ import AddClientModal from '../../modals/AddClientModal';
 import AddVerifierModal from '../../modals/AddVerifierModal';
 // @ts-ignore
 import { ButtonPrimary, dispatchCustomEvent, CheckBox, ButtonSecondary } from "slate-react-system";
-import { datacapFilter } from "../../utils/Filters"
+import { datacapFilter, iBtoB } from "../../utils/Filters"
 // @ts-ignore
 import LoginGithub from 'react-login-github';
 import { config } from '../../config'
@@ -86,7 +86,8 @@ export default class Notary extends Component<NotaryProps, NotaryStates> {
                         }
                     }
                     const datacap = parseFloat(prepDatacap)
-                    const fullDatacap = BigInt(datacap * parseFloat(prepDatacapExt))
+                    const fulldatacapunconverted = BigInt(datacap * parseFloat(prepDatacapExt))
+                    const fullDatacap = BigInt(iBtoB(fulldatacapunconverted.toString()))
                     let address = request.data.address
                     if (address.length < 12) {
                         address = await this.context.wallet.api.actorKey(address)

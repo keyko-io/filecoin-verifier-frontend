@@ -4,7 +4,7 @@ import AddVerifierModal from '../../modals/AddVerifierModal';
 import RequestVerifierModal from '../../modals/RequestVerifierModal';
 // @ts-ignore
 import { ButtonPrimary, dispatchCustomEvent, ButtonSecondary } from "slate-react-system";
-import { datacapFilter } from "../../utils/Filters"
+import { datacapFilter, iBtoB } from "../../utils/Filters"
 // @ts-ignore
 import LoginGithub from 'react-login-github';
 import { config } from '../../config'
@@ -99,8 +99,8 @@ export default class RootKeyHolder extends Component<RootKeyHolderProps, RootKey
                     console.log("prepDatacapExt: " + prepDatacapExt)
 
                     const datacap = parseFloat(prepDatacap)
-                    const fullDatacap = BigInt(datacap * parseFloat(prepDatacapExt))
-
+                    const fulldatacapunconverted = BigInt(datacap * parseFloat(prepDatacapExt))
+                    const fullDatacap = BigInt(iBtoB(fulldatacapunconverted.toString()))
 
                     let address = request.address
                     console.log("request address: " + request.address)
@@ -186,8 +186,8 @@ export default class RootKeyHolder extends Component<RootKeyHolderProps, RootKey
             const multisigInfo = await this.context.wallet.api.multisigInfo(config.lotusNodes[this.context.wallet.networkIndex].rkhMultisig)
             for (let tx of this.props.pendingverifiers) {
                 if (this.state.selectedTransactions.includes(tx.id)) {
-                    const datacap = BigInt(tx.datacap)
-                    let messageID = await this.context.wallet.api.approveVerifier(tx.verifier, datacap, tx.signer, tx.id, this.context.wallet.walletIndex);
+                    const datacap = iBtoB(tx.datacap)
+                    let messageID = await this.context.wallet.api.approveVerifier(tx.verifier, BigInt(datacap), tx.signer, tx.id, this.context.wallet.walletIndex);
 
                     if (issues[tx.verifier]) {
                         let commentContent = `## The request has been signed by a new Root Key Holder\n#### Message sent to Filecoin Network\n>${messageID}`
