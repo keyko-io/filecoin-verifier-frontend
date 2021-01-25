@@ -34,3 +34,4 @@ export function iBtoB (input: string) {
 export function BtoiB (input: string) {
     let bn = new BigNumber(input)
     return bn.dividedBy(converter).toString()
+}
