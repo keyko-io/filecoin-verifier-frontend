@@ -81,6 +81,7 @@ export default class Notary extends Component<NotaryProps, NotaryStates> {
                     clientRequests={this.context.clientRequests}
                     selectedClientRequests={this.state.selectedClientRequests}
                     onClick={this.verifyClients.bind(this)}
+                    origin="Notary"
                 />
             }
         })
