@@ -53,6 +53,8 @@ class AddClientModal extends Component<ModalProps, States> {
 
             const datacap = parseFloat(this.state.datacap)
             const fullDatacap = BigInt(datacap * parseFloat(this.state.datacapExt))
+            console.log("state.datacap: " + datacap)
+            console.log("fullDatacap: " + fullDatacap)
             let messageID = await this.context.wallet.api.verifyClient(this.state.address, fullDatacap, this.context.wallet.walletIndex);
             if (this.props.newDatacap) {
                 this.context.updateGithubVerified(this.state.issueNumber, messageID, this.state.address, fullDatacap)

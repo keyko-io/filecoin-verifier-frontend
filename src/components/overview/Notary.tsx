@@ -89,13 +89,16 @@ export default class Notary extends Component<NotaryProps, NotaryStates> {
                     const datacap = new BigNumber(prepDatacap)
                     const fulldatacapunconverted = new BigNumber(prepDatacapExt).multipliedBy(datacap)
                     const fullDatacap = iBtoB(fulldatacapunconverted).toFixed(0)
+                    console.log("datacap: " + datacap)
+                    console.log("fulldatacapunconverted: " + fullDatacap)
+                    console.log("fullDatacap: " + fullDatacap)
                     let address = request.data.address
                     if (address.length < 12) {
                         address = await this.context.wallet.api.actorKey(address)
                     }
                     let messageID = await this.context.wallet.api.verifyClient(address, BigInt(fullDatacap), this.context.wallet.walletIndex)
                     // github update
-                    this.context.updateGithubVerified(request.number, messageID, address, fulldatacapunconverted.toFixed())
+                    this.context.updateGithubVerified(request.number, messageID, address, fulldatacapunconverted.toFixed(0))
 
                     // send notifications
                     this.context.wallet.dispatchNotification('Verify Client Message sent with ID: ' + messageID)
