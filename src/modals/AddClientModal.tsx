@@ -3,6 +3,7 @@ import { Data } from '../context/Data/Index'
 import { config } from '../config'
 // @ts-ignore
 import { dispatchCustomEvent, H4, Input, ButtonPrimary, SelectMenu, LoaderSpinner } from "slate-react-system";
+import BigNumber from 'bignumber.js'
 
 type States = {
     address: string
@@ -51,11 +52,12 @@ class AddClientModal extends Component<ModalProps, States> {
 
         try {
 
-            const datacap = parseFloat(this.state.datacap)
-            const fullDatacap = BigInt(datacap * parseFloat(this.state.datacapExt))
-            console.log("state.datacap: " + datacap)
+            const datacap = new BigNumber(this.state.datacap)
+            const fullDatacap = new BigNumber(this.state.datacapExt).multipliedBy(datacap).toFixed(0)
+
+            console.log("datacap: " + datacap)
             console.log("fullDatacap: " + fullDatacap)
-            let messageID = await this.context.wallet.api.verifyClient(this.state.address, fullDatacap, this.context.wallet.walletIndex);
+            let messageID = await this.context.wallet.api.verifyClient(this.state.address, BigInt(fullDatacap), this.context.wallet.walletIndex);
             if (this.props.newDatacap) {
                 this.context.updateGithubVerified(this.state.issueNumber, messageID, this.state.address, fullDatacap)
             }
