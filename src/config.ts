@@ -49,17 +49,6 @@ export const config = {
         { value: "1180591620717411303424", name: "ZiB" },
         { value: "1208925819614629174706151275", name: "YiB" }
     ],
-    datacapExtNotary: [
-        { value: "1", name: "B" },
-        { value: "1024", name: "KiB" },
-        { value: "1048576", name: "MiB" },
-        { value: "1073741824", name: "GiB" },
-        { value: "1099511627776", name: "TiB" },
-        { value: "1125899906842624", name: "PiB" },
-        { value: "1152921504606847000", name: "EiB" },
-        { value: "1180591620717411303424", name: "ZiB" },
-        { value: "1208925819614629174706151275", name: "YiB" }
-    ],
     datacapExtName: [
         { value: "1B", name: "B" },
         { value: "KiB", name: "KiB" },

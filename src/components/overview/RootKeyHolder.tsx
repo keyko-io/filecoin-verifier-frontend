@@ -9,7 +9,7 @@ import { datacapFilter, iBtoB } from "../../utils/Filters"
 import LoginGithub from 'react-login-github';
 import { config } from '../../config'
 import WarnModalVerify from '../../modals/WarnModalVerify';
-
+import BigNumber from 'bignumber.js'
 const parser = require('@keyko-io/filecoin-verifier-tools/utils/notary-issue-parser')
 
 type RootKeyHolderState = {
@@ -104,7 +104,7 @@ export default class RootKeyHolder extends Component<RootKeyHolderProps, RootKey
                     let prepDatacap = '1'
                     let prepDatacapExt = 'B'
                     console.log("request.datacap: " + request.datacap)
-                    const dataext = config.datacapExtNotary.slice().reverse()
+                    const dataext = config.datacapExt.slice().reverse()
                     for (const entry of dataext) {
                         if (request.datacap.endsWith(entry.name)) {
                             console.log("found unit: " + entry.name)
@@ -117,20 +117,20 @@ export default class RootKeyHolder extends Component<RootKeyHolderProps, RootKey
                     console.log("prepDatacap: " + prepDatacap)
                     console.log("prepDatacapExt: " + prepDatacapExt)
 
-                    const datacap = parseFloat(prepDatacap)
-                    const fulldatacapunconverted = BigInt(datacap * parseFloat(prepDatacapExt))
-                    const fullDatacap = BigInt(iBtoB(fulldatacapunconverted.toString()))
+                    const datacap = new BigNumber(prepDatacap)
+                    const fulldatacapunconverted = new BigNumber(prepDatacapExt).multipliedBy(datacap)
+                    const fullDatacap = iBtoB(fulldatacapunconverted).toString()
+                    console.log("fullDatacap to propose: " + fullDatacap)
 
                     let address = request.address
                     console.log("request address: " + request.address)
-
+                        
                     if (address.startsWith("t1") || address.startsWith("f1")) {
                         address = await this.context.wallet.api.actorAddress(address)
                         console.log("getting t0/f0 ID. Result of  actorAddress method: " + address)
                     }
 
-                    console.log("address to propose: " + address)
-                    console.log("fullDatacap to propose: " + fullDatacap)
+                    console.log("address to propose: " + address)  
 
                     let messageID = await this.context.wallet.api.proposeVerifier(address, fullDatacap, this.context.wallet.walletIndex)
                     console.log("messageID: " + messageID)
@@ -207,8 +207,7 @@ export default class RootKeyHolder extends Component<RootKeyHolderProps, RootKey
             const multisigInfo = await this.context.wallet.api.multisigInfo(config.lotusNodes[this.context.wallet.networkIndex].rkhMultisig)
             for (let tx of this.props.pendingverifiers) {
                 if (this.state.selectedTransactions.includes(tx.id)) {
-                    const datacap = iBtoB(tx.datacap)
-                    let messageID = await this.context.wallet.api.approveVerifier(tx.verifier, BigInt(datacap), tx.signer, tx.id, this.context.wallet.walletIndex);
+                    let messageID = await this.context.wallet.api.approveVerifier(tx.verifier, BigInt(tx.datacap), tx.signer, tx.id, this.context.wallet.walletIndex);
 
                     if (issues[tx.verifier]) {
                         let commentContent = `## The request has been signed by a new Root Key Holder\n#### Message sent to Filecoin Network\n>${messageID}`
@@ -310,7 +309,7 @@ export default class RootKeyHolder extends Component<RootKeyHolderProps, RootKey
                                     <tr key={index}>
                                         <td>{transaction.verifier}</td>
                                         <td>{transaction.verifierAccount}</td>
-                                        <td>{datacapFilter(transaction.datacap)}</td>
+                                        <td>{datacapFilter(transaction.datacapConverted)}</td>
                                     </tr>
                                 )}
                             </tbody>
