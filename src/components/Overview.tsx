@@ -44,7 +44,7 @@ export default class Overview extends Component<{}, OverviewStates> {
                         </div>
                         <div className="textinfodata">
                             <div className="textinfodatablock">
-                                <div className="data">{datacapFilter(this.context.clientsAmount)}</div>
+                                <div className="data">{datacapFilter(this.context.clientsAmountConverted)}</div>
                                 <div className="text">Datacap Granted</div>
                             </div>
                             <div className="textinfodatablock">

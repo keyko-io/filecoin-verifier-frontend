@@ -24,14 +24,12 @@ export function datacapFilter (input: string) {
     }
 }
 
-const converter = new BigNumber('1.0995116278')
+const converter = new BigNumber('1.099511627776')
 
-export function iBtoB (input: string) {
-    let bn = new BigNumber(input)
-    return bn.multipliedBy(converter).toString()
+export function iBtoB (input: BigNumber) {
+    return input.multipliedBy(converter)
 }
 
-export function BtoiB (input: string) {
-    let bn = new BigNumber(input)
-    return bn.dividedBy(converter).toString()
+export function BtoiB (input: BigNumber) {
+    return input.dividedBy(converter)
 }
