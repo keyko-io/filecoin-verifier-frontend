@@ -318,7 +318,7 @@ export default class RootKeyHolder extends Component<RootKeyHolderProps, RootKey
                                         <td>{transaction.id}</td>
                                         <td>{transaction.type}</td>
                                         <td>{transaction.verifier}</td>
-                                        <td>{datacapFilter(transaction.datacap)}</td>
+                                        <td>{datacapFilter(transaction.datacapConverted)}</td>
                                         <td>{transaction.signer}</td>
                                     </tr>
                                 )}
