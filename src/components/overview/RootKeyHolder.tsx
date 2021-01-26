@@ -101,7 +101,7 @@ export default class RootKeyHolder extends Component<RootKeyHolderProps, RootKey
 
                     const datacap = new BigNumber(prepDatacap)
                     const fulldatacapunconverted = new BigNumber(prepDatacapExt).multipliedBy(datacap)
-                    const fullDatacap = iBtoB(fulldatacapunconverted).toString()
+                    const fullDatacap = iBtoB(fulldatacapunconverted).toFixed(0)
                     console.log("fullDatacap to propose: " + fullDatacap)
 
                     let address = request.address
@@ -114,7 +114,7 @@ export default class RootKeyHolder extends Component<RootKeyHolderProps, RootKey
 
                     console.log("address to propose: " + address)  
 
-                    let messageID = await this.context.wallet.api.proposeVerifier(address, fullDatacap, this.context.wallet.walletIndex)
+                    let messageID = await this.context.wallet.api.proposeVerifier(address, BigInt(fullDatacap), this.context.wallet.walletIndex)
                     console.log("messageID: " + messageID)
                   
                     await this.context.github.githubOctoGenericLogin()
