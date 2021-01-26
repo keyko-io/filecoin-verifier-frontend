@@ -230,13 +230,15 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
                         continue
                     }
                     const verifierAccount = await this.props.wallet.api.actorKey(pendingTxs[txs].parsed.params.verifier)
+                    const signerAccount = await this.props.wallet.api.actorKey(pendingTxs[txs].signers[0])
                     pendingVerifiers.push({
                         id: pendingTxs[txs].id,
                         type: pendingTxs[txs].parsed.params.cap.toString() === '0' ? 'Revoke' : 'Add',
                         verifier: pendingTxs[txs].parsed.params.verifier,
                         verifierAccount,
                         datacap: BtoiB(pendingTxs[txs].parsed.params.cap.toString()),
-                        signer: pendingTxs[txs].signers[0]
+                        signer: pendingTxs[txs].signers[0],
+                        signerAccount: signerAccount
                     })
                 }
                 this.setState({pendingVerifiers})

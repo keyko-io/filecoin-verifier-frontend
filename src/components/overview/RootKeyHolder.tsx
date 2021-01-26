@@ -156,19 +156,25 @@ export default class RootKeyHolder extends Component<RootKeyHolderProps, RootKey
     
     handleSubmitCancel = async () => {
 
-        // TODO Only RKH that proposed the tx is able to cancel it
         this.setState({ approveLoading: true })
         try {
-            let messageID 
+            var messages= []
             for (let tx of this.props.pendingverifiers) {
                 if (this.state.selectedTransactions.includes(tx.id)) {
+                    // Only RKH that proposed the tx is able to cancel it
+                    // TODO modal instead alert
+                    if (tx.signerAccount != this.context.wallet.activeAccount) {
+                        alert("You must be the proposer of the tx " + tx.id + " to cancel it! ")
+                        continue;
+                    }                
                     const datacap = iBtoB(tx.datacap)
                     console.log("datacap of the canceled tx: " + datacap)
-                    messageID = await this.context.wallet.api.cancelVerifier(tx.verifier, BigInt(datacap), tx.signer, tx.id, this.context.wallet.walletIndex);
+                    let messageID = await this.context.wallet.api.cancelVerifier(tx.verifier, BigInt(datacap), tx.signer, tx.id, this.context.wallet.walletIndex);
+                    messages.push(messageID)
                 }
             }
             this.setState({ selectedTransactions: [], approveLoading: false })
-            this.context.wallet.dispatchNotification('Cancel Message sent with ID ' + messageID)
+            this.context.wallet.dispatchNotification('Cancel Messages sent with IDs: ' + messages)
         } catch (e) {
             this.setState({ approveLoading: false })
             this.context.wallet.dispatchNotification('Cancel failed: ' + e.message)
@@ -333,6 +339,7 @@ export default class RootKeyHolder extends Component<RootKeyHolderProps, RootKey
                                     <td>Transaction ID</td>
                                     <td>Type</td>
                                     <td>Notary</td>
+                                    <td>Notary ID</td>
                                     <td>Datacap</td>
                                     <td>Proposed By</td>
                                 </tr>
@@ -343,9 +350,10 @@ export default class RootKeyHolder extends Component<RootKeyHolderProps, RootKey
                                         <td><input type="checkbox" onChange={() => this.selectRow(transaction.id)} checked={this.state.selectedTransactions.includes(transaction.id)} /></td>
                                         <td>{transaction.id}</td>
                                         <td>{transaction.type}</td>
+                                        <td>{transaction.verifierAccount}</td>
                                         <td>{transaction.verifier}</td>
                                         <td>{datacapFilter(transaction.datacap)}</td>
-                                        <td>{transaction.signer}</td>
+                                        <td>{transaction.signerAccount}</td>
                                     </tr>
                                 )}
                             </tbody>
