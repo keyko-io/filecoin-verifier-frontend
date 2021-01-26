@@ -100,8 +100,7 @@ export default class RootKeyHolder extends Component<RootKeyHolderProps, RootKey
                     console.log("prepDatacapExt: " + prepDatacapExt)
 
                     const datacap = new BigNumber(prepDatacap)
-                    const fulldatacapunconverted = new BigNumber(prepDatacapExt).multipliedBy(datacap)
-                    const fullDatacap = iBtoB(fulldatacapunconverted).toFixed(0)
+                    const fullDatacap = new BigNumber(prepDatacapExt).multipliedBy(datacap).toFixed(0)
                     console.log("fullDatacap to propose: " + fullDatacap)
 
                     let address = request.address
