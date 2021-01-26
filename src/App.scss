@@ -1361,11 +1361,25 @@
   .message{
     position: absolute;
     top: 60px;
+    left: 0;
+    right: 0;
+    margin: auto;
+  }
+
+  p{
+    position: absolute;
+    top: 50px;
+    left: 0;
+    right: 0;
+    margin: auto;
   }
 
   .title{
     position: absolute;
     top: 40px;
+    left: 0;
+    right: 0;
+    margin: auto;
   }
 
   .list{

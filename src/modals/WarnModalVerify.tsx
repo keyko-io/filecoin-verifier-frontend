@@ -70,21 +70,21 @@ class WarnModalVerify extends Component<ModalProps, ModalState> {
                 {this.state.requestToShow.length === 1 ?
                     this.props.origin === 'Notary' ?
                         <div className="message">You are about to send a message to assign {this.state.requestToShow[0].datacap} datacap to the address {this.state.requestToShow[0].address}.
-                    Please check you ledger to accept  and send the message</div>
+                    <p>Please check you ledger to accept  and send the message</p></div>
                         :
                         this.props.origin === 'Sign' ?
                             <div className="message">You are about to send a message to sign a transaction to approve the notary {this.state.requestToShow[0].address} with datacap {datacapFilter(this.state.requestToShow[0].datacap)}.
-                            Please check you ledger to accept  and send the message</div>
+                            <p>Please check you ledger to accept  and send the message</p></div>
                             :
                             <div className="message">You are about to send a message to propose the notary {this.state.requestToShow[0].address} with datacap {datacapFilter(this.state.requestToShow[0].datacap)}.
-                             Please check you ledger to accept  and send the message</div>
+                            <p>Please check you ledger to accept  and send the message</p></div>
                     :
                     <>
                         {this.props.origin === 'Notary' ?
-                            <div className="title">You are about to send a message to assign the following datacaps to the address. Please check you ledger to accept  and send the message</div>
+                            <div className="title">You are about to send a message to assign the following datacaps to the address. <p>Please check you ledger to accept  and send the message</p></div>
                             : this.props.origin === 'Sign' ?
-                                <div className="title">You are about to send a message to sign the transactions of the following notaries with datacaps. Please check you ledger to accept  and send the message</div> :
-                                <div className="title">You are about to send a message to propose the following notaries with datacaps. Please check you ledger to accept  and send the message</div>
+                                <div className="title">You are about to send a message to sign the transactions of the following notaries with datacaps. <p>Please check you ledger to accept and send the message</p></div> :
+                                <div className="title">You are about to send a message to propose the following notaries with datacaps. <p>Please check you ledger to accept  and send the message</p></div>
                         }
                         <ul className="list">
                             {this.state.requestToShow.map(request => <li>Address: {request.address} datacap {this.props.origin === 'Notary' ? request.datacap : datacapFilter(request.datacap)}</li>)}
