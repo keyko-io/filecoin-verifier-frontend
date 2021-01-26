@@ -64,7 +64,9 @@ class WarnModalVerify extends Component<ModalProps, ModalState> {
 
     render() {
         return (
-            <div className="warnmodalledger" style={this.state.requestToShow.length > 1 ? { height: 150 + 20 * this.state.requestToShow.length } : {}}>
+            <div className="warnmodalledger" style={this.state.requestToShow.length > 1 ? 
+            { height: 180 + 20 * this.state.requestToShow.length, width : this.props.origin === 'Propose' ? 650: 450} 
+            : {} }>
                 {this.state.requestToShow.length === 1 ?
                     this.props.origin === 'Notary' ?
                         <div className="message">You are about to send a message to assign {this.state.requestToShow[0].datacap} datacap to the address {this.state.requestToShow[0].address}.
@@ -79,10 +81,10 @@ class WarnModalVerify extends Component<ModalProps, ModalState> {
                     :
                     <>
                         {this.props.origin === 'Notary' ?
-                            <div className="title">You are about to send a message to assign the following datacaps to the address</div>
+                            <div className="title">You are about to send a message to assign the following datacaps to the address. Please check you ledger to accept  and send the message</div>
                             : this.props.origin === 'Sign' ?
-                                <div className="title">You are about to send a message to sing the transactions of the following notaries with datacaps</div> :
-                                <div className="title">You are about to send a message to propose the following notaries with datacaps</div>
+                                <div className="title">You are about to send a message to sign the transactions of the following notaries with datacaps. Please check you ledger to accept  and send the message</div> :
+                                <div className="title">You are about to send a message to propose the following notaries with datacaps. Please check you ledger to accept  and send the message</div>
                         }
                         <ul className="list">
                             {this.state.requestToShow.map(request => <li>Address: {request.address} datacap {this.props.origin === 'Notary' ? request.datacap : datacapFilter(request.datacap)}</li>)}
