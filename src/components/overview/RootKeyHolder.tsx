@@ -153,6 +153,28 @@ export default class RootKeyHolder extends Component<RootKeyHolderProps, RootKey
             }
         }
     }
+    
+    handleSubmitCancel = async () => {
+
+        // TODO Only RKH that proposed the tx is able to cancel it
+        this.setState({ approveLoading: true })
+        try {
+            let messageID 
+            for (let tx of this.props.pendingverifiers) {
+                if (this.state.selectedTransactions.includes(tx.id)) {
+                    const datacap = iBtoB(tx.datacap)
+                    console.log("datacap of the canceled tx: " + datacap)
+                    messageID = await this.context.wallet.api.cancelVerifier(tx.verifier, BigInt(datacap), tx.signer, tx.id, this.context.wallet.walletIndex);
+                }
+            }
+            this.setState({ selectedTransactions: [], approveLoading: false })
+            this.context.wallet.dispatchNotification('Cancel Message sent with ID ' + messageID)
+        } catch (e) {
+            this.setState({ approveLoading: false })
+            this.context.wallet.dispatchNotification('Cancel failed: ' + e.message)
+            console.log('error', e.stack)
+        }
+    }
 
     handleSubmitApprove = async () => {
         this.setState({ approveLoading: true })
@@ -244,7 +266,11 @@ export default class RootKeyHolder extends Component<RootKeyHolderProps, RootKey
                     </div>
                     <div className="tabssadd">
                         {this.state.tabs === "0" ? <ButtonPrimary onClick={() => this.acceptRequestVerifier()}>Propose On-chain</ButtonPrimary> : null}
-                        {this.state.tabs === "1" ? <ButtonPrimary onClick={() => this.handleSubmitApprove()}>Sign On-chain</ButtonPrimary> : null}
+                        {this.state.tabs === "1" ? <>
+                        <ButtonPrimary onClick={() => this.handleSubmitApprove()}>Sign On-chain</ButtonPrimary> 
+                        <ButtonPrimary onClick={() => this.handleSubmitCancel()}>Cancel</ButtonPrimary> 
+                        </>
+                        : null}
                     </div>
                 </div>
                 {this.state.tabs === "0" ?
