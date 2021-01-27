@@ -17,6 +17,7 @@ import { dispatchCustomEvent, Toggle, SVG, LoaderSpinner, Input } from "slate-re
 import { config } from './config'
 import Blockies from 'react-blockies'
 import history from './context/History'
+import { withCookies, Cookies } from 'react-cookie'
 
 
 library.add(fab, far, fas)
@@ -28,11 +29,15 @@ type States = {
   search: string
 }
 
-class App extends Component<{}, States> {
+type Props = {
+  cookies: Cookies
+}
+
+class App extends Component<Props, States> {
   public static contextType = Data
   child: any
 
-  constructor(props: {}) {
+  constructor(props: Props) {
     super(props);
     this.state = {
       networkSelect: false,
@@ -48,6 +53,24 @@ class App extends Component<{}, States> {
       history.push({
         pathname: "/"
       })
+    } else {
+      this.loadCookieWallet()
+    }
+  }
+
+  loadCookieWallet = async () => {
+    const { cookies } = this.props;
+    const walletCookie = cookies.get('wallet')
+
+    if (walletCookie) {
+      const accounts = await this.context.wallet.getAccounts()
+
+      for (let index = 0; index < accounts.length; index++) {
+        if (walletCookie === accounts[index]) {
+          this.context.wallet.selectAccount(index)
+          break
+        }
+      }
     }
   }
 
@@ -74,8 +97,13 @@ class App extends Component<{}, States> {
     this.refresh()
   }
 
-  switchAccount = (index: number) => {
-    this.context.wallet.selectAccount(index)
+  switchAccount = async (index: number) => {
+    await this.context.wallet.selectAccount(index)
+    const wallet = this.context.wallet.activeAccount
+    const { cookies } = this.props;
+
+    cookies.set('wallet', wallet, { path: '/' });
+
   }
 
   switchRoot = () => {
@@ -111,7 +139,7 @@ class App extends Component<{}, States> {
     return '0'
   }
 
-  handleChange = (e:any) => {
+  handleChange = (e: any) => {
     this.setState({ [e.target.name]: e.target.value } as any)
   }
 
@@ -145,7 +173,7 @@ class App extends Component<{}, States> {
                 onChange={this.handleChange}
               />
             </form>
-            <FontAwesomeIcon icon={["fas", "search"]}/>
+            <FontAwesomeIcon icon={["fas", "search"]} />
           </div>
           <div className="refresh" onClick={() => this.refresh()}>
             <FontAwesomeIcon icon={["fas", "redo"]} flip="vertical" transform={{ rotate: 135 }} />
@@ -156,30 +184,30 @@ class App extends Component<{}, States> {
                 <div className="notificationholder">
                   {this.context.notificationVerifierRequests.map((entry: any, index: number) => {
                     return <div key={index} className="notificationentry">
-                      <div onClick={()=> window.open(entry.url, "_blank")}>
+                      <div onClick={() => window.open(entry.url, "_blank")}>
                         Issue: {entry.number}
                       </div>
                     </div>
                   })}
                 </div>
-              : null}
+                : null}
             </div>
-          : null}
+            : null}
           {this.context.viewroot === false ?
             <div className="notification" onClick={this.openNotifications}><FontAwesomeIcon icon={["far", "bell"]} />
               {this.state.notificationsOpen ?
                 <div className="notificationholder">
                   {this.context.notificationClientRequests.map((entry: any, index: number) => {
                     return <div key={index} className="notificationentry">
-                      <div onClick={()=> window.open(entry.url, "_blank")}>
+                      <div onClick={() => window.open(entry.url, "_blank")}>
                         Issue: {entry.number}
                       </div>
                     </div>
                   })}
                 </div>
-              : null}
+                : null}
             </div>
-          : null}
+            : null}
           <div className="accountholder" onClick={this.openAccountSelect}>
             {this.state.accountSelect ?
               <div className="accountselectholder">
@@ -242,4 +270,4 @@ class App extends Component<{}, States> {
   }
 }
 
-export default App;
+export default withCookies(App);
