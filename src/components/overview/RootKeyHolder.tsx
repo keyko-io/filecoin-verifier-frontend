@@ -154,6 +154,32 @@ export default class RootKeyHolder extends Component<RootKeyHolderProps, RootKey
         }
     }
 
+    handleSubmitCancel = async () => {
+
+        this.setState({ approveLoading: true })
+        try {
+            var messages= []
+            for (let tx of this.props.pendingverifiers) {
+                if (this.state.selectedTransactions.includes(tx.id)) {
+                    // Only RKH that proposed the tx is able to cancel it
+                    // TODO modal instead alert
+                    if (tx.signerAccount != this.context.wallet.activeAccount) {
+                        alert("You must be the proposer of the tx " + tx.id + " to cancel it! ")
+                        continue;
+                    }                
+                    let messageID = await this.context.wallet.api.cancelVerifier(tx.verifier, BigInt(tx.datacap), tx.signer, tx.id, this.context.wallet.walletIndex);
+                    messages.push(messageID)
+                }
+            }
+            this.setState({ selectedTransactions: [], approveLoading: false })
+            this.context.wallet.dispatchNotification('Cancel Messages sent with IDs: ' + messages)
+        } catch (e) {
+            this.setState({ approveLoading: false })
+            this.context.wallet.dispatchNotification('Cancel failed: ' + e.message)
+            console.log('error', e.stack)
+        }
+    }
+
     handleSubmitApprove = async () => {
         this.setState({ approveLoading: true })
         // load github issues
@@ -243,7 +269,11 @@ export default class RootKeyHolder extends Component<RootKeyHolderProps, RootKey
                     </div>
                     <div className="tabssadd">
                         {this.state.tabs === "0" ? <ButtonPrimary onClick={() => this.acceptRequestVerifier()}>Propose On-chain</ButtonPrimary> : null}
-                        {this.state.tabs === "1" ? <ButtonPrimary onClick={() => this.handleSubmitApprove()}>Sign On-chain</ButtonPrimary> : null}
+                        {this.state.tabs === "1" ? <>
+                        <ButtonPrimary onClick={() => this.handleSubmitApprove()}>Sign On-chain</ButtonPrimary> 
+                        <ButtonPrimary onClick={() => this.handleSubmitCancel()}>Cancel</ButtonPrimary> 
+                        </>
+                        : null}
                     </div>
                 </div>
                 {this.state.tabs === "0" ?
@@ -306,6 +336,7 @@ export default class RootKeyHolder extends Component<RootKeyHolderProps, RootKey
                                     <td>Transaction ID</td>
                                     <td>Type</td>
                                     <td>Notary</td>
+                                    <td>Notary ID</td>
                                     <td>Datacap</td>
                                     <td>Proposed By</td>
                                 </tr>
@@ -316,9 +347,10 @@ export default class RootKeyHolder extends Component<RootKeyHolderProps, RootKey
                                         <td><input type="checkbox" onChange={() => this.selectRow(transaction.id)} checked={this.state.selectedTransactions.includes(transaction.id)} /></td>
                                         <td>{transaction.id}</td>
                                         <td>{transaction.type}</td>
+                                        <td>{transaction.verifierAccount}</td>
                                         <td>{transaction.verifier}</td>
                                         <td>{datacapFilter(transaction.datacapConverted)}</td>
-                                        <td>{transaction.signer}</td>
+                                        <td>{transaction.signerAccount}</td>
                                     </tr>
                                 )}
                             </tbody>
