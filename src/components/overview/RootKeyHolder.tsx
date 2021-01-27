@@ -166,7 +166,7 @@ export default class RootKeyHolder extends Component<RootKeyHolderProps, RootKey
         })
         const issues: any = {}
         for (const rawIssue of rawIssues.data) {
-            const data = parser.parseIssue(rawIssue.body)
+            const data = parser.parseIssue(rawIssue.body, rawIssue.title)
             try {
                 // get t0/f0 ID
                 const address = await this.context.wallet.api.actorAddress(data.address)
