@@ -1,6 +1,6 @@
 {
   "name": "filecoin-verifier-frontend",
-  "version": "0.7.2",
+  "version": "0.7.5",
   "private": true,
   "dependencies": {
     "@emotion/react": "^11.0.0-next.13",
@@ -26,6 +26,7 @@
     "@types/react-dom": "^16.9.8",
     "@zondax/filecoin-signing-tools": "0.7.1",
     "@zondax/ledger-filecoin": "^0.11.1",
+    "bignumber.js": "^9.0.1",
     "bluebird": "^3.7.2",
     "copy-text-to-clipboard": "^2.2.0",
     "himalaya": "^1.1.0",

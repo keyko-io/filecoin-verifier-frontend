@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import { Data } from '../context/Data/Index'
 import { config } from '../config'
+import BigNumber from 'bignumber.js'
+import { iBtoB } from '../utils/Filters'
 // @ts-ignore
 import { Table, H1, H2, Input, ButtonPrimary, ButtonSecondary, LoaderSpinner, SelectMenu } from "slate-react-system";
 
@@ -44,9 +46,10 @@ export default class Verifiedclients extends Component<{},States> {
         e.preventDefault()
         this.setState({ submitLoading: true })
         try{
-            const datacap = parseFloat(this.state.datacap)
-            const fullDatacap = BigInt(datacap * parseFloat(this.state.datacapExt))
-            let messageID = await this.context.wallet.api.verifyClient(this.state.address, fullDatacap, this.context.wallet.walletIndex);
+            const datacap = new BigNumber(this.state.datacap)
+            const fulldatacapunconverted = new BigNumber(this.state.datacapExt).multipliedBy(datacap)
+            const fullDatacap = iBtoB(fulldatacapunconverted).toString()
+            let messageID = await this.context.wallet.api.verifyClient(this.state.address, BigInt(fullDatacap), this.context.wallet.walletIndex);
             this.setState({
                 address: '',
                 datacap: '1',
