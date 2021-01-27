@@ -34,6 +34,7 @@
     "node-sass": "^4.14.1",
     "react": "^16.13.1",
     "react-blockies": "^1.4.1",
+    "react-cookie": "^4.0.3",
     "react-dom": "^16.13.1",
     "react-fontawesome": "^1.7.1",
     "react-login-github": "^1.0.6",
