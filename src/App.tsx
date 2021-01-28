@@ -63,7 +63,7 @@ class App extends Component<Props, States> {
     const walletCookie = cookies.get('wallet')
 
     if (walletCookie) {
-      const accounts = await this.context.wallet.getAccounts()
+      const accounts = this.context.wallet.accounts
 
       for (let index = 0; index < accounts.length; index++) {
         if (walletCookie === accounts[index]) {
