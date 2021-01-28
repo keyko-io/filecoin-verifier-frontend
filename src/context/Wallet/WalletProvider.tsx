@@ -5,6 +5,8 @@ import { BurnerWallet } from './BurnerWallet'
 // @ts-ignore
 import { dispatchCustomEvent } from "slate-react-system";
 import { config } from '../../config';
+import { withCookies, Cookies } from 'react-cookie'
+
 
 interface WalletProviderStates {
     isLogged: boolean
@@ -27,6 +29,10 @@ interface WalletProviderStates {
     dispatchNotification: any
 }
 
+type Props = {
+    cookies: Cookies
+}
+
 async function getActiveAccounts(api: any, accounts: any) {
     const accountsActive: any = {};
     for (const acc of accounts) {
@@ -40,7 +46,7 @@ async function getActiveAccounts(api: any, accounts: any) {
     return accountsActive
 }
 
-export default class WalletProvider extends React.Component<{}, WalletProviderStates> {
+class WalletProvider extends React.Component<Props, WalletProviderStates> {
     setStateAsync(state: any) {
         return new Promise((resolve) => {
             this.setState(state, resolve)
@@ -52,11 +58,25 @@ export default class WalletProvider extends React.Component<{}, WalletProviderSt
             await wallet.loadWallet(this.state.networkIndex)
             const accounts: any[] = await wallet.getAccounts()
             const accountsActive = await getActiveAccounts(wallet.api, accounts)
+            const { cookies } = this.props;
+            const walletCookie = cookies.get('wallet')
+            let lastWallet
+            let walletCookieIndex = - 1
+            if (walletCookie) {
+                for (let index = 0; index < accounts.length; index++) {
+                    if (accounts[index] === walletCookie) {
+                        lastWallet = accounts[index]
+                        walletCookieIndex = index
+                        break;
+                    }
+                }
+            }
             await this.setStateAsync({
                 isLogged: true,
                 isLoading: false,
                 wallet: 'ledger',
                 api: wallet.api,
+                walletIndex: walletCookieIndex !== -1 ? walletCookieIndex : 0,
                 sign: async (param1: any, param2: any) => {
                     try {
                         const ret = await wallet.sign(param1, param2)
@@ -73,7 +93,7 @@ export default class WalletProvider extends React.Component<{}, WalletProviderSt
                         this.state.dispatchNotification(e.toString())
                     }
                 },
-                activeAccount: accounts[0],
+                activeAccount: lastWallet ? lastWallet : accounts[0],
                 accounts,
                 accountsActive
             })
@@ -95,6 +115,19 @@ export default class WalletProvider extends React.Component<{}, WalletProviderSt
             await wallet.loadWallet(this.state.networkIndex)
             const accounts: any[] = await wallet.getAccounts()
             const accountsActive = await getActiveAccounts(wallet.api, accounts)
+            const { cookies } = this.props;
+            const walletCookie = cookies.get('wallet')
+            let lastWallet
+            let walletCookieIndex = - 1
+            if (walletCookie) {
+                for (let index = 0; index < accounts.length; index++) {
+                    if (accounts[index] === walletCookie) {
+                        lastWallet = accounts[index]
+                        walletCookieIndex = index
+                        break;
+                    }
+                }
+            }
             this.setStateAsync({
                 isLogged: true,
                 isLoading: false,
@@ -102,7 +135,8 @@ export default class WalletProvider extends React.Component<{}, WalletProviderSt
                 api: wallet.api,
                 sign: wallet.sign,
                 getAccounts: wallet.getAccounts,
-                activeAccount: accounts[0],
+                walletIndex: walletCookieIndex !== -1 ? walletCookieIndex : 0,
+                activeAccount: lastWallet ? lastWallet : accounts[0],
                 accounts,
                 accountsActive
             })
@@ -117,11 +151,11 @@ export default class WalletProvider extends React.Component<{}, WalletProviderSt
 
     initNetworkIndex = () => {
 
-    const activeIndex= config.lotusNodes
-        .map((node: any, index: number) => {return {name: node.name, index:index}})
-        .filter((node: any, index: number) => config.networks.includes(node.name))
-       
-    return activeIndex[0].index
+        const activeIndex = config.lotusNodes
+            .map((node: any, index: number) => { return { name: node.name, index: index } })
+            .filter((node: any, index: number) => config.networks.includes(node.name))
+
+        return activeIndex[0].index
     }
 
     state = {
@@ -170,6 +204,9 @@ export default class WalletProvider extends React.Component<{}, WalletProviderSt
                     walletIndex: index,
                     activeAccount: accounts[index]
                 })
+                const { cookies } = this.props;
+
+                cookies.set('wallet', accounts[index], { path: '/' });
             } catch (e) {
                 // console.log('select account', e)
             }
@@ -209,3 +246,5 @@ export default class WalletProvider extends React.Component<{}, WalletProviderSt
         )
     }
 }
+
+export default withCookies(WalletProvider)

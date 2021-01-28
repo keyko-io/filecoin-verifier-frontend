@@ -17,7 +17,6 @@ import { dispatchCustomEvent, Toggle, SVG, LoaderSpinner, Input } from "slate-re
 import { config } from './config'
 import Blockies from 'react-blockies'
 import history from './context/History'
-import { withCookies, Cookies } from 'react-cookie'
 
 
 library.add(fab, far, fas)
@@ -29,15 +28,12 @@ type States = {
   search: string
 }
 
-type Props = {
-  cookies: Cookies
-}
 
-class App extends Component<Props, States> {
+class App extends Component<{}, States> {
   public static contextType = Data
   child: any
 
-  constructor(props: Props) {
+  constructor(props: {}) {
     super(props);
     this.state = {
       networkSelect: false,
@@ -53,26 +49,9 @@ class App extends Component<Props, States> {
       history.push({
         pathname: "/"
       })
-    } else {
-      this.loadCookieWallet()
-    }
   }
+}
 
-  loadCookieWallet = async () => {
-    const { cookies } = this.props;
-    const walletCookie = cookies.get('wallet')
-
-    if (walletCookie) {
-      const accounts = this.context.wallet.accounts
-
-      for (let index = 0; index < accounts.length; index++) {
-        if (walletCookie === accounts[index]) {
-          this.context.wallet.selectAccount(index)
-          break
-        }
-      }
-    }
-  }
 
   openNetworkSelect = (e: any) => {
     this.setState({
@@ -98,12 +77,7 @@ class App extends Component<Props, States> {
   }
 
   switchAccount = async (index: number) => {
-    await this.context.wallet.selectAccount(index)
-    const wallet = this.context.wallet.activeAccount
-    const { cookies } = this.props;
-
-    cookies.set('wallet', wallet, { path: '/' });
-
+     this.context.wallet.selectAccount(index)
   }
 
   switchRoot = () => {
@@ -270,4 +244,4 @@ class App extends Component<Props, States> {
   }
 }
 
-export default withCookies(App);
+export default App;
