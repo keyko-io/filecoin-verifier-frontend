@@ -200,7 +200,7 @@ class MakeRequestModal extends Component<ModalProps, States> {
                             </div>
                         </div>
                         <div className="inputholder">
-                            <div className="regionlabel">Region you are based</div>
+                            <div className="regionlabel">Region (Where you, the Client, are based)</div>
                             <div className="datacapext">
                                 <SelectMenu
                                     name="region"
