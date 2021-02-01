@@ -63,38 +63,40 @@ class WarnModalVerify extends Component<ModalProps, ModalState> {
 
     render() {
         return (
-            <div className="warnmodalledger" style={this.state.requestToShow.length > 1 ? 
-            { height: 180 + 20 * this.state.requestToShow.length, width : this.props.origin === 'Propose' ? 650: 450} 
-            : {} }>
-                {this.state.requestToShow.length === 1 ?
-                    this.props.origin === 'Notary' ?
-                        <div className="message">You are about to send a message to assign {this.state.requestToShow[0].datacap} datacap to the address {this.state.requestToShow[0].address}.
-                    <p>Please check you ledger to accept  and send the message</p></div>
-                        :
-                        this.props.origin === 'Sign' ?
-                            <div className="message">You are about to send a message to sign a transaction to approve the notary {this.state.requestToShow[0].address} with datacap {datacapFilter(this.state.requestToShow[0].datacap)}.
-                            <p>Please check you ledger to accept  and send the message</p></div>
-                            : this.props.origin === 'Cancel' ? 
-                                <div className="message">You are about to send a message to cancel the transaction of the address {this.state.requestToShow[0].address} with datacap {datacapFilter(this.state.requestToShow[0].datacap)}.
-                                <p>Please check you ledger to accept  and send the message</p></div>
+            <div className="warnmodalledger" style={this.state.requestToShow.length > 1 ?
+                { height: 180 + 20 * this.state.requestToShow.length, width: this.props.origin === 'Propose' ? 650 : 450 }
+                : {}}>
+                {this.props.origin === "single-message" ?
+                    <div className="message">Please, check your ledger, after accepting this notification, to sign and send the message</div> :
+                    this.state.requestToShow.length === 1 ?
+                        this.props.origin === 'Notary' ?
+                            <div className="message">You are about to send a message to assign {this.state.requestToShow[0].datacap} datacap to the address {this.state.requestToShow[0].address}.
+                    <p>Please, check your ledger, after accepting this notification, to sign and send the message</p></div>
                             :
-                                <div className="message">You are about to send a message to propose the notary {this.state.requestToShow[0].address} with datacap {datacapFilter(this.state.requestToShow[0].datacap)}.
-                                <p>Please check you ledger to accept  and send the message</p></div>
-                    :
-                    <>
-                        {this.props.origin === 'Notary' ?
-                            <div className="title">You are about to send a message to assign the following datacaps to the address. <p>Please check you ledger to accept  and send the message</p></div>
-                            : this.props.origin === 'Sign' ?
-                                <div className="title">You are about to send a message to sign the transactions of the following notaries with datacaps. <p>Please check you ledger to accept and send the message</p></div> 
-                                : this.props.origin === 'Cancel' ? 
-                                    <div className="title">You are about to send a message to cancel the following address with datacaps. <p>Please check you ledger to accept  and send the message</p></div>
+                            this.props.origin === 'Sign' ?
+                                <div className="message">You are about to send a message to sign a transaction to approve the notary {this.state.requestToShow[0].address} with datacap {datacapFilter(this.state.requestToShow[0].datacap)}.
+                            <p>Please, check your ledger, after accepting this notification, to sign and send the message</p></div>
+                                : this.props.origin === 'Cancel' ?
+                                    <div className="message">You are about to send a message to cancel the transaction of the address {this.state.requestToShow[0].address} with datacap {datacapFilter(this.state.requestToShow[0].datacap)}.
+                                <p>Please, check your ledger, after accepting this notification, to sign and send the message</p></div>
                                     :
-                                    <div className="title">You are about to send a message to propose the following notaries with datacaps. <p>Please check you ledger to accept  and send the message</p></div>
-                        }
-                        <ul className="list">
-                            {this.state.requestToShow.map(request => <li>Address: {request.address} datacap {this.props.origin === 'Notary' ? request.datacap : datacapFilter(request.datacap)}</li>)}
-                        </ul>
-                    </>
+                                    <div className="message">You are about to send a message to propose the notary {this.state.requestToShow[0].address} with datacap {datacapFilter(this.state.requestToShow[0].datacap)}.
+                                <p>Please, check your ledger, after accepting this notification, to sign and send the message</p></div>
+                        :
+                        <>
+                            {this.props.origin === 'Notary' ?
+                                <div className="title">You are about to send a message to assign the following datacaps to the address. <p>Please, check your ledger, after accepting this notification, to sign and send the message</p></div>
+                                : this.props.origin === 'Sign' ?
+                                    <div className="title">You are about to send a message to sign the transactions of the following notaries with datacaps. <p>Please check you ledger to accept and send the message</p></div>
+                                    : this.props.origin === 'Cancel' ?
+                                        <div className="title">You are about to send a message to cancel the following address with datacaps. <p>Please, check your ledger, after accepting this notification, to sign and send the message</p></div>
+                                        :
+                                        <div className="title">You are about to send a message to propose the following notaries with datacaps. <p>Please, check your ledger, after accepting this notification, to sign and send the message</p></div>
+                            }
+                            <ul className="list">
+                                {this.state.requestToShow.map(request => <li>Address: {request.address} datacap {this.props.origin === 'Notary' ? request.datacap : datacapFilter(request.datacap)}</li>)}
+                            </ul>
+                        </>
                 }
                 <ButtonPrimary onClick={this.props.onClick}>Accept</ButtonPrimary>
             </div>
