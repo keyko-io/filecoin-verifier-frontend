@@ -162,16 +162,6 @@ export default class Notary extends Component<NotaryProps, NotaryStates> {
         return new Promise(res => setTimeout(res, delay));
     }
 
-    newMultisig = async() => {
-
-        const msig_addr = await this.context.wallet.api.newMultisig([this.context.wallet.activeAccount], 1, BigInt(1), this.context.wallet.walletIndex)
-        console.log('M0', msig_addr)
-
-        // send notifications
-        this.context.wallet.dispatchNotification('multisig: ' + msig_addr)
-
-    }
-
     public render() {
         return (
             <div className="main">
@@ -185,7 +175,6 @@ export default class Notary extends Component<NotaryProps, NotaryStates> {
                         {this.state.tabs === "1" ? <>
                             <ButtonPrimary onClick={(e: any) => this.showWarnVerify(e)}>Verify client</ButtonPrimary>
                             <ButtonPrimary onClick={() => this.verifyNewDatacap()}>Verify new datacap</ButtonPrimary>
-                            <ButtonPrimary onClick={() => this.newMultisig()}>New Multisig</ButtonPrimary>
                         </>
                             : null}
                     </div>
