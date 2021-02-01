@@ -43,6 +43,9 @@ export default class Notary extends Component<NotaryProps, NotaryStates> {
     }
 
     requestDatacap = () => {
+
+        dispatchCustomEvent({ name: "delete-modal", detail: {} })
+
         dispatchCustomEvent({
             name: "create-modal", detail: {
                 id: Math.random().toString(36).replace(/[^a-z]+/g, '').substr(0, 5),
@@ -52,6 +55,9 @@ export default class Notary extends Component<NotaryProps, NotaryStates> {
     }
 
     verifyNewDatacap = () => {
+
+        dispatchCustomEvent({ name: "delete-modal", detail: {} })
+
         if (this.state.selectedClientRequests.length == 0 || this.state.selectedClientRequests.length > 1) {
             dispatchCustomEvent({
                 name: "create-modal", detail: {
@@ -73,16 +79,16 @@ export default class Notary extends Component<NotaryProps, NotaryStates> {
         }
     }
 
-    showWarnVerify = async (e: any) => {
+    showWarnVerify = async (e: any, origin: string) => {
         await e.preventDefault()
         dispatchCustomEvent({
             name: "create-modal", detail: {
                 id: Math.random().toString(36).replace(/[^a-z]+/g, '').substr(0, 5),
                 modal: <WarnModalVerify
-                    clientRequests={this.context.clientRequests}
-                    selectedClientRequests={this.state.selectedClientRequests}
-                    onClick={this.verifyClients.bind(this)}
-                    origin="Notary"
+                    clientRequests={origin === 'Notary' ? this.context.clientRequests : []}
+                    selectedClientRequests={origin === 'Notary' ? this.state.selectedClientRequests : []}
+                    onClick={origin === 'Notary' ? this.verifyClients.bind(this) : origin === 'newDatacap' ? this.verifyNewDatacap.bind(this): this.requestDatacap.bind(this)}
+                    origin={origin === 'Notary' ? 'Notary' : "single-message"}
                 />
             }
         })
@@ -171,10 +177,10 @@ export default class Notary extends Component<NotaryProps, NotaryStates> {
                         <div className={this.state.tabs === "2" ? "selected" : ""} onClick={() => { this.showVerifiedClients() }}>Verified clients ({this.props.clients.length})</div>
                     </div>
                     <div className="tabssadd">
-                        <ButtonPrimary onClick={() => this.requestDatacap()}>Approve Private Request</ButtonPrimary>
+                        <ButtonPrimary onClick={(e: any) => this.showWarnVerify(e, "Private")}>Approve Private Request</ButtonPrimary>
                         {this.state.tabs === "1" ? <>
-                            <ButtonPrimary onClick={(e: any) => this.showWarnVerify(e)}>Verify client</ButtonPrimary>
-                            <ButtonPrimary onClick={() => this.verifyNewDatacap()}>Verify new datacap</ButtonPrimary>
+                            <ButtonPrimary onClick={(e: any) => this.showWarnVerify(e, "Notary")}>Verify client</ButtonPrimary>
+                            <ButtonPrimary onClick={(e: any) => this.showWarnVerify(e, "single-message")}>Verify new datacap</ButtonPrimary>
                         </>
                             : null}
                     </div>
