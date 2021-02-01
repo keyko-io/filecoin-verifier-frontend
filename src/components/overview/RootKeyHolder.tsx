@@ -173,6 +173,7 @@ export default class RootKeyHolder extends Component<RootKeyHolderProps, RootKey
     }
 
     handleSubmitCancel = async () => {
+        dispatchCustomEvent({ name: "delete-modal", detail: {} })
 
         this.setState({ approveLoading: true })
         try {
