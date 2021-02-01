@@ -1351,6 +1351,61 @@
   }
 }
 
+.warnmodalledger {
+  height: 220px;
+  width: 450px;
+  display: inline-block;
+  text-align: center;
+  font-family: "suisseintl";
+
+  .message{
+    position: absolute;
+    top: 60px;
+    left: 0;
+    right: 0;
+    margin: auto;
+  }
+
+  p{
+    position: absolute;
+    top: 50px;
+    left: 0;
+    right: 0;
+    margin: auto;
+  }
+
+  .title{
+    position: absolute;
+    top: 40px;
+    left: 0;
+    right: 0;
+    margin: auto;
+  }
+
+  .list{
+    position: absolute;
+    top: 120px;
+    left: 0;
+    right: 0;
+    margin: auto;
+  }
+
+  button{
+    position: absolute;
+    bottom: 20px;
+    left: 0;
+    right: 0;
+    margin: auto;
+    background-color: #0090ff;
+    font-family: "suisseintl";
+    font-weight: 600;
+    font-size: 14px;
+    line-height: 20px;
+    text-align: center;
+    color: #ffffff;
+  }
+}
+
 .footer {
   position: absolute;
   bottom: 0;

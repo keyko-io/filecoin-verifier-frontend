@@ -10,6 +10,7 @@ import BigNumber from 'bignumber.js'
 import LoginGithub from 'react-login-github';
 import { config } from '../../config'
 import WarnModal from '../../modals/WarnModal';
+import WarnModalVerify from '../../modals/WarnModalVerify';
 
 type NotaryStates = {
     tabs: string
@@ -72,7 +73,25 @@ export default class Notary extends Component<NotaryProps, NotaryStates> {
         }
     }
 
+    showWarnVerify = async (e: any) => {
+        await e.preventDefault()
+        dispatchCustomEvent({
+            name: "create-modal", detail: {
+                id: Math.random().toString(36).replace(/[^a-z]+/g, '').substr(0, 5),
+                modal: <WarnModalVerify
+                    clientRequests={this.context.clientRequests}
+                    selectedClientRequests={this.state.selectedClientRequests}
+                    onClick={this.verifyClients.bind(this)}
+                    origin="Notary"
+                />
+            }
+        })
+    }
+
     verifyClients = async () => {
+
+        dispatchCustomEvent({ name: "delete-modal", detail: {} })
+
         for (const request of this.context.clientRequests) {
             if (this.state.selectedClientRequests.includes(request.number)) {
                 try {
@@ -154,7 +173,7 @@ export default class Notary extends Component<NotaryProps, NotaryStates> {
                     <div className="tabssadd">
                         <ButtonPrimary onClick={() => this.requestDatacap()}>Approve Private Request</ButtonPrimary>
                         {this.state.tabs === "1" ? <>
-                            <ButtonPrimary onClick={() => this.verifyClients()}>Verify client</ButtonPrimary>
+                            <ButtonPrimary onClick={(e: any) => this.showWarnVerify(e)}>Verify client</ButtonPrimary>
                             <ButtonPrimary onClick={() => this.verifyNewDatacap()}>Verify new datacap</ButtonPrimary>
                         </>
                             : null}

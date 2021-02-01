@@ -8,6 +8,7 @@ import { datacapFilter, iBtoB } from "../../utils/Filters"
 // @ts-ignore
 import LoginGithub from 'react-login-github';
 import { config } from '../../config'
+import WarnModalVerify from '../../modals/WarnModalVerify';
 import BigNumber from 'bignumber.js'
 const parser = require('@keyko-io/filecoin-verifier-tools/utils/notary-issue-parser')
 
@@ -79,7 +80,24 @@ export default class RootKeyHolder extends Component<RootKeyHolderProps, RootKey
         })
     }
 
+    showWarnPropose = async (e: any, origin: string) => {
+        await e.preventDefault()
+        dispatchCustomEvent({
+            name: "create-modal", detail: {
+                id: Math.random().toString(36).replace(/[^a-z]+/g, '').substr(0, 5),
+                modal: <WarnModalVerify
+                    clientRequests={origin === 'Propose' ? this.context.verifierRequests : this.props.pendingverifiers}
+                    selectedClientRequests={origin === 'Propose' ? this.context.selectedNotaryRequests : this.state.selectedTransactions}
+                    onClick={origin === 'Propose' ? this.acceptRequestVerifier.bind(this) : origin === 'Sign' ? this.handleSubmitApprove.bind(this) : this.handleSubmitCancel.bind(this)}
+                    origin={origin}
+                />
+            }
+        })
+    }
+
     acceptRequestVerifier = async () => {
+        dispatchCustomEvent({ name: "delete-modal", detail: {} })
+
         for (const request of this.context.verifierRequests) {
             if (this.context.selectedNotaryRequests.includes(request.number)) {
                 try {
@@ -115,7 +133,7 @@ export default class RootKeyHolder extends Component<RootKeyHolderProps, RootKey
 
                     let messageID = await this.context.wallet.api.proposeVerifier(address, BigInt(fullDatacap), this.context.wallet.walletIndex)
                     console.log("messageID: " + messageID)
-                  
+
                     await this.context.github.githubOctoGenericLogin()
 
                     await this.context.github.githubOctoGeneric.octokit.issues.removeAllLabels({
@@ -142,7 +160,7 @@ export default class RootKeyHolder extends Component<RootKeyHolderProps, RootKey
                     })
 
                     await this.timeout(1000)
-                
+
                     await this.context.loadVerifierRequests()
                     // send notifications
                     this.context.wallet.dispatchNotification('Accepting Message sent with ID: ' + messageID)
@@ -155,6 +173,7 @@ export default class RootKeyHolder extends Component<RootKeyHolderProps, RootKey
     }
 
     handleSubmitCancel = async () => {
+        dispatchCustomEvent({ name: "delete-modal", detail: {} })
 
         this.setState({ approveLoading: true })
         try {
@@ -181,6 +200,8 @@ export default class RootKeyHolder extends Component<RootKeyHolderProps, RootKey
     }
 
     handleSubmitApprove = async () => {
+        dispatchCustomEvent({ name: "delete-modal", detail: {} })
+
         this.setState({ approveLoading: true })
         // load github issues
         await this.context.github.githubOctoGenericLogin()
@@ -268,10 +289,10 @@ export default class RootKeyHolder extends Component<RootKeyHolderProps, RootKey
                         <div className={this.state.tabs === "2" ? "selected" : ""} onClick={() => { this.showApproved() }}>Accepted Notaries ({this.context.verified.length})</div>
                     </div>
                     <div className="tabssadd">
-                        {this.state.tabs === "0" ? <ButtonPrimary onClick={() => this.acceptRequestVerifier()}>Propose On-chain</ButtonPrimary> : null}
+                        {this.state.tabs === "0" ? <ButtonPrimary onClick={(e: any) => this.showWarnPropose(e, "Propose")}>Propose On-chain</ButtonPrimary> : null}
                         {this.state.tabs === "1" ? <>
-                        <ButtonPrimary onClick={() => this.handleSubmitApprove()}>Sign On-chain</ButtonPrimary> 
-                        <ButtonPrimary onClick={() => this.handleSubmitCancel()}>Cancel</ButtonPrimary> 
+                        <ButtonPrimary onClick={(e: any) => this.showWarnPropose(e, "Sign")}>Sign On-chain</ButtonPrimary> 
+                        <ButtonPrimary onClick={(e: any) => this.showWarnPropose(e, "Cancel")}>Cancel</ButtonPrimary> 
                         </>
                         : null}
                     </div>
