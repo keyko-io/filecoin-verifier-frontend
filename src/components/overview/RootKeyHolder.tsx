@@ -88,7 +88,7 @@ export default class RootKeyHolder extends Component<RootKeyHolderProps, RootKey
                 modal: <WarnModalVerify
                     clientRequests={origin === 'Propose' ? this.context.verifierRequests : this.props.pendingverifiers}
                     selectedClientRequests={origin === 'Propose' ? this.context.selectedNotaryRequests : this.state.selectedTransactions}
-                    onClick={origin === 'Propose' ? this.acceptRequestVerifier.bind(this) : this.handleSubmitApprove.bind(this)}
+                    onClick={origin === 'Propose' ? this.acceptRequestVerifier.bind(this) : origin === 'Sign' ? this.handleSubmitApprove.bind(this) : this.handleSubmitCancel.bind(this)}
                     origin={origin}
                 />
             }
@@ -118,8 +118,7 @@ export default class RootKeyHolder extends Component<RootKeyHolderProps, RootKey
                     console.log("prepDatacapExt: " + prepDatacapExt)
 
                     const datacap = new BigNumber(prepDatacap)
-                    const fulldatacapunconverted = new BigNumber(prepDatacapExt).multipliedBy(datacap)
-                    const fullDatacap = iBtoB(fulldatacapunconverted).toString()
+                    const fullDatacap = new BigNumber(prepDatacapExt).multipliedBy(datacap).toFixed(0)
                     console.log("fullDatacap to propose: " + fullDatacap)
 
                     let address = request.address
@@ -132,7 +131,7 @@ export default class RootKeyHolder extends Component<RootKeyHolderProps, RootKey
 
                     console.log("address to propose: " + address)  
 
-                    let messageID = await this.context.wallet.api.proposeVerifier(address, fullDatacap, this.context.wallet.walletIndex)
+                    let messageID = await this.context.wallet.api.proposeVerifier(address, BigInt(fullDatacap), this.context.wallet.walletIndex)
                     console.log("messageID: " + messageID)
 
                     await this.context.github.githubOctoGenericLogin()
@@ -173,6 +172,32 @@ export default class RootKeyHolder extends Component<RootKeyHolderProps, RootKey
         }
     }
 
+    handleSubmitCancel = async () => {
+
+        this.setState({ approveLoading: true })
+        try {
+            var messages= []
+            for (let tx of this.props.pendingverifiers) {
+                if (this.state.selectedTransactions.includes(tx.id)) {
+                    // Only RKH that proposed the tx is able to cancel it
+                    // TODO modal instead alert
+                    if (tx.signerAccount != this.context.wallet.activeAccount) {
+                        alert("You must be the proposer of the tx " + tx.id + " to cancel it! ")
+                        continue;
+                    }                
+                    let messageID = await this.context.wallet.api.cancelVerifier(tx.verifier, BigInt(tx.datacap), tx.signer, tx.id, this.context.wallet.walletIndex);
+                    messages.push(messageID)
+                }
+            }
+            this.setState({ selectedTransactions: [], approveLoading: false })
+            this.context.wallet.dispatchNotification('Cancel Messages sent with IDs: ' + messages)
+        } catch (e) {
+            this.setState({ approveLoading: false })
+            this.context.wallet.dispatchNotification('Cancel failed: ' + e.message)
+            console.log('error', e.stack)
+        }
+    }
+
     handleSubmitApprove = async () => {
         dispatchCustomEvent({ name: "delete-modal", detail: {} })
 
@@ -187,7 +212,7 @@ export default class RootKeyHolder extends Component<RootKeyHolderProps, RootKey
         })
         const issues: any = {}
         for (const rawIssue of rawIssues.data) {
-            const data = parser.parseIssue(rawIssue.body)
+            const data = parser.parseIssue(rawIssue.body, rawIssue.title)
             try {
                 // get t0/f0 ID
                 const address = await this.context.wallet.api.actorAddress(data.address)
@@ -264,7 +289,11 @@ export default class RootKeyHolder extends Component<RootKeyHolderProps, RootKey
                     </div>
                     <div className="tabssadd">
                         {this.state.tabs === "0" ? <ButtonPrimary onClick={(e: any) => this.showWarnPropose(e, "Propose")}>Propose On-chain</ButtonPrimary> : null}
-                        {this.state.tabs === "1" ? <ButtonPrimary onClick={(e: any) => this.showWarnPropose(e, "Sign")}>Sign On-chain</ButtonPrimary> : null}
+                        {this.state.tabs === "1" ? <>
+                        <ButtonPrimary onClick={(e: any) => this.showWarnPropose(e, "Sign")}>Sign On-chain</ButtonPrimary> 
+                        <ButtonPrimary onClick={(e: any) => this.showWarnPropose(e, "Cancel")}>Cancel</ButtonPrimary> 
+                        </>
+                        : null}
                     </div>
                 </div>
                 {this.state.tabs === "0" ?
@@ -327,6 +356,7 @@ export default class RootKeyHolder extends Component<RootKeyHolderProps, RootKey
                                     <td>Transaction ID</td>
                                     <td>Type</td>
                                     <td>Notary</td>
+                                    <td>Notary ID</td>
                                     <td>Datacap</td>
                                     <td>Proposed By</td>
                                 </tr>
@@ -337,9 +367,10 @@ export default class RootKeyHolder extends Component<RootKeyHolderProps, RootKey
                                         <td><input type="checkbox" onChange={() => this.selectRow(transaction.id)} checked={this.state.selectedTransactions.includes(transaction.id)} /></td>
                                         <td>{transaction.id}</td>
                                         <td>{transaction.type}</td>
+                                        <td>{transaction.verifierAccount}</td>
                                         <td>{transaction.verifier}</td>
-                                        <td>{datacapFilter(transaction.datacap)}</td>
-                                        <td>{transaction.signer}</td>
+                                        <td>{datacapFilter(transaction.datacapConverted)}</td>
+                                        <td>{transaction.signerAccount}</td>
                                     </tr>
                                 )}
                             </tbody>

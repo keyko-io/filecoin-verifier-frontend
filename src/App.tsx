@@ -28,6 +28,7 @@ type States = {
   search: string
 }
 
+
 class App extends Component<{}, States> {
   public static contextType = Data
   child: any
@@ -48,8 +49,9 @@ class App extends Component<{}, States> {
       history.push({
         pathname: "/"
       })
-    }
   }
+}
+
 
   openNetworkSelect = (e: any) => {
     this.setState({
@@ -74,8 +76,8 @@ class App extends Component<{}, States> {
     this.refresh()
   }
 
-  switchAccount = (index: number) => {
-    this.context.wallet.selectAccount(index)
+  switchAccount = async (index: number) => {
+     this.context.wallet.selectAccount(index)
   }
 
   switchRoot = () => {
@@ -111,7 +113,7 @@ class App extends Component<{}, States> {
     return '0'
   }
 
-  handleChange = (e:any) => {
+  handleChange = (e: any) => {
     this.setState({ [e.target.name]: e.target.value } as any)
   }
 
@@ -145,7 +147,7 @@ class App extends Component<{}, States> {
                 onChange={this.handleChange}
               />
             </form>
-            <FontAwesomeIcon icon={["fas", "search"]}/>
+            <FontAwesomeIcon icon={["fas", "search"]} />
           </div>
           <div className="refresh" onClick={() => this.refresh()}>
             <FontAwesomeIcon icon={["fas", "redo"]} flip="vertical" transform={{ rotate: 135 }} />
@@ -156,30 +158,30 @@ class App extends Component<{}, States> {
                 <div className="notificationholder">
                   {this.context.notificationVerifierRequests.map((entry: any, index: number) => {
                     return <div key={index} className="notificationentry">
-                      <div onClick={()=> window.open(entry.url, "_blank")}>
+                      <div onClick={() => window.open(entry.url, "_blank")}>
                         Issue: {entry.number}
                       </div>
                     </div>
                   })}
                 </div>
-              : null}
+                : null}
             </div>
-          : null}
+            : null}
           {this.context.viewroot === false ?
             <div className="notification" onClick={this.openNotifications}><FontAwesomeIcon icon={["far", "bell"]} />
               {this.state.notificationsOpen ?
                 <div className="notificationholder">
                   {this.context.notificationClientRequests.map((entry: any, index: number) => {
                     return <div key={index} className="notificationentry">
-                      <div onClick={()=> window.open(entry.url, "_blank")}>
+                      <div onClick={() => window.open(entry.url, "_blank")}>
                         Issue: {entry.number}
                       </div>
                     </div>
                   })}
                 </div>
-              : null}
+                : null}
             </div>
-          : null}
+            : null}
           <div className="accountholder" onClick={this.openAccountSelect}>
             {this.state.accountSelect ?
               <div className="accountselectholder">

@@ -4,11 +4,11 @@ export const config = {
     onboardingClientRepo: process.env.REACT_APP_ONBOARDING_REPO || 'filecoin-clients-onboarding-test',
     onboardingOwner: process.env.REACT_APP_ONBOARDING_REPO_OWNER || 'keyko-io',
     githubApp: process.env.REACT_APP_GITHUB_APP || 'Iv1.10e7aaed4654db3c',
-    githubGenericToken: process.env.REACT_APP_GITHUB_GENERIC_TOKEN,
-    oauthUri: process.env.REACT_APP_OAUTH_URI || 'http://localhost:3000/oauth/',
+    oauthUri: process.env.REACT_APP_OAUTH_URI || 'https://plus.fil.org/oauth/',
     networks: process.env.REACT_APP_NETWORKS || 'Mainnet,Nerpanet',
+    domain: process.env.REACT_APP_DOMAIN || "https://plus.fil.org/",
+    githubGenericToken: process.env.REACT_APP_GITHUB_GENERIC_TOKEN,
     minersUrl: 'https://raw.githubusercontent.com/filecoin-project/filecoin-plus-client-onboarding/main/miners.md',
-    domain: process.env.REACT_APP_DOMAIN || "https://beta-verify.filecoin.io/",
     defaultAssign: ['philippbanhardt'],
     lotusNodes: [{
         name: 'Mainnet',
@@ -28,8 +28,8 @@ export const config = {
         notaryOwner: 'keyko-io',
         rkhMultisig: 't080',
         rkhtreshold: 1
-    }, {
-        name: 'Localhost',
+    },{
+        name: 'Localhost' ,
         code: 1,
         url: 'ws://localhost:1234/rpc/v0',
         token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBbGxvdyI6WyJyZWFkIiwid3JpdGUiLCJzaWduIiwiYWRtaW4iXX0.OJlFIgYG3D23RjWWXfjdTluG6Qx2EOgwMeWQxnUQrMM',
