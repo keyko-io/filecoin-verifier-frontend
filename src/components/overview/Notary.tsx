@@ -164,7 +164,7 @@ export default class Notary extends Component<NotaryProps, NotaryStates> {
 
     newMultisig = async() => {
 
-        const msig_addr = await this.context.wallet.api.newMultisig(this.context.wallet.activeAccount, 1, BigInt(1), this.context.wallet.walletIndex)
+        const msig_addr = await this.context.wallet.api.newMultisig([this.context.wallet.activeAccount], 1, BigInt(1), this.context.wallet.walletIndex)
         console.log('M0', msig_addr)
 
         // send notifications
