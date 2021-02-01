@@ -109,6 +109,17 @@
             "email": "notaryb@a.com",
             "github_user": "s0nik42",
             "private_request": "false"
+        },
+        {
+            "id": 12,
+            "name":"1475-simon",
+            "use_case":  ["General"],
+            "location": "Greater China",
+            "website": "1475ipfs.com, @simon686-1475 on Filecoin Slack",
+            "max_datacap_allocation": "5 TB",
+            "email": "notaryb@a.com",
+            "github_user": "ozhtdong",
+            "private_request": "false"
         }
     ]
 }
