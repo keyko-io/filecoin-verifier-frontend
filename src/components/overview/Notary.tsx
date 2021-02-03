@@ -120,7 +120,7 @@ export default class Notary extends Component<NotaryProps, NotaryStates> {
                     let multisig = "t01093"
                     console.log("Sending tx to multisig: " + multisig)
                     let messageID = await this.context.wallet.api.multisigVerifyClient(multisig, address, BigInt(fullDatacap), this.context.wallet.walletIndex)
-                    //this.context.updateGithubVerified(request.number, messageID, address, fullDatacap)
+                    this.context.updateGithubVerified(request.number, messageID, address, fullDatacap)
 
                     // send notifications
                     this.context.wallet.dispatchNotification('Verify Client Message sent with ID: ' + messageID)
