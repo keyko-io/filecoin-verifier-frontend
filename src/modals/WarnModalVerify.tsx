@@ -51,7 +51,7 @@ class WarnModalVerify extends Component<ModalProps, ModalState> {
             }
             this.setState({
                 message: this.props.origin === 'Sign' ?
-                    "You are about to send a message to propose the following Notaries and associated DataCaps:"
+                    "You are about to send a message to sign the following Notaries and associated DataCaps:"
                     :
                     "You are about to send a message to cancel the transaction to the following adresses"
             })
