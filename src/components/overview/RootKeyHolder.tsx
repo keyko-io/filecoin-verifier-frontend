@@ -5,8 +5,6 @@ import RequestVerifierModal from '../../modals/RequestVerifierModal';
 // @ts-ignore
 import { ButtonPrimary, dispatchCustomEvent, ButtonSecondary } from "slate-react-system";
 import { datacapFilter, iBtoB } from "../../utils/Filters"
-// @ts-ignore
-import LoginGithub from 'react-login-github';
 import { config } from '../../config'
 import BigNumber from 'bignumber.js'
 const parser = require('@keyko-io/filecoin-verifier-tools/utils/notary-issue-parser')
@@ -32,6 +30,7 @@ export default class RootKeyHolder extends Component<RootKeyHolderProps, RootKey
 
     componentDidMount() {
         this.context.loadVerifierRequests()
+        this.context.loadVerifierAndPendingRequests()
     }
 
     showPending = async () => {
@@ -263,8 +262,7 @@ export default class RootKeyHolder extends Component<RootKeyHolderProps, RootKey
             <div className="main">
                 <div className="tabsholder">
                     <div className="tabs">
-                        <div className={this.state.tabs === "0" ? "selected" : ""} onClick={() => { this.showVerifierRequests() }}>Notaries Approved by Governance ({this.context.verifierRequests.length})</div>
-                        <div className={this.state.tabs === "1" ? "selected" : ""} onClick={() => { this.showPending() }}>Notaries Pending to Sign On-chain ({this.props.pendingverifiers.length})</div>
+                        <div className={this.state.tabs === "0" ? "selected" : ""} onClick={() => { this.showVerifierRequests() }}>Notary Requests ({ this.context.verifierAndPendingRequests.length })</div>
                         <div className={this.state.tabs === "2" ? "selected" : ""} onClick={() => { this.showApproved() }}>Accepted Notaries ({this.context.verified.length})</div>
                     </div>
                     <div className="tabssadd">
@@ -282,27 +280,37 @@ export default class RootKeyHolder extends Component<RootKeyHolderProps, RootKey
                             <thead>
                                 <tr>
                                     <td></td>
-                                    <td>Client</td>
-                                    <td>Address</td>
-                                    <td>Datacap</td>
-                                    <td>Audit trail</td>
+                                    <td>Status</td>
+                                    <td>Issue</td>
+                                    <td>Addresses</td>
+                                    <td>Datacaps</td>
+                                    <td>Proposed</td>
                                 </tr>
                             </thead>
                             <tbody>
-                                {this.context.verifierRequests.map((notaryReq: any, index: any) =>
+                                {this.context.verifierAndPendingRequests.map((notaryReq: any, index: any) =>
                                     <tr key={index}>
-                                        <td><input type="checkbox" onChange={() => this.selectNotaryRow(notaryReq.number)} checked={this.context.selectedNotaryRequests.includes(notaryReq.number)} /></td>
-                                        <td>{notaryReq.data.name}</td>
-                                        <td>{notaryReq.address}</td>
-                                        <td>{notaryReq.datacap}</td>
-                                        <td><a target="_blank" rel="noopener noreferrer" href={notaryReq.url}>#{notaryReq.number}</a></td>
+                                        <td><input type="checkbox" onChange={() => this.selectNotaryRow(notaryReq.number)} checked={this.context.selectedNotaryRequests.includes(notaryReq.issue_number)} /></td>
+                                        <td>{notaryReq.proposed === true ? 'Proposed' : 'Pending'}</td>
+                                        <td><a target="_blank" rel="noopener noreferrer" href={notaryReq.issue_Url}>#{notaryReq.issue_number}</a></td>
+                                        <td>
+                                            {notaryReq.addresses.map((address: any) => 
+                                                <div>{address}</div>
+                                            )}
+                                        </td>
+                                        <td>
+                                            {notaryReq.datacaps.map((datacap: any) => 
+                                                <div>{datacap}</div>
+                                            )}
+                                        </td>
+                                        <td>{notaryReq.signerAccount}</td>
                                     </tr>
                                 )}
                             </tbody>
                         </table>
-                        {this.context.verifierRequests.length === 0 ? <div className="nodata">No public requests yet</div> : null}
+                        {this.context.verifierAndPendingRequests.length === 0 ? <div className="nodata">No requests yet</div> : null}
                     </div>
-                    : null}
+                : null }
                 {this.state.tabs === "2" ?
                     <div>
                         <table>
@@ -324,38 +332,6 @@ export default class RootKeyHolder extends Component<RootKeyHolderProps, RootKey
                             </tbody>
                         </table>
                         {this.context.verified.length === 0 ? <div className="nodata">No notaries yet</div> : null}
-                    </div> : null
-                }
-                {this.state.tabs === "1" ?
-                    <div>
-
-                        <table>
-                            <thead>
-                                <tr>
-                                    <td></td>
-                                    <td>Transaction ID</td>
-                                    <td>Type</td>
-                                    <td>Notary</td>
-                                    <td>Notary ID</td>
-                                    <td>Datacap</td>
-                                    <td>Proposed By</td>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {this.props.pendingverifiers.map((transaction: any) =>
-                                    <tr key={transaction.id}>
-                                        <td><input type="checkbox" onChange={() => this.selectRow(transaction.id)} checked={this.state.selectedTransactions.includes(transaction.id)} /></td>
-                                        <td>{transaction.id}</td>
-                                        <td>{transaction.type}</td>
-                                        <td>{transaction.verifierAccount}</td>
-                                        <td>{transaction.verifier}</td>
-                                        <td>{datacapFilter(transaction.datacapConverted)}</td>
-                                        <td>{transaction.signerAccount}</td>
-                                    </tr>
-                                )}
-                            </tbody>
-                        </table>
-                        {this.props.pendingverifiers.length === 0 ? <div className="nodata">No pending notaries yet</div> : null}
                     </div> : null
                 }
             </div>
