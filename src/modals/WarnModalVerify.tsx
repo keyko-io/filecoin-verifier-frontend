@@ -39,7 +39,7 @@ class WarnModalVerify extends Component<ModalProps, ModalState> {
                     })
                 }
             }
-            this.setState({ message: "You are about to send a message to assign datacap to the following adresses" })
+            this.setState({ message: "You are about to send a message to assign DataCap to the following addresses:" })
         } else if (this.props.origin === 'Sign' || this.props.origin === 'Cancel') {
             for (const request of this.props.clientRequests) {
                 if (this.props.selectedClientRequests.includes(request.id)) {
@@ -51,7 +51,7 @@ class WarnModalVerify extends Component<ModalProps, ModalState> {
             }
             this.setState({
                 message: this.props.origin === 'Sign' ?
-                    "You are about to send a message to sign a transaction to approve datacap to the following adresses"
+                    "You are about to send a message to propose the following Notaries and associated DataCaps:"
                     :
                     "You are about to send a message to cancel the transaction to the following adresses"
             })
@@ -64,7 +64,7 @@ class WarnModalVerify extends Component<ModalProps, ModalState> {
                     })
                 }
             }
-            this.setState({ message: "You are about to send a message to propose the following notaries with datacaps" })
+            this.setState({ message: "You are about to send a message to propose the following Notaries and associated DataCaps:" })
         }
 
         this.setState({ requestToShow })
@@ -77,7 +77,7 @@ class WarnModalVerify extends Component<ModalProps, ModalState> {
                 { height: 220 + 30 * this.state.requestToShow.length }}>
                 <div className="message">
                     {this.state.message}
-                    <p>Please, check your ledger, after accepting this notification, to sign and send the message</p>
+                    <p>Please check your Ledger to sign and send the message.</p>
                 </div>
                 <table>
                     <thead>
