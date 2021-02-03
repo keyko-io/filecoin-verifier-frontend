@@ -125,7 +125,7 @@ class AddClientModal extends Component<ModalProps, States> {
                         </div>
 
                     </div>
-                    <div className="ledgermessage">Please, check your ledger, after accepting this notification, to sign and send the message</div>
+                    <div className="ledgermessage">You are about to send a message to assign DataCap to this address.Please check your Ledger to sign and send the message.</div>
                     <div className="centerbutton buttonverify">
                         <ButtonPrimary onClick={this.handleSubmit}>{this.state.submitLoading ? <LoaderSpinner /> : 'Send Request'}</ButtonPrimary>
                     </div>
