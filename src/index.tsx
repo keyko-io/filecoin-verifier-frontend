@@ -20,6 +20,8 @@ import Verifiers from './pages/Verifiers';
 import './fonts/SuisseIntl-Regular.woff'
 import Miners from './pages/Miners';
 import Title from './components/Title';
+import { CookiesProvider } from 'react-cookie';
+
 
 // redirect to domain if user access fleek url
 if (window.location.host.includes('fleek')) {
@@ -32,6 +34,7 @@ ReactDOM.render(
   
   <React.StrictMode>
     <Title/>
+    <CookiesProvider>
     <WalletProvider>
         <GithubProvider>
           <Wallet.Consumer>
@@ -58,6 +61,7 @@ ReactDOM.render(
           </Wallet.Consumer>
         </GithubProvider>
     </WalletProvider>
+    </CookiesProvider>
   </React.StrictMode>,
   document.getElementById('root')
 );
