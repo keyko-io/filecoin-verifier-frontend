@@ -1403,7 +1403,7 @@
 
   table {
     position: absolute;
-    top: 120px;
+    top: 65px;
     margin: auto;
     font-family: "suisseintl";
     width: 98%;
@@ -1429,6 +1429,14 @@
       padding-bottom: 8px;
       padding-top: 5px;
     }
+  }
+
+  .ledgermessage{
+    position: absolute;
+    bottom: 75px;
+    left: 0;
+    right: 0;
+    margin: auto;
   }
 
   button {
