@@ -13,7 +13,7 @@ class LearnMoreOptions extends Component {
     miners = () => {
         history.push({
             pathname: "/miners"
-          })
+        })
     }
 
     checkDatacap = () => {
@@ -24,8 +24,7 @@ class LearnMoreOptions extends Component {
         return (
             <div className="learnmoreoptions">
                 <div className="learnleft"><ButtonPrimary onClick={() => this.checkDatacap()}>Check Datacap</ButtonPrimary></div>
-                <div className="learncenter"><ButtonPrimary onClick={() => this.navigate()}>Learn More</ButtonPrimary></div>
-                <div className="learnright"><ButtonPrimary onClick={() => this.miners()}>Miners</ButtonPrimary></div>
+                <div className="learnright"><ButtonPrimary onClick={() => this.navigate()}>Learn More</ButtonPrimary></div>
             </div >
         )
     }
