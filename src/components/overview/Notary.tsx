@@ -90,50 +90,6 @@ export default class Notary extends Component<NotaryProps, NotaryStates> {
         })
     }
 
-
-    verifyMultisig = async () => {
-
-        dispatchCustomEvent({ name: "delete-modal", detail: {} })
-
-        for (const request of this.context.clientRequests) {
-            if (this.state.selectedClientRequests.includes(request.number)) {
-                try {
-                    let prepDatacap = '1'
-                    let prepDatacapExt = 'B'
-                    const dataext = config.datacapExt.slice().reverse()
-                    for (const entry of dataext) {
-                        if (request.data.datacap.endsWith(entry.name)) {
-                            prepDatacapExt = entry.value
-                            prepDatacap = request.data.datacap.substring(0, request.data.datacap.length - entry.name.length)
-                            break
-                        }
-                    }
-                    const datacap = new BigNumber(prepDatacap)
-                    const fullDatacap = new BigNumber(prepDatacapExt).multipliedBy(datacap).toFixed(0)
-                    console.log("datacap: " + datacap)
-                    console.log("fulldatacapunconverted: " + fullDatacap)
-                    console.log("fullDatacap: " + fullDatacap)
-                    let address = request.data.address
-                    if (address.length < 12) {
-                        address = await this.context.wallet.api.actorKey(address)
-                    }
-                    let multisig = "t01093"
-                    console.log("Sending tx to multisig: " + multisig)
-                    let messageID = await this.context.wallet.api.multisigVerifyClient(multisig, address, BigInt(fullDatacap), this.context.wallet.walletIndex)
-                    this.context.updateGithubVerified(request.number, messageID, address, fullDatacap)
-
-                    // send notifications
-                    this.context.wallet.dispatchNotification('Verify Client Message sent with ID: ' + messageID)
-                    this.context.loadClientRequests()
-                } catch (e) {
-                    this.context.wallet.dispatchNotification('Verification failed: ' + e.message)
-                    console.log(e.stack)
-                }
-            }
-        }
-
-    }
-
     verifyClients = async () => {
 
         dispatchCustomEvent({ name: "delete-modal", detail: {} })
@@ -221,7 +177,6 @@ export default class Notary extends Component<NotaryProps, NotaryStates> {
                         {this.state.tabs === "1" ? <>
                             <ButtonPrimary onClick={(e: any) => this.showWarnVerify(e, "Notary")}>Verify client</ButtonPrimary>
                             <ButtonPrimary onClick={() => this.verifyNewDatacap()}>Verify new datacap</ButtonPrimary>
-                            <ButtonPrimary onClick={() => this.verifyMultisig()}>Verify with multisig</ButtonPrimary>
                         </>
                             : null}
                     </div>
