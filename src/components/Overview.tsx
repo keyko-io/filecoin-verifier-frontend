@@ -59,9 +59,7 @@ export default class Overview extends Component<{}, OverviewStates> {
                     </div>
                 </div>
                 {this.context.viewroot ?
-                    <RootKeyHolder
-                        pendingverifiers={this.context.pendingVerifiers}
-                    />
+                    <RootKeyHolder/>
                     :
                     <Notary
                         clients={this.context.clients}

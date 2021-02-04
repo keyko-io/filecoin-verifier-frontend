@@ -122,18 +122,18 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
                     owner: config.lotusNodes[this.props.wallet.networkIndex].notaryOwner,
                     repo: config.lotusNodes[this.props.wallet.networkIndex].notaryRepo,
                     state: 'open',
-                    labels: ['Approve', 'StartSignOnchain']
+                    labels: ['status:Approve', 'status:StartSignOnchain']
                 })
                 // Get list of pending Transactions
                 let pendingTxs = await this.props.wallet.api.pendingRootTransactions()
-                let pendingVerifiers: any[] = []
+                let verifierAndPendingRequests: any[] = []
                 for (let txs in pendingTxs) {
                     if (pendingTxs[txs].parsed.name !== 'addVerifier') {
                         continue
                     }
                     const verifierAccount = await this.props.wallet.api.actorKey(pendingTxs[txs].parsed.params.verifier)
                     const signerAccount = await this.props.wallet.api.actorKey(pendingTxs[txs].signers[0])
-                    pendingVerifiers.push({
+                    verifierAndPendingRequests.push({
                         id: pendingTxs[txs].id,
                         type: pendingTxs[txs].parsed.params.cap.toString() === '0' ? 'Revoke' : 'Add',
                         verifier: pendingTxs[txs].parsed.params.verifier,
@@ -166,22 +166,23 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
                                 datacaps: comment.datacaps,
                                 txs: []
                             }
-                            for (const tx of pendingVerifiers) {
+                            for (const tx of verifierAndPendingRequests) {
                                 if(issue.addresses.includes(tx.verifier)){
                                     issue.txs.push(tx)
                                 }
                             }
-                            issues.push(issue)
-                            if (rawIssue.labels.findIndex((label:any) => label.name === 'StartSignOnchain') !== -1) {
+                            if (rawIssue.labels.findIndex((label:any) => label.name === 'status:StartSignOnchain') !== -1) {
                                 issue.proposed = true
                             }
-                            if (rawIssue.labels.findIndex((label:any) => label.name === 'Approve') !== -1) {
+                            if (rawIssue.labels.findIndex((label:any) => label.name === 'status:Approve') !== -1) {
                                 issue.proposed = false
                             }
+                            issues.push(issue)
                             break
                         }
                     }
                 }
+                this.setState({verifierAndPendingRequests: issues})
             },
             verifierAndPendingRequests: [],
             loadNotificationVerifierRequests: async () => {
