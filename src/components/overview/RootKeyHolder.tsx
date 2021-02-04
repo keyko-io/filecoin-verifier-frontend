@@ -25,16 +25,11 @@ export default class RootKeyHolder extends Component<RootKeyHolderProps, RootKey
     state = {
         selectedTransactions: [] as any[],
         approveLoading: false,
-        tabs: '1',
+        tabs: '0'
     }
 
     componentDidMount() {
-        this.context.loadVerifierRequests()
         this.context.loadVerifierAndPendingRequests()
-    }
-
-    showPending = async () => {
-        this.setState({ tabs: "1" })
     }
 
     showApproved = async () => {
@@ -142,7 +137,7 @@ export default class RootKeyHolder extends Component<RootKeyHolderProps, RootKey
 
                     await this.timeout(1000)
                 
-                    await this.context.loadVerifierRequests()
+                    this.context.loadVerifierAndPendingRequests()
                     // send notifications
                     this.context.wallet.dispatchNotification('Accepting Message sent with ID: ' + messageID)
                 } catch (e) {

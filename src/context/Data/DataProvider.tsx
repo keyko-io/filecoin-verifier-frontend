@@ -186,8 +186,7 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
             verifierAndPendingRequests: [],
             loadNotificationVerifierRequests: async () => {
                 if (this.props.github.githubOctoGeneric.logged === false) {
-                    // await this.props.github.githubOctoGenericLogin()
-                    return
+                    await this.props.github.githubOctoGenericLogin()
                 }
                 const rawIssues = await this.props.github.githubOctoGeneric.octokit.issues.listForRepo({
                     owner: config.lotusNodes[this.props.wallet.networkIndex].notaryOwner,
