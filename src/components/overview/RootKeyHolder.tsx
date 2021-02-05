@@ -113,14 +113,11 @@ export default class RootKeyHolder extends Component<RootKeyHolderProps, RootKey
                         for(const tx of request.txs){
                             const messageID = await this.context.wallet.api.approveVerifier(tx.verifier, BigInt(tx.datacap), tx.signer, tx.id, this.context.wallet.walletIndex);
                             messageIds.push(messageID)
+                            this.context.wallet.dispatchNotification('Accepting Message sent with ID: ' + messageID)
                         }
                         // comment to issue
                         commentContent = `## The request has been signed by a new Root Key Holder\n#### Message sent to Filecoin Network\n>${messageIds.join()}`
-                        if (multisigInfo &&
-                            multisigInfo.signers &&
-                            multisigInfo.signers > config.lotusNodes[this.context.wallet.networkIndex].rkhtreshold) {
-                            label = 'status:AddedOnchain'
-                        }
+                        label = 'status:AddedOnchain'      
                     } else {
                         for (let i=0; i<request.datacaps.length; i++) {
                             if (request.datacaps[i] && request.addresses[i]) {
