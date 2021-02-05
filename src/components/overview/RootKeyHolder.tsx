@@ -208,7 +208,7 @@ export default class RootKeyHolder extends Component<RootKeyHolderProps, RootKey
                     </div>
                     <div className="tabssadd">
                         {this.state.tabs === "0" ? <>
-                        <ButtonPrimary onClick={() => this.handleSubmitApproveSign()}>Approve</ButtonPrimary> 
+                        <ButtonPrimary onClick={() => this.handleSubmitApproveSign()}>Sign On-chain</ButtonPrimary> 
                         <ButtonPrimary onClick={() => this.handleSubmitCancel()}>Cancel</ButtonPrimary> 
                         </>
                         : null}
