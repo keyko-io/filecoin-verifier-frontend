@@ -140,17 +140,17 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
                     if (pendingTxs[txs].parsed.name !== 'addVerifier') {
                         continue
                     }
-                    const verifierAccount = await this.props.wallet.api.actorKey(pendingTxs[txs].parsed.params.verifier)
-                    const signerAccount = await this.props.wallet.api.actorKey(pendingTxs[txs].signers[0])
+                    const verifierAddress = await this.props.wallet.api.actorKey(pendingTxs[txs].parsed.params.verifier)
+                    const signerAddress = await this.props.wallet.api.actorKey(pendingTxs[txs].signers[0])
                     verifierAndPendingRequests.push({
                         id: pendingTxs[txs].id,
                         type: pendingTxs[txs].parsed.params.cap.toString() === '0' ? 'Revoke' : 'Add',
                         verifier: pendingTxs[txs].parsed.params.verifier,
-                        verifierAccount,
+                        verifierAddress: verifierAddress,
                         datacap: pendingTxs[txs].parsed.params.cap.toString(),
                         datacapConverted: BtoiB(new BigNumber(pendingTxs[txs].parsed.params.cap.toString())).toString(),
                         signer: pendingTxs[txs].signers[0],
-                        signerAccount: signerAccount
+                        signerAddress: signerAddress
                     })
                 }
                 // For each issue
@@ -176,7 +176,7 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
                                 txs: []
                             }
                             for (const tx of verifierAndPendingRequests) {
-                                if(issue.addresses.includes(tx.verifier)){
+                                if(issue.addresses.includes(tx.verifierAddress)){
                                     issue.txs.push(tx)
                                 }
                             }
