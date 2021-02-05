@@ -117,13 +117,22 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
                     await this.props.github.githubOctoGenericLogin()
                 }
                 const issues: any[] = []
+                let rawIssues: any[] = []
                 // Get list of issues with label “Approve” (proposed=false) or “StartSignOnchain” (proposed=true).
-                const rawIssues = await this.props.github.githubOctoGeneric.octokit.issues.listForRepo({
+                const SignOnChain = await this.props.github.githubOctoGeneric.octokit.issues.listForRepo({
                     owner: config.lotusNodes[this.props.wallet.networkIndex].notaryOwner,
                     repo: config.lotusNodes[this.props.wallet.networkIndex].notaryRepo,
                     state: 'open',
-                    labels: ['status:Approved', 'status:StartSignOnchain']
+                    labels: ['status:StartSignOnchain']
                 })
+                rawIssues = rawIssues.concat(SignOnChain.data)
+                const dataApproved = await this.props.github.githubOctoGeneric.octokit.issues.listForRepo({
+                    owner: config.lotusNodes[this.props.wallet.networkIndex].notaryOwner,
+                    repo: config.lotusNodes[this.props.wallet.networkIndex].notaryRepo,
+                    state: 'open',
+                    labels: ['status:Approved']
+                })
+                rawIssues = rawIssues.concat(dataApproved.data)
                 // Get list of pending Transactions
                 let pendingTxs = await this.props.wallet.api.pendingRootTransactions()
                 let verifierAndPendingRequests: any[] = []
@@ -145,7 +154,7 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
                     })
                 }
                 // For each issue
-                for (const rawIssue of rawIssues.data) {
+                for (const rawIssue of rawIssues) {
                     const data = parser.parseIssue(rawIssue.body, rawIssue.title)
                     if(data.correct !== true) continue
                     // get comments
