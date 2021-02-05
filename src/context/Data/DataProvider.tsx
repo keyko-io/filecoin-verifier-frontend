@@ -122,7 +122,7 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
                     owner: config.lotusNodes[this.props.wallet.networkIndex].notaryOwner,
                     repo: config.lotusNodes[this.props.wallet.networkIndex].notaryRepo,
                     state: 'open',
-                    labels: ['status:Approve', 'status:StartSignOnchain']
+                    labels: ['status:Approved', 'status:StartSignOnchain']
                 })
                 // Get list of pending Transactions
                 let pendingTxs = await this.props.wallet.api.pendingRootTransactions()
@@ -174,7 +174,7 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
                             if (rawIssue.labels.findIndex((label:any) => label.name === 'status:StartSignOnchain') !== -1) {
                                 issue.proposed = true
                             }
-                            if (rawIssue.labels.findIndex((label:any) => label.name === 'status:Approve') !== -1) {
+                            if (rawIssue.labels.findIndex((label:any) => label.name === 'status:Approved') !== -1) {
                                 issue.proposed = false
                             }
                             issues.push(issue)
