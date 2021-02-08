@@ -997,7 +997,7 @@
     left: 0;
     right: 0;
     background: #fff;
-    top: 80px;
+    top: 100px;
     text-align: center;
     display: flex;
     box-sizing: border-box;
@@ -1027,6 +1027,9 @@
       td {
         padding: 12px;
         font-family: "suisseintl";
+        svg {
+          padding-left: 5px;
+        }
       }
     }
 
@@ -1231,7 +1234,7 @@
 
 .tableselects {
   position: absolute;
-  top: 20px;
+  top: 30px;
   margin-left: auto;
   margin-right: auto;
   max-width: 1280px;
@@ -1241,13 +1244,26 @@
   background: #ffffff;
 
   .tabletitle {
-    padding: 20px 100px;
+    padding: 8px 100px;
     font-family: "suisseintl";
     font-style: normal;
     font-weight: 600;
     font-size: 16px;
     line-height: 24px;
+    position: absolute;
+    width: 1280px;
+
+    .title{
+      padding-top: 12px;
+      float: left;
+      width:50%;
+    }
+    .formname{
+      float: right;
+      top: -6px;
+    }
   }
+
 }
 
 .learnmore {
