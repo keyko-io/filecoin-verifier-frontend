@@ -125,10 +125,15 @@ export default class TableVerifiers extends Component {
         this.setState({ sortOrder: this.state.sortOrder * -1 })
     }
 
-    filterByName = (name: string) => {
-        const verifiers = this.state.allVerifiers.filter((verifier: any) => {
-            return verifier.name.toUpperCase().includes(name.toUpperCase())
-        });
+    filter = (name: string) => {
+        const verifiers = this.state.allVerifiers.filter((verifier: any) =>
+            Object.values(verifier).some((k: any) =>
+                typeof (k) === 'object' ?
+                    k.join().toLowerCase().includes(name.toLowerCase())
+                    :
+                    k.toString().toLowerCase().includes(name.toLowerCase())
+
+            ));
         this.setState({ verifiers })
     }
 
