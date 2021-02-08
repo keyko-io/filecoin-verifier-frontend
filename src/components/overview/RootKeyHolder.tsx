@@ -243,7 +243,7 @@ export default class RootKeyHolder extends Component<RootKeyHolderProps, RootKey
                                                 <div>{datacap}</div>
                                             )}
                                         </td>
-                                        <td>{notaryReq.signerAddress}</td>
+                                        <td>{notaryReq.proposedBy}</td>
                                     </tr>
                                 )}
                             </tbody>

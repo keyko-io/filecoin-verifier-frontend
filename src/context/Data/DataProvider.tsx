@@ -173,11 +173,14 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
                                 issue_Url: rawIssue.html_url,
                                 addresses: comment.addresses,
                                 datacaps: comment.datacaps,
-                                txs: []
+                                txs: [],
+                                proposedBy: ""
                             }
                             for (const tx of verifierAndPendingRequests) {
                                 if(issue.addresses.includes(tx.verifierAddress)){
+                                    // TODO MAke sure we insert in the same position
                                     issue.txs.push(tx)
+                                    issue.proposedBy= tx.signerAddress
                                 }
                             }
                             if (rawIssue.labels.findIndex((label:any) => label.name === 'status:StartSignOnchain') !== -1) {
