@@ -222,9 +222,10 @@ export default class RootKeyHolder extends Component<RootKeyHolderProps, RootKey
                                     <td></td>
                                     <td>Status</td>
                                     <td>Issue</td>
-                                    <td>Addresses</td>
-                                    <td>Datacaps</td>
-                                    <td>Proposed</td>
+                                    <td>Address</td>
+                                    <td>Datacap</td>
+                                    <td>Transaction ID</td>
+                                    <td>Proposed by</td>
                                 </tr>
                             </thead>
                             <tbody>
@@ -241,6 +242,11 @@ export default class RootKeyHolder extends Component<RootKeyHolderProps, RootKey
                                         <td>
                                             {notaryReq.datacaps.map((datacap: any) => 
                                                 <div>{datacap}</div>
+                                            )}
+                                        </td>
+                                        <td>
+                                            {notaryReq.txs.map((tx: any) => 
+                                                <div>{tx.id}</div>
                                             )}
                                         </td>
                                         <td>{notaryReq.proposedBy}</td>
