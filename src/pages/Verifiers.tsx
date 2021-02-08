@@ -11,7 +11,7 @@ class Verifiers extends Component<{}> {
   child: any
 
   state = {
-    notaryName: "",
+    search: "",
   }
 
   constructor(props: {}) {
@@ -26,7 +26,7 @@ class Verifiers extends Component<{}> {
 
   handleChange = (e: any) => {
     this.setState({ [e.target.name]: e.target.value } as any)
-    this.child.current.filterByName(e.target.value);
+    this.child.current.filter(e.target.value);
   }
 
   navigate = () => {
@@ -49,9 +49,9 @@ class Verifiers extends Component<{}> {
                 <div className="formname">
                   <form>
                     <Input
-                      name="notaryName"
-                      value={this.state.notaryName}
-                      placeholder="Notary Name"
+                      name="search"
+                      value={this.state.search}
+                      placeholder="Search"
                       onChange={this.handleChange}
                     />
                   </form>
