@@ -177,9 +177,9 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
                                 proposedBy: ""
                             }
                             for (const tx of verifierAndPendingRequests) {
-                                if(issue.addresses.includes(tx.verifierAddress)){
-                                    // TODO MAke sure we insert in the same position
-                                    issue.txs.push(tx)
+                                const index = issue.addresses.indexOf(tx.verifierAddress)
+                                if (index !== 0) {
+                                    issue.txs[index] = tx
                                     issue.proposedBy= tx.signerAddress
                                 }
                             }
