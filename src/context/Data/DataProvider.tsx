@@ -5,6 +5,7 @@ import { config } from '../../config';
 import { IssueBody } from '../../utils/IssueBody'
 import { datacapFilter, BtoiB } from '../../utils/Filters'
 import BigNumber from 'bignumber.js'
+import { v4 as uuidv4 } from 'uuid';
 const utils = require('@keyko-io/filecoin-verifier-tools/utils/issue-parser')
 const parser = require('@keyko-io/filecoin-verifier-tools/utils/notary-issue-parser')
 
@@ -169,6 +170,7 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
                         // found correct comment
                         if (comment.approvedMessage && comment.correct) {
                             let issue: any = {
+                                id: uuidv4(),
                                 issue_number: rawIssue.number,
                                 issue_Url: rawIssue.html_url,
                                 addresses: comment.addresses,

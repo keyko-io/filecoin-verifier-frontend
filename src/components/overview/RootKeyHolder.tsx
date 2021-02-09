@@ -73,14 +73,13 @@ export default class RootKeyHolder extends Component<RootKeyHolderProps, RootKey
         })
     }
 
-    handleSubmitCancel = async () => {
+    handleSubmitCancel = async (id: string) => {
 
         this.setState({ approveLoading: true })
         try {
             var messages= []
             for (let tx of this.context.pendingverifiers) {
-                if (this.state.selectedTransactions.includes(tx.id)) {
-                    // Only RKH that proposed the tx is able to cancel it
+                if (tx.id === id) {
                     // TODO modal instead alert
                     if (tx.signerAccount != this.context.wallet.activeAccount) {
                         alert("You must be the proposer of the tx " + tx.id + " to cancel it! ")
@@ -103,7 +102,7 @@ export default class RootKeyHolder extends Component<RootKeyHolderProps, RootKey
         // loop over selected rows
         const multisigInfo = await this.context.wallet.api.multisigInfo(config.lotusNodes[this.context.wallet.networkIndex].rkhMultisig)
         for (const request of this.context.verifierAndPendingRequests) {
-            if (this.context.selectedNotaryRequests.includes(request.issue_number)) {
+            if (this.context.selectedNotaryRequests.includes(request.id)) {
                 const messageIds:any[] = []
                 var commentContent = ''
                 var label = ''
@@ -209,7 +208,6 @@ export default class RootKeyHolder extends Component<RootKeyHolderProps, RootKey
                     <div className="tabssadd">
                         {this.state.tabs === "0" ? <>
                         <ButtonPrimary onClick={() => this.handleSubmitApproveSign()}>Sign On-chain</ButtonPrimary> 
-                        <ButtonPrimary onClick={() => this.handleSubmitCancel()}>Cancel</ButtonPrimary> 
                         </>
                         : null}
                     </div>
@@ -226,12 +224,13 @@ export default class RootKeyHolder extends Component<RootKeyHolderProps, RootKey
                                     <td>Datacap</td>
                                     <td>Transaction ID</td>
                                     <td>Proposed by</td>
+                                    <td></td>
                                 </tr>
                             </thead>
                             <tbody>
                                 {this.context.verifierAndPendingRequests.map((notaryReq: any, index: any) =>
-                                    <tr key={index}>
-                                        <td><input type="checkbox" onChange={() => this.selectNotaryRow(notaryReq.issue_number)} checked={this.context.selectedNotaryRequests.includes(notaryReq.issue_number)} /></td>
+                                    <tr key={index} className={notaryReq.proposedBy === this.context.wallet.activeAccount ? 'ownedrow' : ''}>
+                                        <td><input type="checkbox" onChange={() => this.selectNotaryRow(notaryReq.id)} checked={this.context.selectedNotaryRequests.includes(notaryReq.id)} /></td>
                                         <td>{notaryReq.proposed === true ? 'Proposed' : 'Pending'}</td>
                                         <td><a target="_blank" rel="noopener noreferrer" href={notaryReq.issue_Url}>#{notaryReq.issue_number}</a></td>
                                         <td>
@@ -250,6 +249,7 @@ export default class RootKeyHolder extends Component<RootKeyHolderProps, RootKey
                                             )}
                                         </td>
                                         <td>{notaryReq.proposedBy}</td>
+                                        <td>{notaryReq.proposedBy === this.context.wallet.activeAccount ? <ButtonPrimary onClick={() => this.handleSubmitCancel(notaryReq.id)}>Cancel</ButtonPrimary> : null}</td>
                                     </tr>
                                 )}
                             </tbody>
