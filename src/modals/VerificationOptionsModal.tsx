@@ -36,14 +36,14 @@ class VerificationOptionsModal extends Component<{}> {
                     <div className="intro">
                         <div className="title">Automatic <p>Verification</p></div>
                     </div>
-                    <div className="description">Get a small amount of data cap automatically for development! Users will be required to have a github account older than 1 year to receive data cap.</div>
+                    <div className="description">Get a small amount of DataCap automatically to start developing!</div>
                 </div>
                 <div className="buttoncard" id={"general"} onClick={(e) => this.onClick(e)}>
                     <div className="image"><img src={General.toString()} alt={"general"}></img></div>
                     <div className="intro">
                         <div className="title">General <p>Verification</p></div>
                     </div>
-                    <div className="description">Receive a large amount of datacap for general storage requests such as personal, enterprise, institutional, or large scale archival purposes.</div>
+                    <div className="description">Request a larger DataCap allocation from a Notary in your region!</div>
                 </div>
             </div>
         )
