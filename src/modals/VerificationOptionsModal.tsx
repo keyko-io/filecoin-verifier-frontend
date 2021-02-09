@@ -32,16 +32,14 @@ class VerificationOptionsModal extends Component<{}> {
             <div className="verificationoptions">
                 <div className="methods">Select a Verification Method</div>
                 <div className="buttoncard" id={"automatic"} onClick={(e) => this.onClick(e)} >
-                    <div className="image"><img src={Automatic.toString()} alt={"automatic"}></img></div>
                     <div className="intro">
-                        <div className="title">Automatic <p>Verification</p></div>
+                        <div className="title">Automatic Verification</div>
                     </div>
                     <div className="description">Get a small amount of DataCap automatically to start developing!</div>
                 </div>
                 <div className="buttoncard" id={"general"} onClick={(e) => this.onClick(e)}>
-                    <div className="image"><img src={General.toString()} alt={"general"}></img></div>
                     <div className="intro">
-                        <div className="title">General <p>Verification</p></div>
+                        <div className="title">General Verification</div>
                     </div>
                     <div className="description">Request a larger DataCap allocation from a Notary in your region!</div>
                 </div>

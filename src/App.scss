@@ -1717,7 +1717,7 @@
 
 .verificationoptions{
   width: 570px;
-  height: 450px;
+  height: 380px;
   font-family: "suisseintl";
 
   .buttoncard{
@@ -1753,14 +1753,11 @@
     position: relative;
     padding-top: 30px;
     font-size: 20px;
-    left: 55px;
     font-style: normal;
     font-weight: 700;
     line-height: 36px;
     letter-spacing: 0px;
-    p{
-      padding-left: 100px;
-    }
+    text-align: center;
   }
 
   .subtitle{

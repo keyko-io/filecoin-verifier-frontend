@@ -23,7 +23,7 @@ class LearnMoreOptions extends Component {
     render() {
         return (
             <div className="learnmoreoptions">
-                <div className="learnleft"><ButtonPrimary onClick={() => this.checkDatacap()}>Check Datacap</ButtonPrimary></div>
+                <div className="learnleft"><ButtonPrimary onClick={() => this.checkDatacap()}>Check DataCap</ButtonPrimary></div>
                 <div className="learnright"><ButtonPrimary onClick={() => this.navigate()}>Learn More</ButtonPrimary></div>
             </div >
         )
