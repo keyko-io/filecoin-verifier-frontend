@@ -37,8 +37,8 @@ const options: OptionsType = [
   },
   {
     title: "Find a Miner",
-    subtitle: "Mine $FIL Today!",
-    desc: "This is what mining is all about and blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah",
+    subtitle: "... to store your data!",
+    desc: "Filecoin has a diversity of miners spread out across the globe - find one who can support your use case!",
     imgSrc: Mining.toString()
   }]
 
