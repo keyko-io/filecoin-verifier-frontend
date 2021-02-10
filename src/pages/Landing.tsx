@@ -1,12 +1,16 @@
 import React, { Component } from 'react';
 // @ts-ignore
 import TiB from '../svg/tib.svg';
-import MorePiB from '../svg/morepib.svg';
+import Mining from '../svg/mining.png';
 import Option from '../components/Option'
 import Welcome from '../components/Welcome'
 import history from '../context/History'
 import Header from '../components/Header';
 import LearnMoreOptions from '../components/LearnMoreOptions';
+// @ts-ignore
+import { dispatchCustomEvent } from "slate-react-system";
+import VerificationOptionsModal from '../modals/VerificationOptionsModal';
+
 
 type States = {
   optionSelected: boolean[],
@@ -26,16 +30,16 @@ type OptionsType = OptionType[]
 
 const options: OptionsType = [
   {
-    title: "Automatic Verification",
-    subtitle: "Get Verified by verify.glif.io",
-    desc: "Receive small data allowances (8GB) by connecting to any GitHub account over 180 days old",
+    title: "Get Verified",
+    subtitle: "Large vs. Small Storage Request",
+    desc: "Get a small vs. large amount of DataCap automatically or for general storage requests! You’ll be asked to select an option upon clicking below.",
     imgSrc: TiB.toString()
   },
   {
-    title: "General Verification",
-    subtitle: "Find a Notary in your geography or specialized in your use case",
-    desc: "Request a DataCap allowance for general storage requests - such as personal, enterprise, or archival purposes.",
-    imgSrc: MorePiB.toString()
+    title: "Find a Miner",
+    subtitle: "... to store your data!",
+    desc: "Filecoin has a diversity of miners spread out across the globe - find one who can support your use case!",
+    imgSrc: Mining.toString()
   }]
 
 class Landing extends Component<{}, States> {
@@ -53,19 +57,30 @@ class Landing extends Component<{}, States> {
   }
 
   changeActive = (e: any) => {
-    e.currentTarget.id == '0' ?
-      window.open('https://verify.glif.io/', '_blank')
-      :
+    if (e.currentTarget.id === '0') {
+      this.showModal(e)
+    } else if (e.currentTarget.id === '1') {
       history.push({
-        pathname: "/verifiers"
+        pathname: "/miners"
       })
+    }
   }
 
+
+  showModal = (e: any) => {
+    e.preventDefault()
+    dispatchCustomEvent({
+      name: "create-modal", detail: {
+        id: Math.random().toString(36).replace(/[^a-z]+/g, '').substr(0, 5),
+        modal: <VerificationOptionsModal />
+      }
+    })
+  }
 
   render() {
     return (
       <div className="landing">
-        <Header/>
+        <Header />
         <div className="container">
           <Welcome
             title="Welcome to the Filecoin Plus Registry"
@@ -83,7 +98,7 @@ class Landing extends Component<{}, States> {
                 imgSrc={option.imgSrc}
                 active={this.state.optionSelected[index]}
                 onClick={this.changeActive.bind(this)}
-                buttonName="Get Verified"
+                buttonName={index === 0 ? "Get Verified" : "Find a Miner"}
               />
             })}
           </div>

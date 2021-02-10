@@ -31,7 +31,7 @@ type OptionsType = OptionType[]
 const options: OptionsType = [
   {
     title: "Log in as a Root Key Holder",
-    desc: "Here is where you can action pending Notary allocation decisions",
+    desc: "Here is where you can action pending Notary allocation decisions.",
     imgSrc: RootKey.toString()
   }, {
     title: "Log in as a Notary",

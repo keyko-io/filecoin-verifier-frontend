@@ -13,19 +13,23 @@ export default class TableVerifiers extends Component {
         { key: "name", name: "Notary Name", type: "FILE_LINK", width: "98px" },
         { key: "use_case", name: "Use Case" },
         { key: "location", name: "Location" },
-        { key: "website", name: "website" },
-        { key: "max_datacap_allocation", name: "Max Datacap Allocation" },
-        { key: "private_request", name: "Available for Private Request" }
+        { key: "website", name: "Website / Social Media" },
+        { key: "max_datacap_allocation", name: "Max Datacap Allocation", visible: false },
+        { key: "private_request", name: "Private Requests" }
     ]
+
 
     state = {
         verifiers: [],
+        allVerifiers: [],
         selectedVerifier: 0,
         checks: [],
         initialIndex: 0,
         finalIndex: 5,
         pages: [],
-        actualPage: 1
+        actualPage: 1,
+        sortOrder: -1,
+        orderBy: "name"
     }
 
     componentDidMount() {
@@ -39,6 +43,11 @@ export default class TableVerifiers extends Component {
             initialChecks.push(false)
         })
         this.setState({ checks: initialChecks })
+        this.calculatePages()
+
+    }
+
+    calculatePages = () => {
         const numerOfPages = Math.ceil(this.state.verifiers.length / 5)
         let pages = []
         for (let index = 0; index < numerOfPages; index++) {
@@ -52,6 +61,8 @@ export default class TableVerifiers extends Component {
         console.log(`../data/${dataSource}.json`)
         const verifiers = require(`../data/${dataSource}.json`);
         this.setState({ verifiers: verifiers.notaries })
+        this.setState({ allVerifiers: verifiers.notaries })
+
     }
 
     updateChecks = (e: any) => {
@@ -89,6 +100,50 @@ export default class TableVerifiers extends Component {
         })
     }
 
+
+    order = (e: any) => {
+        const orderBy = e.currentTarget.id
+        const sortOrder = orderBy === this.state.orderBy ? this.state.sortOrder * -1 : -1
+
+        const verifiers = this.state.verifiers.sort((a: any, b: any) => {
+            return a[orderBy] < b[orderBy] ?
+                sortOrder :
+                a[orderBy] > b[orderBy] ?
+                    sortOrder * -1 : 0;
+        });
+
+        this.setState({ verifiers })
+        this.setState({ sortOrder })
+        this.setState({ orderBy })
+    }
+
+
+    orderByName = () => {
+        const verifiers = this.state.verifiers.sort((a: any, b: any) => {
+            return a.name < b.name ?
+                this.state.sortOrder :
+                a.name > b.name ?
+                    this.state.sortOrder * -1 : 0;
+        });
+
+        this.setState({ verifiers })
+        this.setState({ sortOrder: this.state.sortOrder * -1 })
+    }
+
+    filter = async (name: string) => {
+        const verifiers = this.state.allVerifiers.filter((verifier: any) =>
+            Object.values(verifier).some((k: any) =>
+                typeof (k) === 'object' ?
+                    k.join().toLowerCase().includes(name.toLowerCase())
+                    :
+                    k.toString().toLowerCase().includes(name.toLowerCase())
+
+            ));
+
+        await this.setState({ verifiers })
+        this.calculatePages()
+    }
+
     setPage = (e: any) => {
         const actualPage = Number(e.target.id)
         this.setState({ finalIndex: actualPage * 5 })
@@ -106,6 +161,7 @@ export default class TableVerifiers extends Component {
     }
 
 
+
     public render() {
         return (
             <div className="verifiers">
@@ -115,11 +171,12 @@ export default class TableVerifiers extends Component {
                             <thead>
                                 <tr>
                                     <td></td>
-                                    <td>Notary Name</td>
-                                    <td>Use case</td>
-                                    <td>Location</td>
-                                    <td>Website / Social Media</td>
-                                    <td>Private Requests</td>
+                                    {this.columns.map((column: any) =>
+                                        column.visible === false ? null :
+                                            <td>{column.name}
+                                                <FontAwesomeIcon icon={["fas", "sort"]} id={column.key} onClick={this.order} />
+                                            </td>
+                                    )}
                                 </tr>
                             </thead>
                             <tbody>
@@ -136,8 +193,7 @@ export default class TableVerifiers extends Component {
                                                 <td>{verifier.name}
                                                     <div className="notaryinfo" id={i.toString()}
                                                         onClick={(e) => this.showNotaryInfo(e)}>
-                                                        <FontAwesomeIcon icon={["fas", "info-circle"]}
-                                                        />
+                                                        <FontAwesomeIcon icon={["fas", "info-circle"]} />
                                                     </div>
                                                 </td>
                                                 <td>{verifier.use_case.map((useCase: any) =>
