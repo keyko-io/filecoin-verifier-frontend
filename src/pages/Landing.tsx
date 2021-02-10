@@ -32,7 +32,7 @@ const options: OptionsType = [
   {
     title: "Get Verified",
     subtitle: "Large vs. Small Storage Request",
-    desc: "Get a small vs. large amount of DataCap automatically or for general storage requests! You’ll be asked to select an option upon clicking below",
+    desc: "Get a small vs. large amount of DataCap automatically or for general storage requests! You’ll be asked to select an option upon clicking below.",
     imgSrc: TiB.toString()
   },
   {
