@@ -178,11 +178,13 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
                                 txs: [],
                                 proposedBy: ""
                             }
-                            for (const tx of verifierAndPendingRequests) {
-                                const index = issue.addresses.indexOf(tx.verifierAddress)
+                            for (let i=0; i<verifierAndPendingRequests.length; i++){ 
+                                const index = issue.addresses.indexOf(verifierAndPendingRequests[i].verifierAddress)
                                 if (index !== 0) {
-                                    issue.txs[index] = tx
-                                    issue.proposedBy= tx.signerAddress
+                                    issue.txs[index] = verifierAndPendingRequests[i]
+                                    issue.proposedBy = verifierAndPendingRequests[i].signerAddress
+                                    verifierAndPendingRequests.splice(i, 1)
+                                    i--
                                 }
                             }
                             if (rawIssue.labels.findIndex((label:any) => label.name === 'status:StartSignOnchain') !== -1) {
@@ -195,6 +197,19 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
                             break
                         }
                     }
+                }
+                // handle non issues
+                for (let tx of verifierAndPendingRequests) {
+                    issues.push({
+                        id: uuidv4(),
+                        issue_number: "",
+                        issue_Url: "",
+                        addresses: [tx.address],
+                        datacaps: [tx.datacapConverted],
+                        txs: [tx],
+                        proposedBy: tx.signerAddress,
+                        proposed: false
+                    })
                 }
                 this.setState({verifierAndPendingRequests: issues})
             },
