@@ -180,7 +180,7 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
                             }
                             for (let i=0; i<verifierAndPendingRequests.length; i++){ 
                                 const index = issue.addresses.indexOf(verifierAndPendingRequests[i].verifierAddress)
-                                if (index !== 0) {
+                                if (index !== -1) {
                                     issue.txs[index] = verifierAndPendingRequests[i]
                                     issue.proposedBy = verifierAndPendingRequests[i].signerAddress
                                     verifierAndPendingRequests.splice(i, 1)
