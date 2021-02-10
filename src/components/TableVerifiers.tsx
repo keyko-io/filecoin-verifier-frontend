@@ -43,6 +43,11 @@ export default class TableVerifiers extends Component {
             initialChecks.push(false)
         })
         this.setState({ checks: initialChecks })
+        this.calculatePages()
+
+    }
+
+    calculatePages = () => {
         const numerOfPages = Math.ceil(this.state.verifiers.length / 5)
         let pages = []
         for (let index = 0; index < numerOfPages; index++) {
@@ -125,7 +130,7 @@ export default class TableVerifiers extends Component {
         this.setState({ sortOrder: this.state.sortOrder * -1 })
     }
 
-    filter = (name: string) => {
+    filter = async (name: string) => {
         const verifiers = this.state.allVerifiers.filter((verifier: any) =>
             Object.values(verifier).some((k: any) =>
                 typeof (k) === 'object' ?
@@ -134,7 +139,9 @@ export default class TableVerifiers extends Component {
                     k.toString().toLowerCase().includes(name.toLowerCase())
 
             ));
-        this.setState({ verifiers })
+
+        await this.setState({ verifiers })
+        this.calculatePages()
     }
 
     setPage = (e: any) => {
