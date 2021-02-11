@@ -24,6 +24,7 @@
     "@types/node": "^12.12.51",
     "@types/react": "^16.9.43",
     "@types/react-dom": "^16.9.8",
+    "@types/uuid": "^8.3.0",
     "@zondax/filecoin-signing-tools": "0.7.1",
     "@zondax/ledger-filecoin": "^0.11.1",
     "bignumber.js": "^9.0.1",
@@ -42,7 +43,8 @@
     "react-scripts": "3.4.1",
     "sass-loader": "^9.0.2",
     "slate-react-system": "^0.1.0",
-    "typescript": "^3.7.5"
+    "typescript": "^3.7.5",
+    "uuid": "^8.3.2"
   },
   "scripts": {
     "start": "react-scripts start",

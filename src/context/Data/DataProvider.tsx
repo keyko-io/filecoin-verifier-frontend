@@ -5,6 +5,7 @@ import { config } from '../../config';
 import { IssueBody } from '../../utils/IssueBody'
 import { datacapFilter, BtoiB } from '../../utils/Filters'
 import BigNumber from 'bignumber.js'
+import { v4 as uuidv4 } from 'uuid';
 const utils = require('@keyko-io/filecoin-verifier-tools/utils/issue-parser')
 const parser = require('@keyko-io/filecoin-verifier-tools/utils/notary-issue-parser')
 
@@ -13,8 +14,8 @@ interface DataProviderStates {
     clientRequests: any[]
     loadNotificationClientRequests: any
     notificationClientRequests: any[]
-    loadVerifierRequests: any
-    verifierRequests: any[]
+    loadVerifierAndPendingRequests: any
+    verifierAndPendingRequests: any[]
     loadNotificationVerifierRequests: any
     notificationVerifierRequests: any[]
     viewroot: boolean
@@ -31,8 +32,6 @@ interface DataProviderStates {
     clients: any[]
     clientsAmount: string,
     clientsAmountConverted: string
-    loadPendingVerifiers: any
-    pendingVerifiers: any[]
     search: any
     refreshGithubData: any
 }
@@ -114,47 +113,107 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
                 })
             },
             notificationClientRequests: [],
-            loadVerifierRequests: async () => {
+            loadVerifierAndPendingRequests: async () => {
                 if (this.props.github.githubOctoGeneric.logged === false) {
                     await this.props.github.githubOctoGenericLogin()
                 }
-                const rawIssues = await this.props.github.githubOctoGeneric.octokit.issues.listForRepo({
+                const issues: any[] = []
+                let rawIssues: any[] = []
+                // Get list of issues with label “Approve” (proposed=false) or “StartSignOnchain” (proposed=true).
+                const SignOnChain = await this.props.github.githubOctoGeneric.octokit.issues.listForRepo({
                     owner: config.lotusNodes[this.props.wallet.networkIndex].notaryOwner,
                     repo: config.lotusNodes[this.props.wallet.networkIndex].notaryRepo,
                     state: 'open',
-                    labels: 'status:Approved'
+                    labels: ['status:StartSignOnchain']
                 })
-                const issues: any[] = []
-                for (const rawIssue of rawIssues.data) {
+                rawIssues = rawIssues.concat(SignOnChain.data)
+                const dataApproved = await this.props.github.githubOctoGeneric.octokit.issues.listForRepo({
+                    owner: config.lotusNodes[this.props.wallet.networkIndex].notaryOwner,
+                    repo: config.lotusNodes[this.props.wallet.networkIndex].notaryRepo,
+                    state: 'open',
+                    labels: ['status:Approved']
+                })
+                rawIssues = rawIssues.concat(dataApproved.data)
+                // Get list of pending Transactions
+                let pendingTxs = await this.props.wallet.api.pendingRootTransactions()
+                let verifierAndPendingRequests: any[] = []
+                for (let txs in pendingTxs) {
+                    if (pendingTxs[txs].parsed.name !== 'addVerifier') {
+                        continue
+                    }
+                    const verifierAddress = await this.props.wallet.api.actorKey(pendingTxs[txs].parsed.params.verifier)
+                    const signerAddress = await this.props.wallet.api.actorKey(pendingTxs[txs].signers[0])
+                    verifierAndPendingRequests.push({
+                        id: pendingTxs[txs].id,
+                        type: pendingTxs[txs].parsed.params.cap.toString() === '0' ? 'Revoke' : 'Add',
+                        verifier: pendingTxs[txs].parsed.params.verifier,
+                        verifierAddress: verifierAddress,
+                        datacap: pendingTxs[txs].parsed.params.cap.toString(),
+                        datacapConverted: BtoiB(new BigNumber(pendingTxs[txs].parsed.params.cap.toString())).toString(),
+                        signer: pendingTxs[txs].signers[0],
+                        signerAddress: signerAddress
+                    })
+                }
+                // For each issue
+                for (const rawIssue of rawIssues) {
                     const data = parser.parseIssue(rawIssue.body, rawIssue.title)
-                    if (data.correct) {
-
-                        // get comments
-                        const rawComments = await this.props.github.githubOctoGeneric.octokit.issues.listComments({
-                            owner: config.lotusNodes[this.props.wallet.networkIndex].notaryOwner,
-                            repo: config.lotusNodes[this.props.wallet.networkIndex].notaryRepo,
-                            issue_number: rawIssue.number,
-                        });
-                        for (const rawComment of rawComments.data) {
-                            const comment = parser.parseApproveComment(rawComment.body)
-                            if (comment.approvedMessage && comment.correct) {
-                                issues.push({
-                                    number: rawIssue.number,
-                                    url: rawIssue.html_url,
-                                    address: comment.address,
-                                    datacap: comment.datacap,
-                                    data
-                                })
-                                break
+                    if(data.correct !== true) continue
+                    // get comments
+                    const rawComments = await this.props.github.githubOctoGeneric.octokit.issues.listComments({
+                        owner: config.lotusNodes[this.props.wallet.networkIndex].notaryOwner,
+                        repo: config.lotusNodes[this.props.wallet.networkIndex].notaryRepo,
+                        issue_number: rawIssue.number,
+                    });
+                    // loop over comments
+                    for (const rawComment of rawComments.data) {
+                        const comment = parser.parseMultipleApproveComment(rawComment.body)
+                        // found correct comment
+                        if (comment.approvedMessage && comment.correct) {
+                            let issue: any = {
+                                id: uuidv4(),
+                                issue_number: rawIssue.number,
+                                issue_Url: rawIssue.html_url,
+                                addresses: comment.addresses,
+                                datacaps: comment.datacaps,
+                                txs: [],
+                                proposedBy: ""
                             }
+                            for (let i=0; i<verifierAndPendingRequests.length; i++){ 
+                                const index = issue.addresses.indexOf(verifierAndPendingRequests[i].verifierAddress)
+                                if (index !== -1) {
+                                    issue.txs[index] = verifierAndPendingRequests[i]
+                                    issue.proposedBy = verifierAndPendingRequests[i].signerAddress
+                                    verifierAndPendingRequests.splice(i, 1)
+                                    i--
+                                }
+                            }
+                            if (rawIssue.labels.findIndex((label:any) => label.name === 'status:StartSignOnchain') !== -1) {
+                                issue.proposed = true
+                            }
+                            if (rawIssue.labels.findIndex((label:any) => label.name === 'status:Approved') !== -1) {
+                                issue.proposed = false
+                            }
+                            issues.push(issue)
+                            break
                         }
                     }
                 }
-                this.setState({
-                    verifierRequests: issues
-                })
+                // handle non issues
+                for (let tx of verifierAndPendingRequests) {
+                    issues.push({
+                        id: uuidv4(),
+                        issue_number: "",
+                        issue_Url: "",
+                        addresses: [tx.verifier],
+                        datacaps: [tx.datacapConverted],
+                        txs: [tx],
+                        proposedBy: tx.signerAddress,
+                        proposed: true
+                    })
+                }
+                this.setState({verifierAndPendingRequests: issues})
             },
-            verifierRequests: [],
+            verifierAndPendingRequests: [],
             loadNotificationVerifierRequests: async () => {
                 if (this.props.github.githubOctoGeneric.logged === false) {
                     await this.props.github.githubOctoGenericLogin()
@@ -228,29 +287,6 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
                     
                 }
                 this.setState({clients, clientsAmount: clientsamount.toString(), clientsAmountConverted: clientsamountconverted.toString()})
-            },
-            loadPendingVerifiers: async () => {
-                // pending verififers
-                let pendingTxs = await this.props.wallet.api.pendingRootTransactions()
-                let pendingVerifiers: any[] = []
-                for (let txs in pendingTxs) {
-                    if (pendingTxs[txs].parsed.name !== 'addVerifier') {
-                        continue
-                    }
-                    const verifierAccount = await this.props.wallet.api.actorKey(pendingTxs[txs].parsed.params.verifier)
-                    const signerAccount = await this.props.wallet.api.actorKey(pendingTxs[txs].signers[0])
-                    pendingVerifiers.push({
-                        id: pendingTxs[txs].id,
-                        type: pendingTxs[txs].parsed.params.cap.toString() === '0' ? 'Revoke' : 'Add',
-                        verifier: pendingTxs[txs].parsed.params.verifier,
-                        verifierAccount,
-                        datacap: pendingTxs[txs].parsed.params.cap.toString(),
-                        datacapConverted: BtoiB(new BigNumber(pendingTxs[txs].parsed.params.cap.toString())).toString(),
-                        signer: pendingTxs[txs].signers[0],
-                        signerAccount: signerAccount
-                    })
-                }
-                this.setState({pendingVerifiers})
             },
             updateGithubVerified: async (requestNumber: any, messageID: string, address: string, datacap: any) => {
                 await this.props.github.githubOcto.issues.removeAllLabels({
@@ -328,7 +364,6 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
             clients: [],
             clientsAmount: '',
             clientsAmountConverted: '',
-            pendingVerifiers: [],
             clientsGithub: {},
             loadClientsGithub: async () => {
                 if (this.props.github.githubLogged === false) {
@@ -389,7 +424,7 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
                 this.state.loadClientRequests()
                 this.state.loadNotificationClientRequests()
                 this.state.loadClientsGithub()
-                this.state.loadVerifierRequests()
+                this.state.loadVerifierAndPendingRequests()
                 this.state.loadNotificationVerifierRequests()
             }
         }

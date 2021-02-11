@@ -30,7 +30,7 @@ export default class Overview extends Component<{}, OverviewStates> {
         this.context.refreshGithubData()
         this.context.loadVerified()
         this.context.loadClients()
-        this.context.loadPendingVerifiers()
+        this.context.loadVerifierAndPendingRequests()
     }
 
     public render() {
@@ -48,7 +48,7 @@ export default class Overview extends Component<{}, OverviewStates> {
                                 <div className="text">Datacap Granted</div>
                             </div>
                             <div className="textinfodatablock">
-                                <div className="data">{this.context.pendingVerifiers.length}</div>
+                                <div className="data">{this.context.verifierAndPendingRequests.length}</div>
                                 <div className="text">Pending Notaries</div>
                             </div>
                             <div className="textinfodatablock">
@@ -59,9 +59,7 @@ export default class Overview extends Component<{}, OverviewStates> {
                     </div>
                 </div>
                 {this.context.viewroot ?
-                    <RootKeyHolder
-                        pendingverifiers={this.context.pendingVerifiers}
-                    />
+                    <RootKeyHolder/>
                     :
                     <Notary
                         clients={this.context.clients}
