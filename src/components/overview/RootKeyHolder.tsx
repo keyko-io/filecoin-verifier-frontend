@@ -252,18 +252,18 @@ export default class RootKeyHolder extends Component<RootKeyHolderProps, RootKey
                                         <td>{notaryReq.proposed === true ? 'Proposed' : 'Pending'}</td>
                                         <td><a target="_blank" rel="noopener noreferrer" href={notaryReq.issue_Url}>#{notaryReq.issue_number}</a></td>
                                         <td>
-                                            {notaryReq.addresses.map((address: any) => 
-                                                <div>{address}</div>
+                                            {notaryReq.addresses.map((address: any, index: any) => 
+                                                <div key={index}>{address}</div>
                                             )}
                                         </td>
                                         <td>
-                                            {notaryReq.datacaps.map((datacap: any) => 
-                                                <div>{datacap}</div>
+                                            {notaryReq.datacaps.map((datacap: any, index: any) => 
+                                                <div key={index}>{datacap}</div>
                                             )}
                                         </td>
                                         <td>
-                                            {notaryReq.txs.map((tx: any) => 
-                                                <div>{tx.id}</div>
+                                            {notaryReq.txs.map((tx: any, index: any) => 
+                                                <div key={index}>{tx.id}</div>
                                             )}
                                         </td>
                                         <td>{notaryReq.proposedBy}</td>
