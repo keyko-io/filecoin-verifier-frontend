@@ -49,8 +49,8 @@ class App extends Component<{}, States> {
       history.push({
         pathname: "/"
       })
+    }
   }
-}
 
 
   openNetworkSelect = (e: any) => {
@@ -77,7 +77,7 @@ class App extends Component<{}, States> {
   }
 
   switchAccount = async (index: number) => {
-     this.context.wallet.selectAccount(index)
+    this.context.wallet.selectAccount(index)
   }
 
   switchRoot = () => {
@@ -97,7 +97,7 @@ class App extends Component<{}, States> {
 
   copyAddress = async (address: string) => {
     copy(address)
-    this.context.dispatchNotification(address + ' copied to clipboard')
+    this.context.wallet.dispatchNotification(address + ' copied to clipboard')
   }
 
   refresh = () => {

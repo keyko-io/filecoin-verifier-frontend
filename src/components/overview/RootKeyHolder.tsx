@@ -6,6 +6,7 @@ import RequestVerifierModal from '../../modals/RequestVerifierModal';
 import { ButtonPrimary, dispatchCustomEvent, ButtonSecondary } from "slate-react-system";
 import { datacapFilter, iBtoB } from "../../utils/Filters"
 import { config } from '../../config'
+import WarnModalVerify from '../../modals/WarnModalVerify';
 import BigNumber from 'bignumber.js'
 const parser = require('@keyko-io/filecoin-verifier-tools/utils/notary-issue-parser')
 
@@ -73,8 +74,23 @@ export default class RootKeyHolder extends Component<RootKeyHolderProps, RootKey
         })
     }
 
+    showWarnPropose = async (e: any, origin: string, selected: any[]) => {
+        await e.preventDefault()
+        dispatchCustomEvent({
+            name: "create-modal", detail: {
+                id: Math.random().toString(36).replace(/[^a-z]+/g, '').substr(0, 5),
+                modal: <WarnModalVerify
+                    clientRequests={ this.context.verifierAndPendingRequests }
+                    selectedClientRequests={ selected }
+                    onClick={origin === 'ProposeSign' ? this.handleSubmitApproveSign.bind(this) : this.handleSubmitCancel.bind(this)}
+                    origin={origin}
+                />
+            }
+        })
+    }
+    
     handleSubmitCancel = async (id: string) => {
-
+        dispatchCustomEvent({ name: "delete-modal", detail: {} })
         this.setState({ approveLoading: true })
         try {
             var messages= []
@@ -97,8 +113,10 @@ export default class RootKeyHolder extends Component<RootKeyHolderProps, RootKey
             console.log('error', e.stack)
         }
     }
-
+    
     handleSubmitApproveSign = async () => {
+        dispatchCustomEvent({ name: "delete-modal", detail: {} })
+        this.setState({ approveLoading: true })
         // loop over selected rows
         const multisigInfo = await this.context.wallet.api.multisigInfo(config.lotusNodes[this.context.wallet.networkIndex].rkhMultisig)
         for (const request of this.context.verifierAndPendingRequests) {
@@ -207,7 +225,7 @@ export default class RootKeyHolder extends Component<RootKeyHolderProps, RootKey
                     </div>
                     <div className="tabssadd">
                         {this.state.tabs === "0" ? <>
-                        <ButtonPrimary onClick={() => this.handleSubmitApproveSign()}>Sign On-chain</ButtonPrimary> 
+                        <ButtonPrimary onClick={(e: any) => this.showWarnPropose(e, "ProposeSign", this.context.selectedNotaryRequests)}>Sign On-chain</ButtonPrimary>
                         </>
                         : null}
                     </div>
@@ -228,8 +246,8 @@ export default class RootKeyHolder extends Component<RootKeyHolderProps, RootKey
                                 </tr>
                             </thead>
                             <tbody>
-                                {this.context.verifierAndPendingRequests.map((notaryReq: any, index: any) =>
-                                    <tr key={index} className={notaryReq.proposedBy === this.context.wallet.activeAccount ? 'ownedrow' : ''}>
+                                {this.context.verifierAndPendingRequests.map((notaryReq: any) =>
+                                    <tr key={notaryReq.id} className={notaryReq.proposedBy === this.context.wallet.activeAccount ? 'ownedrow' : ''}>
                                         <td><input type="checkbox" onChange={() => this.selectNotaryRow(notaryReq.id)} checked={this.context.selectedNotaryRequests.includes(notaryReq.id)} /></td>
                                         <td>{notaryReq.proposed === true ? 'Proposed' : 'Pending'}</td>
                                         <td><a target="_blank" rel="noopener noreferrer" href={notaryReq.issue_Url}>#{notaryReq.issue_number}</a></td>
@@ -249,7 +267,7 @@ export default class RootKeyHolder extends Component<RootKeyHolderProps, RootKey
                                             )}
                                         </td>
                                         <td>{notaryReq.proposedBy}</td>
-                                        <td>{notaryReq.proposedBy === this.context.wallet.activeAccount ? <ButtonPrimary onClick={() => this.handleSubmitCancel(notaryReq.id)}>Cancel</ButtonPrimary> : null}</td>
+                                        <td>{notaryReq.proposedBy === this.context.wallet.activeAccount ? <ButtonPrimary onClick={(e: any) => this.showWarnPropose(e, "Cancel", [notaryReq.id])}>Cancel</ButtonPrimary> : null}</td>
                                     </tr>
                                 )}
                             </tbody>

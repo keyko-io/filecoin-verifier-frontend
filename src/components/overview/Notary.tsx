@@ -10,6 +10,7 @@ import BigNumber from 'bignumber.js'
 import LoginGithub from 'react-login-github';
 import { config } from '../../config'
 import WarnModal from '../../modals/WarnModal';
+import WarnModalVerify from '../../modals/WarnModalVerify';
 
 type NotaryStates = {
     tabs: string
@@ -42,6 +43,7 @@ export default class Notary extends Component<NotaryProps, NotaryStates> {
     }
 
     requestDatacap = () => {
+
         dispatchCustomEvent({
             name: "create-modal", detail: {
                 id: Math.random().toString(36).replace(/[^a-z]+/g, '').substr(0, 5),
@@ -51,6 +53,7 @@ export default class Notary extends Component<NotaryProps, NotaryStates> {
     }
 
     verifyNewDatacap = () => {
+
         if (this.state.selectedClientRequests.length == 0 || this.state.selectedClientRequests.length > 1) {
             dispatchCustomEvent({
                 name: "create-modal", detail: {
@@ -72,7 +75,25 @@ export default class Notary extends Component<NotaryProps, NotaryStates> {
         }
     }
 
+    showWarnVerify = async (e: any, origin: string) => {
+        await e.preventDefault()
+        dispatchCustomEvent({
+            name: "create-modal", detail: {
+                id: Math.random().toString(36).replace(/[^a-z]+/g, '').substr(0, 5),
+                modal: <WarnModalVerify
+                    clientRequests={origin === 'Notary' ? this.context.clientRequests : []}
+                    selectedClientRequests={origin === 'Notary' ? this.state.selectedClientRequests : []}
+                    onClick={origin === 'Notary' ? this.verifyClients.bind(this) : origin === 'newDatacap' ? this.verifyNewDatacap.bind(this) : this.requestDatacap.bind(this)}
+                    origin={origin === 'Notary' ? 'Notary' : "single-message"}
+                />
+            }
+        })
+    }
+
     verifyClients = async () => {
+
+        dispatchCustomEvent({ name: "delete-modal", detail: {} })
+
         for (const request of this.context.clientRequests) {
             if (this.state.selectedClientRequests.includes(request.number)) {
                 try {
@@ -154,7 +175,7 @@ export default class Notary extends Component<NotaryProps, NotaryStates> {
                     <div className="tabssadd">
                         <ButtonPrimary onClick={() => this.requestDatacap()}>Approve Private Request</ButtonPrimary>
                         {this.state.tabs === "1" ? <>
-                            <ButtonPrimary onClick={() => this.verifyClients()}>Verify client</ButtonPrimary>
+                            <ButtonPrimary onClick={(e: any) => this.showWarnVerify(e, "Notary")}>Verify client</ButtonPrimary>
                             <ButtonPrimary onClick={() => this.verifyNewDatacap()}>Verify new datacap</ButtonPrimary>
                         </>
                             : null}

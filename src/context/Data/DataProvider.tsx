@@ -284,6 +284,7 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
                     clientsamountconverted = BtoiB(amountBN).plus(clientsamountconverted)
                     txs['key'] = await this.props.wallet.api.actorKey(txs.verified)
                     txs['datacapConverted'] = BtoiB(amountBN).toString()
+                    
                 }
                 this.setState({clients, clientsAmount: clientsamount.toString(), clientsAmountConverted: clientsamountconverted.toString()})
             },

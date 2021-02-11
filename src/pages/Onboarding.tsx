@@ -56,11 +56,11 @@ class Onboarding extends Component<{}, States> {
   render() {
     return (
       <div className="onboarding">
-        <Header/>
+        <Header />
         <div className="container">
           <Welcome
-          title="Welcome to the Filecoin Plus Registry"
-          description="You may proceed in any of these pathways but you may not have access to both of them. It all depends on whether you’ve been granted access to it by either the network, a rootkey holder, or an approved verifier respectively." 
+            title="Welcome to the Filecoin Plus Registry"
+            description="You may proceed in any of these pathways but you may not have access to both of them. It all depends on whether you’ve been granted access to it by either the network, a rootkey holder, or an approved verifier respectively."
           />
           <div className="options twooptions">
             {options.map((option: OptionType, index: number) => {
@@ -75,7 +75,7 @@ class Onboarding extends Component<{}, States> {
               />
             })}
           </div>
-          <LearnMore/>
+          <LearnMore />
         </div>
         <Footer></Footer>
       </div>

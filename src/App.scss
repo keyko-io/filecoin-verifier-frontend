@@ -123,6 +123,7 @@
     #search {
       font-family: "suisseintl";
     }
+
     .search {
       position: relative;
 
@@ -257,12 +258,10 @@
     }
 
     .info {
-      background: linear-gradient(
-        180deg,
-        #0090ff 0%,
-        #39c1cb 99.99%,
-        rgba(0, 144, 255, 0) 100%
-      );
+      background: linear-gradient(180deg,
+          #0090ff 0%,
+          #39c1cb 99.99%,
+          rgba(0, 144, 255, 0) 100%);
       position: relative;
       height: 190px;
       margin-bottom: 70px;
@@ -284,6 +283,7 @@
           h2 {
             text-align: center;
           }
+
           .description {
             text-align: center;
           }
@@ -335,14 +335,14 @@
       .tabs {
         display: flex;
 
-        > div {
+        >div {
           padding: 10px;
           margin-right: 10px;
           border-bottom: 1px solid #ccc;
           cursor: pointer;
         }
 
-        > div.selected {
+        >div.selected {
           border-bottom: 1px solid #0090ff;
           color: #0090ff;
         }
@@ -385,7 +385,7 @@
       background-color: #0090ff;
     }
 
-    button > div {
+    button>div {
       height: 15px;
       width: 15px;
     }
@@ -505,7 +505,7 @@
     padding-left: 30px;
     padding-right: 30px;
 
-    > div {
+    >div {
       flex-basis: 50%;
       padding-left: 10px;
       padding-right: 10px;
@@ -522,9 +522,19 @@
     }
   }
 
+  .ledgermessage {
+    max-width: 250px;
+    text-align: center;
+    padding-top: 12px;
+
+    p {
+      padding-top: 7px;
+    }
+  }
+
   .centerbutton {
     text-align: center;
-    margin-top: -50px;
+    margin-top: 10px;
     margin-bottom: 20px;
 
     button {
@@ -534,6 +544,7 @@
 
     #sendbutton {
       margin-top: -40px;
+
       button {
         font-family: "suisseintl";
       }
@@ -581,7 +592,8 @@
     .methodselection {
       text-align: center;
     }
-    .regionlabel{
+
+    .regionlabel {
       margin-bottom: 1px !important;
       font-family: "suisseintl";
       font-size: 14px;
@@ -594,7 +606,7 @@
   }
 }
 
-.githubrequest{
+.githubrequest {
   margin-top: 0px !important;
 }
 
@@ -683,12 +695,10 @@
     right: 0;
     margin-left: auto;
     margin-right: auto;
-    background: linear-gradient(
-      180deg,
-      #0090ff 0%,
-      #39c1cb 99.99%,
-      rgba(0, 144, 255, 0) 100%
-    );
+    background: linear-gradient(180deg,
+        #0090ff 0%,
+        #39c1cb 99.99%,
+        rgba(0, 144, 255, 0) 100%);
 
     .title {
       margin-top: 62px;
@@ -987,7 +997,7 @@
     left: 0;
     right: 0;
     background: #fff;
-    top: 80px;
+    top: 100px;
     text-align: center;
     display: flex;
     box-sizing: border-box;
@@ -1017,6 +1027,9 @@
       td {
         padding: 12px;
         font-family: "suisseintl";
+        svg {
+          padding-left: 5px;
+        }
       }
     }
 
@@ -1052,12 +1065,15 @@
       }
     }
   }
+
   .miners {
     top: 0px !important;
     text-align: left;
+
     a {
       color: #000;
     }
+
     svg {
       padding-left: 3px;
     }
@@ -1218,7 +1234,7 @@
 
 .tableselects {
   position: absolute;
-  top: 20px;
+  top: 30px;
   margin-left: auto;
   margin-right: auto;
   max-width: 1280px;
@@ -1228,13 +1244,26 @@
   background: #ffffff;
 
   .tabletitle {
-    padding: 20px 100px;
+    padding: 8px 100px;
     font-family: "suisseintl";
     font-style: normal;
     font-weight: 600;
     font-size: 16px;
     line-height: 24px;
+    position: absolute;
+    width: 1280px;
+
+    .title{
+      padding-top: 12px;
+      float: left;
+      width:50%;
+    }
+    .formname{
+      float: right;
+      top: -6px;
+    }
   }
+
 }
 
 .learnmore {
@@ -1324,13 +1353,18 @@
   }
 
   .learnleft {
-    padding-left: 34%;
+    padding-left: 40%
   }
-  .learncenter {
-    padding-left: 16%;
-  }
+
   .learnright {
-    padding-left: 16%;
+    padding-left: 20%;
+    button{
+      border-right: 1px solid #1A1A1A;
+      border-top: 1px solid #1A1A1A;
+      border-left: 1px solid #1A1A1A;
+      border-bottom: 1px solid #1A1A1A;
+      color: #1A1A1A;
+    }
   }
 }
 
@@ -1348,6 +1382,99 @@
     text-align: center;
     left: 0;
     right: 0;
+  }
+}
+
+.warnmodalledger {
+  height: 220px;
+  width: 650px;
+  display: inline-block;
+  text-align: center;
+  font-family: "suisseintl";
+
+  .message {
+    position: absolute;
+    top: 30px;
+    left: 0;
+    right: 0;
+    margin: auto;
+  }
+
+  p {
+    position: absolute;
+    top: 30px;
+    left: 0;
+    right: 0;
+    margin: auto;
+  }
+
+  .title {
+    position: absolute;
+    top: 40px;
+    left: 0;
+    right: 0;
+    margin: auto;
+  }
+
+  .list {
+    position: absolute;
+    top: 120px;
+    left: 0;
+    right: 0;
+    margin: auto;
+  }
+
+  table {
+    position: absolute;
+    top: 65px;
+    margin: auto;
+    font-family: "suisseintl";
+    width: 98%;
+    table-layout: fixed;
+    border-collapse: collapse;
+  }
+
+  table {
+    thead {
+      font-weight: 700;
+
+      tr {
+        border-bottom: 1px solid #000;
+      }
+    }
+
+    tr {
+      border-bottom: 1px solid #e5e5e5;
+    }
+
+    td {
+      width: 50%;
+      padding-bottom: 8px;
+      padding-top: 5px;
+    }
+  }
+
+  .ledgermessage{
+    position: absolute;
+    bottom: 75px;
+    left: 0;
+    right: 0;
+    margin: auto;
+  }
+
+  button {
+    position: absolute;
+    bottom: 20px;
+    left: 0;
+    right: 0;
+    margin: auto;
+    background-color: #0090ff;
+    font-family: "suisseintl";
+    font-weight: 600;
+    font-size: 14px;
+    line-height: 20px;
+    text-align: center;
+    color: #ffffff;
   }
 }
 
@@ -1391,6 +1518,7 @@
   .markdown {
     width: 800px;
     text-align: left;
+
     table {
       padding-top: 20px;
       padding-bottom: 20px;
@@ -1500,6 +1628,7 @@
     .right {
       display: inline-block;
       text-align: center;
+
       img {
         max-width: 20px;
         max-height: 20px;
@@ -1572,6 +1701,7 @@
     letter-spacing: 0px;
     padding-top: 10px;
   }
+
   .paginator {
     color: #33a7ff;
   }
@@ -1580,9 +1710,77 @@
 .twooptionsbelow {
   top: 820px !important;
 }
+
 .paginationminers {
   top: 630px !important;
 }
 .ownedrow {
   background-color: #ccc;
+}
+.verificationoptions{
+  width: 570px;
+  height: 380px;
+  font-family: "suisseintl";
+
+  .buttoncard{
+    box-shadow: 0px 6px 6px rgba(0, 0, 0, 0.25);
+    border-radius: 10px;
+    margin-left: 15px;
+    margin-right: 15px;
+    cursor: pointer;
+  }
+
+  .buttoncard:nth-child(3){
+    padding-top: 10px;
+  }
+  
+  .image{
+    padding-top: 30px;
+    padding-left: 30px;
+    width: 100px;
+    height: 72px;
+    float: left;
+  }
+
+  .methods{
+      font-size: 20px;
+      font-style: normal;
+      font-weight: 700;
+      line-height: 36px;
+      letter-spacing: 0px;
+      text-align: center;
+  }
+
+  .title{
+    position: relative;
+    padding-top: 30px;
+    font-size: 20px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: 36px;
+    letter-spacing: 0px;
+    text-align: center;
+  }
+
+  .subtitle{
+      padding-top: 5px;
+      font-size: 20px;
+      font-style: normal;
+      font-weight: 700;
+      line-height: 32px;
+      letter-spacing: 0px;
+      text-align: center;
+  }
+
+  .description{
+      padding-top: 10px;
+      font-size:18px;
+      font-style: normal;
+      font-weight: 400;
+      line-height: 32px;
+      letter-spacing: 0px;
+      text-align: left;
+      padding-left: 27px;
+      padding-bottom: 15px;
+  }
 }
