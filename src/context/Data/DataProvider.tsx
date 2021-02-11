@@ -204,11 +204,11 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
                         id: uuidv4(),
                         issue_number: "",
                         issue_Url: "",
-                        addresses: [tx.address],
+                        addresses: [tx.verifier],
                         datacaps: [tx.datacapConverted],
                         txs: [tx],
                         proposedBy: tx.signerAddress,
-                        proposed: false
+                        proposed: true
                     })
                 }
                 this.setState({verifierAndPendingRequests: issues})

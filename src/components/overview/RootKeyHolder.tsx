@@ -90,23 +90,23 @@ export default class RootKeyHolder extends Component<RootKeyHolderProps, RootKey
     }
     
     handleSubmitCancel = async (id: string) => {
-        dispatchCustomEvent({ name: "delete-modal", detail: {} })
-        this.setState({ approveLoading: true })
-        try {
-            var messages= []
-            for (let tx of this.context.pendingverifiers) {
-                if (tx.id === id) {
-                    // TODO modal instead alert
-                    if (tx.signerAccount != this.context.wallet.activeAccount) {
-                        alert("You must be the proposer of the tx " + tx.id + " to cancel it! ")
-                        continue;
-                    }                
-                    let messageID = await this.context.wallet.api.cancelVerifier(tx.verifier, BigInt(tx.datacap), tx.signer, tx.id, this.context.wallet.walletIndex);
-                    messages.push(messageID)
+        try {  
+            for (const request of this.context.verifierAndPendingRequests) {
+                if (request.id === id) {
+                    if (request.proposed === true) {
+                        if (request.proposedBy != this.context.wallet.activeAccount) {
+                            alert("You must be the proposer of the request  to cancel it! ")
+                            continue;
+                        }                
+                        // for each tx
+                        for(const tx of request.txs){
+                            const messageID = await this.context.wallet.api.cancelVerifier(tx.verifier, BigInt(tx.datacap), tx.signer, tx.id, this.context.wallet.walletIndex);
+                            console.log("cancel: " + messageID)
+                            this.context.wallet.dispatchNotification('Cancel Message sent with ID: ' + messageID)
+                        }
+                    }
                 }
             }
-            this.setState({ selectedTransactions: [], approveLoading: false })
-            this.context.wallet.dispatchNotification('Cancel Messages sent with IDs: ' + messages)
         } catch (e) {
             this.setState({ approveLoading: false })
             this.context.wallet.dispatchNotification('Cancel failed: ' + e.message)
