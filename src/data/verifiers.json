@@ -11,7 +11,9 @@
             "website": "google.com",
             "max_datacap_allocation": "1 PB",
             "email": "notarya@a.com",
-            "github_user": "ialberquilla",
+            "github_user": [
+                "ialberquilla"
+            ],
             "private_request": "true",
             "info_markdown": "true",
             "info": "The general strategy is to provide access to DataCap by types of Client and by stages, which means (i) different types of Client will be subject to respective on-boarding requirements and procedures to have access to DataCap; and (ii) the granted DataCap will be gradually available to the Client over time with a view to our continuing control of the Client’s proper spending.\r\n1.  Allocation by Client Types\r\nFirst of all, we will allocate the available DataCap by types (business entity vs. non-profit organization) and scores of the Clients who request such allocations (“applicants”).\r\nIt is envisaged that 70% of our available DataCap will be allocated to business entity applicants while the rest 30% will be set aside for non-profit organizations that serve the public welfare of the society, inter alia, public health, education and environmental protection. \r\nAccordingly, different requirements and procedures will apply to these two types of applicant:\r\n1)Business Entity Applicants\r\nEach business entity applicant will be rated by us in accordance with the following factors and criteria in order to be granted any amount of the DataCap:\"\r\n\r\nFactors | Details | Rationale & Considerations | Rating Weight\r\n-- | -- | -- | --\r\nBusiness Model | 1, Product model   2, Data type and size   3, State   of vertical Industries | To analyze   how solid the upstream/downstream industries’ demands will be for the applicant’s   product, and evaluate the potential size of overall data storage needed, and   etc. | 30%\r\nOperating Data | 1, Demographics   of users   2, Users   activity   3, Data   usage | To know   the current data size and user profiles of the applicant’s product and assess   its growth velocity. | 50%\r\nTechnology | 1. Technological level   of the applicant’s business / product   2. Technological synergies   with IPFS/Filecoin | To assess   applicant’s technological capability and resource, and analyze how its   business/product would technologically synergize with or benefit from IPFS/Filecoin. | 10%\r\nTrack Record and Background | 1, Credential   and track record of the applicant (and its top management).   2, Legal   standing and history of the applicant as a business entity.   3. Branding   and social reputation of the applicant | To ascertain   the applicant’s (i) experience in and dedication to its business; (ii) legal   compliance; and (iii) reputation; furthermore, to verify the authenticity of   the information provided by the applicant. | 10% (but If   anything illegal or fraudulent is spotted, the applicant will be disqualified   outright).\r\n\r\nA business entity applicant who scores 60 or above will be allocated 0.1-10% of the total DataCap available to us.  Generally speaking, the higher score it gets, the more DataCap will be allocated, subject to the actual data size concerned.\r\n2）Non-Profit Organization Applicants\r\nUnlike a business entity applicant, a non-profit organization will not be rated as above to be on board for DataCap allocation.  Instead, a non-profit organization will be allocated 0.1-5% of our available DataCap (subject to the actual data size concerned) upon duly proving its legal standing and existing data.\r\n\r\n2.Allocation by Stages\r\nFurthermore, the DataCap for any applicant will only be allocated by stages (as opposed to in one batch). \r\nUsually only 20%-30% of the granted DataCap will be available to the relevant applicant in the first trial stage, whereupon we will keep monitoring how that applicant will spend the same to ensure its proper use. \r\nThe applicant must meet the requirements pre-specified in our allocation decision to have the subsequent portions of the granted DataCap unlocked, which requirements are expected to include, inter alia, low concentration of miners and storage of approved data only.  Accordingly, failure to meet the aforementioned requirements will result in delay of allocation or even cancellation of the remaining DataCap.\" // You can use this to share information with Clients about your allocation strategy / reqs"
@@ -28,7 +30,9 @@
             "website": "google.com",
             "max_datacap_allocation": "100 GB",
             "email": "notaryb@a.com",
-            "github_user": "notaryb",
+            "github_user": [
+                "notaryb"
+            ],
             "private_request": "true",
             "info": "aditional info of the notary... Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged."
         },
@@ -44,7 +48,9 @@
             "website": "google.com",
             "max_datacap_allocation": "100 GB",
             "email": "notaryc@a.com",
-            "github_user": "notaryc",
+            "github_user": [
+                "notaryc"
+            ],
             "private_request": "true",
             "info": ""
         },
@@ -59,7 +65,9 @@
             "website": "google.com",
             "max_datacap_allocation": "1 PB",
             "email": "notaryd@a.com",
-            "github_user": "notaryd",
+            "github_user": [
+                "notaryd"
+            ],
             "private_request": "true",
             "info": ""
         },
@@ -73,7 +81,9 @@
             "website": "google.com",
             "max_datacap_allocation": "100 GB",
             "email": "notarye@a.com",
-            "github_user": "notarye",
+            "github_user": [
+                "notarye"
+            ],
             "private_request": "true",
             "info": ""
         },
@@ -87,7 +97,9 @@
             "website": "google.com",
             "max_datacap_allocation": "100 GB",
             "email": "notaryf@a.com",
-            "github_user": "notaryf",
+            "github_user": [
+                "notaryf"
+            ],
             "private_request": "false"
         }
     ]

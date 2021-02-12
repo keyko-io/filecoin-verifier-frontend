@@ -29,6 +29,7 @@ interface DataProviderStates {
     clientsGithub: any
     loadClientsGithub: any
     loadClients: any
+    assignToIssue: any
     clients: any[]
     clientsAmount: string,
     clientsAmountConverted: string
@@ -76,8 +77,8 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
             },
             clientRequests: [],
             loadNotificationClientRequests: async () => {
-                if(this.props.github.githubLogged === false){
-                    this.setState({clientRequests: []})
+                if (this.props.github.githubLogged === false) {
+                    this.setState({ clientRequests: [] })
                     return
                 }
                 const rawIssues = await this.props.github.githubOcto.issues.listForRepo({
@@ -93,12 +94,12 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
                             repo: config.onboardingClientRepo,
                             issue_number: rawIssue.number,
                         })
-                        if(
+                        if (
                             rawComments.data.length > 0 && (
-                                rawComments.data[rawComments.data.length-1].user.login.endsWith("[bot]") === false &&
-                                rawComments.data[rawComments.data.length-1].user.login !== rawIssue.assignee.login
+                                rawComments.data[rawComments.data.length - 1].user.login.endsWith("[bot]") === false &&
+                                rawComments.data[rawComments.data.length - 1].user.login !== rawIssue.assignee.login
                             )
-                        ){
+                        ) {
                             issues.push({
                                 number: rawIssue.number,
                                 url: rawIssue.html_url
@@ -157,7 +158,7 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
                 // For each issue
                 for (const rawIssue of rawIssues) {
                     const data = parser.parseIssue(rawIssue.body, rawIssue.title)
-                    if(data.correct !== true) continue
+                    if (data.correct !== true) continue
                     // get comments
                     const rawComments = await this.props.github.githubOctoGeneric.octokit.issues.listComments({
                         owner: config.lotusNodes[this.props.wallet.networkIndex].notaryOwner,
@@ -178,7 +179,7 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
                                 txs: [],
                                 proposedBy: ""
                             }
-                            for (let i=0; i<verifierAndPendingRequests.length; i++){ 
+                            for (let i = 0; i < verifierAndPendingRequests.length; i++) {
                                 const index = issue.addresses.indexOf(verifierAndPendingRequests[i].verifierAddress)
                                 if (index !== -1) {
                                     issue.txs[index] = verifierAndPendingRequests[i]
@@ -187,10 +188,10 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
                                     i--
                                 }
                             }
-                            if (rawIssue.labels.findIndex((label:any) => label.name === 'status:StartSignOnchain') !== -1) {
+                            if (rawIssue.labels.findIndex((label: any) => label.name === 'status:StartSignOnchain') !== -1) {
                                 issue.proposed = true
                             }
-                            if (rawIssue.labels.findIndex((label:any) => label.name === 'status:Approved') !== -1) {
+                            if (rawIssue.labels.findIndex((label: any) => label.name === 'status:Approved') !== -1) {
                                 issue.proposed = false
                             }
                             issues.push(issue)
@@ -211,7 +212,7 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
                         proposed: true
                     })
                 }
-                this.setState({verifierAndPendingRequests: issues})
+                this.setState({ verifierAndPendingRequests: issues })
             },
             verifierAndPendingRequests: [],
             loadNotificationVerifierRequests: async () => {
@@ -231,12 +232,12 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
                             repo: config.lotusNodes[this.props.wallet.networkIndex].notaryRepo,
                             issue_number: rawIssue.number,
                         })
-                        if(
+                        if (
                             rawComments.data.length > 0 && (
-                                rawComments.data[rawComments.data.length-1].user.login.endsWith("[bot]") === false &&
-                                rawComments.data[rawComments.data.length-1].user.login !== rawIssue.assignee.login
+                                rawComments.data[rawComments.data.length - 1].user.login.endsWith("[bot]") === false &&
+                                rawComments.data[rawComments.data.length - 1].user.login !== rawIssue.assignee.login
                             )
-                        ){
+                        ) {
                             issues.push({
                                 number: rawIssue.number,
                                 url: rawIssue.html_url
@@ -284,9 +285,9 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
                     clientsamountconverted = BtoiB(amountBN).plus(clientsamountconverted)
                     txs['key'] = await this.props.wallet.api.actorKey(txs.verified)
                     txs['datacapConverted'] = BtoiB(amountBN).toString()
-                    
+
                 }
-                this.setState({clients, clientsAmount: clientsamount.toString(), clientsAmountConverted: clientsamountconverted.toString()})
+                this.setState({ clients, clientsAmount: clientsamount.toString(), clientsAmountConverted: clientsamountconverted.toString() })
             },
             updateGithubVerified: async (requestNumber: any, messageID: string, address: string, datacap: any) => {
                 await this.props.github.githubOcto.issues.removeAllLabels({
@@ -317,38 +318,49 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
                     state: 'closed',
                 })
             },
+            assignToIssue: async (issue_number: any, assignees: any) => {
+                let isAssigned = false
+                for (const assigne of assignees) {
+                    try {
+                        const assigned = await this.props.github.githubOcto.issues.addAssignees({
+                            owner: config.onboardingOwner,
+                            repo: config.onboardingClientRepo,
+                            issue_number,
+                            assignees: [assigne]
+                        });
+                        if (assigned.data.assignees.length > 0) isAssigned = true
+                    } catch (error) {
+                    }
+                }
+
+                if (!isAssigned) {
+                    await this.props.github.githubOcto.issues.addAssignees({
+                        owner: config.onboardingOwner,
+                        repo: config.onboardingClientRepo,
+                        issue_number,
+                        assignees: config.defaultAssign
+                    });
+                }
+
+            },
             createRequest: async (data: any) => {
                 try {
                     const issue = await this.props.github.githubOcto.issues.create({
                         owner: config.onboardingOwner,
                         repo: config.onboardingClientRepo,
                         title: 'Client Allocation Request for: ' + data.organization,
-                        assignees: data.assignees,
                         body: IssueBody(data)
                     });
                     if (issue.status === 201) {
                         // this.state.dispatchNotification('Request submited as #' + issue.data.number)
                         this.state.loadClientRequests()
+                        await this.state.assignToIssue(issue.data.number, data.assignees)
                         return issue.data.html_url
                     } else {
                         // this.state.dispatchNotification('Something went wrong.')
                     }
                 } catch (error) {
-                    if(error.errors[0].field ==='assignees' && error.errors[0].code==='invalid'){
-                        console.log('There was an error on assign, trying with user...')
-                        const issue = await this.props.github.githubOcto.issues.create({
-                            owner: config.onboardingOwner,
-                            repo: config.onboardingClientRepo,
-                            title: 'Client Allocation Request for: ' + data.organization,
-                            assignees: config.defaultAssign,
-                            body: IssueBody(data)
-                        });
-                        if (issue.status === 201) {
-                            // this.state.dispatchNotification('Request submited as #' + issue.data.number)
-                            this.state.loadClientRequests()
-                            return issue.data.html_url
-                        }
-                    }
+                    console.log(error)
                 }
             },
             selectedNotaryRequests: [] as any[],
@@ -397,10 +409,10 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
                 })
             },
             search: async (query: string) => {
-                
+
                 let results: any[] = []
                 if (this.state.viewroot) {
-                    
+
                     if (this.props.github.githubOctoGeneric.logged === false) {
                         await this.props.github.githubOctoGenericLogin()
                     }
