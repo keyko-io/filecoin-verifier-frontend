@@ -5,6 +5,7 @@ import { config } from '../../config';
 import { IssueBody } from '../../utils/IssueBody'
 import { datacapFilter, BtoiB } from '../../utils/Filters'
 import BigNumber from 'bignumber.js'
+import { tableFilter, tableSort } from '../../utils/SortFilter';
 const utils = require('@keyko-io/filecoin-verifier-tools/utils/issue-parser')
 const parser = require('@keyko-io/filecoin-verifier-tools/utils/notary-issue-parser')
 
@@ -28,7 +29,10 @@ interface DataProviderStates {
     clientsGithub: any
     loadClientsGithub: any
     loadClients: any
+    sortClients: any
+    filterClients: any
     clients: any[]
+    allClients: any[]
     clientsAmount: string,
     clientsAmountConverted: string
     loadPendingVerifiers: any
@@ -77,8 +81,8 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
             },
             clientRequests: [],
             loadNotificationClientRequests: async () => {
-                if(this.props.github.githubLogged === false){
-                    this.setState({clientRequests: []})
+                if (this.props.github.githubLogged === false) {
+                    this.setState({ clientRequests: [] })
                     return
                 }
                 const rawIssues = await this.props.github.githubOcto.issues.listForRepo({
@@ -94,12 +98,12 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
                             repo: config.onboardingClientRepo,
                             issue_number: rawIssue.number,
                         })
-                        if(
+                        if (
                             rawComments.data.length > 0 && (
-                                rawComments.data[rawComments.data.length-1].user.login.endsWith("[bot]") === false &&
-                                rawComments.data[rawComments.data.length-1].user.login !== rawIssue.assignee.login
+                                rawComments.data[rawComments.data.length - 1].user.login.endsWith("[bot]") === false &&
+                                rawComments.data[rawComments.data.length - 1].user.login !== rawIssue.assignee.login
                             )
-                        ){
+                        ) {
                             issues.push({
                                 number: rawIssue.number,
                                 url: rawIssue.html_url
@@ -172,12 +176,12 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
                             repo: config.lotusNodes[this.props.wallet.networkIndex].notaryRepo,
                             issue_number: rawIssue.number,
                         })
-                        if(
+                        if (
                             rawComments.data.length > 0 && (
-                                rawComments.data[rawComments.data.length-1].user.login.endsWith("[bot]") === false &&
-                                rawComments.data[rawComments.data.length-1].user.login !== rawIssue.assignee.login
+                                rawComments.data[rawComments.data.length - 1].user.login.endsWith("[bot]") === false &&
+                                rawComments.data[rawComments.data.length - 1].user.login !== rawIssue.assignee.login
                             )
-                        ){
+                        ) {
                             issues.push({
                                 number: rawIssue.number,
                                 url: rawIssue.html_url
@@ -225,9 +229,24 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
                     clientsamountconverted = BtoiB(amountBN).plus(clientsamountconverted)
                     txs['key'] = await this.props.wallet.api.actorKey(txs.verified)
                     txs['datacapConverted'] = BtoiB(amountBN).toString()
-                    
+
                 }
-                this.setState({clients, clientsAmount: clientsamount.toString(), clientsAmountConverted: clientsamountconverted.toString()})
+                this.setState({ clients, allClients: clients, clientsAmount: clientsamount.toString(), clientsAmountConverted: clientsamountconverted.toString() })
+            },
+            sortClients: async (e: any, previousOrderBy: string, previousOrder: number) => {
+                const { arraySorted, orderBy, sortOrder } =
+                    tableSort(
+                        e,
+                        this.state.clients as [],
+                        previousOrderBy,
+                        previousOrder)
+
+                this.setState({ clients: arraySorted })
+                return { orderBy, sortOrder }
+            },
+            filterClients: async (search: string) => {
+                const clients = await tableFilter(search, this.state.allClients as [])
+                this.setState({ clients })
             },
             loadPendingVerifiers: async () => {
                 // pending verififers
@@ -250,7 +269,7 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
                         signerAccount: signerAccount
                     })
                 }
-                this.setState({pendingVerifiers})
+                this.setState({ pendingVerifiers })
             },
             updateGithubVerified: async (requestNumber: any, messageID: string, address: string, datacap: any) => {
                 await this.props.github.githubOcto.issues.removeAllLabels({
@@ -298,7 +317,7 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
                         // this.state.dispatchNotification('Something went wrong.')
                     }
                 } catch (error) {
-                    if(error.errors[0].field ==='assignees' && error.errors[0].code==='invalid'){
+                    if (error.errors[0].field === 'assignees' && error.errors[0].code === 'invalid') {
                         console.log('There was an error on assign, trying with user...')
                         const issue = await this.props.github.githubOcto.issues.create({
                             owner: config.onboardingOwner,
@@ -326,6 +345,7 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
                 this.setState({ selectedNotaryRequests: selectedTxs })
             },
             clients: [],
+            allClients: [],
             clientsAmount: '',
             clientsAmountConverted: '',
             pendingVerifiers: [],
@@ -362,10 +382,10 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
                 })
             },
             search: async (query: string) => {
-                
+
                 let results: any[] = []
                 if (this.state.viewroot) {
-                    
+
                     if (this.props.github.githubOctoGeneric.logged === false) {
                         await this.props.github.githubOctoGenericLogin()
                     }

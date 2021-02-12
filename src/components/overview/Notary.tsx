@@ -11,11 +11,17 @@ import LoginGithub from 'react-login-github';
 import { config } from '../../config'
 import WarnModal from '../../modals/WarnModal';
 import WarnModalVerify from '../../modals/WarnModalVerify';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { tableSort } from '../../utils/SortFilter';
+import Pagination from '../Pagination';
+
 
 type NotaryStates = {
     tabs: string
     selectedTransactions: any[]
     selectedClientRequests: any[]
+    sortOrder: number,
+    orderBy: string
 }
 
 type NotaryProps = {
@@ -24,11 +30,25 @@ type NotaryProps = {
 
 export default class Notary extends Component<NotaryProps, NotaryStates> {
     public static contextType = Data
+    child: any
+
+    constructor(props: NotaryProps) {
+        super(props);
+        this.child = React.createRef();
+    }
+
+    verifiedClientsColums = [
+        { id: "verified", value: "ID" },
+        { id: "key", value: "Address" },
+        { id: "datacap", value: "Datacap" },
+    ]
 
     state = {
         selectedTransactions: [] as any[],
         selectedClientRequests: [] as any[],
-        tabs: '1'
+        tabs: '1',
+        sortOrder: -1,
+        orderBy: "name"
     }
 
     componentDidMount() {
@@ -160,6 +180,11 @@ export default class Notary extends Component<NotaryProps, NotaryStates> {
         })
     }
 
+    order = async (e: any) => {
+        const { orderBy, sortOrder } = await this.context.sortClients(e, this.state.orderBy, this.state.sortOrder)
+        this.setState({ orderBy, sortOrder })
+    }
+
     timeout(delay: number) {
         return new Promise(res => setTimeout(res, delay));
     }
@@ -237,32 +262,28 @@ export default class Notary extends Component<NotaryProps, NotaryStates> {
                         <table>
                             <thead>
                                 <tr>
-                                    <td>Name</td>
-                                    <td>Address</td>
-                                    <td>Address</td>
-                                    <td>Datacap</td>
-                                    <td>Audit trail</td>
+                                    {this.verifiedClientsColums.map((column: any) => <td
+                                        id={column.id} onClick={this.order}>
+                                        {column.value}
+                                        <FontAwesomeIcon icon={["fas", "sort"]} />
+                                    </td>)}
                                 </tr>
                             </thead>
                             <tbody>
-                                {this.props.clients.map((transaction: any, index: any) =>
-                                    <tr
-                                        key={index}
-                                    // onClick={()=>this.selectRow(transaction.id)}
-                                    /*className={this.state.selectedTransactions.includes(transaction.id)?'selected':''}*/
-                                    >
+                                {this.props.clients.filter((_, i: any) => this.child.current.checkIndex(i))
+                                    .map((transaction: any, index: any) =>
+                                        this.child.current ?
+                                            <tr key={index}>
+                                                <td>{transaction.verified}</td>
+                                                <td>{transaction.key}</td>
+                                                <td>{datacapFilter(transaction.datacap)}</td>
 
-                                        <td>{this.context.clientsGithub[transaction.verified] ? this.context.clientsGithub[transaction.verified].data.name : null}</td>
-                                        <td>{transaction.verified}</td>
-                                        <td>{transaction.key}</td>
-                                        <td>{datacapFilter(transaction.datacap)}</td>
-                                        <td>{this.context.clientsGithub[transaction.verified] ? <a target="_blank" rel="noopener noreferrer" href={this.context.clientsGithub[transaction.verified].url}>#{this.context.clientsGithub[transaction.verified].number}</a> : null}</td>
-
-                                    </tr>
-                                )}
+                                            </tr>
+                                            : null)}
                             </tbody>
                         </table>
                         {this.props.clients.length === 0 ? <div className="nodata">No verified clients yet</div> : null}
+                        <Pagination elements={this.props.clients} maxElements={10} ref={this.child} refresh={() => this.setState({})} />
                     </div>
                     : null}
             </div>
