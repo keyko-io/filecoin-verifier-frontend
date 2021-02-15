@@ -123,7 +123,7 @@ class MakeRequestModal extends Component<ModalProps, States> {
             region: this.state.region,
             publicprofile: this.state.publicprofile,
             contact: this.state.contact,
-            assignees: [this.props.verifier.github_user],
+            assignees: this.props.verifier.github_user,
             onboarding: true
         })
         if (response) {
