@@ -316,7 +316,7 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
                     labels: ['state:Granted'],
                 })
 
-                let commentContent = `## Request Approved\nYour Datacap Allocation Request has been approved by the Notary\n#### Message sent to Filecoin Network\n>${messageID} \n#### Address \n> ${address}\n#### Datacap Allocated\n> ${datacapFilter(String(datacap))}`
+                let commentContent = `## Request Approved\nYour Datacap Allocation Request has been approved by the Notary\n#### Message sent to Filecoin Network\n>${messageID} \n#### Address \n> ${address}\n#### Datacap Allocated\n> ${datacapFilter(String(datacap))}\n#### You can check the status of the message here: https://filfox.info/en/message/${messageID}`
 
                 await this.props.github.githubOcto.issues.createComment({
                     owner: config.onboardingOwner,

@@ -124,6 +124,7 @@ export default class RootKeyHolder extends Component<RootKeyHolderProps, RootKey
                 const messageIds: any[] = []
                 var commentContent = ''
                 var label = ''
+                let filfox = ''
                 try {
                     if (request.proposed === true) {
                         // for each tx
@@ -131,11 +132,13 @@ export default class RootKeyHolder extends Component<RootKeyHolderProps, RootKey
                             const messageID = await this.context.wallet.api.approveVerifier(tx.verifier, BigInt(tx.datacap), tx.signer, tx.id, this.context.wallet.walletIndex);
                             messageIds.push(messageID)
                             this.context.wallet.dispatchNotification('Accepting Message sent with ID: ' + messageID)
+                            filfox += `#### You can check the status of the message here: https://filfox.info/en/message/${messageID}\n`
                         }
                         // comment to issue
-                        commentContent = `## The request has been signed by a new Root Key Holder\n#### Message sent to Filecoin Network\n>${messageIds.join()}`
+                        commentContent = `## The request has been signed by a new Root Key Holder\n#### Message sent to Filecoin Network\n>${messageIds.join()}\n${filfox}`
                         label = 'status:AddedOnchain'
                     } else {
+                        let filfox = ''
                         for (let i = 0; i < request.datacaps.length; i++) {
                             if (request.datacaps[i] && request.addresses[i]) {
 
@@ -174,10 +177,10 @@ export default class RootKeyHolder extends Component<RootKeyHolderProps, RootKey
                                 console.log("messageID: " + messageID)
                                 messageIds.push(messageID)
                                 this.context.wallet.dispatchNotification('Accepting Message sent with ID: ' + messageID)
-
+                                filfox += `#### You can check the status of the message here: https://filfox.info/en/message/${messageID}\n`
                             }
                         }
-                        commentContent = `## The request has been signed by a new Root Key Holder\n#### Message sent to Filecoin Network\n>${messageIds.join()}`
+                        commentContent = `## The request has been signed by a new Root Key Holder\n#### Message sent to Filecoin Network\n>${messageIds.join()}\n ${filfox}`
                         label = config.lotusNodes[this.context.wallet.networkIndex].rkhtreshold > 1 ? 'status:StartSignOnchain' : 'status:AddedOnchain'
                     }
                     await this.context.github.githubOctoGenericLogin()

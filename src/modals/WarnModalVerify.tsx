@@ -42,8 +42,8 @@ class WarnModalVerify extends Component<ModalProps, ModalState> {
             for (const request of this.props.clientRequests) {
                 if (this.props.selectedClientRequests.includes(request.id)) {
                     requestToShow.push({
-                        address: request.verifier,
-                        datacap: request.datacap
+                        address: request.addresses,
+                        datacap: request.datacaps
                     })
                 }
             }
@@ -56,6 +56,12 @@ class WarnModalVerify extends Component<ModalProps, ModalState> {
         }
 
         this.setState({ requestToShow })
+    }
+
+    renderArray(arrayValues: []) {
+        return (<>
+            {arrayValues.map((value: any, i: any) => <div key={i} className="elemvalue">{value}</div >)}
+        </>)
     }
 
 
@@ -76,8 +82,8 @@ class WarnModalVerify extends Component<ModalProps, ModalState> {
                     <tbody>
                         {this.state.requestToShow.map((request: any, index: any) =>
                             <tr key={index}>
-                                <td>{request.address}</td>
-                                <td>{request.datacap}</td>
+                                <td>{typeof (request.address) === 'object' ? this.renderArray(request.address) : request.address}</td>
+                                <td>{typeof (request.datacap) === 'object' ? this.renderArray(request.datacap) : request.datacap}</td>
                             </tr>
                         )}
                     </tbody>
