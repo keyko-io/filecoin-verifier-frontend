@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Data } from '../context/Data/Index'
 import { config } from '../config'
 // @ts-ignore
-import { dispatchCustomEvent, Input, ButtonPrimary, SelectMenu, LoaderSpinner, CheckBox } from "slate-react-system";
+import { dispatchCustomEvent, Input, ButtonPrimary, SelectMenu, LoaderSpinner } from "slate-react-system";
 import ConfirmModal from '../pages/ConfirmModal';
 // @ts-ignore
 import LoginGithub from 'react-login-github';

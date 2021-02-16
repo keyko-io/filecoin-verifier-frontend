@@ -3,8 +3,8 @@ import { Data } from '../../context/Data/Index';
 import AddClientModal from '../../modals/AddClientModal';
 import AddVerifierModal from '../../modals/AddVerifierModal';
 // @ts-ignore
-import { ButtonPrimary, dispatchCustomEvent, CheckBox, ButtonSecondary } from "slate-react-system";
-import { datacapFilter, iBtoB } from "../../utils/Filters"
+import { ButtonPrimary, dispatchCustomEvent, ButtonSecondary } from "slate-react-system";
+import { datacapFilter } from "../../utils/Filters"
 import BigNumber from 'bignumber.js'
 // @ts-ignore
 import LoginGithub from 'react-login-github';
@@ -12,7 +12,7 @@ import { config } from '../../config'
 import WarnModal from '../../modals/WarnModal';
 import WarnModalVerify from '../../modals/WarnModalVerify';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { tableSort } from '../../utils/SortFilter';
+import { tableElementFilter } from '../../utils/SortFilter';
 import Pagination from '../Pagination';
 
 
@@ -21,21 +21,17 @@ type NotaryStates = {
     selectedTransactions: any[]
     selectedClientRequests: any[]
     sortOrder: number,
-    orderBy: string
+    orderBy: string,
+    ref: any
 }
 
 type NotaryProps = {
     clients: any[]
+    searchString: string
 }
 
 export default class Notary extends Component<NotaryProps, NotaryStates> {
     public static contextType = Data
-    child: any
-
-    constructor(props: NotaryProps) {
-        super(props);
-        this.child = React.createRef();
-    }
 
     verifiedClientsColums = [
         { id: "verified", value: "ID" },
@@ -48,11 +44,13 @@ export default class Notary extends Component<NotaryProps, NotaryStates> {
         selectedClientRequests: [] as any[],
         tabs: '1',
         sortOrder: -1,
-        orderBy: "name"
+        orderBy: "name",
+        ref: {} as any
     }
 
     componentDidMount() {
     }
+
 
     showVerifiedClients = async () => {
         this.setState({ tabs: "2" })
@@ -61,6 +59,10 @@ export default class Notary extends Component<NotaryProps, NotaryStates> {
     showClientRequests = async () => {
         this.setState({ tabs: "1" })
     }
+
+    onRefChange = (ref: any) => {
+        this.setState({ ref });
+    };
 
     requestDatacap = () => {
 
@@ -74,7 +76,7 @@ export default class Notary extends Component<NotaryProps, NotaryStates> {
 
     verifyNewDatacap = () => {
 
-        if (this.state.selectedClientRequests.length == 0 || this.state.selectedClientRequests.length > 1) {
+        if (this.state.selectedClientRequests.length === 0 || this.state.selectedClientRequests.length > 1) {
             dispatchCustomEvent({
                 name: "create-modal", detail: {
                     id: Math.random().toString(36).replace(/[^a-z]+/g, '').substr(0, 5),
@@ -270,20 +272,26 @@ export default class Notary extends Component<NotaryProps, NotaryStates> {
                                 </tr>
                             </thead>
                             <tbody>
-                                {this.props.clients.filter((_, i: any) => this.child.current.checkIndex(i))
-                                    .map((transaction: any, index: any) =>
-                                        this.child.current ?
+                                {this.state.ref && this.state.ref.checkIndex ?
+                                    this.props.clients.filter((element) => tableElementFilter(this.props.searchString, element) === true)
+                                        .filter((_, i: any) => this.state.ref?.checkIndex(i))
+                                        .map((transaction: any, index: any) =>
                                             <tr key={index}>
                                                 <td>{transaction.verified}</td>
                                                 <td>{transaction.key}</td>
                                                 <td>{datacapFilter(transaction.datacap)}</td>
-
                                             </tr>
-                                            : null)}
+                                        ) : null}
                             </tbody>
                         </table>
                         {this.props.clients.length === 0 ? <div className="nodata">No verified clients yet</div> : null}
-                        <Pagination elements={this.props.clients} maxElements={10} ref={this.child} refresh={() => this.setState({})} />
+                        <Pagination
+                            elements={this.props.clients}
+                            maxElements={10}
+                            ref={this.onRefChange}
+                            refresh={() => this.setState({})}
+                            search={this.props.searchString}
+                        />
                     </div>
                     : null}
             </div>

@@ -1,20 +1,10 @@
 import React, { Component } from 'react';
-import Automatic from '../svg/automatic-modal.png';
-import General from '../svg/general-modal.png';
 import history from '../context/History'
 // @ts-ignore
 import { dispatchCustomEvent } from "slate-react-system";
 
 
 class VerificationOptionsModal extends Component<{}> {
-
-    constructor(props: {}) {
-        super(props);
-    }
-
-    componentDidMount() {
-
-    }
 
     onClick = (e: any) => {
         if (e.currentTarget.id === 'automatic') {

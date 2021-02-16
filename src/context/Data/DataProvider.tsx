@@ -5,7 +5,7 @@ import { config } from '../../config';
 import { IssueBody } from '../../utils/IssueBody'
 import { datacapFilter, BtoiB } from '../../utils/Filters'
 import BigNumber from 'bignumber.js'
-import { tableFilter, tableSort } from '../../utils/SortFilter';
+import { tableSort } from '../../utils/SortFilter';
 const utils = require('@keyko-io/filecoin-verifier-tools/utils/issue-parser')
 const parser = require('@keyko-io/filecoin-verifier-tools/utils/notary-issue-parser')
 
@@ -30,14 +30,13 @@ interface DataProviderStates {
     loadClientsGithub: any
     loadClients: any
     sortClients: any
-    filterClients: any
     clients: any[]
-    allClients: any[]
     clientsAmount: string,
     clientsAmountConverted: string
     loadPendingVerifiers: any
     pendingVerifiers: any[]
     search: any
+    searchString: string
     refreshGithubData: any
 }
 
@@ -231,7 +230,7 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
                     txs['datacapConverted'] = BtoiB(amountBN).toString()
 
                 }
-                this.setState({ clients, allClients: clients, clientsAmount: clientsamount.toString(), clientsAmountConverted: clientsamountconverted.toString() })
+                this.setState({ clients, clientsAmount: clientsamount.toString(), clientsAmountConverted: clientsamountconverted.toString() })
             },
             sortClients: async (e: any, previousOrderBy: string, previousOrder: number) => {
                 const { arraySorted, orderBy, sortOrder } =
@@ -243,10 +242,6 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
 
                 this.setState({ clients: arraySorted })
                 return { orderBy, sortOrder }
-            },
-            filterClients: async (search: string) => {
-                const clients = await tableFilter(search, this.state.allClients as [])
-                this.setState({ clients })
             },
             loadPendingVerifiers: async () => {
                 // pending verififers
@@ -345,7 +340,6 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
                 this.setState({ selectedNotaryRequests: selectedTxs })
             },
             clients: [],
-            allClients: [],
             clientsAmount: '',
             clientsAmountConverted: '',
             pendingVerifiers: [],
@@ -381,29 +375,9 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
                     clientsGithub: issues
                 })
             },
+            searchString: "",
             search: async (query: string) => {
-
-                let results: any[] = []
-                if (this.state.viewroot) {
-
-                    if (this.props.github.githubOctoGeneric.logged === false) {
-                        await this.props.github.githubOctoGenericLogin()
-                    }
-
-                    results = await this.props.github.githubOctoGeneric.octokit.search.issuesAndPullRequests({
-                        q: `${query} in:body is:issue repo:${config.lotusNodes[this.props.wallet.networkIndex].notaryOwner}/${config.lotusNodes[this.props.wallet.networkIndex].notaryRepo}`
-                    })
-                } else {
-                    if (this.props.github.githubLogged === false) {
-                        console.log('not logged')
-                        return
-                    }
-                    results = await this.props.github.githubOcto.search.issuesAndPullRequests({
-                        q: `${query} in:body is:issue repo:${config.onboardingOwner}/${config.onboardingClientRepo}`
-                    })
-                }
-                console.log('results', results)
-                return results
+                this.setState({ searchString: query })
             },
             refreshGithubData: async () => {
                 this.state.loadClientRequests()

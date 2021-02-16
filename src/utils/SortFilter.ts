@@ -27,7 +27,7 @@ export const tableFilter = async (search: string, tableData: []) => {
 }
 
 
-export const tableElementFilter = async (search: string, element: any) => {
+export const tableElementFilter = (search: string, element: any) => {
     return Object.values(element).some((k: any) =>
         typeof (k) === 'object' ?
             k.join().toLowerCase().includes(search.toLowerCase())

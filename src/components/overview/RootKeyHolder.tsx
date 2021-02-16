@@ -3,10 +3,8 @@ import { Data } from '../../context/Data/Index';
 import AddVerifierModal from '../../modals/AddVerifierModal';
 import RequestVerifierModal from '../../modals/RequestVerifierModal';
 // @ts-ignore
-import { ButtonPrimary, dispatchCustomEvent, ButtonSecondary } from "slate-react-system";
-import { datacapFilter, iBtoB } from "../../utils/Filters"
-// @ts-ignore
-import LoginGithub from 'react-login-github';
+import { ButtonPrimary, dispatchCustomEvent } from "slate-react-system";
+import { datacapFilter } from "../../utils/Filters"
 import { config } from '../../config'
 import WarnModalVerify from '../../modals/WarnModalVerify';
 import BigNumber from 'bignumber.js'
@@ -123,13 +121,13 @@ export default class RootKeyHolder extends Component<RootKeyHolderProps, RootKey
 
                     let address = request.address
                     console.log("request address: " + request.address)
-                        
+
                     if (address.startsWith("t1") || address.startsWith("f1")) {
                         address = await this.context.wallet.api.actorAddress(address)
                         console.log("getting t0/f0 ID. Result of  actorAddress method: " + address)
                     }
 
-                    console.log("address to propose: " + address)  
+                    console.log("address to propose: " + address)
 
                     let messageID = await this.context.wallet.api.proposeVerifier(address, BigInt(fullDatacap), this.context.wallet.walletIndex)
                     console.log("messageID: " + messageID)
@@ -177,15 +175,15 @@ export default class RootKeyHolder extends Component<RootKeyHolderProps, RootKey
 
         this.setState({ approveLoading: true })
         try {
-            var messages= []
+            var messages = []
             for (let tx of this.props.pendingverifiers) {
                 if (this.state.selectedTransactions.includes(tx.id)) {
                     // Only RKH that proposed the tx is able to cancel it
                     // TODO modal instead alert
-                    if (tx.signerAccount != this.context.wallet.activeAccount) {
+                    if (tx.signerAccount !== this.context.wallet.activeAccount) {
                         alert("You must be the proposer of the tx " + tx.id + " to cancel it! ")
                         continue;
-                    }                
+                    }
                     let messageID = await this.context.wallet.api.cancelVerifier(tx.verifier, BigInt(tx.datacap), tx.signer, tx.id, this.context.wallet.walletIndex);
                     messages.push(messageID)
                 }
@@ -291,10 +289,10 @@ export default class RootKeyHolder extends Component<RootKeyHolderProps, RootKey
                     <div className="tabssadd">
                         {this.state.tabs === "0" ? <ButtonPrimary onClick={(e: any) => this.showWarnPropose(e, "Propose")}>Propose On-chain</ButtonPrimary> : null}
                         {this.state.tabs === "1" ? <>
-                        <ButtonPrimary onClick={(e: any) => this.showWarnPropose(e, "Sign")}>Sign On-chain</ButtonPrimary> 
-                        <ButtonPrimary onClick={(e: any) => this.showWarnPropose(e, "Cancel")}>Cancel</ButtonPrimary> 
+                            <ButtonPrimary onClick={(e: any) => this.showWarnPropose(e, "Sign")}>Sign On-chain</ButtonPrimary>
+                            <ButtonPrimary onClick={(e: any) => this.showWarnPropose(e, "Cancel")}>Cancel</ButtonPrimary>
                         </>
-                        : null}
+                            : null}
                     </div>
                 </div>
                 {this.state.tabs === "0" ?

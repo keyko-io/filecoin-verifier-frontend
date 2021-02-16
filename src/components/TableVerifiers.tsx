@@ -8,11 +8,14 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { tableFilter, tableSort } from '../utils/SortFilter';
 import Pagination from './Pagination';
 
+type TableVerifiersProps = {
+    search: string
+}
 
-export default class TableVerifiers extends Component {
+export default class TableVerifiers extends Component<TableVerifiersProps> {
     child: any
 
-    constructor(props: {}) {
+    constructor(props: TableVerifiersProps) {
         super(props);
         this.child = React.createRef();
     }
@@ -100,7 +103,6 @@ export default class TableVerifiers extends Component {
         this.setState({ orderBy })
     }
 
-
     filter = async (search: string) => {
         const verifiers = await tableFilter(search, this.state.allVerifiers as [])
         await this.setState({ verifiers })
@@ -155,7 +157,7 @@ export default class TableVerifiers extends Component {
                         </table>
                         : <div className="nodata">There are not available notaries yet</div>}
                 </div>
-                <Pagination elements={this.state.verifiers} ref={this.child} maxElements={5} refresh={() => this.setState({})} />
+                <Pagination elements={this.state.verifiers} search={this.props.search} ref={this.child} maxElements={5} refresh={() => this.setState({})} />
             </div>
         )
     }

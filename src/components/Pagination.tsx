@@ -1,9 +1,11 @@
 import React, { Component } from 'react';
+import { tableFilter } from '../utils/SortFilter';
 
 type PaginationProps = {
     elements: any[],
     maxElements: number
     refresh: any
+    search: any
 }
 class Pagination extends Component<PaginationProps> {
 
@@ -18,14 +20,15 @@ class Pagination extends Component<PaginationProps> {
     }
 
     componentDidUpdate(prevProps: PaginationProps) {
-        if (prevProps.elements !== this.props.elements) {
+        if (prevProps.elements !== this.props.elements || prevProps.search !== this.props.search) {
             this.calculatePages()
         }
     }
 
 
-    calculatePages = () => {
-        const numerOfPages = Math.ceil(this.props.elements.length / this.props.maxElements)
+    calculatePages = async () => {
+        const elementsToShow = await tableFilter(this.props.search, this.props.elements as [])
+        const numerOfPages = Math.ceil(elementsToShow.length / this.props.maxElements)
         let pages = []
         for (let index = 0; index < numerOfPages; index++) {
             pages.push(index + 1)
@@ -67,7 +70,7 @@ class Pagination extends Component<PaginationProps> {
                 <div className="pagenumber paginator" onClick={e => this.movePage(-1)}>{"<"}</div>
                 {this.state.pages.map((page: any, i) =>
                     <div className="pagenumber"
-                        style={this.state.actualPage == i + 1 ? { backgroundColor: "#33A7FF", color: 'white' } : {}}
+                        style={this.state.actualPage === i + 1 ? { backgroundColor: "#33A7FF", color: 'white' } : {}}
                         id={(i + 1).toString()}
                         onClick={e => this.setPage(e)}>
                         {page}

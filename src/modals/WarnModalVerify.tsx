@@ -1,8 +1,6 @@
-import { throws } from 'assert';
 import React, { Component } from 'react';
 // @ts-ignore
 import { ButtonPrimary } from "slate-react-system";
-import { datacapFilter } from "../utils/Filters"
 
 type ModalProps = {
     clientRequests: any[],
