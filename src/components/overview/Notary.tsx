@@ -3,36 +3,54 @@ import { Data } from '../../context/Data/Index';
 import AddClientModal from '../../modals/AddClientModal';
 import AddVerifierModal from '../../modals/AddVerifierModal';
 // @ts-ignore
-import { ButtonPrimary, dispatchCustomEvent, CheckBox, ButtonSecondary } from "slate-react-system";
-import { datacapFilter, iBtoB } from "../../utils/Filters"
+import { ButtonPrimary, dispatchCustomEvent, ButtonSecondary } from "slate-react-system";
+import { datacapFilter } from "../../utils/Filters"
 import BigNumber from 'bignumber.js'
 // @ts-ignore
 import LoginGithub from 'react-login-github';
 import { config } from '../../config'
 import WarnModal from '../../modals/WarnModal';
 import WarnModalVerify from '../../modals/WarnModalVerify';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { tableElementFilter } from '../../utils/SortFilter';
+import Pagination from '../Pagination';
+
 
 type NotaryStates = {
     tabs: string
     selectedTransactions: any[]
     selectedClientRequests: any[]
+    sortOrder: number,
+    orderBy: string,
+    ref: any
 }
 
 type NotaryProps = {
     clients: any[]
+    searchString: string
 }
 
 export default class Notary extends Component<NotaryProps, NotaryStates> {
     public static contextType = Data
 
+    verifiedClientsColums = [
+        { id: "verified", value: "ID" },
+        { id: "key", value: "Address" },
+        { id: "datacap", value: "Datacap" },
+    ]
+
     state = {
         selectedTransactions: [] as any[],
         selectedClientRequests: [] as any[],
-        tabs: '1'
+        tabs: '1',
+        sortOrder: -1,
+        orderBy: "name",
+        ref: {} as any
     }
 
     componentDidMount() {
     }
+
 
     showVerifiedClients = async () => {
         this.setState({ tabs: "2" })
@@ -41,6 +59,10 @@ export default class Notary extends Component<NotaryProps, NotaryStates> {
     showClientRequests = async () => {
         this.setState({ tabs: "1" })
     }
+
+    onRefChange = (ref: any) => {
+        this.setState({ ref });
+    };
 
     requestDatacap = () => {
 
@@ -54,7 +76,7 @@ export default class Notary extends Component<NotaryProps, NotaryStates> {
 
     verifyNewDatacap = () => {
 
-        if (this.state.selectedClientRequests.length == 0 || this.state.selectedClientRequests.length > 1) {
+        if (this.state.selectedClientRequests.length === 0 || this.state.selectedClientRequests.length > 1) {
             dispatchCustomEvent({
                 name: "create-modal", detail: {
                     id: Math.random().toString(36).replace(/[^a-z]+/g, '').substr(0, 5),
@@ -160,6 +182,11 @@ export default class Notary extends Component<NotaryProps, NotaryStates> {
         })
     }
 
+    order = async (e: any) => {
+        const { orderBy, sortOrder } = await this.context.sortClients(e, this.state.orderBy, this.state.sortOrder)
+        this.setState({ orderBy, sortOrder })
+    }
+
     timeout(delay: number) {
         return new Promise(res => setTimeout(res, delay));
     }
@@ -237,32 +264,34 @@ export default class Notary extends Component<NotaryProps, NotaryStates> {
                         <table>
                             <thead>
                                 <tr>
-                                    <td>Name</td>
-                                    <td>Address</td>
-                                    <td>Address</td>
-                                    <td>Datacap</td>
-                                    <td>Audit trail</td>
+                                    {this.verifiedClientsColums.map((column: any) => <td
+                                        id={column.id} onClick={this.order}>
+                                        {column.value}
+                                        <FontAwesomeIcon icon={["fas", "sort"]} />
+                                    </td>)}
                                 </tr>
                             </thead>
                             <tbody>
-                                {this.props.clients.map((transaction: any, index: any) =>
-                                    <tr
-                                        key={index}
-                                    // onClick={()=>this.selectRow(transaction.id)}
-                                    /*className={this.state.selectedTransactions.includes(transaction.id)?'selected':''}*/
-                                    >
-
-                                        <td>{this.context.clientsGithub[transaction.verified] ? this.context.clientsGithub[transaction.verified].data.name : null}</td>
-                                        <td>{transaction.verified}</td>
-                                        <td>{transaction.key}</td>
-                                        <td>{datacapFilter(transaction.datacap)}</td>
-                                        <td>{this.context.clientsGithub[transaction.verified] ? <a target="_blank" rel="noopener noreferrer" href={this.context.clientsGithub[transaction.verified].url}>#{this.context.clientsGithub[transaction.verified].number}</a> : null}</td>
-
-                                    </tr>
-                                )}
+                                {this.state.ref && this.state.ref.checkIndex ?
+                                    this.props.clients.filter((element) => tableElementFilter(this.props.searchString, element) === true)
+                                        .filter((_, i: any) => this.state.ref?.checkIndex(i))
+                                        .map((transaction: any, index: any) =>
+                                            <tr key={index}>
+                                                <td>{transaction.verified}</td>
+                                                <td>{transaction.key}</td>
+                                                <td>{datacapFilter(transaction.datacap)}</td>
+                                            </tr>
+                                        ) : null}
                             </tbody>
                         </table>
                         {this.props.clients.length === 0 ? <div className="nodata">No verified clients yet</div> : null}
+                        <Pagination
+                            elements={this.props.clients}
+                            maxElements={10}
+                            ref={this.onRefChange}
+                            refresh={() => this.setState({})}
+                            search={this.props.searchString}
+                        />
                     </div>
                     : null}
             </div>

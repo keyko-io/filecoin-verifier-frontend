@@ -4,9 +4,6 @@ import Welcome from '../components/Welcome'
 import Header from '../components/Header';
 import TableMiners from '../components/TableMiners';
 import { Data } from '../context/Data/Index'
-import { config } from '../config'
-// @ts-ignore
-
 
 class Miners extends Component<{}> {
 
@@ -40,7 +37,7 @@ class Miners extends Component<{}> {
           <div className="wrapperverifiers">
             <div className="tableselects" style={this.context.github.githubLogged === false ? { zIndex: -1 } : {}}>
             </div>
-                <TableMiners ref={this.child} />
+            <TableMiners ref={this.child} />
           </div>
         </div>
       </div>

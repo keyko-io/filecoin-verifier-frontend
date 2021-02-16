@@ -402,6 +402,9 @@
       }
     }
   }
+  .pagination{
+    top:890px
+  }
 }
 
 .accountModal {
@@ -677,6 +680,9 @@
 
     td {
       padding: 12px;
+      svg{
+        padding-left: 5px;
+      }
     }
   }
 

@@ -5,9 +5,21 @@ import MakeRequestModal from '../modals/MakeRequestModal';
 import NotaryInfoModal from '../modals/NotaryInfoModal';
 import { config } from '../config'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { tableFilter, tableSort } from '../utils/SortFilter';
+import Pagination from './Pagination';
 
+type TableVerifiersProps = {
+    search: string
+}
 
-export default class TableVerifiers extends Component {
+export default class TableVerifiers extends Component<TableVerifiersProps> {
+    child: any
+
+    constructor(props: TableVerifiersProps) {
+        super(props);
+        this.child = React.createRef();
+    }
+
 
     columns = [
         { key: "name", name: "Notary Name", type: "FILE_LINK", width: "98px" },
@@ -24,12 +36,9 @@ export default class TableVerifiers extends Component {
         allVerifiers: [],
         selectedVerifier: 0,
         checks: [],
-        initialIndex: 0,
-        finalIndex: 5,
-        pages: [],
-        actualPage: 1,
+        pages: [] as any[],
         sortOrder: -1,
-        orderBy: "name"
+        orderBy: "name",
     }
 
     componentDidMount() {
@@ -43,17 +52,7 @@ export default class TableVerifiers extends Component {
             initialChecks.push(false)
         })
         this.setState({ checks: initialChecks })
-        this.calculatePages()
-
-    }
-
-    calculatePages = () => {
-        const numerOfPages = Math.ceil(this.state.verifiers.length / 5)
-        let pages = []
-        for (let index = 0; index < numerOfPages; index++) {
-            pages.push(index + 1)
-        }
-        this.setState({ pages })
+        this.child.current.calculatePages()
     }
 
     getList = async () => {
@@ -86,10 +85,6 @@ export default class TableVerifiers extends Component {
         })
     }
 
-    checkIndex = (index: number) => {
-        return (index >= this.state.initialIndex && index < this.state.finalIndex)
-    }
-
     contactVerifier = async () => {
         let verifier: any = this.state.verifiers[this.state.selectedVerifier]
         dispatchCustomEvent({
@@ -102,65 +97,17 @@ export default class TableVerifiers extends Component {
 
 
     order = (e: any) => {
-        const orderBy = e.currentTarget.id
-        const sortOrder = orderBy === this.state.orderBy ? this.state.sortOrder * -1 : -1
-
-        const verifiers = this.state.verifiers.sort((a: any, b: any) => {
-            return a[orderBy] < b[orderBy] ?
-                sortOrder :
-                a[orderBy] > b[orderBy] ?
-                    sortOrder * -1 : 0;
-        });
-
-        this.setState({ verifiers })
+        const { arraySorted, orderBy, sortOrder } = tableSort(e, this.state.verifiers as [], this.state.orderBy, this.state.sortOrder)
+        this.setState({ verifiers: arraySorted })
         this.setState({ sortOrder })
         this.setState({ orderBy })
     }
 
-
-    orderByName = () => {
-        const verifiers = this.state.verifiers.sort((a: any, b: any) => {
-            return a.name < b.name ?
-                this.state.sortOrder :
-                a.name > b.name ?
-                    this.state.sortOrder * -1 : 0;
-        });
-
-        this.setState({ verifiers })
-        this.setState({ sortOrder: this.state.sortOrder * -1 })
-    }
-
-    filter = async (name: string) => {
-        const verifiers = this.state.allVerifiers.filter((verifier: any) =>
-            Object.values(verifier).some((k: any) =>
-                typeof (k) === 'object' ?
-                    k.join().toLowerCase().includes(name.toLowerCase())
-                    :
-                    k.toString().toLowerCase().includes(name.toLowerCase())
-
-            ));
-
+    filter = async (search: string) => {
+        const verifiers = await tableFilter(search, this.state.allVerifiers as [])
         await this.setState({ verifiers })
-        this.calculatePages()
+        this.child.current.calculatePages()
     }
-
-    setPage = (e: any) => {
-        const actualPage = Number(e.target.id)
-        this.setState({ finalIndex: actualPage * 5 })
-        this.setState({ initialIndex: (actualPage * 5) - 5 })
-        this.setState({ actualPage })
-    }
-
-    movePage = (index: number) => {
-        const page = this.state.actualPage + index
-        if (page <= this.state.pages.length && page >= 1) {
-            this.setState({ finalIndex: page * 5 })
-            this.setState({ initialIndex: (page * 5) - 5 })
-            this.setState({ actualPage: page })
-        }
-    }
-
-
 
     public render() {
         return (
@@ -182,7 +129,7 @@ export default class TableVerifiers extends Component {
                             <tbody>
                                 {
                                     this.state.verifiers.map((verifier: any, i) =>
-                                        this.checkIndex(i) ?
+                                        this.child.current.checkIndex(i) ?
                                             <tr>
                                                 <td>
                                                     <input type="checkbox" key={i} name={String(i)}
@@ -210,18 +157,7 @@ export default class TableVerifiers extends Component {
                         </table>
                         : <div className="nodata">There are not available notaries yet</div>}
                 </div>
-                <div className="pagination">
-                    <div className="pagenumber paginator" onClick={e => this.movePage(-1)}>{"<"}</div>
-                    {this.state.pages.map((page: any, i) =>
-                        <div className="pagenumber"
-                            style={this.state.actualPage == i + 1 ? { backgroundColor: "#33A7FF", color: 'white' } : {}}
-                            id={(i + 1).toString()}
-                            onClick={e => this.setPage(e)}>
-                            {page}
-                        </div>
-                    )}
-                    <div className="pagenumber paginator" onClick={e => this.movePage(1)}>{">"}</div>
-                </div>
+                <Pagination elements={this.state.verifiers} search={this.props.search} ref={this.child} maxElements={5} refresh={() => this.setState({})} />
             </div>
         )
     }
