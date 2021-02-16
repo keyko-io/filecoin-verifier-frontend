@@ -38,7 +38,7 @@ class WarnModalVerify extends Component<ModalProps, ModalState> {
                 }
             }
             this.setState({ message: "You are about to send a message to assign DataCap to the following addresses:" })
-        } else if (this.props.origin === 'Sign' || this.props.origin === 'Cancel') {
+        } else if (this.props.origin === 'ProposeSign' || this.props.origin === 'Cancel') {
             for (const request of this.props.clientRequests) {
                 if (this.props.selectedClientRequests.includes(request.id)) {
                     requestToShow.push({
@@ -48,21 +48,11 @@ class WarnModalVerify extends Component<ModalProps, ModalState> {
                 }
             }
             this.setState({
-                message: this.props.origin === 'Sign' ?
+                message: this.props.origin === 'ProposeSign' ?
                     "You are about to send a message to sign the following Notaries and associated DataCaps:"
                     :
                     "You are about to send a message to cancel the transaction to the following adresses"
             })
-        } else {
-            for (const request of this.props.clientRequests) {
-                if (this.props.selectedClientRequests.includes(request.number)) {
-                    requestToShow.push({
-                        address: request.address,
-                        datacap: request.datacap
-                    })
-                }
-            }
-            this.setState({ message: "You are about to send a message to propose the following Notaries and associated DataCaps:" })
         }
 
         this.setState({ requestToShow })

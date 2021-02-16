@@ -97,7 +97,7 @@ class App extends Component<{}, States> {
 
   copyAddress = async (address: string) => {
     copy(address)
-    this.context.dispatchNotification(address + ' copied to clipboard')
+    this.context.wallet.dispatchNotification(address + ' copied to clipboard')
   }
 
   refresh = () => {
