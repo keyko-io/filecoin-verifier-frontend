@@ -80,26 +80,26 @@ export default class RootKeyHolder extends Component<RootKeyHolderProps, RootKey
             name: "create-modal", detail: {
                 id: Math.random().toString(36).replace(/[^a-z]+/g, '').substr(0, 5),
                 modal: <WarnModalVerify
-                    clientRequests={ this.context.verifierAndPendingRequests }
-                    selectedClientRequests={ selected }
+                    clientRequests={this.context.verifierAndPendingRequests}
+                    selectedClientRequests={selected}
                     onClick={origin === 'ProposeSign' ? this.handleSubmitApproveSign.bind(this) : this.handleSubmitCancel.bind(this)}
                     origin={origin}
                 />
             }
         })
     }
-    
+
     handleSubmitCancel = async (id: string) => {
-        try {  
+        try {
             for (const request of this.context.verifierAndPendingRequests) {
                 if (request.id === id) {
                     if (request.proposed === true) {
                         if (request.proposedBy != this.context.wallet.activeAccount) {
                             alert("You must be the proposer of the request  to cancel it! ")
                             continue;
-                        }                
+                        }
                         // for each tx
-                        for(const tx of request.txs){
+                        for (const tx of request.txs) {
                             const messageID = await this.context.wallet.api.cancelVerifier(tx.verifier, BigInt(tx.datacap), tx.signer, tx.id, this.context.wallet.walletIndex);
                             console.log("cancel: " + messageID)
                             this.context.wallet.dispatchNotification('Cancel Message sent with ID: ' + messageID)
@@ -113,7 +113,7 @@ export default class RootKeyHolder extends Component<RootKeyHolderProps, RootKey
             console.log('error', e.stack)
         }
     }
-    
+
     handleSubmitApproveSign = async () => {
         dispatchCustomEvent({ name: "delete-modal", detail: {} })
         this.setState({ approveLoading: true })
@@ -121,24 +121,27 @@ export default class RootKeyHolder extends Component<RootKeyHolderProps, RootKey
         const multisigInfo = await this.context.wallet.api.multisigInfo(config.lotusNodes[this.context.wallet.networkIndex].rkhMultisig)
         for (const request of this.context.verifierAndPendingRequests) {
             if (this.context.selectedNotaryRequests.includes(request.id)) {
-                const messageIds:any[] = []
+                const messageIds: any[] = []
                 var commentContent = ''
                 var label = ''
+                let filfox = ''
                 try {
                     if (request.proposed === true) {
                         // for each tx
-                        for(const tx of request.txs){
+                        for (const tx of request.txs) {
                             const messageID = await this.context.wallet.api.approveVerifier(tx.verifier, BigInt(tx.datacap), tx.signer, tx.id, this.context.wallet.walletIndex);
                             messageIds.push(messageID)
                             this.context.wallet.dispatchNotification('Accepting Message sent with ID: ' + messageID)
+                            filfox += `#### You can check the status of the message here: https://filfox.info/en/message/${messageID}\n`
                         }
                         // comment to issue
-                        commentContent = `## The request has been signed by a new Root Key Holder\n#### Message sent to Filecoin Network\n>${messageIds.join()}`
-                        label = 'status:AddedOnchain'      
+                        commentContent = `## The request has been signed by a new Root Key Holder\n#### Message sent to Filecoin Network\n>${messageIds.join()}\n${filfox}`
+                        label = 'status:AddedOnchain'
                     } else {
-                        for (let i=0; i<request.datacaps.length; i++) {
+                        let filfox = ''
+                        for (let i = 0; i < request.datacaps.length; i++) {
                             if (request.datacaps[i] && request.addresses[i]) {
-                                
+
                                 // request.datacaps
                                 let prepDatacap = '1'
                                 let prepDatacapExt = 'B'
@@ -152,36 +155,36 @@ export default class RootKeyHolder extends Component<RootKeyHolderProps, RootKey
                                         break
                                     }
                                 }
-            
+
                                 console.log("prepDatacap: " + prepDatacap)
                                 console.log("prepDatacapExt: " + prepDatacapExt)
-            
+
                                 const datacap = new BigNumber(prepDatacap)
                                 const fullDatacap = new BigNumber(prepDatacapExt).multipliedBy(datacap).toFixed(0)
                                 console.log("fullDatacap to propose: " + fullDatacap)
-            
+
                                 let address = request.addresses[i]
                                 console.log("request address: " + request.address)
-                                
+
                                 if (address.startsWith("t1") || address.startsWith("f1")) {
                                     address = await this.context.wallet.api.actorAddress(address)
                                     console.log("getting t0/f0 ID. Result of  actorAddress method: " + address)
                                 }
-            
-                                console.log("address to propose: " + address)  
-            
+
+                                console.log("address to propose: " + address)
+
                                 let messageID = await this.context.wallet.api.proposeVerifier(address, BigInt(fullDatacap), this.context.wallet.walletIndex)
                                 console.log("messageID: " + messageID)
                                 messageIds.push(messageID)
                                 this.context.wallet.dispatchNotification('Accepting Message sent with ID: ' + messageID)
-                                
+                                filfox += `#### You can check the status of the message here: https://filfox.info/en/message/${messageID}\n`
                             }
                         }
-                        commentContent = `## The request has been signed by a new Root Key Holder\n#### Message sent to Filecoin Network\n>${messageIds.join()}`
+                        commentContent = `## The request has been signed by a new Root Key Holder\n#### Message sent to Filecoin Network\n>${messageIds.join()}\n ${filfox}`
                         label = config.lotusNodes[this.context.wallet.networkIndex].rkhtreshold > 1 ? 'status:StartSignOnchain' : 'status:AddedOnchain'
                     }
                     await this.context.github.githubOctoGenericLogin()
-                    if (commentContent!= ''){
+                    if (commentContent != '') {
                         await this.context.github.githubOctoGeneric.octokit.issues.createComment({
                             owner: config.lotusNodes[this.context.wallet.networkIndex].notaryOwner,
                             repo: config.lotusNodes[this.context.wallet.networkIndex].notaryRepo,
@@ -189,7 +192,7 @@ export default class RootKeyHolder extends Component<RootKeyHolderProps, RootKey
                             body: commentContent,
                         })
                     }
-                    if (label!='') {  
+                    if (label != '') {
                         await this.context.github.githubOctoGeneric.octokit.issues.removeAllLabels({
                             owner: config.lotusNodes[this.context.wallet.networkIndex].notaryOwner,
                             repo: config.lotusNodes[this.context.wallet.networkIndex].notaryRepo,
@@ -220,14 +223,14 @@ export default class RootKeyHolder extends Component<RootKeyHolderProps, RootKey
             <div className="main">
                 <div className="tabsholder">
                     <div className="tabs">
-                        <div className={this.state.tabs === "0" ? "selected" : ""} onClick={() => { this.showVerifierRequests() }}>Notary Requests ({ this.context.verifierAndPendingRequests.length })</div>
+                        <div className={this.state.tabs === "0" ? "selected" : ""} onClick={() => { this.showVerifierRequests() }}>Notary Requests ({this.context.verifierAndPendingRequests.length})</div>
                         <div className={this.state.tabs === "2" ? "selected" : ""} onClick={() => { this.showApproved() }}>Accepted Notaries ({this.context.verified.length})</div>
                     </div>
                     <div className="tabssadd">
                         {this.state.tabs === "0" ? <>
-                        <ButtonPrimary onClick={(e: any) => this.showWarnPropose(e, "ProposeSign", this.context.selectedNotaryRequests)}>Sign On-chain</ButtonPrimary>
+                            <ButtonPrimary onClick={(e: any) => this.showWarnPropose(e, "ProposeSign", this.context.selectedNotaryRequests)}>Sign On-chain</ButtonPrimary>
                         </>
-                        : null}
+                            : null}
                     </div>
                 </div>
                 {this.state.tabs === "0" ?
@@ -252,17 +255,17 @@ export default class RootKeyHolder extends Component<RootKeyHolderProps, RootKey
                                         <td>{notaryReq.proposed === true ? 'Proposed' : 'Pending'}</td>
                                         <td><a target="_blank" rel="noopener noreferrer" href={notaryReq.issue_Url}>#{notaryReq.issue_number}</a></td>
                                         <td>
-                                            {notaryReq.addresses.map((address: any, index: any) => 
+                                            {notaryReq.addresses.map((address: any, index: any) =>
                                                 <div key={index}>{address}</div>
                                             )}
                                         </td>
                                         <td>
-                                            {notaryReq.datacaps.map((datacap: any, index: any) => 
+                                            {notaryReq.datacaps.map((datacap: any, index: any) =>
                                                 <div key={index}>{datacap}</div>
                                             )}
                                         </td>
                                         <td>
-                                            {notaryReq.txs.map((tx: any, index: any) => 
+                                            {notaryReq.txs.map((tx: any, index: any) =>
                                                 <div key={index}>{tx.id}</div>
                                             )}
                                         </td>
@@ -274,7 +277,7 @@ export default class RootKeyHolder extends Component<RootKeyHolderProps, RootKey
                         </table>
                         {this.context.verifierAndPendingRequests.length === 0 ? <div className="nodata">No requests yet</div> : null}
                     </div>
-                : null }
+                    : null}
                 {this.state.tabs === "2" ?
                     <div>
                         <table>
