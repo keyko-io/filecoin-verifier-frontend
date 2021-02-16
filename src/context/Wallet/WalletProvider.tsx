@@ -27,6 +27,8 @@ interface WalletProviderStates {
     message: string
     loadWallet: any
     dispatchNotification: any
+    multisig: string
+    multisigDatacap: string
 }
 
 type Props = {
@@ -235,7 +237,9 @@ class WalletProvider extends React.Component<Props, WalletProviderStates> {
                     timeout: 5000
                 }
             });
-        }
+        },
+        multisig: 'f00multisig',
+        multisigDatacap: '10000000000000000'
     }
 
     render() {

@@ -116,7 +116,13 @@ export default class Notary extends Component<NotaryProps, NotaryStates> {
                     if (address.length < 12) {
                         address = await this.context.wallet.api.actorKey(address)
                     }
-                    let messageID = await this.context.wallet.api.verifyClient(address, BigInt(fullDatacap), this.context.wallet.walletIndex)
+                    let messageID
+                    if(this.context.wallet.multisig){
+                        // TODO: multisigVerifyClient
+                        messageID = await this.context.wallet.api.verifyClient(address, BigInt(fullDatacap), this.context.wallet.walletIndex)
+                    } else {
+                        messageID = await this.context.wallet.api.verifyClient(address, BigInt(fullDatacap), this.context.wallet.walletIndex)
+                    }
                     // github update
                     this.context.updateGithubVerified(request.number, messageID, address, fullDatacap)
 

@@ -196,6 +196,25 @@ class App extends Component<{}, States> {
                     />
                   </div>
                 </div>
+                { this.context.wallet.multisig && this.context.viewroot === false ?
+                  <React.Fragment>
+                    <div className="headertitles">Multisig address</div>
+                    <div className="accountentry">
+                      <div>
+                        <div className="datacapdata">
+                          <span className="datacap">Datacap: {datacapFilter(this.context.wallet.multisigDatacap)}</span>
+                          {this.context.wallet.multisig ?
+                            <img src={Network} alt="network" />
+                            : null}
+                        </div>
+                        <div className="accountdata">
+                          <span className="accountaddress">{this.context.wallet.multisig}</span>
+                          <span className="copyaddress"><SVG.CopyAndPaste height='15px' /></span>
+                        </div>
+                      </div>
+                    </div>
+                  </React.Fragment>
+                : null }
                 <div className="headertitles">Account addresses</div>
                 {this.context.wallet.accounts.map((account: any, index: number) => {
                   return <div key={index} className="accountentry" style={{ backgroundColor: index === this.context.wallet.walletIndex ? '#C7C7C7' : 'inherit' }}>
@@ -220,7 +239,7 @@ class App extends Component<{}, States> {
               </div>
               : null}
             <div className="headertitles">{this.context.viewroot ? 'Rootkey Holder ID' : 'Approved Notary ID'}</div>
-            <div>{addressFilter(this.context.wallet.activeAccount)}</div>
+            <div>{addressFilter(this.context.wallet.activeAccount)}, {this.context.wallet.multisig && this.context.viewroot === false ? this.context.wallet.multisig : null}</div>
           </div>
           <div className="wallet">
             <div className="WalletMenu">
