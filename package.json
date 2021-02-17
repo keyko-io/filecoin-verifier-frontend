@@ -25,6 +25,7 @@
     "@types/react": "^16.9.43",
     "@types/react-dom": "^16.9.8",
     "@types/uuid": "^8.3.0",
+    "@wtfcode/byte-converter": "^1.7.11",
     "@zondax/filecoin-signing-tools": "0.7.1",
     "@zondax/ledger-filecoin": "^0.11.1",
     "bignumber.js": "^9.0.1",

@@ -4,7 +4,7 @@ import AddClientModal from '../../modals/AddClientModal';
 import AddVerifierModal from '../../modals/AddVerifierModal';
 // @ts-ignore
 import { ButtonPrimary, dispatchCustomEvent, ButtonSecondary } from "slate-react-system";
-import { datacapFilter } from "../../utils/Filters"
+import { bytesToiB, anyToBytes } from "../../utils/Filters"
 import BigNumber from 'bignumber.js'
 // @ts-ignore
 import LoginGithub from 'react-login-github';
@@ -119,26 +119,12 @@ export default class Notary extends Component<NotaryProps, NotaryStates> {
         for (const request of this.context.clientRequests) {
             if (this.state.selectedClientRequests.includes(request.number)) {
                 try {
-                    let prepDatacap = '1'
-                    let prepDatacapExt = 'B'
-                    const dataext = config.datacapExt.slice().reverse()
-                    for (const entry of dataext) {
-                        if (request.data.datacap.endsWith(entry.name)) {
-                            prepDatacapExt = entry.value
-                            prepDatacap = request.data.datacap.substring(0, request.data.datacap.length - entry.name.length)
-                            break
-                        }
-                    }
-                    const datacap = new BigNumber(prepDatacap)
-                    const fullDatacap = new BigNumber(prepDatacapExt).multipliedBy(datacap).toFixed(0)
-                    console.log("datacap: " + datacap)
-                    console.log("fulldatacapunconverted: " + fullDatacap)
-                    console.log("fullDatacap: " + fullDatacap)
+                    const datacap = anyToBytes(request.data.datacap)
                     let address = request.data.address
                     if (address.length < 12) {
                         address = await this.context.wallet.api.actorKey(address)
                     }
-                    let messageID = await this.context.wallet.api.verifyClient(address, BigInt(fullDatacap), this.context.wallet.walletIndex)
+                    let messageID = await this.context.wallet.api.verifyClient(address, BigInt(datacap), this.context.wallet.walletIndex)
                     // github update
                     this.context.updateGithubVerified(request.number, messageID, address, request.data.datacap)
 
@@ -279,7 +265,7 @@ export default class Notary extends Component<NotaryProps, NotaryStates> {
                                             <tr key={index}>
                                                 <td>{transaction.verified}</td>
                                                 <td>{transaction.key}</td>
-                                                <td>{datacapFilter(transaction.datacap)}</td>
+                                                <td>{bytesToiB(transaction.datacap)}</td>
                                             </tr>
                                         ) : null}
                             </tbody>
