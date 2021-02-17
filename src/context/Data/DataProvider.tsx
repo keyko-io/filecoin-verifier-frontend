@@ -5,6 +5,7 @@ import { config } from '../../config';
 import { IssueBody } from '../../utils/IssueBody'
 import { datacapFilter, BtoiB } from '../../utils/Filters'
 import BigNumber from 'bignumber.js'
+import { tableSort } from '../../utils/SortFilter';
 import { v4 as uuidv4 } from 'uuid';
 const utils = require('@keyko-io/filecoin-verifier-tools/utils/issue-parser')
 const parser = require('@keyko-io/filecoin-verifier-tools/utils/notary-issue-parser')
@@ -29,11 +30,13 @@ interface DataProviderStates {
     clientsGithub: any
     loadClientsGithub: any
     loadClients: any
+    sortClients: any
     assignToIssue: any
     clients: any[]
     clientsAmount: string,
     clientsAmountConverted: string
     search: any
+    searchString: string
     refreshGithubData: any
 }
 
@@ -289,6 +292,17 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
                 }
                 this.setState({ clients, clientsAmount: clientsamount.toString(), clientsAmountConverted: clientsamountconverted.toString() })
             },
+            sortClients: async (e: any, previousOrderBy: string, previousOrder: number) => {
+                const { arraySorted, orderBy, sortOrder } =
+                    tableSort(
+                        e,
+                        this.state.clients as [],
+                        previousOrderBy,
+                        previousOrder)
+
+                this.setState({ clients: arraySorted })
+                return { orderBy, sortOrder }
+            },
             updateGithubVerified: async (requestNumber: any, messageID: string, address: string, datacap: any) => {
                 await this.props.github.githubOcto.issues.removeAllLabels({
                     owner: config.onboardingOwner,
@@ -302,7 +316,7 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
                     labels: ['state:Granted'],
                 })
 
-                let commentContent = `## Request Approved\nYour Datacap Allocation Request has been approved by the Notary\n#### Message sent to Filecoin Network\n>${messageID} \n#### Address \n> ${address}\n#### Datacap Allocated\n> ${datacapFilter(String(datacap))}\n#### You can check the status of the message here: https://filfox.info/en/message/${messageID}`
+                let commentContent = `## Request Approved\nYour Datacap Allocation Request has been approved by the Notary\n#### Message sent to Filecoin Network\n>${messageID} \n#### Address \n> ${address}\n#### Datacap Allocated\n> ${datacap}\n#### You can check the status of the message here: https://filfox.info/en/message/${messageID}`
 
                 await this.props.github.githubOcto.issues.createComment({
                     owner: config.onboardingOwner,
@@ -408,29 +422,9 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
                     clientsGithub: issues
                 })
             },
+            searchString: "",
             search: async (query: string) => {
-
-                let results: any[] = []
-                if (this.state.viewroot) {
-
-                    if (this.props.github.githubOctoGeneric.logged === false) {
-                        await this.props.github.githubOctoGenericLogin()
-                    }
-
-                    results = await this.props.github.githubOctoGeneric.octokit.search.issuesAndPullRequests({
-                        q: `${query} in:body is:issue repo:${config.lotusNodes[this.props.wallet.networkIndex].notaryOwner}/${config.lotusNodes[this.props.wallet.networkIndex].notaryRepo}`
-                    })
-                } else {
-                    if (this.props.github.githubLogged === false) {
-                        console.log('not logged')
-                        return
-                    }
-                    results = await this.props.github.githubOcto.search.issuesAndPullRequests({
-                        q: `${query} in:body is:issue repo:${config.onboardingOwner}/${config.onboardingClientRepo}`
-                    })
-                }
-                console.log('results', results)
-                return results
+                this.setState({ searchString: query })
             },
             refreshGithubData: async () => {
                 this.state.loadClientRequests()

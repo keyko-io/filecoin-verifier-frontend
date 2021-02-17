@@ -58,7 +58,7 @@ class Verifiers extends Component<{}> {
                 </div>
               </div>
             </div>
-            <TableVerifiers ref={this.child} />
+            <TableVerifiers ref={this.child} search={this.state.search} />
             <div className="started buttonsverifiers">
               <div className="doublebutton">
                 <ButtonPrimary onClick={() => this.makeRequest()}>

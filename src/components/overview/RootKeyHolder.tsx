@@ -3,8 +3,8 @@ import { Data } from '../../context/Data/Index';
 import AddVerifierModal from '../../modals/AddVerifierModal';
 import RequestVerifierModal from '../../modals/RequestVerifierModal';
 // @ts-ignore
-import { ButtonPrimary, dispatchCustomEvent, ButtonSecondary } from "slate-react-system";
-import { datacapFilter, iBtoB } from "../../utils/Filters"
+import { ButtonPrimary, dispatchCustomEvent } from "slate-react-system";
+import { datacapFilter } from "../../utils/Filters"
 import { config } from '../../config'
 import WarnModalVerify from '../../modals/WarnModalVerify';
 import BigNumber from 'bignumber.js'

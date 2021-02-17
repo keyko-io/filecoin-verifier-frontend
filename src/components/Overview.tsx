@@ -63,6 +63,7 @@ export default class Overview extends Component<{}, OverviewStates> {
                     :
                     <Notary
                         clients={this.context.clients}
+                        searchString={this.context.searchString}
                     />
                 }
             </div>

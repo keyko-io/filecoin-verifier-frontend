@@ -2,8 +2,6 @@ import React from 'react'
 import { Github } from './Index'
 // @ts-ignore
 import { Octokit } from '@octokit/rest'
-// @ts-ignore
-import { createAppAuth } from '@octokit/auth-app'
 import { config } from '../../config';
 
 interface WalletProviderStates {
