@@ -140,7 +140,7 @@ export default class Notary extends Component<NotaryProps, NotaryStates> {
                     }
                     let messageID = await this.context.wallet.api.verifyClient(address, BigInt(fullDatacap), this.context.wallet.walletIndex)
                     // github update
-                    this.context.updateGithubVerified(request.number, messageID, address, fullDatacap)
+                    this.context.updateGithubVerified(request.number, messageID, address, request.data.datacap)
 
                     // send notifications
                     this.context.wallet.dispatchNotification('Verify Client Message sent with ID: ' + messageID)
