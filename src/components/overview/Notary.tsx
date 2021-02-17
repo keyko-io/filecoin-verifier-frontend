@@ -20,9 +20,12 @@ type NotaryStates = {
     tabs: string
     selectedTransactions: any[]
     selectedClientRequests: any[]
-    sortOrder: number,
-    orderBy: string,
-    ref: any
+    sortOrderVerified: number,
+    orderByVerified: string,
+    refVerified: any,
+    sortOrderPublic: number,
+    orderByPublic: string,
+    refPublic: any
 }
 
 type NotaryProps = {
@@ -39,13 +42,23 @@ export default class Notary extends Component<NotaryProps, NotaryStates> {
         { id: "datacap", value: "Datacap" },
     ]
 
+    publicRequestColums = [
+        { id: "name", value: "Client" },
+        { id: "address", value: "Address" },
+        { id: "datacap", value: "Datacap" },
+        { id: "audittrail", value: "Audit Trail" }
+    ]
+
     state = {
         selectedTransactions: [] as any[],
         selectedClientRequests: [] as any[],
         tabs: '1',
-        sortOrder: -1,
-        orderBy: "name",
-        ref: {} as any
+        sortOrderVerified: -1,
+        orderByVerified: "name",
+        refVerified: {} as any,
+        sortOrderPublic: -1,
+        orderByPublic: "name",
+        refPublic: {} as any
     }
 
     componentDidMount() {
@@ -60,8 +73,12 @@ export default class Notary extends Component<NotaryProps, NotaryStates> {
         this.setState({ tabs: "1" })
     }
 
-    onRefChange = (ref: any) => {
-        this.setState({ ref });
+    onRefVerifiedChange = (refVerified: any) => {
+        this.setState({ refVerified });
+    };
+
+    onRefPublicChange = (refPublic: any) => {
+        this.setState({ refPublic });
     };
 
     requestDatacap = () => {
@@ -182,10 +199,16 @@ export default class Notary extends Component<NotaryProps, NotaryStates> {
         })
     }
 
-    order = async (e: any) => {
-        const { orderBy, sortOrder } = await this.context.sortClients(e, this.state.orderBy, this.state.sortOrder)
-        this.setState({ orderBy, sortOrder })
+    orderVerified = async (e: any) => {
+        const { orderBy, sortOrder } = await this.context.sortClients(e, this.state.orderByVerified, this.state.sortOrderVerified)
+        this.setState({ orderByVerified: orderBy, sortOrderVerified: sortOrder })
     }
+
+    orderPublic = async (e: any) => {
+        const { orderBy, sortOrder } = await this.context.sortRequests(e, this.state.orderByPublic, this.state.sortOrderPublic)
+        this.setState({ orderByPublic: orderBy, sortOrderPublic: sortOrder })
+    }
+
 
     timeout(delay: number) {
         return new Promise(res => setTimeout(res, delay));
@@ -214,24 +237,35 @@ export default class Notary extends Component<NotaryProps, NotaryStates> {
                             <thead>
                                 <tr>
                                     <td></td>
-                                    <td>Client</td>
-                                    <td>Address</td>
-                                    <td>Datacap</td>
-                                    <td>Audit trail</td>
+                                    {this.publicRequestColums.map((column: any) => <td
+                                        id={column.id} onClick={this.orderPublic}>
+                                        {column.value}
+                                        <FontAwesomeIcon icon={["fas", "sort"]} />
+                                    </td>)}
                                 </tr>
                             </thead>
                             <tbody>
-                                {this.context.clientRequests.map((clientReq: any, index: any) =>
-                                    <tr key={index}>
-                                        <td><input type="checkbox" onChange={() => this.selectClientRow(clientReq.number)} checked={this.state.selectedClientRequests.includes(clientReq.number)} /></td>
-                                        <td>{clientReq.data.name}</td>
-                                        <td>{clientReq.data.address}</td>
-                                        <td>{clientReq.data.datacap}</td>
-                                        <td><a target="_blank" rel="noopener noreferrer" href={clientReq.url}>#{clientReq.number}</a></td>
-                                    </tr>
-                                )}
+                                {this.state.refPublic && this.state.refPublic.checkIndex ?
+                                    this.context.clientRequests.filter((element: any) => tableElementFilter(this.props.searchString, element.data) === true)
+                                        .filter((_: any, i: any) => this.state.refPublic?.checkIndex(i))
+                                        .map((clientReq: any, index: any) =>
+                                            <tr key={index}>
+                                                <td><input type="checkbox" onChange={() => this.selectClientRow(clientReq.number)} checked={this.state.selectedClientRequests.includes(clientReq.number)} /></td>
+                                                <td>{clientReq.data.name}</td>
+                                                <td>{clientReq.data.address}</td>
+                                                <td>{clientReq.data.datacap}</td>
+                                                <td><a target="_blank" rel="noopener noreferrer" href={clientReq.url}>#{clientReq.number}</a></td>
+                                            </tr>
+                                        ) : null}
                             </tbody>
                         </table>
+                        <Pagination
+                            elements={this.context.clientRequests}
+                            maxElements={10}
+                            ref={this.onRefPublicChange}
+                            refresh={() => this.setState({})}
+                            search={this.props.searchString}
+                        />
                         {this.context.clientRequests.length === 0 ? <div className="nodata">No client requests yet</div> : null}
                         <div className="alignright">
                             <ButtonSecondary className="buttonsecondary" onClick={async () => {
@@ -265,16 +299,16 @@ export default class Notary extends Component<NotaryProps, NotaryStates> {
                             <thead>
                                 <tr>
                                     {this.verifiedClientsColums.map((column: any) => <td
-                                        id={column.id} onClick={this.order}>
+                                        id={column.id} onClick={this.orderVerified}>
                                         {column.value}
                                         <FontAwesomeIcon icon={["fas", "sort"]} />
                                     </td>)}
                                 </tr>
                             </thead>
                             <tbody>
-                                {this.state.ref && this.state.ref.checkIndex ?
+                                {this.state.refVerified && this.state.refVerified.checkIndex ?
                                     this.props.clients.filter((element) => tableElementFilter(this.props.searchString, element) === true)
-                                        .filter((_, i: any) => this.state.ref?.checkIndex(i))
+                                        .filter((_, i: any) => this.state.refVerified?.checkIndex(i))
                                         .map((transaction: any, index: any) =>
                                             <tr key={index}>
                                                 <td>{transaction.verified}</td>
@@ -288,7 +322,7 @@ export default class Notary extends Component<NotaryProps, NotaryStates> {
                         <Pagination
                             elements={this.props.clients}
                             maxElements={10}
-                            ref={this.onRefChange}
+                            ref={this.onRefVerifiedChange}
                             refresh={() => this.setState({})}
                             search={this.props.searchString}
                         />

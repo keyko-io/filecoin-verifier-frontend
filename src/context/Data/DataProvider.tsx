@@ -31,6 +31,7 @@ interface DataProviderStates {
     loadClientsGithub: any
     loadClients: any
     sortClients: any
+    sortRequests: any
     assignToIssue: any
     clients: any[]
     clientsAmount: string,
@@ -301,6 +302,17 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
                         previousOrder)
 
                 this.setState({ clients: arraySorted })
+                return { orderBy, sortOrder }
+            },
+            sortRequests: async (e: any, previousOrderBy: string, previousOrder: number) => {
+                const { arraySorted, orderBy, sortOrder } =
+                    tableSort(
+                        e,
+                        this.state.clientRequests as [],
+                        previousOrderBy,
+                        previousOrder)
+
+                this.setState({ clientRequests: arraySorted })
                 return { orderBy, sortOrder }
             },
             updateGithubVerified: async (requestNumber: any, messageID: string, address: string, datacap: any) => {

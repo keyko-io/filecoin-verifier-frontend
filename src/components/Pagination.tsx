@@ -25,9 +25,13 @@ class Pagination extends Component<PaginationProps> {
         }
     }
 
-
     calculatePages = async () => {
-        const elementsToShow = await tableFilter(this.props.search, this.props.elements as [])
+        const elementsToShow = await tableFilter(
+            this.props.search,
+            this.props.elements[0] && this.props.elements[0].data ?
+                this.props.elements.map(ele => ele.data) as []
+                : this.props.elements as [])
+
         const numerOfPages = Math.ceil(elementsToShow.length / this.props.maxElements)
         let pages = []
         for (let index = 0; index < numerOfPages; index++) {
