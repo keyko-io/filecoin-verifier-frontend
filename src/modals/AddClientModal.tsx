@@ -10,7 +10,8 @@ type States = {
     datacap: string
     datacapExt: string
     submitLoading: boolean
-    issueNumber: string
+    issueNumber: string,
+    units: string
 };
 
 type ModalProps = {
@@ -30,7 +31,8 @@ class AddClientModal extends Component<ModalProps, States> {
             datacap: '1',
             datacapExt: '1099511627776', // 1 TiB
             submitLoading: false,
-            issueNumber: ''
+            issueNumber: '',
+            units: 'TiB'
         }
     }
 
@@ -54,12 +56,13 @@ class AddClientModal extends Component<ModalProps, States> {
 
             const datacap = new BigNumber(this.state.datacap)
             const fullDatacap = new BigNumber(this.state.datacapExt).multipliedBy(datacap).toFixed(0)
+            const dataCapIssue = datacap + this.state.units
 
             console.log("datacap: " + datacap)
             console.log("fullDatacap: " + fullDatacap)
             let messageID = await this.context.wallet.api.verifyClient(this.state.address, BigInt(fullDatacap), this.context.wallet.walletIndex);
             if (this.props.newDatacap) {
-                this.context.updateGithubVerified(this.state.issueNumber, messageID, this.state.address, fullDatacap)
+                this.context.updateGithubVerified(this.state.issueNumber, messageID, this.state.address, dataCapIssue)
             }
 
             this.setState({
@@ -78,13 +81,22 @@ class AddClientModal extends Component<ModalProps, States> {
             dispatchCustomEvent({ name: "delete-modal", detail: {} })
 
         }
+    }
 
 
+    findUnits = (value: string) => {
+        const element = config.datacapExt.find(ele => ele.value === value)
+        return element?.name
     }
 
     handleChange = (e: any) => {
         this.setState({ [e.target.name]: e.target.value } as any)
+        if (e.target.name === "datacapExt") {
+            this.setState({ units: this.findUnits(e.target.value) || "" })
+        }
     }
+
+
 
     render() {
         return (
