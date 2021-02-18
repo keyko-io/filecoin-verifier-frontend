@@ -68,7 +68,7 @@
             "use_case": [
                 "Media and Entertainment"
             ],
-            "location": "Asia-GCN",
+            "location": "Asia minus GCN",
             "website": "https://blotocol.com/",
             "max_datacap_allocation": "5 TB",
             "email": "notaryb@a.com",
@@ -102,7 +102,7 @@
                 "Blockchain Data",
                 "Web3 DApp"
             ],
-            "location": "Asia",
+            "location": "Asia minus GCN",
             "website": "mathwallet.org",
             "max_datacap_allocation": "5 TB",
             "email": "notaryb@a.com",
@@ -181,7 +181,7 @@
             "use_case": [
                 "General"
             ],
-            "location": "North America, Greater China",
+            "location": "North America",
             "website": "https://performive.com/",
             "max_datacap_allocation": "5 TB",
             "email": "notaryb@a.com",
