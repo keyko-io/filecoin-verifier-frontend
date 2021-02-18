@@ -120,6 +120,7 @@ export default class Notary extends Component<NotaryProps, NotaryStates> {
             if (this.state.selectedClientRequests.includes(request.number)) {
                 try {
                     const datacap = anyToBytes(request.data.datacap)
+                    console.log('datacap', datacap)
                     let address = request.data.address
                     if (address.length < 12) {
                         address = await this.context.wallet.api.actorKey(address)
