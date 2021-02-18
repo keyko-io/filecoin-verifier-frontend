@@ -8,16 +8,25 @@ import { datacapFilter } from "../../utils/Filters"
 import { config } from '../../config'
 import WarnModalVerify from '../../modals/WarnModalVerify';
 import BigNumber from 'bignumber.js'
+import Pagination from '../Pagination';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { tableElementFilter } from '../../utils/SortFilter';
 const parser = require('@keyko-io/filecoin-verifier-tools/utils/notary-issue-parser')
 
 type RootKeyHolderState = {
     tabs: string
     approveLoading: boolean
     selectedTransactions: any[]
+    refAccepted: any
+    sortOrderAccepted: number,
+    orderByAccepted: string,
+    refRequests: any,
+    sortOrderRequest: number,
+    orderByRequest: string,
 }
 
 type RootKeyHolderProps = {
-
+    searchString: string
 }
 
 export default class RootKeyHolder extends Component<RootKeyHolderProps, RootKeyHolderState> {
@@ -26,8 +35,29 @@ export default class RootKeyHolder extends Component<RootKeyHolderProps, RootKey
     state = {
         selectedTransactions: [] as any[],
         approveLoading: false,
-        tabs: '0'
+        tabs: '0',
+        refAccepted: {} as any,
+        sortOrderAccepted: -1,
+        orderByAccepted: "verifier",
+        refRequests: {} as any,
+        orderByRequest: "addresses",
+        sortOrderRequest: -1
     }
+
+    acceptedNotaryColums = [
+        { id: "verifier", value: "Notary" },
+        { id: "verifierAccount", value: "Address" },
+        { id: "datacapConverted", value: "Datacap" },
+    ]
+
+    requestColums = [
+        { id: "proposed", value: "Status" },
+        { id: "issue_number", value: "Issue" },
+        { id: "addresses", value: "Address" },
+        { id: "datacaps", value: "Datacap" },
+        { id: "txs", value: "Transaction ID" },
+        { id: "proposedBy", value: "Proposed by" },
+    ]
 
     componentDidMount() {
         this.context.loadVerifierAndPendingRequests()
@@ -214,6 +244,24 @@ export default class RootKeyHolder extends Component<RootKeyHolderProps, RootKey
         }
     }
 
+    onRefAccepted = (refAccepted: any) => {
+        this.setState({ refAccepted });
+    };
+
+    onRefRequests = (refRequests: any) => {
+        this.setState({ refRequests });
+    };
+
+    orderAccepted = async (e: any) => {
+        const { orderBy, sortOrder } = await this.context.sortVerified(e, this.state.orderByAccepted, this.state.sortOrderAccepted)
+        this.setState({ orderByAccepted: orderBy, sortOrderAccepted: sortOrder })
+    }
+
+    orderRequest = async (e: any) => {
+        const { orderBy, sortOrder } = await this.context.sortNotaryRequests(e, this.state.orderByRequest, this.state.sortOrderRequest)
+        this.setState({ orderByRequest: orderBy, sortOrderRequest: sortOrder })
+    }
+
     timeout(delay: number) {
         return new Promise(res => setTimeout(res, delay));
     }
@@ -239,43 +287,52 @@ export default class RootKeyHolder extends Component<RootKeyHolderProps, RootKey
                             <thead>
                                 <tr>
                                     <td></td>
-                                    <td>Status</td>
-                                    <td>Issue</td>
-                                    <td>Address</td>
-                                    <td>Datacap</td>
-                                    <td>Transaction ID</td>
-                                    <td>Proposed by</td>
+                                    {this.requestColums.map((column: any) => <td
+                                        id={column.id} onClick={this.orderRequest}>
+                                        {column.value}
+                                        <FontAwesomeIcon icon={["fas", "sort"]} />
+                                    </td>)}
                                     <td></td>
                                 </tr>
                             </thead>
                             <tbody>
-                                {this.context.verifierAndPendingRequests.map((notaryReq: any) =>
-                                    <tr key={notaryReq.id} className={notaryReq.proposedBy === this.context.wallet.activeAccount ? 'ownedrow' : ''}>
-                                        <td><input type="checkbox" onChange={() => this.selectNotaryRow(notaryReq.id)} checked={this.context.selectedNotaryRequests.includes(notaryReq.id)} /></td>
-                                        <td>{notaryReq.proposed === true ? 'Proposed' : 'Pending'}</td>
-                                        <td><a target="_blank" rel="noopener noreferrer" href={notaryReq.issue_Url}>#{notaryReq.issue_number}</a></td>
-                                        <td>
-                                            {notaryReq.addresses.map((address: any, index: any) =>
-                                                <div key={index}>{address}</div>
-                                            )}
-                                        </td>
-                                        <td>
-                                            {notaryReq.datacaps.map((datacap: any, index: any) =>
-                                                <div key={index}>{datacap}</div>
-                                            )}
-                                        </td>
-                                        <td>
-                                            {notaryReq.txs.map((tx: any, index: any) =>
-                                                <div key={index}>{tx.id}</div>
-                                            )}
-                                        </td>
-                                        <td>{notaryReq.proposedBy}</td>
-                                        <td>{notaryReq.proposedBy === this.context.wallet.activeAccount ? <ButtonPrimary onClick={(e: any) => this.showWarnPropose(e, "Cancel", [notaryReq.id])}>Cancel</ButtonPrimary> : null}</td>
-                                    </tr>
-                                )}
+                                {this.state.refRequests && this.state.refRequests.checkIndex ?
+                                    this.context.verifierAndPendingRequests.filter((element: any) => tableElementFilter(this.props.searchString, element) === true)
+                                        .filter((_: any, i: any) => this.state.refRequests?.checkIndex(i))
+                                        .map((notaryReq: any) =>
+                                            <tr key={notaryReq.id} className={notaryReq.proposedBy === this.context.wallet.activeAccount ? 'ownedrow' : ''}>
+                                                <td><input type="checkbox" onChange={() => this.selectNotaryRow(notaryReq.id)} checked={this.context.selectedNotaryRequests.includes(notaryReq.id)} /></td>
+                                                <td>{notaryReq.proposed === true ? 'Proposed' : 'Pending'}</td>
+                                                <td><a target="_blank" rel="noopener noreferrer" href={notaryReq.issue_Url}>#{notaryReq.issue_number}</a></td>
+                                                <td>
+                                                    {notaryReq.addresses.map((address: any, index: any) =>
+                                                        <div key={index}>{address}</div>
+                                                    )}
+                                                </td>
+                                                <td>
+                                                    {notaryReq.datacaps.map((datacap: any, index: any) =>
+                                                        <div key={index}>{datacap}</div>
+                                                    )}
+                                                </td>
+                                                <td>
+                                                    {notaryReq.txs.map((tx: any, index: any) =>
+                                                        <div key={index}>{tx.id}</div>
+                                                    )}
+                                                </td>
+                                                <td>{notaryReq.proposedBy}</td>
+                                                <td>{notaryReq.proposedBy === this.context.wallet.activeAccount ? <ButtonPrimary onClick={(e: any) => this.showWarnPropose(e, "Cancel", [notaryReq.id])}>Cancel</ButtonPrimary> : null}</td>
+                                            </tr>
+                                        ) : null}
                             </tbody>
                         </table>
                         {this.context.verifierAndPendingRequests.length === 0 ? <div className="nodata">No requests yet</div> : null}
+                        <Pagination
+                            elements={this.context.verifierAndPendingRequests}
+                            maxElements={10}
+                            ref={this.onRefRequests}
+                            refresh={() => this.setState({})}
+                            search={this.props.searchString}
+                        />
                     </div>
                     : null}
                 {this.state.tabs === "2" ?
@@ -283,22 +340,34 @@ export default class RootKeyHolder extends Component<RootKeyHolderProps, RootKey
                         <table>
                             <thead>
                                 <tr>
-                                    <td>Notary</td>
-                                    <td>Address</td>
-                                    <td>Datacap</td>
+                                    {this.acceptedNotaryColums.map((column: any) => <td
+                                        id={column.id} onClick={this.orderAccepted}>
+                                        {column.value}
+                                        <FontAwesomeIcon icon={["fas", "sort"]} />
+                                    </td>)}
                                 </tr>
                             </thead>
                             <tbody>
-                                {this.context.verified.map((transaction: any, index: any) =>
-                                    <tr key={index}>
-                                        <td>{transaction.verifier}</td>
-                                        <td>{transaction.verifierAccount}</td>
-                                        <td>{datacapFilter(transaction.datacapConverted)}</td>
-                                    </tr>
-                                )}
+                                {this.state.refAccepted && this.state.refAccepted.checkIndex ?
+                                    this.context.verified.filter((element: any) => tableElementFilter(this.props.searchString, element) === true)
+                                        .filter((_: any, i: any) => this.state.refAccepted?.checkIndex(i))
+                                        .map((transaction: any, index: any) =>
+                                            <tr key={index}>
+                                                <td>{transaction.verifier}</td>
+                                                <td>{transaction.verifierAccount}</td>
+                                                <td>{datacapFilter(transaction.datacapConverted)}</td>
+                                            </tr>
+                                        ) : null}
                             </tbody>
                         </table>
                         {this.context.verified.length === 0 ? <div className="nodata">No notaries yet</div> : null}
+                        <Pagination
+                            elements={this.context.verified}
+                            maxElements={10}
+                            ref={this.onRefAccepted}
+                            refresh={() => this.setState({})}
+                            search={this.props.searchString}
+                        />
                     </div> : null
                 }
             </div>

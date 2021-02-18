@@ -32,6 +32,8 @@ interface DataProviderStates {
     loadClients: any
     sortClients: any
     sortRequests: any
+    sortVerified: any
+    sortNotaryRequests: any
     assignToIssue: any
     clients: any[]
     clientsAmount: string,
@@ -309,6 +311,28 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
                     tableSort(
                         e,
                         this.state.clientRequests as [],
+                        previousOrderBy,
+                        previousOrder)
+
+                this.setState({ clientRequests: arraySorted })
+                return { orderBy, sortOrder }
+            },
+            sortNotaryRequests: async (e: any, previousOrderBy: string, previousOrder: number) => {
+                const { arraySorted, orderBy, sortOrder } =
+                    tableSort(
+                        e,
+                        this.state.verifierAndPendingRequests as [],
+                        previousOrderBy,
+                        previousOrder)
+
+                this.setState({ clientRequests: arraySorted })
+                return { orderBy, sortOrder }
+            },
+            sortVerified: async (e: any, previousOrderBy: string, previousOrder: number) => {
+                const { arraySorted, orderBy, sortOrder } =
+                    tableSort(
+                        e,
+                        this.state.verified as [],
                         previousOrderBy,
                         previousOrder)
 
