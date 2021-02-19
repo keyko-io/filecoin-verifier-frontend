@@ -10,21 +10,33 @@ import { Data } from '../context/Data/Index'
 import { ButtonPrimary, dispatchCustomEvent } from "slate-react-system";
 import { config } from '../config';
 
+type ModalStates = {
+    address: string,
+    multisig: boolean
+}
 
 type ModalProps = {
     type: string,
 }
 
-class LogInModal extends Component<ModalProps> {
+class LogInModal extends Component<ModalProps, ModalStates> {
     public static contextType = Data
 
 
     constructor(props: ModalProps) {
         super(props);
+        this.state = {
+            multisig: false,
+            address: ''
+        }
     }
 
     componentDidMount() {
 
+    }
+
+    handleChange = (e:any) => {
+        this.setState({ [e.target.name]: e.target.value } as any)
     }
 
     loadLedgerWallet = async () => {
@@ -57,49 +69,92 @@ class LogInModal extends Component<ModalProps> {
         }
     }
 
+    loadPrivate = () => {
+        this.setState({
+            multisig: false
+        })
+    }
+
+    loadMultisig = () => {
+        this.setState({
+            multisig: true
+        })
+    }
+
     render() {
         return (
             <div className="loginmodal">
-                <div className="imgheader">
-                    {this.props.type === '0' ?
-                        <img src={RootKey} alt={'RootKey'} />
-                        :
-                        <img src={Verifiers} alt={'Verifiers'} />
-                    }
-                </div>
-                <div className="info">
-                    <div className="title">
-                        {this.props.type === '0' ?
-                            "Log in as a Root Key Holder"
-                            :
-                            "Log in as a Notary"
-                        }
-                    </div>
-                    <div className="description">
-                        {this.props.type === '0' ?
-                            "Here is where you can action pending Notary allocation decisions.To become a rootkey holder, you’ll need to have been selected by the network originally."
-                            :
-                            "Here is where you can manage pending public requests and action DataCap allocation decisions. To become a rootkey holder, you’ll need to have been preselected."
-                        }
-                    </div>
-                </div>
-                <div className="buttons">
-                    {!config.networks.includes('Mainnet') ?
-                        <div className="button left">
-                            <ButtonPrimary onClick={this.loadBurnerWallet}>
-                                <img src={Logo} alt={'Logo'} />
-                            Load Browser Wallet
-                        </ButtonPrimary>
+                {this.props.type === '0' ?
+                    <React.Fragment>
+                        <div className="imgheader">
+                            <img src={RootKey} alt={'RootKey'} />
                         </div>
-                        : null}
-                    <div className={config.networks.includes('Mainnet') ? "button center" : "button right"}>
-                        <ButtonPrimary onClick={this.loadLedgerWallet}>
-                            <img src={Ledger} alt={'Ledger'} />
-                            Load Ledger Wallet
-                        </ButtonPrimary>
-                        <p>Please ensure you have “expert mode” enabled</p>
-                    </div>
-                </div>
+                        <div className="info">
+                            <div className="title">
+                                Log in as a Root Key Holder
+                            </div>
+                            <div className="description">
+                                Here is where you can action pending Notary allocation decisions.To become a rootkey holder, you’ll need to have been selected by the network originally.
+                            </div>
+                        </div>
+                        <div className="buttons">
+                            {!config.networks.includes('Mainnet') ?
+                            <div className="button left">
+                                <ButtonPrimary onClick={this.loadBurnerWallet}>
+                                    <img src={Logo} alt={'Logo'} />
+                                    Load Browser Wallet
+                                </ButtonPrimary>
+                            </div>
+                            : null}
+                            <div className={config.networks.includes('Mainnet') ? "button center" : "button right"}>
+                                <ButtonPrimary onClick={this.loadLedgerWallet}>
+                                    <img src={Ledger} alt={'Ledger'} />
+                                    Load Ledger Wallet
+                                </ButtonPrimary>
+                                <p>Please ensure you have “expert mode” enabled</p>
+                            </div>
+                        </div>
+                    </React.Fragment>
+                :
+                    <React.Fragment>
+                        <div className="imgheader">
+                            <img src={Verifiers} alt={'Verifiers'} />
+                        </div>
+                        <div className="info">
+                            <div className="title">
+                                Log in as a Notary
+                            </div>
+                            <div className="description">
+                                Here is where you can manage pending public requests and action DataCap allocation decisions. To become a rootkey holder, you’ll need to have been preselected.
+                            </div>
+                        </div>
+                        <div className="tabs">
+                            <div className="tab" onClick={()=>this.loadPrivate()}>Private</div>
+                            <div className="tab" onClick={()=>this.loadMultisig()}>Multisig</div>
+                        </div>
+                        <div className="buttons">
+                            {!config.networks.includes('Mainnet') ?
+                                <div className="button left">
+                                    <ButtonPrimary onClick={this.loadBurnerWallet}>
+                                        <img src={Logo} alt={'Logo'} />
+                                    Load Browser Wallet
+                                </ButtonPrimary>
+                                </div>
+                                : null}
+                            <div className={config.networks.includes('Mainnet') ? "button center" : "button right"}>
+                                <ButtonPrimary onClick={this.loadLedgerWallet}>
+                                    <img src={Ledger} alt={'Ledger'} />
+                                    Load Ledger Wallet
+                                </ButtonPrimary>
+                                { this.state.multisig ?
+                                    <input className="multisiginput" name="address" placeholder="Multisig address" value={this.state.address} onChange={this.handleChange} />
+                                    : null
+                                }
+                                <p>Please ensure you have “expert mode” enabled</p>
+                            </div>
+                        </div>
+                    </React.Fragment>
+                }
             </div>
         )
     }

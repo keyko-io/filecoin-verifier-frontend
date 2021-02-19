@@ -1598,6 +1598,30 @@
     }
   }
 
+  .tabs {
+    position: absolute;
+    height: 25px;
+    left: 1px;
+    top: 440px;
+    background: #ffffff;
+    width: 100%;
+    text-align: center;
+    border-bottom: 1px solid #ccc;
+    display: flex;
+    justify-content: space-evenly;
+    color: #33a7ff;
+
+    .tab {
+      cursor: pointer;
+    }
+  }
+
+  .multisiginput {
+    width: 200px;
+    margin-top: 5px;
+    padding: 5px;
+  }
+
   .buttons {
     position: absolute;
     height: 96px;
