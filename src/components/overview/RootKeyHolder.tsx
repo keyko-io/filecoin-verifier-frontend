@@ -4,10 +4,9 @@ import AddVerifierModal from '../../modals/AddVerifierModal';
 import RequestVerifierModal from '../../modals/RequestVerifierModal';
 // @ts-ignore
 import { ButtonPrimary, dispatchCustomEvent } from "slate-react-system";
-import { bytesToiB } from "../../utils/Filters"
+import { bytesToiB, anyToBytes } from "../../utils/Filters"
 import { config } from '../../config'
 import WarnModalVerify from '../../modals/WarnModalVerify';
-import BigNumber from 'bignumber.js'
 const parser = require('@keyko-io/filecoin-verifier-tools/utils/notary-issue-parser')
 
 type RootKeyHolderState = {
@@ -141,7 +140,7 @@ export default class RootKeyHolder extends Component<RootKeyHolderProps, RootKey
                         let filfox = ''
                         for (let i = 0; i < request.datacaps.length; i++) {
                             if (request.datacaps[i] && request.addresses[i]) {
-                                const datacap = request.datacaps[i] 
+                                const datacap = anyToBytes(request.datacaps[i])
                                 let address = request.addresses[i]
                                 console.log("request address: " + request.address)
 
