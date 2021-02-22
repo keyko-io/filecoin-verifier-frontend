@@ -60,6 +60,17 @@ export const config = {
         { value: "ZiB", name: "ZiB" },
         { value: "YiB", name: "YiB" }
     ],
+    datacapExtOptions: [
+        { value: "B", name: "B" },
+        { value: "KiB", name: "KiB" },
+        { value: "MiB", name: "MiB" },
+        { value: "GiB", name: "GiB" },
+        { value: "TiB", name: "TiB" },
+        { value: "PiB", name: "PiB" },
+        { value: "EiB", name: "EiB" },
+        { value: "ZiB", name: "ZiB" },
+        { value: "YiB", name: "YiB" }
+    ],
     regions: [
         { value: "Africa", name: "Africa" },
         { value: "Asia excl. Greater China", name: "Asia excl. Greater China" },

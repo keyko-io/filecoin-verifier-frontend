@@ -3,7 +3,6 @@ import { Data } from './Index'
 import { config } from '../../config';
 // @ts-ignore
 import { IssueBody } from '../../utils/IssueBody'
-import { datacapFilter, BtoiB } from '../../utils/Filters'
 import BigNumber from 'bignumber.js'
 import { tableSort } from '../../utils/SortFilter';
 import { v4 as uuidv4 } from 'uuid';
@@ -36,8 +35,7 @@ interface DataProviderStates {
     sortNotaryRequests: any
     assignToIssue: any
     clients: any[]
-    clientsAmount: string,
-    clientsAmountConverted: string
+    clientsAmount: string 
     search: any
     searchString: string
     refreshGithubData: any
@@ -155,8 +153,7 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
                         type: pendingTxs[txs].parsed.params.cap.toString() === '0' ? 'Revoke' : 'Add',
                         verifier: pendingTxs[txs].parsed.params.verifier,
                         verifierAddress: verifierAddress,
-                        datacap: pendingTxs[txs].parsed.params.cap.toString(),
-                        datacapConverted: BtoiB(new BigNumber(pendingTxs[txs].parsed.params.cap.toString())).toString(),
+                        datacap: pendingTxs[txs].parsed.params.cap,
                         signer: pendingTxs[txs].signers[0],
                         signerAddress: signerAddress
                     })
@@ -212,7 +209,7 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
                         issue_number: "",
                         issue_Url: "",
                         addresses: [tx.verifier],
-                        datacaps: [tx.datacapConverted],
+                        datacaps: [tx.datacap],
                         txs: [tx],
                         proposedBy: tx.signerAddress,
                         proposed: true
@@ -275,25 +272,21 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
                     verified.push({
                         verifier: verifiedAddress.verifier,
                         verifierAccount,
-                        datacap: verifiedAddress.datacap,
-                        datacapConverted: BtoiB(new BigNumber(verifiedAddress.datacap)).toString()
+                        datacap: verifiedAddress.datacap 
                     })
                 }
                 this.setState({ verified })
             },
             loadClients: async () => {
                 const clients = await this.props.wallet.api.listVerifiedClients()
-                let clientsamount = new BigNumber(0)
-                let clientsamountconverted = new BigNumber(0)
+                let clientsamount = new BigNumber(0) 
                 for (const txs of clients) {
                     const amountBN = new BigNumber(txs.datacap)
-                    clientsamount = amountBN.plus(clientsamount)
-                    clientsamountconverted = BtoiB(amountBN).plus(clientsamountconverted)
-                    txs['key'] = await this.props.wallet.api.actorKey(txs.verified)
-                    txs['datacapConverted'] = BtoiB(amountBN).toString()
+                    clientsamount = amountBN.plus(clientsamount) 
+                    txs['key'] = await this.props.wallet.api.actorKey(txs.verified) 
 
                 }
-                this.setState({ clients, clientsAmount: clientsamount.toString(), clientsAmountConverted: clientsamountconverted.toString() })
+                this.setState({ clients, clientsAmount: clientsamount.toString() })
             },
             sortClients: async (e: any, previousOrderBy: string, previousOrder: number) => {
                 const { arraySorted, orderBy, sortOrder } =
@@ -424,8 +417,7 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
                 this.setState({ selectedNotaryRequests: selectedTxs })
             },
             clients: [],
-            clientsAmount: '',
-            clientsAmountConverted: '',
+            clientsAmount: '', 
             clientsGithub: {},
             loadClientsGithub: async () => {
                 if (this.props.github.githubLogged === false) {

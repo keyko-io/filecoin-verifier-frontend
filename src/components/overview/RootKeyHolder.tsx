@@ -4,10 +4,9 @@ import AddVerifierModal from '../../modals/AddVerifierModal';
 import RequestVerifierModal from '../../modals/RequestVerifierModal';
 // @ts-ignore
 import { ButtonPrimary, dispatchCustomEvent } from "slate-react-system";
-import { datacapFilter } from "../../utils/Filters"
+import { bytesToiB, anyToBytes } from "../../utils/Filters"
 import { config } from '../../config'
 import WarnModalVerify from '../../modals/WarnModalVerify';
-import BigNumber from 'bignumber.js'
 import Pagination from '../Pagination';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { tableElementFilter } from '../../utils/SortFilter';
@@ -171,28 +170,7 @@ export default class RootKeyHolder extends Component<RootKeyHolderProps, RootKey
                         let filfox = ''
                         for (let i = 0; i < request.datacaps.length; i++) {
                             if (request.datacaps[i] && request.addresses[i]) {
-
-                                // request.datacaps
-                                let prepDatacap = '1'
-                                let prepDatacapExt = 'B'
-                                console.log("request.datacaps: " + request.datacaps[i])
-                                const dataext = config.datacapExt.slice().reverse()
-                                for (const entry of dataext) {
-                                    if (request.datacaps[i].endsWith(entry.name)) {
-                                        console.log("found unit: " + entry.name)
-                                        prepDatacapExt = entry.value
-                                        prepDatacap = request.datacaps[i].substring(0, request.datacaps[i].length - entry.name.length)
-                                        break
-                                    }
-                                }
-
-                                console.log("prepDatacap: " + prepDatacap)
-                                console.log("prepDatacapExt: " + prepDatacapExt)
-
-                                const datacap = new BigNumber(prepDatacap)
-                                const fullDatacap = new BigNumber(prepDatacapExt).multipliedBy(datacap).toFixed(0)
-                                console.log("fullDatacap to propose: " + fullDatacap)
-
+                                const datacap = anyToBytes(request.datacaps[i])
                                 let address = request.addresses[i]
                                 console.log("request address: " + request.address)
 
@@ -203,7 +181,7 @@ export default class RootKeyHolder extends Component<RootKeyHolderProps, RootKey
 
                                 console.log("address to propose: " + address)
 
-                                let messageID = await this.context.wallet.api.proposeVerifier(address, BigInt(fullDatacap), this.context.wallet.walletIndex)
+                                let messageID = await this.context.wallet.api.proposeVerifier(address, BigInt(datacap), this.context.wallet.walletIndex)
                                 console.log("messageID: " + messageID)
                                 messageIds.push(messageID)
                                 this.context.wallet.dispatchNotification('Accepting Message sent with ID: ' + messageID)
@@ -355,7 +333,7 @@ export default class RootKeyHolder extends Component<RootKeyHolderProps, RootKey
                                             <tr key={index}>
                                                 <td>{transaction.verifier}</td>
                                                 <td>{transaction.verifierAccount}</td>
-                                                <td>{datacapFilter(transaction.datacapConverted)}</td>
+                                                <td>{bytesToiB(transaction.datacap)}</td>
                                             </tr>
                                         ) : null}
                             </tbody>

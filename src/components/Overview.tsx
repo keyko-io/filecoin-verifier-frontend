@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Data } from '../context/Data/Index';
-import { datacapFilter } from "../utils/Filters"
+import { bytesToiB } from "../utils/Filters"
 // @ts-ignore
 import RootKeyHolder from './overview/RootKeyHolder';
 import Notary from './overview/Notary';
@@ -44,7 +44,7 @@ export default class Overview extends Component<{}, OverviewStates> {
                         </div>
                         <div className="textinfodata">
                             <div className="textinfodatablock">
-                                <div className="data">{datacapFilter(this.context.clientsAmountConverted)}</div>
+                                <div className="data">{bytesToiB(this.context.clientsAmount)}</div>
                                 <div className="text">Datacap Granted</div>
                             </div>
                             <div className="textinfodatablock">
