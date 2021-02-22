@@ -59,7 +59,7 @@ export default class Overview extends Component<{}, OverviewStates> {
                     </div>
                 </div>
                 {this.context.viewroot ?
-                    <RootKeyHolder/>
+                    <RootKeyHolder searchString={this.context.searchString} />
                     :
                     <Notary
                         clients={this.context.clients}
