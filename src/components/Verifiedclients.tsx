@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
 import { Data } from '../context/Data/Index'
 import { config } from '../config'
-import BigNumber from 'bignumber.js'
-import { iBtoB } from '../utils/Filters'
+import { anyToBytes } from '../utils/Filters'
 // @ts-ignore
 import { Table, H1, H2, Input, ButtonPrimary, ButtonSecondary, LoaderSpinner, SelectMenu } from "slate-react-system";
 
@@ -46,9 +45,7 @@ export default class Verifiedclients extends Component<{},States> {
         e.preventDefault()
         this.setState({ submitLoading: true })
         try{
-            const datacap = new BigNumber(this.state.datacap)
-            const fulldatacapunconverted = new BigNumber(this.state.datacapExt).multipliedBy(datacap)
-            const fullDatacap = iBtoB(fulldatacapunconverted).toString()
+            const fullDatacap = anyToBytes(`${this.state.datacap}${this.state.datacapExt}`)
             let messageID = await this.context.wallet.api.verifyClient(this.state.address, BigInt(fullDatacap), this.context.wallet.walletIndex);
             this.setState({
                 address: '',
@@ -99,7 +96,7 @@ export default class Verifiedclients extends Component<{},States> {
                                     name="datacapExt"
                                     value={this.state.datacapExt}
                                     onChange={this.handleChange}
-                                    options={config.datacapExt}
+                                    options={config.datacapExtOptions}
                                 />
                             </div>
                         </div>
