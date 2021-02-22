@@ -39,6 +39,7 @@ interface DataProviderStates {
     search: any
     searchString: string
     refreshGithubData: any
+    searchUserIssues: any
 }
 
 interface DataProviderProps {
@@ -71,6 +72,7 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
                         issues.push({
                             number: rawIssue.number,
                             url: rawIssue.html_url,
+                            owner: rawIssue.user.login,
                             data
                         })
                     }
@@ -78,6 +80,26 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
                 this.setState({
                     clientRequests: issues
                 })
+            },
+            searchUserIssues: async (user: string) => {
+                const rawIssues = await this.props.github.githubOcto.search.issuesAndPullRequests({
+                    q: `type:issue+user:${user}+repo:${config.onboardingOwner}/${config.onboardingClientRepo}`
+                })
+                const issues: any[] = []
+                for (const rawIssue of rawIssues.data.items) {
+                    const data = utils.parseIssue(rawIssue.body)
+                    if (data.correct) {
+                        issues.push({
+                            number: rawIssue.number,
+                            url: rawIssue.html_url,
+                            owner: rawIssue.user.login,
+                            created_at: rawIssue.created_at,
+                            state: rawIssue.state,
+                            labels: rawIssue.labels,
+                            data
+                        })
+                    }
+                }
             },
             clientRequests: [],
             loadNotificationClientRequests: async () => {
