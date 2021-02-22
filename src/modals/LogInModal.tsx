@@ -40,7 +40,10 @@ class LogInModal extends Component<ModalProps, ModalStates> {
     }
 
     loadLedgerWallet = async () => {
-        const logged = await this.context.wallet.loadWallet('Ledger')
+        const logged = await this.context.wallet.loadWallet('Ledger', {
+            multisig: this.state.multisig,
+            multisigAddress: this.state.address
+        })
         if (logged) {
             if (this.context.viewroot === false && this.props.type == '0') {
                 this.context.switchview()
@@ -129,8 +132,8 @@ class LogInModal extends Component<ModalProps, ModalStates> {
                             </div>
                         </div>
                         <div className="tabs">
-                            <div className="tab" onClick={()=>this.loadPrivate()}>Private</div>
-                            <div className="tab" onClick={()=>this.loadMultisig()}>Multisig</div>
+                            <div className="tab" onClick={()=>this.loadPrivate()}>Individual</div>
+                            <div className="tab" onClick={()=>this.loadMultisig()}>Organization</div>
                         </div>
                         <div className="buttons">
                             {!config.networks.includes('Mainnet') ?
