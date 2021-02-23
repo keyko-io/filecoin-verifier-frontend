@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import { Data } from '../context/Data/Index'
 import { config } from '../config'
+import { anyToBytes } from "../utils/Filters"
 // @ts-ignore
 import { dispatchCustomEvent, H4, Input, ButtonPrimary, SelectMenu, LoaderSpinner } from "slate-react-system";
-import BigNumber from 'bignumber.js'
 
 type States = {
     address: string
@@ -53,12 +53,10 @@ class AddClientModal extends Component<ModalProps, States> {
         this.setState({ submitLoading: true })
 
         try {
+            const dataCapIssue = this.state.datacap + this.state.units
+            const fullDatacap = anyToBytes(dataCapIssue)
 
-            const datacap = new BigNumber(this.state.datacap)
-            const fullDatacap = new BigNumber(this.state.datacapExt).multipliedBy(datacap).toFixed(0)
-            const dataCapIssue = datacap + this.state.units
-
-            console.log("datacap: " + datacap)
+            console.log("datacap: " + this.state.datacap)
             console.log("fullDatacap: " + fullDatacap)
             let messageID = await this.context.wallet.api.verifyClient(this.state.address, BigInt(fullDatacap), this.context.wallet.walletIndex);
             if (this.props.newDatacap) {

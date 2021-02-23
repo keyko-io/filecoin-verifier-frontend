@@ -8,7 +8,7 @@ import { fas } from '@fortawesome/free-solid-svg-icons'
 import Logo from './svg/logo.svg';
 import Network from './svg/filecoin-network.svg';
 import { Data } from './context/Data/Index'
-import { addressFilter, datacapFilter } from './utils/Filters'
+import { addressFilter, bytesToiB } from './utils/Filters'
 import WalletModal from './modals/WalletModal'
 import copy from 'copy-text-to-clipboard'
 import './App.scss';
@@ -205,7 +205,7 @@ class App extends Component<{}, States> {
                   return <div key={index} className="accountentry" style={{ backgroundColor: index === this.context.wallet.walletIndex ? '#C7C7C7' : 'inherit' }}>
                     <div>
                       <div className="datacapdata" onClick={() => this.switchAccount(index)} >
-                        {this.context.viewroot === false ? <span className="datacap">Datacap: {datacapFilter(this.getVerifierAmount(account))}</span> : <span className="datacap"></span>}
+                        {this.context.viewroot === false ? <span className="datacap">Datacap: {bytesToiB(this.getVerifierAmount(account))}</span> : <span className="datacap"></span>}
                         {this.context.wallet.accountsActive[account] ?
                           <img src={Network} alt="network" />
                           : null}
