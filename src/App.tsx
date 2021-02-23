@@ -200,13 +200,13 @@ class App extends Component<{}, States> {
                     />
                   </div>
                 </div>
-                { this.context.wallet.multisig && this.context.viewroot === false ?
+                {this.context.wallet.multisig && this.context.viewroot === false ?
                   <React.Fragment>
                     <div className="headertitles">Multisig address</div>
                     <div className="accountentry">
                       <div>
                         <div className="datacapdata">
-                          <span className="datacap">Datacap: {datacapFilter(this.context.wallet.multisigDatacap)}</span>
+                          <span className="datacap">Datacap: {bytesToiB(this.context.wallet.multisigDatacap)}</span>
                           {this.context.wallet.multisig ?
                             <img src={Network} alt="network" />
                             : null}
@@ -218,7 +218,7 @@ class App extends Component<{}, States> {
                       </div>
                     </div>
                   </React.Fragment>
-                : null }
+                  : null}
                 <div className="headertitles">Account addresses</div>
                 {this.context.wallet.accounts.map((account: any, index: number) => {
                   return <div key={index} className="accountentry" style={{ backgroundColor: index === this.context.wallet.walletIndex ? '#C7C7C7' : 'inherit' }}>
