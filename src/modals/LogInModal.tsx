@@ -58,7 +58,10 @@ class LogInModal extends Component<ModalProps, ModalStates> {
     }
 
     loadBurnerWallet = async () => {
-        const logged = await this.context.wallet.loadWallet('Burner')
+        const logged = await this.context.wallet.loadWallet('Burner', {
+            multisig: this.state.multisig,
+            multisigAddress: this.state.address
+        })
         if (logged) {
             if (this.context.viewroot === false && this.props.type == '0') {
                 this.context.switchview()
@@ -142,6 +145,10 @@ class LogInModal extends Component<ModalProps, ModalStates> {
                                         <img src={Logo} alt={'Logo'} />
                                     Load Browser Wallet
                                 </ButtonPrimary>
+                                { this.state.multisig ?
+                                    <input className="multisiginput" name="address" placeholder="Multisig address" value={this.state.address} onChange={this.handleChange} />
+                                    : null
+                                }
                                 </div>
                                 : null}
                             <div className={config.networks.includes('Mainnet') ? "button center" : "button right"}>

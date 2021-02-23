@@ -115,7 +115,7 @@ class WalletProvider extends React.Component<Props, WalletProviderStates> {
         }
     }
 
-    loadBurner = async () => {
+    loadBurner = async (options: any = {}) => {
         try {
             const wallet = new BurnerWallet()
             await wallet.loadWallet(this.state.networkIndex)
@@ -144,7 +144,10 @@ class WalletProvider extends React.Component<Props, WalletProviderStates> {
                 walletIndex: walletCookieIndex !== -1 ? walletCookieIndex : 0,
                 activeAccount: lastWallet ? lastWallet : accounts[0],
                 accounts,
-                accountsActive
+                accountsActive,
+                multisig: options.multisig ? true : false,
+                multisigAddress: options.multisig ? options.multisigAddress : '',
+                multisigDatacap: options.multisig ? '100000000000000' : ''
             })
             return true
             // this.loadGithub()
@@ -226,7 +229,7 @@ class WalletProvider extends React.Component<Props, WalletProviderStates> {
                     const resLedger = await this.loadLedger(options)
                     return resLedger
                 case 'Burner':
-                    const resBurner = await this.loadBurner()
+                    const resBurner = await this.loadBurner(options)
                     return resBurner
                 default:
                     return false
