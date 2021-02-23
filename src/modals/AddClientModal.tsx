@@ -1,16 +1,17 @@
 import React, { Component } from 'react';
 import { Data } from '../context/Data/Index'
 import { config } from '../config'
+import { anyToBytes } from "../utils/Filters"
 // @ts-ignore
 import { dispatchCustomEvent, H4, Input, ButtonPrimary, SelectMenu, LoaderSpinner } from "slate-react-system";
-import BigNumber from 'bignumber.js'
 
 type States = {
     address: string
     datacap: string
     datacapExt: string
     submitLoading: boolean
-    issueNumber: string
+    issueNumber: string,
+    units: string
 };
 
 type ModalProps = {
@@ -30,7 +31,8 @@ class AddClientModal extends Component<ModalProps, States> {
             datacap: '1',
             datacapExt: '1099511627776', // 1 TiB
             submitLoading: false,
-            issueNumber: ''
+            issueNumber: '',
+            units: 'TiB'
         }
     }
 
@@ -51,11 +53,10 @@ class AddClientModal extends Component<ModalProps, States> {
         this.setState({ submitLoading: true })
 
         try {
+            const dataCapIssue = this.state.datacap + this.state.units
+            const fullDatacap = anyToBytes(dataCapIssue)
 
-            const datacap = new BigNumber(this.state.datacap)
-            const fullDatacap = new BigNumber(this.state.datacapExt).multipliedBy(datacap).toFixed(0)
-
-            console.log("datacap: " + datacap)
+            console.log("datacap: " + this.state.datacap)
             console.log("fullDatacap: " + fullDatacap)
 
             let messageID
@@ -66,7 +67,7 @@ class AddClientModal extends Component<ModalProps, States> {
             }
            
             if (this.props.newDatacap) {
-                this.context.updateGithubVerified(this.state.issueNumber, messageID, this.state.address, fullDatacap)
+                this.context.updateGithubVerified(this.state.issueNumber, messageID, this.state.address, dataCapIssue)
             }
 
             this.setState({
@@ -85,13 +86,22 @@ class AddClientModal extends Component<ModalProps, States> {
             dispatchCustomEvent({ name: "delete-modal", detail: {} })
 
         }
+    }
 
 
+    findUnits = (value: string) => {
+        const element = config.datacapExt.find(ele => ele.value === value)
+        return element?.name
     }
 
     handleChange = (e: any) => {
         this.setState({ [e.target.name]: e.target.value } as any)
+        if (e.target.name === "datacapExt") {
+            this.setState({ units: this.findUnits(e.target.value) || "" })
+        }
     }
+
+
 
     render() {
         return (

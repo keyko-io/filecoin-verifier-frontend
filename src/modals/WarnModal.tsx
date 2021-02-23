@@ -8,14 +8,6 @@ type ModalProps = {
 
 class WarnModal extends Component<ModalProps> {
 
-    constructor(props: {}) {
-        super(props);
-    }
-
-    componentDidMount() {
-
-    }
-
     render() {
         return (
             <div className="warnmodal">

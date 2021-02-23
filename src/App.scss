@@ -402,6 +402,9 @@
       }
     }
   }
+  .pagination{
+    top:890px
+  }
 }
 
 .accountModal {
@@ -677,6 +680,9 @@
 
     td {
       padding: 12px;
+      svg{
+        padding-left: 5px;
+      }
     }
   }
 
@@ -1747,26 +1753,25 @@
   font-family: "suisseintl";
 
   .buttoncard{
-    box-shadow: 0px 6px 6px rgba(0, 0, 0, 0.25);
+    height: 150px;
+    margin-top: 15px;
     border-radius: 10px;
     margin-left: 15px;
     margin-right: 15px;
     cursor: pointer;
+    border-right: 1px solid #1A1A1A;
+    border-top: 1px solid #1A1A1A;
+    border-left: 1px solid #1A1A1A;
+    border-bottom: 1px solid #1A1A1A;
   }
 
   .buttoncard:nth-child(3){
     padding-top: 10px;
   }
   
-  .image{
-    padding-top: 30px;
-    padding-left: 30px;
-    width: 100px;
-    height: 72px;
-    float: left;
-  }
 
   .methods{
+      margin-bottom: 20px;
       font-size: 20px;
       font-style: normal;
       font-weight: 700;
@@ -1777,7 +1782,7 @@
 
   .title{
     position: relative;
-    padding-top: 30px;
+    padding-top: 15px;
     font-size: 20px;
     font-style: normal;
     font-weight: 700;

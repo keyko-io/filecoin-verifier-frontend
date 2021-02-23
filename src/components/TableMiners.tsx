@@ -52,8 +52,8 @@ export default class TableVerifiers extends Component {
 
         const html = parserMarkdown.render(text)
         const json = parse(html);
-        const miners = json[2].children[3].children.
-            filter((ele: any) => ele.type === "element")
+        const miners = json[2].children[3].children
+            .filter((ele: any) => ele.type === "element")
 
         this.setState({ miners })
         const numerOfPages = Math.ceil(this.state.miners.length / 6)
@@ -89,8 +89,8 @@ export default class TableVerifiers extends Component {
                                         </td>
                                         <td>
                                             <TableCell
-                                                text={miner.children[3].children[0].content} 
-                                                type="Location"/>
+                                                text={miner.children[3].children[0].content}
+                                                type="Location" />
                                         </td>
                                         <td>
                                             <TableCell
@@ -98,9 +98,9 @@ export default class TableVerifiers extends Component {
                                         </td>
                                         <td>
                                             <TableCell
-                                                text={miner.children[7].children[0].content} 
-                                                href={miner.children[7].children[1]} 
-                                                type="Contact"/>
+                                                text={miner.children[7].children[0].content}
+                                                href={miner.children[7].children[1]}
+                                                type="Contact" />
                                         </td>
                                         <td>
                                             <TableCell
@@ -121,7 +121,7 @@ export default class TableVerifiers extends Component {
                     <div className="pagenumber paginator" onClick={e => this.movePage(-1)}>{"<"}</div>
                     {this.state.pages.map((page: any, i) =>
                         <div className="pagenumber"
-                            style={this.state.actualPage == i + 1 ? { backgroundColor: "#33A7FF", color: 'white' } : {}}
+                            style={this.state.actualPage === i + 1 ? { backgroundColor: "#33A7FF", color: 'white' } : {}}
                             id={(i + 1).toString()}
                             onClick={e => this.setPage(e)}>
                             {page}

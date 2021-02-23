@@ -1,35 +1,23 @@
-import { config } from '../config'
-import { BigNumber } from "bignumber.js";
+import ByteConverter from '@wtfcode/byte-converter'
+const byteConverter = new ByteConverter()
 
 export function addressFilter (input: string) {
     return `${input.substr(0, 5)}...${input.substr(-5, 5)}`
 }
 
-export function datacapFilter (input: string) {
-    if(input===""){
-        return "0 B"
-    }
-    const pointLoc = input.indexOf(".")
-    if(pointLoc >= 0){
-        input = input.substr(0, pointLoc)
-    }
-    const inputLength = input.length
-    if(inputLength > config.datacapExt[config.datacapExt.length-1].value.length+3){
-        return `999+ ${config.datacapExt[config.datacapExt.length-1].name}`
-    }
-    for(let i = config.datacapExt.length-1; i>=0; i--){
-        if(config.datacapExt[i].value.length <= inputLength){
-            return `${input.substring(0, inputLength - (config.datacapExt[i].value.length-1))} ${config.datacapExt[i].name}`
-        }
-    }
+export function anyToBytes(inputDatacap: any) {
+    const ext = inputDatacap.replace(/[0-9.]/g, '')
+    const datacap = inputDatacap.replace(/[^0-9.]/g, '')
+    const bytes = byteConverter.convert(datacap, ext, 'B')
+    return bytes
 }
 
-const converter = new BigNumber('1.099511627776')
-
-export function iBtoB (input: BigNumber) {
-    return input.multipliedBy(converter)
+export function bytesToiB(inputBytes: any) {
+    const autoscale = byteConverter.autoScale(Number(inputBytes), 'B', { preferByte: true, preferBinary: true } as any)
+    return `${Number.isInteger(autoscale.value) ? autoscale.value : autoscale.value.toFixed(1)}${autoscale.dataFormat}`
 }
 
-export function BtoiB (input: BigNumber) {
-    return input.dividedBy(converter)
+export function bytesToB(inputBytes: any) {
+    const autoscale = byteConverter.autoScale(Number(inputBytes), 'B', { preferByte: true, preferDecimal: true } as any)
+    return `${Number.isInteger(autoscale.value) ? autoscale.value : autoscale.value.toFixed(1)}${autoscale.dataFormat}`
 }

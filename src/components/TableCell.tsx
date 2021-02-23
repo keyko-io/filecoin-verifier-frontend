@@ -51,10 +51,10 @@ class TableCell extends Component<TableCellProps> {
         return (
             <>
                 {this.state.cellContent.map((ele: any, i) => <p key={i}>{
-                    this.props.type == 'Location' ?
+                    this.props.type === 'Location' ?
                         <><p>{ele.split(',')[0]}</p><p>{ele.split(',')[1]}</p> </>
                         :
-                        this.props.type == 'Contact' ? this.renderContact(ele)
+                        this.props.type === 'Contact' ? this.renderContact(ele)
                             : ele
                 }</p>)}
             </>

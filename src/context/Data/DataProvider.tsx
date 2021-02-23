@@ -3,8 +3,8 @@ import { Data } from './Index'
 import { config } from '../../config';
 // @ts-ignore
 import { IssueBody } from '../../utils/IssueBody'
-import { datacapFilter, BtoiB } from '../../utils/Filters'
 import BigNumber from 'bignumber.js'
+import { tableSort } from '../../utils/SortFilter';
 import { v4 as uuidv4 } from 'uuid';
 const utils = require('@keyko-io/filecoin-verifier-tools/utils/issue-parser')
 const parser = require('@keyko-io/filecoin-verifier-tools/utils/notary-issue-parser')
@@ -29,11 +29,15 @@ interface DataProviderStates {
     clientsGithub: any
     loadClientsGithub: any
     loadClients: any
+    sortClients: any
+    sortRequests: any
+    sortVerified: any
+    sortNotaryRequests: any
     assignToIssue: any
     clients: any[]
-    clientsAmount: string,
-    clientsAmountConverted: string
+    clientsAmount: string 
     search: any
+    searchString: string
     refreshGithubData: any
 }
 
@@ -149,8 +153,7 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
                         type: pendingTxs[txs].parsed.params.cap.toString() === '0' ? 'Revoke' : 'Add',
                         verifier: pendingTxs[txs].parsed.params.verifier,
                         verifierAddress: verifierAddress,
-                        datacap: pendingTxs[txs].parsed.params.cap.toString(),
-                        datacapConverted: BtoiB(new BigNumber(pendingTxs[txs].parsed.params.cap.toString())).toString(),
+                        datacap: pendingTxs[txs].parsed.params.cap,
                         signer: pendingTxs[txs].signers[0],
                         signerAddress: signerAddress
                     })
@@ -206,7 +209,7 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
                         issue_number: "",
                         issue_Url: "",
                         addresses: [tx.verifier],
-                        datacaps: [tx.datacapConverted],
+                        datacaps: [tx.datacap],
                         txs: [tx],
                         proposedBy: tx.signerAddress,
                         proposed: true
@@ -269,25 +272,65 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
                     verified.push({
                         verifier: verifiedAddress.verifier,
                         verifierAccount,
-                        datacap: verifiedAddress.datacap,
-                        datacapConverted: BtoiB(new BigNumber(verifiedAddress.datacap)).toString()
+                        datacap: verifiedAddress.datacap 
                     })
                 }
                 this.setState({ verified })
             },
             loadClients: async () => {
                 const clients = await this.props.wallet.api.listVerifiedClients()
-                let clientsamount = new BigNumber(0)
-                let clientsamountconverted = new BigNumber(0)
+                let clientsamount = new BigNumber(0) 
                 for (const txs of clients) {
                     const amountBN = new BigNumber(txs.datacap)
-                    clientsamount = amountBN.plus(clientsamount)
-                    clientsamountconverted = BtoiB(amountBN).plus(clientsamountconverted)
-                    txs['key'] = await this.props.wallet.api.actorKey(txs.verified)
-                    txs['datacapConverted'] = BtoiB(amountBN).toString()
+                    clientsamount = amountBN.plus(clientsamount) 
+                    txs['key'] = await this.props.wallet.api.actorKey(txs.verified) 
 
                 }
-                this.setState({ clients, clientsAmount: clientsamount.toString(), clientsAmountConverted: clientsamountconverted.toString() })
+                this.setState({ clients, clientsAmount: clientsamount.toString() })
+            },
+            sortClients: async (e: any, previousOrderBy: string, previousOrder: number) => {
+                const { arraySorted, orderBy, sortOrder } =
+                    tableSort(
+                        e,
+                        this.state.clients as [],
+                        previousOrderBy,
+                        previousOrder)
+
+                this.setState({ clients: arraySorted })
+                return { orderBy, sortOrder }
+            },
+            sortRequests: async (e: any, previousOrderBy: string, previousOrder: number) => {
+                const { arraySorted, orderBy, sortOrder } =
+                    tableSort(
+                        e,
+                        this.state.clientRequests as [],
+                        previousOrderBy,
+                        previousOrder)
+
+                this.setState({ clientRequests: arraySorted })
+                return { orderBy, sortOrder }
+            },
+            sortNotaryRequests: async (e: any, previousOrderBy: string, previousOrder: number) => {
+                const { arraySorted, orderBy, sortOrder } =
+                    tableSort(
+                        e,
+                        this.state.verifierAndPendingRequests as [],
+                        previousOrderBy,
+                        previousOrder)
+
+                this.setState({ clientRequests: arraySorted })
+                return { orderBy, sortOrder }
+            },
+            sortVerified: async (e: any, previousOrderBy: string, previousOrder: number) => {
+                const { arraySorted, orderBy, sortOrder } =
+                    tableSort(
+                        e,
+                        this.state.verified as [],
+                        previousOrderBy,
+                        previousOrder)
+
+                this.setState({ clientRequests: arraySorted })
+                return { orderBy, sortOrder }
             },
             updateGithubVerified: async (requestNumber: any, messageID: string, address: string, datacap: any) => {
                 await this.props.github.githubOcto.issues.removeAllLabels({
@@ -302,7 +345,7 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
                     labels: ['state:Granted'],
                 })
 
-                let commentContent = `## Request Approved\nYour Datacap Allocation Request has been approved by the Notary\n#### Message sent to Filecoin Network\n>${messageID} \n#### Address \n> ${address}\n#### Datacap Allocated\n> ${datacapFilter(String(datacap))}`
+                let commentContent = `## Request Approved\nYour Datacap Allocation Request has been approved by the Notary\n#### Message sent to Filecoin Network\n>${messageID} \n#### Address \n> ${address}\n#### Datacap Allocated\n> ${datacap}\n#### You can check the status of the message here: https://filfox.info/en/message/${messageID}`
 
                 await this.props.github.githubOcto.issues.createComment({
                     owner: config.onboardingOwner,
@@ -374,8 +417,7 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
                 this.setState({ selectedNotaryRequests: selectedTxs })
             },
             clients: [],
-            clientsAmount: '',
-            clientsAmountConverted: '',
+            clientsAmount: '', 
             clientsGithub: {},
             loadClientsGithub: async () => {
                 if (this.props.github.githubLogged === false) {
@@ -408,29 +450,9 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
                     clientsGithub: issues
                 })
             },
+            searchString: "",
             search: async (query: string) => {
-
-                let results: any[] = []
-                if (this.state.viewroot) {
-
-                    if (this.props.github.githubOctoGeneric.logged === false) {
-                        await this.props.github.githubOctoGenericLogin()
-                    }
-
-                    results = await this.props.github.githubOctoGeneric.octokit.search.issuesAndPullRequests({
-                        q: `${query} in:body is:issue repo:${config.lotusNodes[this.props.wallet.networkIndex].notaryOwner}/${config.lotusNodes[this.props.wallet.networkIndex].notaryRepo}`
-                    })
-                } else {
-                    if (this.props.github.githubLogged === false) {
-                        console.log('not logged')
-                        return
-                    }
-                    results = await this.props.github.githubOcto.search.issuesAndPullRequests({
-                        q: `${query} in:body is:issue repo:${config.onboardingOwner}/${config.onboardingClientRepo}`
-                    })
-                }
-                console.log('results', results)
-                return results
+                this.setState({ searchString: query })
             },
             refreshGithubData: async () => {
                 this.state.loadClientRequests()
