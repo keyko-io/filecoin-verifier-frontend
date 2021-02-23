@@ -9,10 +9,18 @@ type PaginationProps = {
 }
 class Pagination extends Component<PaginationProps> {
 
+    timeout: any
+
+    constructor(props: PaginationProps) {
+        super(props);
+        this.timeout = null
+    }
+
     state = {
         initialIndex: 0,
         actualPage: 1,
-        pages: []
+        pages: [],
+
     }
 
     componentDidMount() {
@@ -22,6 +30,11 @@ class Pagination extends Component<PaginationProps> {
     componentDidUpdate(prevProps: PaginationProps) {
         if (prevProps.elements !== this.props.elements || prevProps.search !== this.props.search) {
             this.calculatePages()
+        }
+        if (prevProps.search !== this.props.search) {
+            clearTimeout(this.timeout);
+            const page = this.props.search === '' ? this.state.actualPage : 1
+            this.timeout = setTimeout(() => this.updateIndex(page), 500);
         }
     }
 
