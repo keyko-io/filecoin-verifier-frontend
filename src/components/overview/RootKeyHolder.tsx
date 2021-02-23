@@ -172,7 +172,9 @@ export default class RootKeyHolder extends Component<RootKeyHolderProps, RootKey
                             if (request.datacaps[i] && request.addresses[i]) {
                                 const datacap = anyToBytes(request.datacaps[i])
                                 let address = request.addresses[i]
-                                console.log("request address: " + request.address)
+                                console.log("request address: " + address)
+                                console.log("request datacap: " + request.datacaps[i])
+                                console.log("datacap: " + datacap)
 
                                 if (address.startsWith("t1") || address.startsWith("f1")) {
                                     address = await this.context.wallet.api.actorAddress(address)
