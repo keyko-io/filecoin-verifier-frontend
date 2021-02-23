@@ -13,11 +13,11 @@ export function anyToBytes(inputDatacap: any) {
 }
 
 export function bytesToiB(inputBytes: any) {
-    const autoscale = byteConverter.autoScale(inputBytes, 'KiB')
+    const autoscale = byteConverter.autoScale(Number(inputBytes), 'B', { preferByte: true, preferBinary: true } as any)
     return `${Number.isInteger(autoscale.value) ? autoscale.value : autoscale.value.toFixed(1)}${autoscale.dataFormat}`
 }
 
 export function bytesToB(inputBytes: any) {
-    const autoscale = byteConverter.autoScale(inputBytes, 'KB')
+    const autoscale = byteConverter.autoScale(Number(inputBytes), 'B', { preferByte: true, preferDecimal: true } as any)
     return `${Number.isInteger(autoscale.value) ? autoscale.value : autoscale.value.toFixed(1)}${autoscale.dataFormat}`
 }
