@@ -27,6 +27,9 @@ interface WalletProviderStates {
     message: string
     loadWallet: any
     dispatchNotification: any
+    multisig: boolean
+    multisigAddress: string
+    multisigDatacap: string
 }
 
 type Props = {
@@ -52,7 +55,7 @@ class WalletProvider extends React.Component<Props, WalletProviderStates> {
             this.setState(state, resolve)
         });
     }
-    loadLedger = async () => {
+    loadLedger = async (options: any = {}) => {
         try {
             const wallet = new LedgerWallet()
             await wallet.loadWallet(this.state.networkIndex)
@@ -95,7 +98,10 @@ class WalletProvider extends React.Component<Props, WalletProviderStates> {
                 },
                 activeAccount: lastWallet ? lastWallet : accounts[0],
                 accounts,
-                accountsActive
+                accountsActive,
+                multisig: options.multisig ? true : false,
+                multisigAddress: options.multisig ? options.multisigAddress : '',
+                multisigDatacap: options.multisig ? '100000000000000' : ''
             })
             // this.loadGithub()
             return true
@@ -213,11 +219,11 @@ class WalletProvider extends React.Component<Props, WalletProviderStates> {
         },
         balance: 0,
         message: '',
-        loadWallet: async (type: string) => {
+        loadWallet: async (type: string, options: any = {}) => {
             this.setState({ isLoading: true })
             switch (type) {
                 case 'Ledger':
-                    const resLedger = await this.loadLedger()
+                    const resLedger = await this.loadLedger(options)
                     return resLedger
                 case 'Burner':
                     const resBurner = await this.loadBurner()
@@ -235,7 +241,10 @@ class WalletProvider extends React.Component<Props, WalletProviderStates> {
                     timeout: 5000
                 }
             });
-        }
+        },
+        multisig: false,
+        multisigAddress: '',
+        multisigDatacap: ''
     }
 
     render() {
