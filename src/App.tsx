@@ -212,7 +212,7 @@ class App extends Component<{}, States> {
                             : null}
                         </div>
                         <div className="accountdata">
-                          <span className="accountaddress">{addressFilter(this.context.wallet.multisigActor)}</span>
+                          <span className="accountaddress">{this.context.wallet.multisigAddress}</span>
                           <span className="copyaddress"><SVG.CopyAndPaste height='15px' /></span>
                         </div>
                       </div>
@@ -243,7 +243,7 @@ class App extends Component<{}, States> {
               </div>
               : null}
             <div className="headertitles">{this.context.viewroot ? 'Rootkey Holder ID' : 'Approved Notary ID'}</div>
-            <div>{addressFilter(this.context.wallet.activeAccount)}, {this.context.wallet.multisig && this.context.viewroot === false ? addressFilter(this.context.wallet.multisigAddress) : null}</div>
+            <div>{addressFilter(this.context.wallet.activeAccount)}, {this.context.wallet.multisig && this.context.viewroot === false ? this.context.wallet.multisigAddress : null}</div>
           </div>
           <div className="wallet">
             <div className="WalletMenu">
