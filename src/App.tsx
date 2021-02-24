@@ -111,8 +111,8 @@ class App extends Component<{}, States> {
       }
     }
     return '0'
-  }
-
+  } 
+  
   updateSearch = () => {
     this.context.search(this.state.search)
   }
@@ -206,13 +206,13 @@ class App extends Component<{}, States> {
                     <div className="accountentry">
                       <div>
                         <div className="datacapdata">
-                          <span className="datacap">Datacap: {bytesToiB(this.context.wallet.multisigDatacap)}</span>
+                          <span className="datacap">Datacap: {bytesToiB(this.getVerifierAmount(this.context.wallet.multisigAddress))}</span>
                           {this.context.wallet.multisig ?
                             <img src={Network} alt="network" />
                             : null}
                         </div>
                         <div className="accountdata">
-                          <span className="accountaddress">{this.context.wallet.multisig}</span>
+                          <span className="accountaddress">{addressFilter(this.context.wallet.multisigActor)}</span>
                           <span className="copyaddress"><SVG.CopyAndPaste height='15px' /></span>
                         </div>
                       </div>
@@ -243,7 +243,7 @@ class App extends Component<{}, States> {
               </div>
               : null}
             <div className="headertitles">{this.context.viewroot ? 'Rootkey Holder ID' : 'Approved Notary ID'}</div>
-            <div>{addressFilter(this.context.wallet.activeAccount)}, {this.context.wallet.multisig && this.context.viewroot === false ? this.context.wallet.multisig : null}</div>
+            <div>{addressFilter(this.context.wallet.activeAccount)}, {this.context.wallet.multisig && this.context.viewroot === false ? addressFilter(this.context.wallet.multisigAddress) : null}</div>
           </div>
           <div className="wallet">
             <div className="WalletMenu">

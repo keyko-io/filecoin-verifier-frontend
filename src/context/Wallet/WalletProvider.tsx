@@ -29,7 +29,7 @@ interface WalletProviderStates {
     dispatchNotification: any
     multisig: boolean
     multisigAddress: string
-    multisigDatacap: string
+    multisigActor: string
 }
 
 type Props = {
@@ -74,6 +74,17 @@ class WalletProvider extends React.Component<Props, WalletProviderStates> {
                     }
                 }
             }
+            let multisigInfo: any = {}
+            let multisigActor: string = ''
+            if (options.multisig) {
+                try {
+                    multisigInfo = await wallet.api.multisigInfo(options.multisigAddress)
+                    multisigActor = await wallet.api.actorKey(multisigInfo.signers[0])
+                } catch (e) {
+                    this.state.dispatchNotification('Multisig not found')
+                    return false
+                }
+            }
             await this.setStateAsync({
                 isLogged: true,
                 isLoading: false,
@@ -101,7 +112,7 @@ class WalletProvider extends React.Component<Props, WalletProviderStates> {
                 accountsActive,
                 multisig: options.multisig ? true : false,
                 multisigAddress: options.multisig ? options.multisigAddress : '',
-                multisigDatacap: options.multisig ? '100000000000000' : ''
+                multisigActor: options.multisig ? multisigActor : ''
             })
             // this.loadGithub()
             return true
@@ -134,6 +145,17 @@ class WalletProvider extends React.Component<Props, WalletProviderStates> {
                     }
                 }
             }
+            let multisigInfo: any = {}
+            let multisigActor: string = ''
+            if (options.multisig) {
+                try {
+                    multisigInfo = await wallet.api.multisigInfo(options.multisigAddress)
+                    multisigActor = await wallet.api.actorKey(multisigInfo.signers[0])
+                } catch (e) {
+                    this.state.dispatchNotification('Multisig not found')
+                    return false
+                }
+            }
             this.setStateAsync({
                 isLogged: true,
                 isLoading: false,
@@ -147,7 +169,7 @@ class WalletProvider extends React.Component<Props, WalletProviderStates> {
                 accountsActive,
                 multisig: options.multisig ? true : false,
                 multisigAddress: options.multisig ? options.multisigAddress : '',
-                multisigDatacap: options.multisig ? '100000000000000' : ''
+                multisigActor: options.multisig ? multisigActor : ''
             })
             return true
             // this.loadGithub()
@@ -247,7 +269,7 @@ class WalletProvider extends React.Component<Props, WalletProviderStates> {
         },
         multisig: false,
         multisigAddress: '',
-        multisigDatacap: ''
+        multisigActor: ''
     }
 
     render() {
