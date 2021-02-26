@@ -82,7 +82,8 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
                 })
             },
             searchUserIssues: async (user: string) => {
-                const rawIssues = await this.props.github.githubOcto.search.issuesAndPullRequests({
+                await this.props.github.githubOctoGenericLogin()
+                const rawIssues = await this.props.github.githubOctoGeneric.octokit.search.issuesAndPullRequests({
                     q: `type:issue+user:${user}+repo:${config.onboardingOwner}/${config.onboardingClientRepo}`
                 })
                 const issues: any[] = []
@@ -100,6 +101,7 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
                         })
                     }
                 }
+                return issues
             },
             clientRequests: [],
             loadNotificationClientRequests: async () => {
