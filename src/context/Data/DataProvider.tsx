@@ -83,7 +83,7 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
             },
             searchUserIssues: async (user: string) => {
                 await this.props.github.githubOctoGenericLogin()
-                const rawIssues = await this.props.github.githubOctoGeneric.octokit.search.issuesAndPullRequests({
+                const rawIssues = await this.props.github.githubOcto.search.issuesAndPullRequests({
                     q: `type:issue+user:${user}+repo:${config.onboardingOwner}/${config.onboardingClientRepo}`
                 })
                 const issues: any[] = []

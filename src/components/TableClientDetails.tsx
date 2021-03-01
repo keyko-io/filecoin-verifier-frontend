@@ -67,7 +67,7 @@ export default class TableClientDetails extends Component {
                                                 <td>{detail.data.address}</td>
                                                 <td>{detail.data.datacap}</td>
                                                 <td>{detail.data.notary}</td>
-                                                <td>{detail.created_at}</td>
+                                                <td>{detail.created_at.split('T')[0]}</td>
                                                 <td>{detail.labels.map((label: any) =>
                                                     <p style={{ padding: 3 }}>{label.name}</p>
                                                 )}</td>
