@@ -30,6 +30,7 @@ interface WalletProviderStates {
     multisig: boolean
     multisigAddress: string
     multisigActor: string
+    multisigID: string
 }
 
 type Props = {
@@ -76,6 +77,7 @@ class WalletProvider extends React.Component<Props, WalletProviderStates> {
             }
             let multisigInfo: any = {}
             let multisigActor: string = ''
+            let multisigID: string = ''
             if (options.multisig) {
                 try {
                     multisigInfo = await wallet.api.multisigInfo(options.multisigAddress)
@@ -84,6 +86,12 @@ class WalletProvider extends React.Component<Props, WalletProviderStates> {
                     this.state.dispatchNotification('Multisig not found')
                     return false
                 }
+            }
+            // TODO: check for long address
+            if (options.multisigAddress > 20) {
+                multisigID = wallet.api.actorAddress(options.multisigAddress)
+            } else {
+                multisigID = options.multisigAddress
             }
             await this.setStateAsync({
                 isLogged: true,
@@ -112,7 +120,8 @@ class WalletProvider extends React.Component<Props, WalletProviderStates> {
                 accountsActive,
                 multisig: options.multisig ? true : false,
                 multisigAddress: options.multisig ? options.multisigAddress : '',
-                multisigActor: options.multisig ? multisigActor : ''
+                multisigActor: options.multisig ? multisigActor : '',
+                multisigID: ''
             })
             // this.loadGithub()
             return true
@@ -147,6 +156,7 @@ class WalletProvider extends React.Component<Props, WalletProviderStates> {
             }
             let multisigInfo: any = {}
             let multisigActor: string = ''
+            let multisigID: string = ''
             if (options.multisig) {
                 try {
                     multisigInfo = await wallet.api.multisigInfo(options.multisigAddress)
@@ -155,6 +165,12 @@ class WalletProvider extends React.Component<Props, WalletProviderStates> {
                     this.state.dispatchNotification('Multisig not found')
                     return false
                 }
+            }
+            // TODO: check for long address
+            if (options.multisigAddress > 20) {
+                multisigID = wallet.api.actorAddress(options.multisigAddress)
+            } else {
+                multisigID = options.multisigAddress
             }
             this.setStateAsync({
                 isLogged: true,
@@ -169,7 +185,8 @@ class WalletProvider extends React.Component<Props, WalletProviderStates> {
                 accountsActive,
                 multisig: options.multisig ? true : false,
                 multisigAddress: options.multisig ? options.multisigAddress : '',
-                multisigActor: options.multisig ? multisigActor : ''
+                multisigActor: options.multisig ? multisigActor : '',
+                multisigID: ''
             })
             return true
             // this.loadGithub()
@@ -269,7 +286,8 @@ class WalletProvider extends React.Component<Props, WalletProviderStates> {
         },
         multisig: false,
         multisigAddress: '',
-        multisigActor: ''
+        multisigActor: '',
+        multisigID: ''
     }
 
     render() {
