@@ -80,18 +80,17 @@ class WalletProvider extends React.Component<Props, WalletProviderStates> {
             let multisigID: string = ''
             if (options.multisig) {
                 try {
-                    multisigInfo = await wallet.api.multisigInfo(options.multisigAddress)
+                    if (options.multisigAddress > 20) {
+                        multisigID = wallet.api.actorAddress(options.multisigAddress)
+                    } else {
+                        multisigID = options.multisigAddress
+                    }
+                    multisigInfo = await wallet.api.multisigInfo(multisigID)
                     multisigActor = await wallet.api.actorKey(multisigInfo.signers[0])
                 } catch (e) {
                     this.state.dispatchNotification('Multisig not found')
                     return false
                 }
-            }
-            // TODO: check for long address
-            if (options.multisigAddress > 20) {
-                multisigID = wallet.api.actorAddress(options.multisigAddress)
-            } else {
-                multisigID = options.multisigAddress
             }
             await this.setStateAsync({
                 isLogged: true,
@@ -159,18 +158,17 @@ class WalletProvider extends React.Component<Props, WalletProviderStates> {
             let multisigID: string = ''
             if (options.multisig) {
                 try {
-                    multisigInfo = await wallet.api.multisigInfo(options.multisigAddress)
+                    if (options.multisigAddress > 20) {
+                        multisigID = wallet.api.actorAddress(options.multisigAddress)
+                    } else {
+                        multisigID = options.multisigAddress
+                    }
+                    multisigInfo = await wallet.api.multisigInfo(multisigID)
                     multisigActor = await wallet.api.actorKey(multisigInfo.signers[0])
                 } catch (e) {
                     this.state.dispatchNotification('Multisig not found')
                     return false
                 }
-            }
-            // TODO: check for long address
-            if (options.multisigAddress > 20) {
-                multisigID = wallet.api.actorAddress(options.multisigAddress)
-            } else {
-                multisigID = options.multisigAddress
             }
             this.setStateAsync({
                 isLogged: true,
