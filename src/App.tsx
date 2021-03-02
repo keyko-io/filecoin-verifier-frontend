@@ -243,7 +243,7 @@ class App extends Component<{}, States> {
               </div>
               : null}
             <div className="headertitles">{this.context.viewroot ? 'Rootkey Holder ID' : 'Approved Notary ID'}</div>
-            <div>{addressFilter(this.context.wallet.activeAccount)}, {this.context.wallet.multisig && this.context.viewroot === false ? this.context.wallet.multisigAddress : null}</div>
+            <div>{addressFilter(this.context.wallet.activeAccount)}, {this.context.wallet.multisig && this.context.viewroot === false ? this.context.wallet.multisigAddress.length > 20 ? addressFilter(this.context.wallet.multisigAddress): this.context.wallet.multisigAddress : null}</div>
           </div>
           <div className="wallet">
             <div className="WalletMenu">
