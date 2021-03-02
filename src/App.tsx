@@ -212,7 +212,7 @@ class App extends Component<{}, States> {
                             : null}
                         </div>
                         <div className="accountdata">
-                          <span className="accountaddress">{this.context.wallet.multisigID}</span>
+                          <span className="accountaddress">{this.context.wallet.multisigAddress.length > 20 ? addressFilter(this.context.wallet.multisigAddress): this.context.wallet.multisigAddress}</span>
                           <span className="copyaddress"><SVG.CopyAndPaste height='15px' /></span>
                         </div>
                       </div>
