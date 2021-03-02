@@ -120,7 +120,7 @@ class WalletProvider extends React.Component<Props, WalletProviderStates> {
                 multisig: options.multisig ? true : false,
                 multisigAddress: options.multisig ? options.multisigAddress : '',
                 multisigActor: options.multisig ? multisigActor : '',
-                multisigID: ''
+                multisigID: multisigID
             })
             // this.loadGithub()
             return true
@@ -184,7 +184,7 @@ class WalletProvider extends React.Component<Props, WalletProviderStates> {
                 multisig: options.multisig ? true : false,
                 multisigAddress: options.multisig ? options.multisigAddress : '',
                 multisigActor: options.multisig ? multisigActor : '',
-                multisigID: ''
+                multisigID: multisigID
             })
             return true
             // this.loadGithub()
