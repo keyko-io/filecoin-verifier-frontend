@@ -61,7 +61,7 @@ class AddClientModal extends Component<ModalProps, States> {
 
             let messageID
             if(this.context.wallet.multisig){
-                messageID =await this.context.wallet.api.multisigVerifyClient(this.context.wallet.multisigAddress, this.state.address, BigInt(fullDatacap), this.context.wallet.walletIndex)
+                messageID =await this.context.wallet.api.multisigVerifyClient(this.context.wallet.multisigID, this.state.address, BigInt(fullDatacap), this.context.wallet.walletIndex)
             } else {
                 messageID = await this.context.wallet.api.verifyClient(this.state.address, BigInt(fullDatacap), this.context.wallet.walletIndex)
             }

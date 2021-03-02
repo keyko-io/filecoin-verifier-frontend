@@ -80,8 +80,8 @@ class WalletProvider extends React.Component<Props, WalletProviderStates> {
             let multisigID: string = ''
             if (options.multisig) {
                 try {
-                    if (options.multisigAddress > 20) {
-                        multisigID = wallet.api.actorAddress(options.multisigAddress)
+                    if (options.multisigAddress.length > 20) {
+                        multisigID = await wallet.api.actorAddress(options.multisigAddress)
                     } else {
                         multisigID = options.multisigAddress
                     }
@@ -158,8 +158,8 @@ class WalletProvider extends React.Component<Props, WalletProviderStates> {
             let multisigID: string = ''
             if (options.multisig) {
                 try {
-                    if (options.multisigAddress > 20) {
-                        multisigID = wallet.api.actorAddress(options.multisigAddress)
+                    if (options.multisigAddress.length > 20) {
+                        multisigID = await wallet.api.actorAddress(options.multisigAddress)
                     } else {
                         multisigID = options.multisigAddress
                     }
