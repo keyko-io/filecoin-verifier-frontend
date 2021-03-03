@@ -91,6 +91,9 @@ class WalletProvider extends React.Component<Props, WalletProviderStates> {
                     const index = accounts.findIndex((account) => account === multisigActor)
                     if (index !== -1) {
                         lastWallet = accounts[index]
+                    } else {
+                        this.state.dispatchNotification('Multisig address not found in wallet')
+                        return false
                     }
                 } catch (e) {
                     this.state.dispatchNotification('Multisig not found')
@@ -174,6 +177,9 @@ class WalletProvider extends React.Component<Props, WalletProviderStates> {
                     const index = accounts.findIndex((account) => account === multisigActor)
                     if (index !== -1) {
                         lastWallet = accounts[index]
+                    } else {
+                        this.state.dispatchNotification('Multisig address not found in wallet')
+                        return false
                     }
                 } catch (e) {
                     this.state.dispatchNotification('Multisig not found')
