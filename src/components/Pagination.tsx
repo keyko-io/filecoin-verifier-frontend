@@ -19,7 +19,8 @@ class Pagination extends Component<PaginationProps> {
     state = {
         initialIndex: 0,
         actualPage: 1,
-        pages: []
+        pages: [],
+
     }
 
     componentDidMount() {
