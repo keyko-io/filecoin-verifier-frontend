@@ -87,6 +87,11 @@ class WalletProvider extends React.Component<Props, WalletProviderStates> {
                     }
                     multisigInfo = await wallet.api.multisigInfo(multisigID)
                     multisigActor = await wallet.api.actorKey(multisigInfo.signers[0])
+                    // select account if found
+                    const index = accounts.findIndex((account) => account === multisigActor)
+                    if (index !== -1) {
+                        lastWallet = accounts[index]
+                    }
                 } catch (e) {
                     this.state.dispatchNotification('Multisig not found')
                     return false
@@ -165,6 +170,11 @@ class WalletProvider extends React.Component<Props, WalletProviderStates> {
                     }
                     multisigInfo = await wallet.api.multisigInfo(multisigID)
                     multisigActor = await wallet.api.actorKey(multisigInfo.signers[0])
+                    // select account if found
+                    const index = accounts.findIndex((account) => account === multisigActor)
+                    if (index !== -1) {
+                        lastWallet = accounts[index]
+                    }
                 } catch (e) {
                     this.state.dispatchNotification('Multisig not found')
                     return false
