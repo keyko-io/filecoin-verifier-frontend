@@ -29,7 +29,6 @@ interface WalletProviderStates {
     dispatchNotification: any
     multisig: boolean
     multisigAddress: string
-    multisigActor: string
     multisigID: string
 }
 
@@ -76,7 +75,6 @@ class WalletProvider extends React.Component<Props, WalletProviderStates> {
                 }
             }
             let multisigInfo: any = {}
-            let multisigActor: string = ''
             let multisigID: string = ''
             if (options.multisig) {
                 try {
@@ -86,9 +84,13 @@ class WalletProvider extends React.Component<Props, WalletProviderStates> {
                         multisigID = options.multisigAddress
                     }
                     multisigInfo = await wallet.api.multisigInfo(multisigID)
-                    multisigActor = await wallet.api.actorKey(multisigInfo.signers[0])
                     // select account if found
-                    const index = accounts.findIndex((account) => account === multisigActor)
+                    const multisigActors: any[] = []
+                    for (let index = 0; index < multisigInfo.signers.length; index++) {
+                        const actor = await wallet.api.actorKey(multisigInfo.signers[index])
+                        multisigActors.push(actor)
+                    }
+                    const index = accounts.findIndex((account) => multisigActors.includes(account))
                     if (index !== -1) {
                         lastWallet = accounts[index]
                     } else {
@@ -127,7 +129,6 @@ class WalletProvider extends React.Component<Props, WalletProviderStates> {
                 accountsActive,
                 multisig: options.multisig ? true : false,
                 multisigAddress: options.multisig ? options.multisigAddress : '',
-                multisigActor: options.multisig ? multisigActor : '',
                 multisigID: multisigID
             })
             // this.loadGithub()
@@ -162,7 +163,6 @@ class WalletProvider extends React.Component<Props, WalletProviderStates> {
                 }
             }
             let multisigInfo: any = {}
-            let multisigActor: string = ''
             let multisigID: string = ''
             if (options.multisig) {
                 try {
@@ -172,9 +172,13 @@ class WalletProvider extends React.Component<Props, WalletProviderStates> {
                         multisigID = options.multisigAddress
                     }
                     multisigInfo = await wallet.api.multisigInfo(multisigID)
-                    multisigActor = await wallet.api.actorKey(multisigInfo.signers[0])
                     // select account if found
-                    const index = accounts.findIndex((account) => account === multisigActor)
+                    const multisigActors: any[] = []
+                    for (let index = 0; index < multisigInfo.signers.length; index++) {
+                        const actor = await wallet.api.actorKey(multisigInfo.signers[index])
+                        multisigActors.push(actor)
+                    }
+                    const index = accounts.findIndex((account) => multisigActors.includes(account))
                     if (index !== -1) {
                         lastWallet = accounts[index]
                     } else {
@@ -199,7 +203,6 @@ class WalletProvider extends React.Component<Props, WalletProviderStates> {
                 accountsActive,
                 multisig: options.multisig ? true : false,
                 multisigAddress: options.multisig ? options.multisigAddress : '',
-                multisigActor: options.multisig ? multisigActor : '',
                 multisigID: multisigID
             })
             return true
