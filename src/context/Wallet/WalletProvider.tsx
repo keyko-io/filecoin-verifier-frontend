@@ -29,7 +29,6 @@ interface WalletProviderStates {
     dispatchNotification: any
     multisig: boolean
     multisigAddress: string
-    multisigActor: string
     multisigID: string
 }
 
@@ -65,18 +64,17 @@ class WalletProvider extends React.Component<Props, WalletProviderStates> {
             const { cookies } = this.props;
             const walletCookie = cookies.get('wallet')
             let lastWallet
-            let walletCookieIndex = - 1
+            let walletIndex = - 1
             if (walletCookie) {
                 for (let index = 0; index < accounts.length; index++) {
                     if (accounts[index] === walletCookie) {
                         lastWallet = accounts[index]
-                        walletCookieIndex = index
+                        walletIndex = index
                         break;
                     }
                 }
             }
             let multisigInfo: any = {}
-            let multisigActor: string = ''
             let multisigID: string = ''
             if (options.multisig) {
                 try {
@@ -86,7 +84,20 @@ class WalletProvider extends React.Component<Props, WalletProviderStates> {
                         multisigID = options.multisigAddress
                     }
                     multisigInfo = await wallet.api.multisigInfo(multisigID)
-                    multisigActor = await wallet.api.actorKey(multisigInfo.signers[0])
+                    // select account if found
+                    const multisigActors: any[] = []
+                    for (let index = 0; index < multisigInfo.signers.length; index++) {
+                        const actor = await wallet.api.actorKey(multisigInfo.signers[index])
+                        multisigActors.push(actor)
+                    }
+                    const index = accounts.findIndex((account) => multisigActors.includes(account))
+                    if (index !== -1) {
+                        lastWallet = accounts[index]
+                        walletIndex = index
+                    } else {
+                        this.state.dispatchNotification('Multisig address not found in wallet')
+                        return false
+                    }
                 } catch (e) {
                     this.state.dispatchNotification('Multisig not found')
                     return false
@@ -97,7 +108,7 @@ class WalletProvider extends React.Component<Props, WalletProviderStates> {
                 isLoading: false,
                 wallet: 'ledger',
                 api: wallet.api,
-                walletIndex: walletCookieIndex !== -1 ? walletCookieIndex : 0,
+                walletIndex: walletIndex !== -1 ? walletIndex : 0,
                 sign: async (param1: any, param2: any) => {
                     try {
                         const ret = await wallet.sign(param1, param2)
@@ -119,7 +130,6 @@ class WalletProvider extends React.Component<Props, WalletProviderStates> {
                 accountsActive,
                 multisig: options.multisig ? true : false,
                 multisigAddress: options.multisig ? options.multisigAddress : '',
-                multisigActor: options.multisig ? multisigActor : '',
                 multisigID: multisigID
             })
             // this.loadGithub()
@@ -143,18 +153,17 @@ class WalletProvider extends React.Component<Props, WalletProviderStates> {
             const { cookies } = this.props;
             const walletCookie = cookies.get('wallet')
             let lastWallet
-            let walletCookieIndex = - 1
+            let walletIndex = - 1
             if (walletCookie) {
                 for (let index = 0; index < accounts.length; index++) {
                     if (accounts[index] === walletCookie) {
                         lastWallet = accounts[index]
-                        walletCookieIndex = index
+                        walletIndex = index
                         break;
                     }
                 }
             }
             let multisigInfo: any = {}
-            let multisigActor: string = ''
             let multisigID: string = ''
             if (options.multisig) {
                 try {
@@ -164,7 +173,20 @@ class WalletProvider extends React.Component<Props, WalletProviderStates> {
                         multisigID = options.multisigAddress
                     }
                     multisigInfo = await wallet.api.multisigInfo(multisigID)
-                    multisigActor = await wallet.api.actorKey(multisigInfo.signers[0])
+                    // select account if found
+                    const multisigActors: any[] = []
+                    for (let index = 0; index < multisigInfo.signers.length; index++) {
+                        const actor = await wallet.api.actorKey(multisigInfo.signers[index])
+                        multisigActors.push(actor)
+                    }
+                    const index = accounts.findIndex((account) => multisigActors.includes(account))
+                    if (index !== -1) {
+                        lastWallet = accounts[index]
+                        walletIndex = index
+                    } else {
+                        this.state.dispatchNotification('Multisig address not found in wallet')
+                        return false
+                    }
                 } catch (e) {
                     this.state.dispatchNotification('Multisig not found')
                     return false
@@ -177,13 +199,12 @@ class WalletProvider extends React.Component<Props, WalletProviderStates> {
                 api: wallet.api,
                 sign: wallet.sign,
                 getAccounts: wallet.getAccounts,
-                walletIndex: walletCookieIndex !== -1 ? walletCookieIndex : 0,
+                walletIndex: walletIndex !== -1 ? walletIndex : 0,
                 activeAccount: lastWallet ? lastWallet : accounts[0],
                 accounts,
                 accountsActive,
                 multisig: options.multisig ? true : false,
                 multisigAddress: options.multisig ? options.multisigAddress : '',
-                multisigActor: options.multisig ? multisigActor : '',
                 multisigID: multisigID
             })
             return true
