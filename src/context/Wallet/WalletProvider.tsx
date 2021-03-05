@@ -64,12 +64,12 @@ class WalletProvider extends React.Component<Props, WalletProviderStates> {
             const { cookies } = this.props;
             const walletCookie = cookies.get('wallet')
             let lastWallet
-            let walletCookieIndex = - 1
+            let walletIndex = - 1
             if (walletCookie) {
                 for (let index = 0; index < accounts.length; index++) {
                     if (accounts[index] === walletCookie) {
                         lastWallet = accounts[index]
-                        walletCookieIndex = index
+                        walletIndex = index
                         break;
                     }
                 }
@@ -93,6 +93,7 @@ class WalletProvider extends React.Component<Props, WalletProviderStates> {
                     const index = accounts.findIndex((account) => multisigActors.includes(account))
                     if (index !== -1) {
                         lastWallet = accounts[index]
+                        walletIndex = index
                     } else {
                         this.state.dispatchNotification('Multisig address not found in wallet')
                         return false
@@ -107,7 +108,7 @@ class WalletProvider extends React.Component<Props, WalletProviderStates> {
                 isLoading: false,
                 wallet: 'ledger',
                 api: wallet.api,
-                walletIndex: walletCookieIndex !== -1 ? walletCookieIndex : 0,
+                walletIndex: walletIndex !== -1 ? walletIndex : 0,
                 sign: async (param1: any, param2: any) => {
                     try {
                         const ret = await wallet.sign(param1, param2)
@@ -152,12 +153,12 @@ class WalletProvider extends React.Component<Props, WalletProviderStates> {
             const { cookies } = this.props;
             const walletCookie = cookies.get('wallet')
             let lastWallet
-            let walletCookieIndex = - 1
+            let walletIndex = - 1
             if (walletCookie) {
                 for (let index = 0; index < accounts.length; index++) {
                     if (accounts[index] === walletCookie) {
                         lastWallet = accounts[index]
-                        walletCookieIndex = index
+                        walletIndex = index
                         break;
                     }
                 }
@@ -181,6 +182,7 @@ class WalletProvider extends React.Component<Props, WalletProviderStates> {
                     const index = accounts.findIndex((account) => multisigActors.includes(account))
                     if (index !== -1) {
                         lastWallet = accounts[index]
+                        walletIndex = index
                     } else {
                         this.state.dispatchNotification('Multisig address not found in wallet')
                         return false
@@ -197,7 +199,7 @@ class WalletProvider extends React.Component<Props, WalletProviderStates> {
                 api: wallet.api,
                 sign: wallet.sign,
                 getAccounts: wallet.getAccounts,
-                walletIndex: walletCookieIndex !== -1 ? walletCookieIndex : 0,
+                walletIndex: walletIndex !== -1 ? walletIndex : 0,
                 activeAccount: lastWallet ? lastWallet : accounts[0],
                 accounts,
                 accountsActive,
