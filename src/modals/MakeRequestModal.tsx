@@ -6,6 +6,9 @@ import { dispatchCustomEvent, Input, ButtonPrimary, SelectMenu, LoaderSpinner } 
 import ConfirmModal from '../pages/ConfirmModal';
 // @ts-ignore
 import LoginGithub from 'react-login-github';
+import { BurnerWallet } from '../context/Wallet/BurnerWallet';
+import WarnModal from './WarnModal';
+import { bytesToiB } from '../utils/Filters';
 
 type States = {
     address: string
@@ -62,12 +65,40 @@ class MakeRequestModal extends Component<ModalProps, States> {
 
     handleSubmit = async (e: any) => {
         e.preventDefault()
+
         if (this.state.gitHubMethod) {
-            this.handleGithubSubmit()
+            const existingAddress = await this.checkAddress()
+            existingAddress.exists === false || existingAddress.actor.length > 0 ?
+                dispatchCustomEvent({
+                    name: "create-modal", detail: {
+                        id: Math.random().toString(36).replace(/[^a-z]+/g, '').substr(0, 5),
+                        modal: <WarnModal
+                            message={existingAddress.exists === false ?
+                                `The address ${this.state.address} does not exists on the network`
+                                :
+                                `The address ${this.state.address} already has a ${bytesToiB(existingAddress.actor[0].datacap)} datacap allocation`} />
+                    }
+                })
+                :
+                this.handleGithubSubmit()
         }
+
         if (this.state.emailMethod) {
             this.handleEmailSubmit()
         }
+    }
+
+    checkAddress = async () => {
+        const wallet = new BurnerWallet()
+        await wallet.loadWallet(this.context.wallet.networkIndex)
+        let actorAddress
+        try {
+            actorAddress = await wallet.api.actorAddress(this.state.address)
+        } catch (error) {
+            return { exists: false }
+        }
+        const actor = await wallet.api.checkClient(actorAddress)
+        return { exists: true, actor }
     }
 
     handleEmailSubmit = async () => {
