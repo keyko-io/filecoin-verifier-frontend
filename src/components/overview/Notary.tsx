@@ -267,7 +267,7 @@ export default class Notary extends Component<NotaryProps, NotaryStates> {
                                         .map((clientReq: any, index: any) =>
                                             <tr key={index}>
                                                 <td><input type="checkbox" onChange={() => this.selectClientRow(clientReq.number)} checked={this.state.selectedClientRequests.includes(clientReq.number)} /></td>
-                                                <td>{clientReq.data.name} <FontAwesomeIcon icon={["fas", "search"]} id={index} onClick={(e) => this.showClientDetail(e)} /></td>
+                                                <td><FontAwesomeIcon icon={["fas", "info-circle"]} id={index} onClick={(e) => this.showClientDetail(e)} /> {clientReq.data.name} </td>
                                                 <td>{clientReq.data.address}</td>
                                                 <td>{clientReq.data.datacap}</td>
                                                 <td><a target="_blank" rel="noopener noreferrer" href={clientReq.url}>#{clientReq.number}</a></td>
