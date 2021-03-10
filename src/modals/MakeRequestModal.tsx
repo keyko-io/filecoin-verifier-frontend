@@ -84,6 +84,9 @@ class MakeRequestModal extends Component<ModalProps, States> {
     }
 
     checkAddress = async () => {
+        if (!config.networks.includes('Mainnet')) {
+            return { exists: true, actor: [] }
+        }
         const wallet = new BurnerWallet()
         await wallet.loadWallet(this.context.wallet.networkIndex)
         let actorAddress
