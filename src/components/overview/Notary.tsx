@@ -14,6 +14,8 @@ import WarnModalVerify from '../../modals/WarnModalVerify';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { tableElementFilter } from '../../utils/SortFilter';
 import Pagination from '../Pagination';
+import history from '../../context/History'
+
 
 
 type NotaryStates = {
@@ -206,6 +208,20 @@ export default class Notary extends Component<NotaryProps, NotaryStates> {
         return new Promise(res => setTimeout(res, delay));
     }
 
+    showClientDetail(e: any) {
+        const listRequestFiltered = this.context.clientRequests.filter((element: any) => tableElementFilter(this.props.searchString, element.data) === true)
+            .filter((_: any, i: any) => this.state.refPublic?.checkIndex(i))
+
+        const client = listRequestFiltered[e.currentTarget.id].data.name
+        const user = listRequestFiltered[e.currentTarget.id].owner
+        const address = listRequestFiltered[e.currentTarget.id].data.address
+        const datacap = listRequestFiltered[e.currentTarget.id].data.datacap
+
+
+        history.push('/client', { client, user, address, datacap })
+
+    }
+
     public render() {
         return (
             <div className="main">
@@ -243,7 +259,7 @@ export default class Notary extends Component<NotaryProps, NotaryStates> {
                                         .map((clientReq: any, index: any) =>
                                             <tr key={index}>
                                                 <td><input type="checkbox" onChange={() => this.selectClientRow(clientReq.number)} checked={this.state.selectedClientRequests.includes(clientReq.number)} /></td>
-                                                <td>{clientReq.data.name}</td>
+                                                <td><FontAwesomeIcon icon={["fas", "info-circle"]} id={index} onClick={(e) => this.showClientDetail(e)} /> {clientReq.data.name} </td>
                                                 <td>{clientReq.data.address}</td>
                                                 <td>{clientReq.data.datacap}</td>
                                                 <td><a target="_blank" rel="noopener noreferrer" href={clientReq.url}>#{clientReq.number}</a></td>
