@@ -84,7 +84,7 @@ class MakeRequestModal extends Component<ModalProps, States> {
     }
 
     checkAddress = async () => {
-        if (!config.networks.includes('Mainnet')) {
+        if (!config.validateAddress) {
             return { exists: true, actor: [] }
         }
         const wallet = new BurnerWallet()
