@@ -3,10 +3,14 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import Pagination from './Pagination';
 import { Data } from '../context/Data/Index'
 
-export default class TableClientDetails extends Component {
+type WelcomeClientProps = {
+    user: string
+}
+
+export default class TableClientDetails extends Component<WelcomeClientProps> {
     public static contextType = Data
 
-    constructor(props: {}) {
+    constructor(props: WelcomeClientProps) {
         super(props);
     }
 
@@ -30,10 +34,15 @@ export default class TableClientDetails extends Component {
         this.loadDetails()
     }
 
+    componentDidUpdate(prevProps: WelcomeClientProps) {
+        if (prevProps.user !== this.props.user) {
+            this.loadDetails()
+        }
+    }
+
     loadDetails = async () => {
-        const details = await this.context.searchUserIssues("ialberquilla")
+        const details = await this.context.searchUserIssues(this.props.user)
         this.setState({ details })
-        console.log(details)
     }
 
     addRef = (child: any) => {

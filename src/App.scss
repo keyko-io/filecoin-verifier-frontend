@@ -1108,7 +1108,7 @@
   left: 0;
   right: 0;
   background: #fff;
-  top: 220px;
+  top: 240px;
   border-top: 1px solid #0091ff;
   border-left: 1px solid #0091ff;
   border-right: 1px solid #0091ff;
@@ -1888,7 +1888,6 @@
   .request{
     top:130px;
     .requesttitle, .requestdata{
-      display: inline-block;
       p{
         float: left;
         padding-right: 5px;
@@ -1902,14 +1901,12 @@
       line-height: 24px;
     }
     .requestdata{
-      padding-left: 10px;
       font-family: "suisseintl";
       font-style: normal;
       font-weight: 500;
       font-size: 14px;
       line-height: 20px;
       height: 25px;
-      padding-top: 10px;
       
       .field{
         font-family: "suisseintl";

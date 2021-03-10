@@ -51,7 +51,7 @@ class ClientDetails extends Component<{}, ClientDetailsStates> {
           <div className="wrapperverifiers wrapperclients">
             <div className="tableselects" style={this.context.github.githubLogged === false ? { zIndex: -1 } : {}}>
             </div>
-            <TableClientDetails />
+            <TableClientDetails user={this.state.user} />
           </div>
         </div>
       </div>
