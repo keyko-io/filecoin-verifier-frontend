@@ -112,7 +112,7 @@ export default class TableVerifiers extends Component<TableVerifiersProps> {
     public render() {
         return (
             <div className="verifiers">
-                <div className="tableverifiers">
+                <div className="tableverifiers verifierview">
                     {this.state.verifiers.length > 0 ?
                         <table>
                             <thead>

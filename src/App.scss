@@ -480,6 +480,19 @@
     padding-top: 20px;
   }
 
+  input{
+    font-feature-settings: normal !important; 
+  }
+
+  .holdermessage{
+    padding-top: 10px !important;
+  }
+
+  .errorAddress{
+    font-feature-settings: normal !important; 
+    color: red;
+  }
+
   .css-1pck2x {
     margin-bottom: 1px !important;
     font-family: "suisseintl";
@@ -993,6 +1006,11 @@
   display: block !important;
 }
 
+
+.verifierview{
+  border-bottom: 1px solid #0091ff;
+}
+
 .verifiers {
   .tableverifiers {
     position: absolute;
@@ -1007,6 +1025,7 @@
     text-align: center;
     display: flex;
     box-sizing: border-box;
+
 
     table {
       position: absolute;
@@ -1389,6 +1408,7 @@
     left: 0;
     right: 0;
     padding:10px;
+    font-feature-settings: normal !important; 
   }
 }
 
