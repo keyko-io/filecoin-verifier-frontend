@@ -6,6 +6,8 @@ import { dispatchCustomEvent, Input, ButtonPrimary, SelectMenu, LoaderSpinner } 
 import ConfirmModal from '../pages/ConfirmModal';
 // @ts-ignore
 import LoginGithub from 'react-login-github';
+import { BurnerWallet } from '../context/Wallet/BurnerWallet';
+import { bytesToiB } from '../utils/Filters';
 
 type States = {
     address: string
@@ -19,7 +21,8 @@ type States = {
     publicProfile: string
     emailMethod: boolean,
     gitHubMethod: boolean,
-    region: string
+    region: string,
+    errorAddressMessage: string
 }
 
 type ModalProps = {
@@ -32,7 +35,7 @@ type ModalProps = {
         total_datacap: number,
         email: string,
         private_request: string,
-        github_user: string
+        github_user: string,
     }
 }
 
@@ -53,7 +56,8 @@ class MakeRequestModal extends Component<ModalProps, States> {
             publicProfile: this.props.verifier.website,
             emailMethod: false,
             gitHubMethod: true,
-            region: 'North America'
+            region: 'North America',
+            errorAddressMessage: ' '
         }
     }
 
@@ -62,12 +66,37 @@ class MakeRequestModal extends Component<ModalProps, States> {
 
     handleSubmit = async (e: any) => {
         e.preventDefault()
+
         if (this.state.gitHubMethod) {
-            this.handleGithubSubmit()
+            const existingAddress = await this.checkAddress()
+            existingAddress.exists === false || existingAddress.actor.length > 0 ?
+                this.setState({
+                    errorAddressMessage: existingAddress.exists === false ?
+                        `The address does not exists on the network` :
+                        `The address already has a ${bytesToiB(existingAddress.actor[0].datacap)} datacap allocation`
+                })
+                : this.handleGithubSubmit()
         }
+
         if (this.state.emailMethod) {
             this.handleEmailSubmit()
         }
+    }
+
+    checkAddress = async () => {
+        if (!config.validateAddress) {
+            return { exists: true, actor: [] }
+        }
+        const wallet = new BurnerWallet()
+        await wallet.loadWallet(this.context.wallet.networkIndex)
+        let actorAddress
+        try {
+            actorAddress = await wallet.api.actorAddress(this.state.address)
+        } catch (error) {
+            return { exists: false }
+        }
+        const actor = await wallet.api.checkClient(actorAddress)
+        return { exists: true, actor }
     }
 
     handleEmailSubmit = async () => {
@@ -179,8 +208,9 @@ class MakeRequestModal extends Component<ModalProps, States> {
                                 placeholder="XXXXXXXXXXX"
                                 onChange={this.handleChange}
                             />
+                            <div className="errorAddress">{this.state.errorAddressMessage}</div>
                         </div>
-                        <div className="datacapholder">
+                        <div className="datacapholder holdermessage">
                             <div className="datacap">
                                 <Input
                                     description="Datacap Request"
@@ -235,7 +265,7 @@ class MakeRequestModal extends Component<ModalProps, States> {
 
                     </div>
                     <div className="centerbutton">
-                        <div id="sendbutton">
+                        <div id="sendbutton buttonrequest">
                             {this.context.github.githubLogged || this.state.emailMethod ?
                                 <ButtonPrimary onClick={this.handleSubmit}>{this.state.submitLoading ? <LoaderSpinner /> : 'Send Request'}</ButtonPrimary>
                                 : null
