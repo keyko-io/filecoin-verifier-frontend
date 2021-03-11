@@ -36,9 +36,9 @@ class WelcomeClient extends Component<WelcomeClientProps> {
                 <div className="request">
                     <p className="requesttitle">Request data</p>
                     <p className="requestdata">
-                        <p className="field">Client</p> <p>{this.props.client}</p>
-                        <p className="field">Address</p> <p>{this.props.address}</p>
-                        <p className="field">Datacap</p> <p>{this.props.datacap}</p>
+                        <p className="field">Client:</p> <p>{this.props.client},</p>
+                        <p className="field">Address:</p> <p>{this.props.address},</p>
+                        <p className="field">Datacap:</p> <p>{this.props.datacap}</p>
                     </p>
                 </div>
             </div>
