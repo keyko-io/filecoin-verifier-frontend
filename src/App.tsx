@@ -206,7 +206,7 @@ class App extends Component<{}, States> {
                     <div className="accountentry">
                       <div>
                         <div className="datacapdata">
-                          <span className="datacap">Datacap: {bytesToiB(this.getVerifierAmount(this.context.wallet.multisigAddress))}</span>
+                          <span className="datacap">Datacap: {bytesToiB(this.getVerifierAmount(this.context.wallet.multisigID))}</span>
                           {this.context.wallet.multisig ?
                             <img src={Network} alt="network" />
                             : null}
