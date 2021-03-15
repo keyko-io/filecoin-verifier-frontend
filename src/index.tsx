@@ -20,6 +20,7 @@ import Verifiers from './pages/Verifiers';
 import './fonts/SuisseIntl-Regular.woff'
 import Miners from './pages/Miners';
 import Title from './components/Title';
+import ClientDetails from './pages/ClientDetails'
 import { CookiesProvider } from 'react-cookie';
 
 
@@ -31,11 +32,11 @@ if (window.location.host.includes('fleek')) {
 
 
 ReactDOM.render(
-  
+
   <React.StrictMode>
-    <Title/>
+    <Title />
     <CookiesProvider>
-    <WalletProvider>
+      <WalletProvider>
         <GithubProvider>
           <Wallet.Consumer>
             {wallet => (
@@ -50,6 +51,7 @@ ReactDOM.render(
                         <Route path={'/landing'} component={Landing} ></Route>
                         <Route path={'/verifiers'} component={Verifiers} ></Route>
                         <Route path={'/miners'} component={Miners} ></Route>
+                        <Route path={'/client'} component={ClientDetails} ></Route>
                       </Switch>
                     </Router>
                     <GlobalNotification style={{ bottom: 0, right: 0 }} />
@@ -60,7 +62,7 @@ ReactDOM.render(
             )}
           </Wallet.Consumer>
         </GithubProvider>
-    </WalletProvider>
+      </WalletProvider>
     </CookiesProvider>
   </React.StrictMode>,
   document.getElementById('root')
