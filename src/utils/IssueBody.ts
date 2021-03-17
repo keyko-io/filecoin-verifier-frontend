@@ -12,7 +12,7 @@ export const IssueBody = function (data: any) {
 - Addresses to be Notarized: ${data.address}
 - Notary Requested: ${data.assignees}
 
-${data.docs_url ? `Please make sure to check out the guidelines and criteria to accept datacap request for [${data.notary_name}](${data.docs_url})` : ""}
+${data.docs_url ? `Please make sure to check out the guidelines and criteria to accept Datacap request for [${data.notary_name}](${data.docs_url})` : ""}
 `
 }
 
