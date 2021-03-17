@@ -28,7 +28,9 @@
             "github_user": [
                 "Fenbushi-Filecoin"
             ],
-            "private_request": "false"
+            "private_request": "false",
+            "docs_url": "https://github.com/filecoin-project/filecoin-plus-client-onboarding/tree/main/Fenbushi%20Capital",
+            "info": "Before submitting your request, please make sure to check out the guidelines and criteria to accept Datacap request for [Fenbushi Capital](https://github.com/filecoin-project/filecoin-plus-client-onboarding/tree/main/Fenbushi%20Capital)"
         },
         {
             "id": 4,
