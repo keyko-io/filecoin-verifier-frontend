@@ -267,7 +267,7 @@ class MakeRequestModal extends Component<ModalProps, States> {
                         </div>
                         {this.props.verifier.docs_url ?
                             <div className="docsmessage">Before submitting your request, please make sure to check out the
-                            <a href={this.props.verifier.docs_url} target="_blank"> guidelines for {this.props.verifier.name} </a> and criteria to accept datacap request</div>
+                             guidelines and criteria to accept datacap request for <a href={this.props.verifier.docs_url} target="_blank">{this.props.verifier.name}</a></div>
                             :
                             null}
                     </div>
