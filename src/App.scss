@@ -474,6 +474,12 @@
   }
 }
 
+.requestmodal{
+  height: 720px;
+}
+
+
+
 .addmodal,
 .confirmmodal {
   .inputholder {
@@ -482,6 +488,10 @@
 
   input{
     font-feature-settings: normal !important; 
+  }
+
+  .buttondiv{
+    padding-top: 18px;
   }
 
   .holdermessage{
@@ -551,7 +561,7 @@
 
   .centerbutton {
     text-align: center;
-    margin-top: 10px;
+    margin-top: 15px;
     margin-bottom: 20px;
 
     button {
@@ -620,6 +630,15 @@
       letter-spacing: 0px;
       text-align: left;
     }
+  }
+
+  .docsmessage{
+    padding-top: 18px;
+    max-width: 460px;
+    left: 0;
+    right: 0;
+    margin: auto;
+    text-align: center;
   }
 }
 
@@ -1540,7 +1559,12 @@
   font-family: "suisseintl";
 
   p {
+    max-width: 600px;
     padding-bottom: 20px;
+    left: 0;
+    right: 0;
+    margin: auto;
+    text-align: center;
   }
 
   .markdown {
