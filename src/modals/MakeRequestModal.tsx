@@ -36,6 +36,7 @@ type ModalProps = {
         email: string,
         private_request: string,
         github_user: string,
+        docs_url: string
     }
 }
 
@@ -153,7 +154,9 @@ class MakeRequestModal extends Component<ModalProps, States> {
             publicprofile: this.state.publicprofile,
             contact: this.state.contact,
             assignees: this.props.verifier.github_user,
-            onboarding: true
+            onboarding: true,
+            notary_name: this.props.verifier.name,
+            docs_url: this.props.verifier.docs_url
         })
         if (response) {
             dispatchCustomEvent({
@@ -178,7 +181,7 @@ class MakeRequestModal extends Component<ModalProps, States> {
 
     render() {
         return (
-            <div className="addmodal">
+            <div className="addmodal requestmodal" style={this.props.verifier.docs_url ? {} : { height: 680 }}>
                 <form>
                     <div className="title">Datacap Allocation Request</div>
                     <div className="makerequest">
@@ -262,9 +265,13 @@ class MakeRequestModal extends Component<ModalProps, States> {
                                 : null
                             }
                         </div>
-
+                        {this.props.verifier.docs_url ?
+                            <div className="docsmessage">Before submitting your request, please make sure to check out the
+                            <a href={this.props.verifier.docs_url} target="_blank"> guidelines for {this.props.verifier.name} </a> and criteria to accept datacap request</div>
+                            :
+                            null}
                     </div>
-                    <div className="centerbutton">
+                    <div className="centerbutton buttondiv" style={this.props.verifier.docs_url ? {} : { paddingTop: 0, marginTop: 0 }}>
                         <div id="sendbutton buttonrequest">
                             {this.context.github.githubLogged || this.state.emailMethod ?
                                 <ButtonPrimary onClick={this.handleSubmit}>{this.state.submitLoading ? <LoaderSpinner /> : 'Send Request'}</ButtonPrimary>

@@ -1,5 +1,5 @@
-export const IssueBody = function (data:any) {
-return `
+export const IssueBody = function (data: any) {
+    return `
 ---
 
 # Client Allocation Questions 
@@ -12,11 +12,12 @@ return `
 - Addresses to be Notarized: ${data.address}
 - Notary Requested: ${data.assignees}
 
+${data.docs_url ? `Please make sure to check out the [guidelines for ${data.notary_name}](${data.docs_url}) and criteria to accept datacap request` : ""}
 `
 }
 
-export const IssueVerifierBody = function (data:any) {
-return `
+export const IssueVerifierBody = function (data: any) {
+    return `
 ##  Notary Request Information
 
 Please complete the following information:
