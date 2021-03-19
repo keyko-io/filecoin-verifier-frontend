@@ -146,9 +146,9 @@ export default class Notary extends Component<NotaryProps, NotaryStates> {
                     }
                     let messageID
                     if(this.context.wallet.multisig){
-                        messageID = await this.context.wallet.api.multisigVerifyClient(this.context.wallet.multisigID, address, BigInt(datacap), this.context.wallet.walletIndex)
+                        messageID = await this.context.wallet.api.multisigVerifyClient(this.context.wallet.multisigID, address, BigInt(datacap.toFixed()), this.context.wallet.walletIndex)
                     } else {
-                        messageID = await this.context.wallet.api.verifyClient(address, BigInt(datacap), this.context.wallet.walletIndex)
+                        messageID = await this.context.wallet.api.verifyClient(address, BigInt(datacap.toFixed()), this.context.wallet.walletIndex)
                     }
                     // github update
                     this.context.updateGithubVerified(request.number, messageID, address, request.data.datacap)
