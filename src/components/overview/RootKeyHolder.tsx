@@ -158,7 +158,10 @@ export default class RootKeyHolder extends Component<RootKeyHolderProps, RootKey
                     if (request.proposed === true) {
                         // for each tx
                         for (const tx of request.txs) {
-                            const messageID = await this.context.wallet.api.approveVerifier(tx.verifier, BigInt(tx.datacap), tx.signer, tx.id, this.context.wallet.walletIndex);
+                            let messageID = tx.datacap === 0 ?
+                                await this.context.wallet.api.removeVerifier(tx.verifier, tx.signer, tx.id, this.context.wallet.walletIndex)
+                                :
+                                await this.context.wallet.api.approveVerifier(tx.verifier, BigInt(tx.datacap), tx.signer, tx.id, this.context.wallet.walletIndex);
                             messageIds.push(messageID)
                             this.context.wallet.dispatchNotification('Accepting Message sent with ID: ' + messageID)
                             filfox += `#### You can check the status of the message here: https://filfox.info/en/message/${messageID}\n`
@@ -183,7 +186,11 @@ export default class RootKeyHolder extends Component<RootKeyHolderProps, RootKey
 
                                 console.log("address to propose: " + address)
 
-                                let messageID = await this.context.wallet.api.proposeVerifier(address, BigInt(datacap), this.context.wallet.walletIndex)
+                                let messageID = datacap === 0 ?
+                                    await this.context.wallet.api.proposeRemoveVerifier(address, this.context.wallet.walletIndex)
+                                    :
+                                    await this.context.wallet.api.proposeVerifier(address, BigInt(datacap), this.context.wallet.walletIndex)
+
                                 console.log("messageID: " + messageID)
                                 messageIds.push(messageID)
                                 this.context.wallet.dispatchNotification('Accepting Message sent with ID: ' + messageID)

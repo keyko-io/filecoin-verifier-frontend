@@ -35,7 +35,7 @@ interface DataProviderStates {
     sortNotaryRequests: any
     assignToIssue: any
     clients: any[]
-    clientsAmount: string 
+    clientsAmount: string
     search: any
     searchString: string
     refreshGithubData: any
@@ -165,19 +165,26 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
                 rawIssues = rawIssues.concat(dataApproved.data)
                 // Get list of pending Transactions
                 let pendingTxs = await this.props.wallet.api.pendingRootTransactions()
+
                 let verifierAndPendingRequests: any[] = []
                 for (let txs in pendingTxs) {
-                    if (pendingTxs[txs].parsed.name !== 'addVerifier') {
+                    if (pendingTxs[txs].parsed.name !== 'addVerifier' && pendingTxs[txs].parsed.name !== 'removeVerifier') {
                         continue
                     }
-                    const verifierAddress = await this.props.wallet.api.actorKey(pendingTxs[txs].parsed.params.verifier)
+                    const verifierAddress = await this.props.wallet.api.actorKey(
+                        pendingTxs[txs].parsed.name === 'removeVerifier' ?
+                            pendingTxs[txs].parsed.params
+                            :
+                            pendingTxs[txs].parsed.params.verifier
+
+                    )
                     const signerAddress = await this.props.wallet.api.actorKey(pendingTxs[txs].signers[0])
                     verifierAndPendingRequests.push({
                         id: pendingTxs[txs].id,
-                        type: pendingTxs[txs].parsed.params.cap.toString() === '0' ? 'Revoke' : 'Add',
-                        verifier: pendingTxs[txs].parsed.params.verifier,
+                        type: pendingTxs[txs].parsed.name === 'removeVerifier' ? 'Revoke' : pendingTxs[txs].parsed.params.cap.toString() === '0' ? 'Revoke' : 'Add',
+                        verifier: pendingTxs[txs].parsed.name === 'removeVerifier' ? pendingTxs[txs].parsed.params : pendingTxs[txs].parsed.params.verifier,
                         verifierAddress: verifierAddress,
-                        datacap: pendingTxs[txs].parsed.params.cap,
+                        datacap: pendingTxs[txs].parsed.name === 'removeVerifier' ? 0 : pendingTxs[txs].parsed.params.cap,
                         signer: pendingTxs[txs].signers[0],
                         signerAddress: signerAddress
                     })
@@ -296,18 +303,18 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
                     verified.push({
                         verifier: verifiedAddress.verifier,
                         verifierAccount,
-                        datacap: verifiedAddress.datacap 
+                        datacap: verifiedAddress.datacap
                     })
                 }
                 this.setState({ verified })
             },
             loadClients: async () => {
                 const clients = await this.props.wallet.api.listVerifiedClients()
-                let clientsamount = new BigNumber(0) 
+                let clientsamount = new BigNumber(0)
                 for (const txs of clients) {
                     const amountBN = new BigNumber(txs.datacap)
-                    clientsamount = amountBN.plus(clientsamount) 
-                    txs['key'] = await this.props.wallet.api.actorKey(txs.verified) 
+                    clientsamount = amountBN.plus(clientsamount)
+                    txs['key'] = await this.props.wallet.api.actorKey(txs.verified)
 
                 }
                 this.setState({ clients, clientsAmount: clientsamount.toString() })
@@ -441,7 +448,7 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
                 this.setState({ selectedNotaryRequests: selectedTxs })
             },
             clients: [],
-            clientsAmount: '', 
+            clientsAmount: '',
             clientsGithub: {},
             loadClientsGithub: async () => {
                 if (this.props.github.githubLogged === false) {
