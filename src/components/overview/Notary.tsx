@@ -22,6 +22,7 @@ type NotaryStates = {
     tabs: string
     selectedTransactions: any[]
     selectedClientRequests: any[]
+    selectedLargeClientRequests: any[]
     sortOrderVerified: number,
     orderByVerified: string,
     refVerified: any,
@@ -54,6 +55,7 @@ export default class Notary extends Component<NotaryProps, NotaryStates> {
     state = {
         selectedTransactions: [] as any[],
         selectedClientRequests: [] as any[],
+        selectedLargeClientRequests: [] as any[],
         tabs: '1',
         sortOrderVerified: -1,
         orderByVerified: "name",
@@ -73,6 +75,10 @@ export default class Notary extends Component<NotaryProps, NotaryStates> {
 
     showClientRequests = async () => {
         this.setState({ tabs: "1" })
+    }
+
+    showLargeRequests = async () => {
+        this.setState({ tabs: "3" })
     }
 
     onRefVerifiedChange = (refVerified: any) => {
@@ -184,6 +190,16 @@ export default class Notary extends Component<NotaryProps, NotaryStates> {
         this.setState({ selectedClientRequests: selectedTxs })
     }
 
+    selectLargeClientRow = (number: string) => {
+        let selectedTxs = this.state.selectedLargeClientRequests
+        if (selectedTxs.includes(number)) {
+            selectedTxs = selectedTxs.filter(item => item !== number)
+        } else {
+            selectedTxs.push(number)
+        }
+        this.setState({ selectedLargeClientRequests: selectedTxs })
+    }
+
     proposeVerifier = async () => {
         dispatchCustomEvent({
             name: "create-modal", detail: {
@@ -228,6 +244,7 @@ export default class Notary extends Component<NotaryProps, NotaryStates> {
                 <div className="tabsholder">
                     <div className="tabs">
                         <div className={this.state.tabs === "1" ? "selected" : ""} onClick={() => { this.showClientRequests() }}>Public Requests ({this.context.clientRequests.length})</div>
+                        <div className={this.state.tabs === "3" ? "selected" : ""} onClick={() => { this.showLargeRequests() }}>Large Requests ({this.context.largeClientRequests.length})</div>
                         <div className={this.state.tabs === "2" ? "selected" : ""} onClick={() => { this.showVerifiedClients() }}>Verified clients ({this.props.clients.length})</div>
                     </div>
                     <div className="tabssadd">
@@ -275,6 +292,52 @@ export default class Notary extends Component<NotaryProps, NotaryStates> {
                             search={this.props.searchString}
                         />
                         {this.context.clientRequests.length === 0 ? <div className="nodata">No client requests yet</div> : null}
+                        <div className="alignright">
+                            <ButtonSecondary className="buttonsecondary" onClick={async () => {
+                                await this.context.github.logoutGithub()
+                                await this.context.refreshGithubData()
+                            }}>
+                                Logout GitHub
+                            </ButtonSecondary>
+                        </div>
+                    </div>
+                    : null}
+                {this.state.tabs === "3" && this.context.github.githubLogged ?
+                    <div>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <td></td>
+                                    {this.publicRequestColums.map((column: any) => <td
+                                        id={column.id} onClick={this.orderPublic}>
+                                        {column.value}
+                                        <FontAwesomeIcon icon={["fas", "sort"]} />
+                                    </td>)}
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {this.state.refPublic && this.state.refPublic.checkIndex ?
+                                    this.context.largeClientRequests.filter((element: any) => tableElementFilter(this.props.searchString, element.data) === true)
+                                        .filter((_: any, i: any) => this.state.refPublic?.checkIndex(i))
+                                        .map((clientReq: any, index: any) =>
+                                            <tr key={index}>
+                                                <td><input type="checkbox" onChange={() => this.selectLargeClientRow(clientReq.number)} checked={this.state.selectedLargeClientRequests.includes(clientReq.number)} /></td>
+                                                <td><FontAwesomeIcon icon={["fas", "info-circle"]} id={index} onClick={(e) => this.showClientDetail(e)} /> {clientReq.data.name} </td>
+                                                <td>{clientReq.data.address}</td>
+                                                <td>{clientReq.data.datacap}</td>
+                                                <td><a target="_blank" rel="noopener noreferrer" href={clientReq.url}>#{clientReq.number}</a></td>
+                                            </tr>
+                                        ) : null}
+                            </tbody>
+                        </table>
+                        <Pagination
+                            elements={this.context.largeClientRequests}
+                            maxElements={10}
+                            ref={this.onRefPublicChange}
+                            refresh={() => this.setState({})}
+                            search={this.props.searchString}
+                        />
+                        {this.context.largeClientRequests.length === 0 ? <div className="nodata">No client requests yet</div> : null}
                         <div className="alignright">
                             <ButtonSecondary className="buttonsecondary" onClick={async () => {
                                 await this.context.github.logoutGithub()
