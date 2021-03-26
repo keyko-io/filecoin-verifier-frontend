@@ -157,7 +157,7 @@ class MakeRequestModal extends Component<ModalProps, States> {
                 region: this.state.region,
                 publicprofile: this.state.publicprofile,
                 contact: this.state.contact,
-                assignees: config.largeClientRequestAssign,
+                assigness: config.lotusNodes[this.context.wallet.networkIndex].largeClientRequestAssign,
                 onboarding: true,
                 // notary_name: this.props.verifier.name,
                 // docs_url: this.props.verifier.docs_url

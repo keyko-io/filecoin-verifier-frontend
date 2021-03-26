@@ -12,7 +12,6 @@ export const config = {
     defaultAssign: ['philippbanhardt'],
     validateAddress: process.env.REACT_APP_VALIDATE_ADDRESS || true,
     largeClientRequest: 549755800000000,
-    largeClientRequestAssign: ['philippbanhardt', 'jernejpregelj'],
     lotusNodes: [{
         name: 'Mainnet',
         code: 461,
@@ -21,7 +20,8 @@ export const config = {
         notaryRepo: 'notary-governance',
         notaryOwner: 'filecoin-project',
         rkhMultisig: 'f080',
-        rkhtreshold: 2
+        rkhtreshold: 2,
+        largeClientRequestAssign: ['philippbanhardt'],
     }, {
         name: 'Nerpanet',
         code: 1,
@@ -30,7 +30,8 @@ export const config = {
         notaryRepo: 'filecoin-notaries-onboarding',
         notaryOwner: 'keyko-io',
         rkhMultisig: 't080',
-        rkhtreshold: 1
+        rkhtreshold: 1,
+        largeClientRequestAssign: ['jernejpregelj', 'ialberquilla'],
     }, {
         name: 'Localhost',
         code: 1,
@@ -39,7 +40,8 @@ export const config = {
         notaryRepo: 'filecoin-notaries-onboarding',
         notaryOwner: 'keyko-io',
         rkhMultisig: 't080',
-        rkhtreshold: 2
+        rkhtreshold: 2,
+        largeClientRequestAssign: ['jernejpregelj', 'ialberquilla'],
     }],
     datacapExt: [
         { value: "1", name: "B" },
