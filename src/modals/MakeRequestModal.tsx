@@ -4,6 +4,7 @@ import { config } from '../config'
 // @ts-ignore
 import { dispatchCustomEvent, Input, ButtonPrimary, SelectMenu, LoaderSpinner } from "slate-react-system";
 import ConfirmModal from '../pages/ConfirmModal';
+import { anyToBytes } from "../utils/Filters"
 // @ts-ignore
 import LoginGithub from 'react-login-github';
 import { BurnerWallet } from '../context/Wallet/BurnerWallet';
@@ -146,18 +147,35 @@ class MakeRequestModal extends Component<ModalProps, States> {
 
     handleGithubSubmit = async () => {
         this.setState({ submitLoading: true })
-        const response = await this.context.createRequest({
-            address: this.state.address,
-            datacap: this.state.datacap + this.state.datacapExt,
-            organization: this.state.organization,
-            region: this.state.region,
-            publicprofile: this.state.publicprofile,
-            contact: this.state.contact,
-            assignees: this.props.verifier.github_user,
-            onboarding: true,
-            notary_name: this.props.verifier.name,
-            docs_url: this.props.verifier.docs_url
-        })
+        let response = ''
+        const datacap = anyToBytes(this.state.datacap + this.state.datacapExt)
+        if (datacap > config.largeClientRequest) {
+            response = await this.context.createRequest({
+                address: this.state.address,
+                datacap: this.state.datacap + this.state.datacapExt,
+                organization: this.state.organization,
+                region: this.state.region,
+                publicprofile: this.state.publicprofile,
+                contact: this.state.contact,
+                assigness: config.lotusNodes[this.context.wallet.networkIndex].largeClientRequestAssign,
+                onboarding: true,
+                // notary_name: this.props.verifier.name,
+                // docs_url: this.props.verifier.docs_url
+            })
+        } else {
+            response = await this.context.createRequest({
+                address: this.state.address,
+                datacap: this.state.datacap + this.state.datacapExt,
+                organization: this.state.organization,
+                region: this.state.region,
+                publicprofile: this.state.publicprofile,
+                contact: this.state.contact,
+                assignees: this.props.verifier.github_user,
+                onboarding: true,
+                notary_name: this.props.verifier.name,
+                docs_url: this.props.verifier.docs_url
+            })
+        } 
         if (response) {
             dispatchCustomEvent({
                 name: "create-modal", detail: {
@@ -244,7 +262,7 @@ class MakeRequestModal extends Component<ModalProps, States> {
                             </div>
                         </div>
                         <div className="methodselection">
-                            <div className="methodlabel">Select the method to send your request</div>
+                            <div className="methodlabel"></div>
                             <div className="methodtype">
                                 <input
                                     type="radio"

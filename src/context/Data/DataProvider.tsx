@@ -6,12 +6,14 @@ import { IssueBody } from '../../utils/IssueBody'
 import BigNumber from 'bignumber.js'
 import { tableSort } from '../../utils/SortFilter';
 import { v4 as uuidv4 } from 'uuid';
+import { anyToBytes } from "../../utils/Filters"
 const utils = require('@keyko-io/filecoin-verifier-tools/utils/issue-parser')
 const parser = require('@keyko-io/filecoin-verifier-tools/utils/notary-issue-parser')
 
 interface DataProviderStates {
     loadClientRequests: any
     clientRequests: any[]
+    largeClientRequests: any[]
     loadNotificationClientRequests: any
     notificationClientRequests: any[]
     loadVerifierAndPendingRequests: any
@@ -54,7 +56,7 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
         this.state = {
             loadClientRequests: async () => {
                 if (this.props.github.githubLogged === false) {
-                    this.setState({ clientRequests: [] })
+                    this.setState({ clientRequests: [], largeClientRequests: [] })
                     return
                 }
                 const user = await this.props.github.githubOcto.users.getAuthenticated();
@@ -66,19 +68,30 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
                     labels: 'state:Verifying'
                 })
                 const issues: any[] = []
+                const largeissues: any[] = []
                 for (const rawIssue of rawIssues.data) {
                     const data = utils.parseIssue(rawIssue.body)
                     if (data.correct) {
-                        issues.push({
-                            number: rawIssue.number,
-                            url: rawIssue.html_url,
-                            owner: rawIssue.user.login,
-                            data
-                        })
+                        const datacap = anyToBytes(data.datacap)
+                        if (datacap > config.largeClientRequest) {
+                            largeissues.push({
+                                number: rawIssue.number,
+                                url: rawIssue.html_url,
+                                owner: rawIssue.user.login,
+                                data
+                            })
+                        } else {
+                            issues.push({
+                                number: rawIssue.number,
+                                url: rawIssue.html_url,
+                                owner: rawIssue.user.login,
+                                data
+                            })
+                        }
                     }
                 }
                 this.setState({
-                    clientRequests: issues
+                    clientRequests: issues, largeClientRequests: largeissues
                 })
             },
             searchUserIssues: async (user: string) => {
@@ -104,9 +117,10 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
                 return issues
             },
             clientRequests: [],
+            largeClientRequests: [],
             loadNotificationClientRequests: async () => {
                 if (this.props.github.githubLogged === false) {
-                    this.setState({ clientRequests: [] })
+                    this.setState({ clientRequests: [], largeClientRequests: [] })
                     return
                 }
                 const rawIssues = await this.props.github.githubOcto.issues.listForRepo({
