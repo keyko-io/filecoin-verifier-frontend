@@ -63,7 +63,7 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
                 const rawIssues = await this.props.github.githubOcto.issues.listForRepo({
                     owner: config.onboardingOwner,
                     repo: config.onboardingClientRepo,
-                    assignee: user.data.login,
+                    assignee: '*',
                     state: 'open',
                     labels: 'state:Verifying'
                 })
@@ -71,7 +71,7 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
                 const largeissues: any[] = []
                 for (const rawIssue of rawIssues.data) {
                     const data = utils.parseIssue(rawIssue.body)
-                    if (data.correct) {
+                    if (data.correct && rawIssue.user.login === user.data.login) {
                         const datacap = anyToBytes(data.datacap)
                         if (datacap > config.largeClientRequest) {
                             largeissues.push({
