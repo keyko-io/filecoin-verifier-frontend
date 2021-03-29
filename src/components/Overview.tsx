@@ -18,6 +18,7 @@ export default class Overview extends Component<{}, OverviewStates> {
     }
 
     componentDidMount() {
+        this.context.github.checkToken()
         this.loadData()
         this.interval = setInterval(() => { this.loadData() }, 5 * 60 * 1000);
     }
