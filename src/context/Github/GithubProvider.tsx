@@ -35,6 +35,7 @@ export default class WalletProvider extends React.Component<{}, WalletProviderSt
         githubOcto: {} as any,
         githubOctoGeneric: { logged: false } as any,
         loginGithub: async (code: string, onboarding?: boolean) => {
+            console.log('code', code)
             try {
                 const authrequest = await fetch(config.apiUri + '/api/v1/github', {
                     method: 'POST',
