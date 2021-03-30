@@ -64,6 +64,7 @@ class MakeRequestModal extends Component<ModalProps, States> {
     }
 
     componentDidMount() {
+        this.context.github.checkToken()
     }
 
     handleSubmit = async (e: any) => {
@@ -175,7 +176,7 @@ class MakeRequestModal extends Component<ModalProps, States> {
                 notary_name: this.props.verifier.name,
                 docs_url: this.props.verifier.docs_url
             })
-        } 
+        }
         if (response) {
             dispatchCustomEvent({
                 name: "create-modal", detail: {
