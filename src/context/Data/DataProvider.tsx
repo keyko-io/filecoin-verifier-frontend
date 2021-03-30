@@ -35,7 +35,7 @@ interface DataProviderStates {
     sortNotaryRequests: any
     assignToIssue: any
     clients: any[]
-    clientsAmount: string 
+    clientsAmount: string
     search: any
     searchString: string
     refreshGithubData: any
@@ -185,7 +185,7 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
                 // For each issue
                 for (const rawIssue of rawIssues) {
                     const data = parser.parseIssue(rawIssue.body, rawIssue.title)
-                    if (data.correct !== true) continue
+                    //if (data.correct !== true) continue
                     // get comments
                     const rawComments = await this.props.github.githubOctoGeneric.octokit.issues.listComments({
                         owner: config.lotusNodes[this.props.wallet.networkIndex].notaryOwner,
@@ -296,18 +296,18 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
                     verified.push({
                         verifier: verifiedAddress.verifier,
                         verifierAccount,
-                        datacap: verifiedAddress.datacap 
+                        datacap: verifiedAddress.datacap
                     })
                 }
                 this.setState({ verified })
             },
             loadClients: async () => {
                 const clients = await this.props.wallet.api.listVerifiedClients()
-                let clientsamount = new BigNumber(0) 
+                let clientsamount = new BigNumber(0)
                 for (const txs of clients) {
                     const amountBN = new BigNumber(txs.datacap)
-                    clientsamount = amountBN.plus(clientsamount) 
-                    txs['key'] = await this.props.wallet.api.actorKey(txs.verified) 
+                    clientsamount = amountBN.plus(clientsamount)
+                    txs['key'] = await this.props.wallet.api.actorKey(txs.verified)
 
                 }
                 this.setState({ clients, clientsAmount: clientsamount.toString() })
@@ -441,7 +441,7 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
                 this.setState({ selectedNotaryRequests: selectedTxs })
             },
             clients: [],
-            clientsAmount: '', 
+            clientsAmount: '',
             clientsGithub: {},
             loadClientsGithub: async () => {
                 if (this.props.github.githubLogged === false) {
