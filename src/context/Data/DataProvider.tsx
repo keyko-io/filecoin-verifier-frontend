@@ -71,7 +71,7 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
                 const largeissues: any[] = []
                 for (const rawIssue of rawIssues.data) {
                     const data = utils.parseIssue(rawIssue.body)
-                    if (data.correct && rawIssue.user.login === user.data.login) {
+                    if (data.correct && rawIssue.assignees.find((a: any) => a.login === user.data.login) !== undefined) {
                         const datacap = anyToBytes(data.datacap)
                         if (datacap > config.largeClientRequest) {
                             largeissues.push({
