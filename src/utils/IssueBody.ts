@@ -14,7 +14,7 @@ export const IssueBody = function (data: any, user: string) {
 
 ${data.docs_url ? `Please make sure to check out the guidelines and criteria to accept Datacap request for [${data.notary_name}](${data.docs_url})` : ""}
 
-@${user} Please subscribe to the issue to be aware of updates, notaries may request more information on that issue
+@${user} Please subscribe to notifications for this Issue to be aware of updates. Notaries may request additional information on the Issue.
 `
 }
 
