@@ -1187,7 +1187,7 @@
 .errormodal,
 .confirmmodal {
   width: 570px;
-  height: 454px;
+  height: 520px;
 
   .title {
     text-align: center;
@@ -1206,6 +1206,17 @@
     font-size: 16px;
     line-height: 32px;
     max-width: 350px;
+    margin: auto;
+  }
+
+  .warn {
+    text-align: center;
+    font-family: "suisseintl";
+    font-style: normal;
+    font-weight: normal;
+    font-size: 16px;
+    line-height: 32px;
+    max-width: 5000px;
     margin: auto;
   }
 
