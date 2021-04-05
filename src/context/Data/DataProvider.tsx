@@ -433,11 +433,12 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
             },
             createRequest: async (data: any) => {
                 try {
+                    const user = (await this.props.github.githubOcto.users.getAuthenticated()).data.login
                     const issue = await this.props.github.githubOcto.issues.create({
                         owner: config.onboardingOwner,
                         repo: config.onboardingClientRepo,
                         title: 'Client Allocation Request for: ' + data.organization,
-                        body: IssueBody(data)
+                        body: IssueBody(data, user)
                     });
                     if (issue.status === 201) {
                         // this.state.dispatchNotification('Request submited as #' + issue.data.number)

@@ -1,4 +1,4 @@
-export const IssueBody = function (data: any) {
+export const IssueBody = function (data: any, user: string) {
     return `
 ---
 
@@ -13,6 +13,8 @@ export const IssueBody = function (data: any) {
 - Notary Requested: ${data.assignees}
 
 ${data.docs_url ? `Please make sure to check out the guidelines and criteria to accept Datacap request for [${data.notary_name}](${data.docs_url})` : ""}
+
+@${user} Please subscribe to the issue to be aware of updates, notaries may request more information on that issue
 `
 }
 
