@@ -3,6 +3,8 @@ export const config = {
     apiToken: process.env.REACT_APP_API_TOKEN || '',
     onboardingClientRepo: process.env.REACT_APP_ONBOARDING_REPO || 'filecoin-clients-onboarding-test',
     onboardingOwner: process.env.REACT_APP_ONBOARDING_REPO_OWNER || 'keyko-io',
+    onboardingLargeClientRepo: process.env.REACT_APP_ONBOARDING_REPO || 'filecoin-large-clients-onboarding',
+    onboardingLargeOwner: process.env.REACT_APP_ONBOARDING_REPO_OWNER || 'keyko-io',
     githubApp: process.env.REACT_APP_GITHUB_APP || 'Iv1.10e7aaed4654db3c',
     oauthUri: process.env.REACT_APP_OAUTH_URI || 'https://plus.fil.org/oauth/',
     networks: process.env.REACT_APP_NETWORKS || 'Mainnet,Nerpanet',

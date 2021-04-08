@@ -68,26 +68,34 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
                     labels: 'state:Verifying'
                 })
                 const issues: any[] = []
-                const largeissues: any[] = []
                 for (const rawIssue of rawIssues.data) {
                     const data = utils.parseIssue(rawIssue.body)
                     if (data.correct && rawIssue.assignees.find((a: any) => a.login === user.data.login) !== undefined) {
-                        const datacap = anyToBytes(data.datacap)
-                        if (datacap > config.largeClientRequest) {
-                            largeissues.push({
-                                number: rawIssue.number,
-                                url: rawIssue.html_url,
-                                owner: rawIssue.user.login,
-                                data
-                            })
-                        } else {
-                            issues.push({
-                                number: rawIssue.number,
-                                url: rawIssue.html_url,
-                                owner: rawIssue.user.login,
-                                data
-                            })
-                        }
+                        issues.push({
+                            number: rawIssue.number,
+                            url: rawIssue.html_url,
+                            owner: rawIssue.user.login,
+                            data
+                        })
+                    }
+                }
+                const rawLargeIssues = await this.props.github.githubOcto.issues.listForRepo({
+                    owner: config.onboardingLargeOwner,
+                    repo: config.onboardingLargeClientRepo,
+                    assignee: '*',
+                    state: 'open',
+                    labels: 'state:Verifying'
+                })
+                const largeissues: any[] = []
+                for (const rawLargeIssue of rawLargeIssues.data) {
+                    const data = utils.parseIssue(rawLargeIssue.body)
+                    if (data.correct && rawLargeIssue.assignees.find((a: any) => a.login === user.data.login) !== undefined) {
+                        largeissues.push({
+                            number: rawLargeIssue.number,
+                            url: rawLargeIssue.html_url,
+                            owner: rawLargeIssue.user.login,
+                            data
+                        })
                     }
                 }
                 this.setState({
