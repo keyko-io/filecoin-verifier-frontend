@@ -90,12 +90,36 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
                 for (const rawLargeIssue of rawLargeIssues.data) {
                     const data = utils.parseIssue(rawLargeIssue.body)
                     if (data.correct && rawLargeIssue.assignees.find((a: any) => a.login === user.data.login) !== undefined) {
-                        largeissues.push({
-                            number: rawLargeIssue.number,
-                            url: rawLargeIssue.html_url,
-                            owner: rawLargeIssue.user.login,
-                            data
-                        })
+                        try {
+                            const rawLargeClientComments = await this.props.github.githubOcto.issues.listComments({
+                                owner: config.onboardingLargeOwner,
+                                repo: config.onboardingLargeClientRepo,
+                                issue_number: rawLargeIssue.number,
+                            })
+                            // loop over comments
+                            for (const rawLargeClientComment of rawLargeClientComments.data) {
+                                const comment = parser.parseMultipleApproveComment(rawLargeClientComment.body)
+                                // found correct comment
+                                if (comment.approvedMessage && comment.correct) {
+                                    let largeRequest: any = {
+                                        issue_number: rawLargeIssue.number,
+                                        issue_Url: rawLargeIssue.html_url,
+                                        addresses: comment.addresses,
+                                        datacaps: comment.datacaps
+                                    }
+                                    if (rawLargeIssue.labels.findIndex((label: any) => label.name === 'status:StartSignOnchain') !== -1) {
+                                        largeRequest.proposed = true
+                                    }
+                                    if (rawLargeIssue.labels.findIndex((label: any) => label.name === 'status:Approved') !== -1) {
+                                        largeRequest.proposed = false
+                                    }
+                                    largeissues.push(largeRequest)
+                                    break
+                                }
+                            }
+                        } catch (e) {
+                            // console.log(e)
+                        }
                     }
                 }
                 this.setState({
