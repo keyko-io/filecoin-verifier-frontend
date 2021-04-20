@@ -206,7 +206,7 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
                 // For each issue
                 for (const rawIssue of rawIssues) {
                     const data = parser.parseIssue(rawIssue.body, rawIssue.title)
-                    if (data.correct !== true) continue
+                    //if (data.correct !== true) continue
                     // get comments
                     const rawComments = await this.props.github.githubOctoGeneric.octokit.issues.listComments({
                         owner: config.lotusNodes[this.props.wallet.networkIndex].notaryOwner,
