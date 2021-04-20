@@ -90,7 +90,6 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
                 const largeissues: any[] = []
                 for (const rawLargeIssue of rawLargeIssues.data) {
                     const data = largeutils.parseIssue(rawLargeIssue.body)
-                    console.log(data)
                     if (data.correct && rawLargeIssue.assignees.find((a: any) => a.login === user.data.login) !== undefined) {
                         try {
                             const rawLargeClientComments = await this.props.github.githubOcto.issues.listComments({
@@ -101,7 +100,6 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
                             // loop over comments
                             for (const rawLargeClientComment of rawLargeClientComments.data) {
                                 const comment = parser.parseApproveComment(rawLargeClientComment.body)
-                                console.log(comment)
                                 // found correct comment
                                 if (comment.approvedMessage && comment.correct) {
                                     let largeRequest: any = {
