@@ -8,6 +8,7 @@ import { tableSort } from '../../utils/SortFilter';
 import { v4 as uuidv4 } from 'uuid';
 import { anyToBytes } from "../../utils/Filters"
 const utils = require('@keyko-io/filecoin-verifier-tools/utils/issue-parser')
+const largeutils = require('@keyko-io/filecoin-verifier-tools/utils/large-issue-parser')
 const parser = require('@keyko-io/filecoin-verifier-tools/utils/notary-issue-parser')
 
 interface DataProviderStates {
@@ -88,7 +89,8 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
                 })
                 const largeissues: any[] = []
                 for (const rawLargeIssue of rawLargeIssues.data) {
-                    const data = utils.parseIssue(rawLargeIssue.body)
+                    const data = largeutils.parseIssue(rawLargeIssue.body)
+                    console.log(data)
                     if (data.correct && rawLargeIssue.assignees.find((a: any) => a.login === user.data.login) !== undefined) {
                         try {
                             const rawLargeClientComments = await this.props.github.githubOcto.issues.listComments({
@@ -98,14 +100,18 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
                             })
                             // loop over comments
                             for (const rawLargeClientComment of rawLargeClientComments.data) {
-                                const comment = parser.parseMultipleApproveComment(rawLargeClientComment.body)
+                                const comment = parser.parseApproveComment(rawLargeClientComment.body)
+                                console.log(comment)
                                 // found correct comment
                                 if (comment.approvedMessage && comment.correct) {
                                     let largeRequest: any = {
                                         issue_number: rawLargeIssue.number,
                                         issue_Url: rawLargeIssue.html_url,
-                                        addresses: comment.addresses,
-                                        datacaps: comment.datacaps
+                                        address: comment.address,
+                                        datacap: comment.datacap,
+                                        url: rawLargeIssue.html_url,
+                                        number: rawLargeIssue.number,
+                                        data
                                     }
                                     if (rawLargeIssue.labels.findIndex((label: any) => label.name === 'status:StartSignOnchain') !== -1) {
                                         largeRequest.proposed = true

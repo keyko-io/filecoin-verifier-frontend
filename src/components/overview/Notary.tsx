@@ -26,6 +26,9 @@ type NotaryStates = {
     sortOrderVerified: number,
     orderByVerified: string,
     refVerified: any,
+    regLargePublic: any,
+    sortOrderLargePublic: number,
+    orderByLargePublic: string,
     sortOrderPublic: number,
     orderByPublic: string,
     refPublic: any
@@ -52,6 +55,13 @@ export default class Notary extends Component<NotaryProps, NotaryStates> {
         { id: "audittrail", value: "Audit Trail" }
     ]
 
+    largeRequestColums = [
+        { id: "name", value: "Client" },
+        { id: "address", value: "Address" },
+        { id: "datacap", value: "Datacap" },
+        { id: "audittrail", value: "Audit Trail" }
+    ]
+
     state = {
         selectedTransactions: [] as any[],
         selectedClientRequests: [] as any[],
@@ -62,7 +72,10 @@ export default class Notary extends Component<NotaryProps, NotaryStates> {
         refVerified: {} as any,
         sortOrderPublic: -1,
         orderByPublic: "name",
-        refPublic: {} as any
+        sortOrderLargePublic: -1,
+        orderByLargePublic: "name",
+        refPublic: {} as any,
+        regLargePublic: {} as any
     }
 
     componentDidMount() {
@@ -87,6 +100,10 @@ export default class Notary extends Component<NotaryProps, NotaryStates> {
 
     onRefPublicChange = (refPublic: any) => {
         this.setState({ refPublic });
+    };
+
+    onRefLargePublicChange = (regLargePublic: any) => {
+        this.setState({ regLargePublic });
     };
 
     requestDatacap = () => {
@@ -219,6 +236,10 @@ export default class Notary extends Component<NotaryProps, NotaryStates> {
         this.setState({ orderByPublic: orderBy, sortOrderPublic: sortOrder })
     }
 
+    orderLargePublic = async (e: any) => {
+        const { orderBy, sortOrder } = await this.context.sortRequests(e, this.state.orderByLargePublic, this.state.sortOrderLargePublic)
+        this.setState({ orderByLargePublic: orderBy, sortOrderLargePublic: sortOrder })
+    }
 
     timeout(delay: number) {
         return new Promise(res => setTimeout(res, delay));
@@ -308,23 +329,23 @@ export default class Notary extends Component<NotaryProps, NotaryStates> {
                             <thead>
                                 <tr>
                                     <td></td>
-                                    {this.publicRequestColums.map((column: any) => <td
-                                        id={column.id} onClick={this.orderPublic}>
+                                    {this.largeRequestColums.map((column: any) => <td
+                                        id={column.id} onClick={this.orderLargePublic}>
                                         {column.value}
                                         <FontAwesomeIcon icon={["fas", "sort"]} />
                                     </td>)}
                                 </tr>
                             </thead>
                             <tbody>
-                                {this.state.refPublic && this.state.refPublic.checkIndex ?
+                                {this.state.regLargePublic && this.state.regLargePublic.checkIndex ?
                                     this.context.largeClientRequests.filter((element: any) => tableElementFilter(this.props.searchString, element.data) === true)
-                                        .filter((_: any, i: any) => this.state.refPublic?.checkIndex(i))
+                                        .filter((_: any, i: any) => this.state.regLargePublic?.checkIndex(i))
                                         .map((clientReq: any, index: any) =>
                                             <tr key={index}>
                                                 <td><input type="checkbox" onChange={() => this.selectLargeClientRow(clientReq.number)} checked={this.state.selectedLargeClientRequests.includes(clientReq.number)} /></td>
                                                 <td><FontAwesomeIcon icon={["fas", "info-circle"]} id={index} onClick={(e) => this.showClientDetail(e)} /> {clientReq.data.name} </td>
-                                                <td>{clientReq.data.address}</td>
-                                                <td>{clientReq.data.datacap}</td>
+                                                <td>{clientReq.address}</td>
+                                                <td>{clientReq.datacap}</td>
                                                 <td><a target="_blank" rel="noopener noreferrer" href={clientReq.url}>#{clientReq.number}</a></td>
                                             </tr>
                                         ) : null}
@@ -333,11 +354,11 @@ export default class Notary extends Component<NotaryProps, NotaryStates> {
                         <Pagination
                             elements={this.context.largeClientRequests}
                             maxElements={10}
-                            ref={this.onRefPublicChange}
+                            ref={this.onRefLargePublicChange}
                             refresh={() => this.setState({})}
                             search={this.props.searchString}
                         />
-                        {this.context.largeClientRequests.length === 0 ? <div className="nodata">No client requests yet</div> : null}
+                        {this.context.largeClientRequests.length === 0 ? <div className="nodata">No large client requests yet</div> : null}
                         <div className="alignright">
                             <ButtonSecondary className="buttonsecondary" onClick={async () => {
                                 await this.context.github.logoutGithub()
