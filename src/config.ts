@@ -11,7 +11,7 @@ export const config = {
     minersUrl: 'https://raw.githubusercontent.com/filecoin-project/filecoin-plus-client-onboarding/main/miners.md',
     defaultAssign: ['philippbanhardt'],
     validateAddress: process.env.REACT_APP_VALIDATE_ADDRESS || true,
-    largeClientRequest: 549755800000000,
+    largeClientRequest: 5497558000000000000000000,
     lotusNodes: [{
         name: 'Mainnet',
         code: 461,
