@@ -6,12 +6,14 @@ import { IssueBody } from '../../utils/IssueBody'
 import BigNumber from 'bignumber.js'
 import { tableSort } from '../../utils/SortFilter';
 import { v4 as uuidv4 } from 'uuid';
+import { anyToBytes } from "../../utils/Filters"
 const utils = require('@keyko-io/filecoin-verifier-tools/utils/issue-parser')
 const parser = require('@keyko-io/filecoin-verifier-tools/utils/notary-issue-parser')
 
 interface DataProviderStates {
     loadClientRequests: any
     clientRequests: any[]
+    largeClientRequests: any[]
     loadNotificationClientRequests: any
     notificationClientRequests: any[]
     loadVerifierAndPendingRequests: any
@@ -54,31 +56,42 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
         this.state = {
             loadClientRequests: async () => {
                 if (this.props.github.githubLogged === false) {
-                    this.setState({ clientRequests: [] })
+                    this.setState({ clientRequests: [], largeClientRequests: [] })
                     return
                 }
                 const user = await this.props.github.githubOcto.users.getAuthenticated();
                 const rawIssues = await this.props.github.githubOcto.issues.listForRepo({
                     owner: config.onboardingOwner,
                     repo: config.onboardingClientRepo,
-                    assignee: user.data.login,
+                    assignee: '*',
                     state: 'open',
                     labels: 'state:Verifying'
                 })
                 const issues: any[] = []
+                const largeissues: any[] = []
                 for (const rawIssue of rawIssues.data) {
                     const data = utils.parseIssue(rawIssue.body)
-                    if (data.correct) {
-                        issues.push({
-                            number: rawIssue.number,
-                            url: rawIssue.html_url,
-                            owner: rawIssue.user.login,
-                            data
-                        })
+                    if (data.correct && rawIssue.assignees.find((a: any) => a.login === user.data.login) !== undefined) {
+                        const datacap = anyToBytes(data.datacap)
+                        if (datacap > config.largeClientRequest) {
+                            largeissues.push({
+                                number: rawIssue.number,
+                                url: rawIssue.html_url,
+                                owner: rawIssue.user.login,
+                                data
+                            })
+                        } else {
+                            issues.push({
+                                number: rawIssue.number,
+                                url: rawIssue.html_url,
+                                owner: rawIssue.user.login,
+                                data
+                            })
+                        }
                     }
                 }
                 this.setState({
-                    clientRequests: issues
+                    clientRequests: issues, largeClientRequests: largeissues
                 })
             },
             searchUserIssues: async (user: string) => {
@@ -104,9 +117,10 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
                 return issues
             },
             clientRequests: [],
+            largeClientRequests: [],
             loadNotificationClientRequests: async () => {
                 if (this.props.github.githubLogged === false) {
-                    this.setState({ clientRequests: [] })
+                    this.setState({ clientRequests: [], largeClientRequests: [] })
                     return
                 }
                 const rawIssues = await this.props.github.githubOcto.issues.listForRepo({
@@ -165,19 +179,26 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
                 rawIssues = rawIssues.concat(dataApproved.data)
                 // Get list of pending Transactions
                 let pendingTxs = await this.props.wallet.api.pendingRootTransactions()
+
                 let verifierAndPendingRequests: any[] = []
                 for (let txs in pendingTxs) {
-                    if (pendingTxs[txs].parsed.name !== 'addVerifier') {
+                    if (pendingTxs[txs].parsed.name !== 'addVerifier' && pendingTxs[txs].parsed.name !== 'removeVerifier') {
                         continue
                     }
-                    const verifierAddress = await this.props.wallet.api.actorKey(pendingTxs[txs].parsed.params.verifier)
+                    const verifierAddress = await this.props.wallet.api.actorKey(
+                        pendingTxs[txs].parsed.name === 'removeVerifier' ?
+                            pendingTxs[txs].parsed.params
+                            :
+                            pendingTxs[txs].parsed.params.verifier
+
+                    )
                     const signerAddress = await this.props.wallet.api.actorKey(pendingTxs[txs].signers[0])
                     verifierAndPendingRequests.push({
                         id: pendingTxs[txs].id,
-                        type: pendingTxs[txs].parsed.params.cap.toString() === '0' ? 'Revoke' : 'Add',
-                        verifier: pendingTxs[txs].parsed.params.verifier,
+                        type: pendingTxs[txs].parsed.name === 'removeVerifier' ? 'Revoke' : pendingTxs[txs].parsed.params.cap.toString() === '0' ? 'Revoke' : 'Add',
+                        verifier: pendingTxs[txs].parsed.name === 'removeVerifier' ? pendingTxs[txs].parsed.params : pendingTxs[txs].parsed.params.verifier,
                         verifierAddress: verifierAddress,
-                        datacap: pendingTxs[txs].parsed.params.cap,
+                        datacap: pendingTxs[txs].parsed.name === 'removeVerifier' ? 0 : pendingTxs[txs].parsed.params.cap,
                         signer: pendingTxs[txs].signers[0],
                         signerAddress: signerAddress
                     })
@@ -412,11 +433,12 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
             },
             createRequest: async (data: any) => {
                 try {
+                    const user = (await this.props.github.githubOcto.users.getAuthenticated()).data.login
                     const issue = await this.props.github.githubOcto.issues.create({
                         owner: config.onboardingOwner,
                         repo: config.onboardingClientRepo,
                         title: 'Client Allocation Request for: ' + data.organization,
-                        body: IssueBody(data)
+                        body: IssueBody(data, user)
                     });
                     if (issue.status === 201) {
                         // this.state.dispatchNotification('Request submited as #' + issue.data.number)

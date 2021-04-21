@@ -30,6 +30,7 @@ class ConfirmModal extends Component<ConfirmModalProps> {
                                 <div className="description">Your request has been sent. You can find the github issue
                                 <a target="_blank" rel="noopener noreferrer" href={this.props.url}> here</a>
                                 </div>
+                                <div className="warn">Please subscribe to notifications for this Issue to be aware of updates. Notaries may request additional information on the Issue.</div>
                                 <div className="img"><img src={Sent} alt={"sent message"} /></div>
                                 <div className="button"><ButtonPrimary onClick={this.handleSubmit}>Return</ButtonPrimary> </div>
                             </> :

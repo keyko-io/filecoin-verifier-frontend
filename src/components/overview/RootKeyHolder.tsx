@@ -148,26 +148,41 @@ export default class RootKeyHolder extends Component<RootKeyHolderProps, RootKey
         this.setState({ approveLoading: true })
         // loop over selected rows
         const multisigInfo = await this.context.wallet.api.multisigInfo(config.lotusNodes[this.context.wallet.networkIndex].rkhMultisig)
+        await this.context.github.githubOctoGenericLogin()
         for (const request of this.context.verifierAndPendingRequests) {
             if (this.context.selectedNotaryRequests.includes(request.id)) {
                 const messageIds: any[] = []
                 var commentContent = ''
                 var label = ''
                 let filfox = ''
+                let errorMessage = ''
+                const assignee = (await this.context.github.githubOctoGeneric.octokit.issues.get({
+                    owner: config.lotusNodes[this.context.wallet.networkIndex].notaryOwner,
+                    repo: config.lotusNodes[this.context.wallet.networkIndex].notaryRepo,
+                    issue_number: request.issue_number,
+                })).data.assignee.login
+
                 try {
                     if (request.proposed === true) {
                         // for each tx
                         for (const tx of request.txs) {
-                            const messageID = await this.context.wallet.api.approveVerifier(tx.verifier, BigInt(tx.datacap), tx.signer, tx.id, this.context.wallet.walletIndex);
+                            let messageID = tx.datacap === 0 ?
+                                await this.context.wallet.api.removeVerifier(tx.verifier, tx.signer, tx.id, this.context.wallet.walletIndex)
+                                :
+                                await this.context.wallet.api.approveVerifier(tx.verifier, BigInt(tx.datacap), tx.signer, tx.id, this.context.wallet.walletIndex);
+
+                            const txReceipt = this.context.wallet.api.getReceipt(messageID)
+                            if (txReceipt.ExitCode !== 0) errorMessage += `#### @${assignee} There was an error processing the message >${messageID}`
                             messageIds.push(messageID)
                             this.context.wallet.dispatchNotification('Accepting Message sent with ID: ' + messageID)
                             filfox += `#### You can check the status of the message here: https://filfox.info/en/message/${messageID}\n`
                         }
                         // comment to issue
-                        commentContent = `## The request has been signed by a new Root Key Holder\n#### Message sent to Filecoin Network\n>${messageIds.join()}\n${filfox}`
-                        label = 'status:AddedOnchain'
+                        commentContent = `## The request has been signed by a new Root Key Holder\n#### Message sent to Filecoin Network\n>${messageIds.join()}\n${errorMessage}\n${filfox}`
+                        label = errorMessage === '' ? 'status:AddedOnchain' : 'status:Error'
                     } else {
                         let filfox = ''
+                        let errorMessage = ''
                         for (let i = 0; i < request.datacaps.length; i++) {
                             if (request.datacaps[i] && request.addresses[i]) {
                                 const datacap = anyToBytes(request.datacaps[i])
@@ -183,17 +198,24 @@ export default class RootKeyHolder extends Component<RootKeyHolderProps, RootKey
 
                                 console.log("address to propose: " + address)
 
-                                let messageID = await this.context.wallet.api.proposeVerifier(address, BigInt(datacap), this.context.wallet.walletIndex)
+                                let messageID = datacap === 0 ?
+                                    await this.context.wallet.api.proposeRemoveVerifier(address, this.context.wallet.walletIndex)
+                                    :
+                                    await this.context.wallet.api.proposeVerifier(address, BigInt(datacap), this.context.wallet.walletIndex)
+
                                 console.log("messageID: " + messageID)
+                                const txReceipt = await this.context.wallet.api.getReceipt(messageID)
+                                if (txReceipt.ExitCode !== 0) errorMessage += `#### @${assignee} There was an error processing the message\n>${messageID}`
                                 messageIds.push(messageID)
                                 this.context.wallet.dispatchNotification('Accepting Message sent with ID: ' + messageID)
                                 filfox += `#### You can check the status of the message here: https://filfox.info/en/message/${messageID}\n`
                             }
                         }
-                        commentContent = `## The request has been signed by a new Root Key Holder\n#### Message sent to Filecoin Network\n>${messageIds.join()}\n ${filfox}`
-                        label = config.lotusNodes[this.context.wallet.networkIndex].rkhtreshold > 1 ? 'status:StartSignOnchain' : 'status:AddedOnchain'
+                        commentContent = `## The request has been signed by a new Root Key Holder\n#### Message sent to Filecoin Network\n>${messageIds.join()}\n ${errorMessage}\n ${filfox}`
+                        label = errorMessage === '' ?
+                            config.lotusNodes[this.context.wallet.networkIndex].rkhtreshold > 1 ? 'status:StartSignOnchain' : 'status:AddedOnchain'
+                            : 'status:Error'
                     }
-                    await this.context.github.githubOctoGenericLogin()
                     if (commentContent != '') {
                         await this.context.github.githubOctoGeneric.octokit.issues.createComment({
                             owner: config.lotusNodes[this.context.wallet.networkIndex].notaryOwner,

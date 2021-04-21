@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 // @ts-ignore
 import { ButtonPrimary } from "slate-react-system";
+import { anyToBytes } from "../utils/Filters"
 
 type ModalProps = {
     clientRequests: any[],
@@ -43,7 +44,7 @@ class WarnModalVerify extends Component<ModalProps, ModalState> {
                 if (this.props.selectedClientRequests.includes(request.id)) {
                     requestToShow.push({
                         address: request.addresses,
-                        datacap: request.datacaps
+                        datacap: request.datacaps.map((datacap: any) => anyToBytes(datacap) === 0 ? 'Notary will be removed' : datacap)
                     })
                 }
             }

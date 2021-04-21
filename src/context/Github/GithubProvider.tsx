@@ -35,6 +35,7 @@ export default class WalletProvider extends React.Component<{}, WalletProviderSt
         githubOcto: {} as any,
         githubOctoGeneric: { logged: false } as any,
         loginGithub: async (code: string, onboarding?: boolean) => {
+            console.log('code', code)
             try {
                 const authrequest = await fetch(config.apiUri + '/api/v1/github', {
                     method: 'POST',
@@ -47,6 +48,8 @@ export default class WalletProvider extends React.Component<{}, WalletProviderSt
                     })
                 })
                 const authjson = await authrequest.json()
+                const expiration = new Date().getTime() + (Number(authjson.data.expires_in) * 1000)
+                localStorage.setItem('tokenExpiration', expiration.toString())
                 localStorage.setItem('githubToken', authjson.data.access_token)
                 this.state.initGithubOcto(authjson.data.access_token)
             } catch (e) {
@@ -68,6 +71,16 @@ export default class WalletProvider extends React.Component<{}, WalletProviderSt
                 githubLogged: false,
                 githubOcto: undefined
             })
+        },
+        checkToken: async () => {
+            const githubToken = localStorage.getItem('githubToken')!
+            if (githubToken) {
+                const actualTimestamp = new Date().getTime()
+                const expiration = localStorage.getItem('tokenExpiration')! || 0
+                if (Number(expiration) <= actualTimestamp || expiration === 0) {
+                    this.state.logoutGithub()
+                }
+            }
         },
         githubOctoGenericLogin: async () => {
             if (this.state.githubOctoGeneric.logged === false) {
