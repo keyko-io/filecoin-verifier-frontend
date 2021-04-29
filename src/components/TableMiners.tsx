@@ -16,7 +16,7 @@ export default class TableVerifiers extends Component {
         checks: [],
         miners: [],
         initialIndex: 0,
-        finalIndex: 6,
+        finalIndex: 5,
         pages: [],
         actualPage: 1
     }
@@ -27,8 +27,8 @@ export default class TableVerifiers extends Component {
 
     setPage = (e: any) => {
         const actualPage = Number(e.target.id)
-        this.setState({ finalIndex: actualPage * 6 })
-        this.setState({ initialIndex: (actualPage * 6) - 6 })
+        this.setState({ finalIndex: actualPage * 5 })
+        this.setState({ initialIndex: (actualPage * 5) - 5 })
         this.setState({ actualPage })
     }
 
@@ -39,8 +39,8 @@ export default class TableVerifiers extends Component {
     movePage = (index: number) => {
         const page = this.state.actualPage + index
         if (page <= this.state.pages.length && page >= 1) {
-            this.setState({ finalIndex: page * 6 })
-            this.setState({ initialIndex: (page * 6) - 6 })
+            this.setState({ finalIndex: page * 5 })
+            this.setState({ initialIndex: (page * 5) - 5 })
             this.setState({ actualPage: page })
         }
     }
@@ -56,7 +56,7 @@ export default class TableVerifiers extends Component {
             .filter((ele: any) => ele.type === "element")
 
         this.setState({ miners })
-        const numerOfPages = Math.ceil(this.state.miners.length / 6)
+        const numerOfPages = Math.ceil(this.state.miners.length / 5)
         let pages = []
         for (let index = 0; index < numerOfPages; index++) {
             pages.push(index + 1)
