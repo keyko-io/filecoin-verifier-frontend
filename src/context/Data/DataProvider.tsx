@@ -85,7 +85,7 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
                     repo: config.onboardingLargeClientRepo,
                     assignee: '*',
                     state: 'open',
-                    labels: 'state:Verifying'
+                    labels: 'status:Approved'
                 })
                 const largeissues: any[] = []
                 for (const rawLargeIssue of rawLargeIssues.data) {
@@ -99,7 +99,7 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
                             })
                             // loop over comments
                             for (const rawLargeClientComment of rawLargeClientComments.data) {
-                                const comment = parser.parseApproveComment(rawLargeClientComment.body)
+                                const comment = largeutils.parseApproveComment(rawLargeClientComment.body)
                                 // found correct comment
                                 if (comment.approvedMessage && comment.correct) {
                                     let largeRequest: any = {
