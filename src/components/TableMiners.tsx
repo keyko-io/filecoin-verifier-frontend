@@ -76,7 +76,6 @@ export default class TableVerifiers extends Component {
                                 <td>Location</td>
                                 <td>Miner ID</td>
                                 <td>Contact Info</td>
-                                <td>Special Offering</td>
                                 <td>Features</td>
                             </tr>
                         </thead>
@@ -101,10 +100,6 @@ export default class TableVerifiers extends Component {
                                                 text={miner.children[7].children[0].content}
                                                 href={miner.children[7].children[1]}
                                                 type="Contact" />
-                                        </td>
-                                        <td>
-                                            <TableCell
-                                                text={miner.children[9].children[0].content} />
                                         </td>
                                         <td>
                                             <TableCell
