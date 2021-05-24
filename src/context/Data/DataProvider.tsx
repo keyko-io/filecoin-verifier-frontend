@@ -85,44 +85,41 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
                     repo: config.onboardingLargeClientRepo,
                     assignee: '*',
                     state: 'open',
-                    labels: 'status:Approved'
+                    labels: 'bot:readyToSign'
                 })
                 const largeissues: any[] = []
                 for (const rawLargeIssue of rawLargeIssues.data) {
                     const data = largeutils.parseIssue(rawLargeIssue.body)
-                    if (data.correct && rawLargeIssue.assignees.find((a: any) => a.login === user.data.login) !== undefined) {
+                    if (data.correct) {
                         try {
                             const rawLargeClientComments = await this.props.github.githubOcto.issues.listComments({
                                 owner: config.onboardingLargeOwner,
                                 repo: config.onboardingLargeClientRepo,
                                 issue_number: rawLargeIssue.number,
+                                per_page: 100
                             })
-                            // loop over comments
-                            for (const rawLargeClientComment of rawLargeClientComments.data) {
-                                const comment = largeutils.parseApproveComment(rawLargeClientComment.body)
-                                // found correct comment
-                                if (comment.approvedMessage && comment.correct) {
-                                    let largeRequest: any = {
-                                        issue_number: rawLargeIssue.number,
-                                        issue_Url: rawLargeIssue.html_url,
-                                        address: comment.address,
-                                        datacap: comment.datacap,
-                                        url: rawLargeIssue.html_url,
-                                        number: rawLargeIssue.number,
-                                        data
-                                    }
-                                    if (rawLargeIssue.labels.findIndex((label: any) => label.name === 'status:StartSignOnchain') !== -1) {
-                                        largeRequest.proposed = true
-                                    }
-                                    if (rawLargeIssue.labels.findIndex((label: any) => label.name === 'status:Approved') !== -1) {
-                                        largeRequest.proposed = false
-                                    }
-                                    largeissues.push(largeRequest)
-                                    break
+                            const comment = largeutils.parseReleaseRequest(rawLargeClientComments.data[rawLargeClientComments.data.length-1].body)
+                            // found correct comment
+                            if (comment.multisigMessage && comment.correct) {
+                                let largeRequest: any = {
+                                    issue_number: rawLargeIssue.number,
+                                    issue_Url: rawLargeIssue.html_url,
+                                    address: comment.clientAddress,
+                                    multisig: comment.notaryAddress,
+                                    datacap: comment.datacap,
+                                    url: rawLargeIssue.html_url,
+                                    number: rawLargeIssue.number,
+                                    mine: rawLargeIssue.assignees.find((a: any) => a.login === user.data.login) !== undefined,
+                                    data
                                 }
+                                if (rawLargeIssue.labels.findIndex((label: any) => label.name === 'status:StartSignOnchain') !== -1) {
+                                    largeRequest.proposed = true
+                                }
+                                largeissues.push(largeRequest)
+                                break
                             }
                         } catch (e) {
-                            // console.log(e)
+                            console.log('error', e)
                         }
                     }
                 }
