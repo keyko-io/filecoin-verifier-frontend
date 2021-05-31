@@ -10,6 +10,7 @@ export const config = {
     githubGenericToken: process.env.REACT_APP_GITHUB_GENERIC_TOKEN,
     minersUrl: 'https://raw.githubusercontent.com/filecoin-project/filecoin-plus-client-onboarding/main/miners.md',
     defaultAssign: ['philippbanhardt'],
+    willRedirect: process.env.REACT_APP_REDIRECTION || false,
     validateAddress: process.env.REACT_APP_VALIDATE_ADDRESS || true,
     largeClientRequest: 5497558000000000000000000,
     lotusNodes: [{
