@@ -59,6 +59,7 @@ export default class Notary extends Component<NotaryProps, NotaryStates> {
         { id: "name", value: "Client" },
         { id: "address", value: "Address" },
         { id: "datacap", value: "Datacap" },
+        { id: "approvals", value: "Approvals" },
         { id: "audittrail", value: "Audit Trail" }
     ]
 
@@ -145,10 +146,22 @@ export default class Notary extends Component<NotaryProps, NotaryStates> {
             name: "create-modal", detail: {
                 id: Math.random().toString(36).replace(/[^a-z]+/g, '').substr(0, 5),
                 modal: <WarnModalVerify
-                    clientRequests={origin === 'Notary' ? this.context.clientRequests : []}
-                    selectedClientRequests={origin === 'Notary' ? this.state.selectedClientRequests : []}
-                    onClick={origin === 'Notary' ? this.verifyClients.bind(this) : origin === 'newDatacap' ? this.verifyNewDatacap.bind(this) : this.requestDatacap.bind(this)}
-                    origin={origin === 'Notary' ? 'Notary' : "single-message"}
+                    clientRequests={
+                        origin === 'Notary' ? this.context.clientRequests
+                            : origin === 'Large' ? this.context.largeClientRequests
+                                : []}
+                    selectedClientRequests={
+                        origin === 'Notary' ? this.state.selectedClientRequests
+                            : origin === 'Large' ? this.state.selectedLargeClientRequests
+                                : []
+                    }
+                    onClick={
+                        origin === 'Notary' ? this.verifyClients.bind(this)
+                            : origin === 'newDatacap' ? this.verifyNewDatacap.bind(this)
+                                : origin === 'Large' ? this.verifyLargeClients.bind(this)
+                                    : this.requestDatacap.bind(this)
+                    }
+                    origin={origin === 'Notary' || 'Large' ? 'Notary' : "single-message"}
                 />
             }
         })
@@ -168,7 +181,7 @@ export default class Notary extends Component<NotaryProps, NotaryStates> {
                         address = await this.context.wallet.api.actorKey(address)
                     }
                     let messageID
-                    if(this.context.wallet.multisig){
+                    if (this.context.wallet.multisig) {
                         messageID = await this.context.wallet.api.multisigVerifyClient(this.context.wallet.multisigID, address, BigInt(datacap), this.context.wallet.walletIndex)
                     } else {
                         messageID = await this.context.wallet.api.verifyClient(address, BigInt(datacap), this.context.wallet.walletIndex)
@@ -185,6 +198,42 @@ export default class Notary extends Component<NotaryProps, NotaryStates> {
                 }
             }
         }
+    }
+
+
+    verifyLargeClients = async () => {
+
+        dispatchCustomEvent({ name: "delete-modal", detail: {} })
+
+        for (const request of this.context.largeClientRequests) {
+            if (this.state.selectedLargeClientRequests.includes(request.number)) {
+                try {
+                    const datacap = anyToBytes(request.datacap)
+                    console.log('datacap', datacap)
+                    let address = request.data.address
+                    if (address.length < 12) {
+                        address = await this.context.wallet.api.actorKey(address)
+                    }
+
+                    console.log('address', address)
+
+                    let messageID
+
+                    request.approvals == 0 ?
+                        messageID = await this.context.wallet.api.multisigVerifyClient(this.context.wallet.multisigID, address, BigInt(datacap), this.context.wallet.walletIndex)
+                        :
+                        messageID = await this.context.wallet.api.approvePending(this.context.wallet.multisigID, request.tx[0], this.context.wallet.walletIndex)
+
+                    this.context.updateGithubVerifiedLarge(request.number, messageID, address, datacap, request.approvals)
+                    this.context.wallet.dispatchNotification('Verify Client Message sent with ID: ' + messageID)
+                    this.context.loadClientRequests()
+                } catch (e) {
+                    this.context.wallet.dispatchNotification('Verification failed: ' + e.message)
+                    console.log(e.stack)
+                }
+            }
+        }
+
     }
 
     selectRow = (transactionId: string) => {
@@ -259,96 +308,6 @@ export default class Notary extends Component<NotaryProps, NotaryStates> {
 
     }
 
-    handleSubmitApproveSign = async () => {
-        // dispatchCustomEvent({ name: "delete-modal", detail: {} })
-        // this.setState({ approveLoading: true })
-        // loop over selected rows
-        // const multisigInfo = await this.context.wallet.api.multisigInfo(config.lotusNodes[this.context.wallet.networkIndex].rkhMultisig)
-        /*
-        for (const request of this.context.verifierAndPendingRequests) {
-            if (this.context.selectedNotaryRequests.includes(request.id)) {
-                const messageIds: any[] = []
-                var commentContent = ''
-                var label = ''
-                let filfox = ''
-                try {
-                    if (request.proposed === true) {
-                        // for each tx
-                        for (const tx of request.txs) {
-                            let messageID = tx.datacap === 0 ?
-                                await this.context.wallet.api.removeVerifier(tx.verifier, tx.signer, tx.id, this.context.wallet.walletIndex)
-                                :
-                                await this.context.wallet.api.approveVerifier(tx.verifier, BigInt(tx.datacap), tx.signer, tx.id, this.context.wallet.walletIndex);
-                            messageIds.push(messageID)
-                            this.context.wallet.dispatchNotification('Accepting Message sent with ID: ' + messageID)
-                            filfox += `#### You can check the status of the message here: https://filfox.info/en/message/${messageID}\n`
-                        }
-                        // comment to issue
-                        commentContent = `## The request has been signed by a new Root Key Holder\n#### Message sent to Filecoin Network\n>${messageIds.join()}\n${filfox}`
-                        label = 'status:AddedOnchain'
-                    } else {
-                        let filfox = ''
-                        for (let i = 0; i < request.datacaps.length; i++) {
-                            if (request.datacaps[i] && request.addresses[i]) {
-                                const datacap = anyToBytes(request.datacaps[i])
-                                let address = request.addresses[i]
-                                console.log("request address: " + address)
-                                console.log("request datacap: " + request.datacaps[i])
-                                console.log("datacap: " + datacap)
-
-                                if (address.startsWith("t1") || address.startsWith("f1")) {
-                                    address = await this.context.wallet.api.actorAddress(address)
-                                    console.log("getting t0/f0 ID. Result of  actorAddress method: " + address)
-                                }
-
-                                console.log("address to propose: " + address)
-
-                                let messageID = datacap === 0 ?
-                                    await this.context.wallet.api.proposeRemoveVerifier(address, this.context.wallet.walletIndex)
-                                    :
-                                    await this.context.wallet.api.proposeVerifier(address, BigInt(datacap), this.context.wallet.walletIndex)
-
-                                console.log("messageID: " + messageID)
-                                messageIds.push(messageID)
-                                this.context.wallet.dispatchNotification('Accepting Message sent with ID: ' + messageID)
-                                filfox += `#### You can check the status of the message here: https://filfox.info/en/message/${messageID}\n`
-                            }
-                        }
-                        commentContent = `## The request has been signed by a new Root Key Holder\n#### Message sent to Filecoin Network\n>${messageIds.join()}\n ${filfox}`
-                        label = config.lotusNodes[this.context.wallet.networkIndex].rkhtreshold > 1 ? 'status:StartSignOnchain' : 'status:AddedOnchain'
-                    }
-                    await this.context.github.githubOctoGenericLogin()
-                    if (commentContent != '') {
-                        await this.context.github.githubOctoGeneric.octokit.issues.createComment({
-                            owner: config.lotusNodes[this.context.wallet.networkIndex].notaryOwner,
-                            repo: config.lotusNodes[this.context.wallet.networkIndex].notaryRepo,
-                            issue_number: request.issue_number,
-                            body: commentContent,
-                        })
-                    }
-                    if (label != '') {
-                        await this.context.github.githubOctoGeneric.octokit.issues.removeAllLabels({
-                            owner: config.lotusNodes[this.context.wallet.networkIndex].notaryOwner,
-                            repo: config.lotusNodes[this.context.wallet.networkIndex].notaryRepo,
-                            issue_number: request.issue_number,
-                        })
-                        await this.timeout(1000)
-                        await this.context.github.githubOctoGeneric.octokit.issues.addLabels({
-                            owner: config.lotusNodes[this.context.wallet.networkIndex].notaryOwner,
-                            repo: config.lotusNodes[this.context.wallet.networkIndex].notaryRepo,
-                            issue_number: request.issue_number,
-                            labels: [label],
-                        })
-                    }
-                } catch (e) {
-                    this.context.wallet.dispatchNotification('Failed: ' + e.message)
-                    console.log('faile', e.stack)
-                }
-            }
-        }
-        */
-    }
-
 
     public render() {
         return (
@@ -360,10 +319,10 @@ export default class Notary extends Component<NotaryProps, NotaryStates> {
                         <div className={this.state.tabs === "2" ? "selected" : ""} onClick={() => { this.showVerifiedClients() }}>Verified clients ({this.props.clients.length})</div>
                     </div>
                     <div className="tabssadd">
-                        <ButtonPrimary onClick={() => this.requestDatacap()}>Approve Private Request</ButtonPrimary>
-                        {this.state.tabs === "1" ? <>
-                            <ButtonPrimary onClick={(e: any) => this.showWarnVerify(e, "Notary")}>Verify client</ButtonPrimary>
-                            <ButtonPrimary onClick={() => this.verifyNewDatacap()}>Verify new datacap</ButtonPrimary>
+                        {this.state.tabs !== "3" ? <ButtonPrimary onClick={() => this.requestDatacap()}>Approve Private Request</ButtonPrimary> : null}
+                        {this.state.tabs === "1" || this.state.tabs === "3" ? <>
+                            <ButtonPrimary onClick={(e: any) => this.showWarnVerify(e, this.state.tabs === "3" ? "Large" : "Notary")}>{this.state.tabs === "3" ? "Approve Request" : "Verify client"}</ButtonPrimary>
+                            {this.state.tabs !== "3" ? <ButtonPrimary onClick={() => this.verifyNewDatacap()}>Verify new datacap</ButtonPrimary> : null}
                         </>
                             : null}
                     </div>
@@ -437,6 +396,7 @@ export default class Notary extends Component<NotaryProps, NotaryStates> {
                                                 <td><FontAwesomeIcon icon={["fas", "info-circle"]} id={index} onClick={(e) => this.showClientDetail(e)} /> {clientReq.data.name} </td>
                                                 <td>{clientReq.address}</td>
                                                 <td>{clientReq.datacap}</td>
+                                                <td>{clientReq.approvals}</td>
                                                 <td><a target="_blank" rel="noopener noreferrer" href={clientReq.url}>#{clientReq.number}</a></td>
                                             </tr>
                                         ) : null}
