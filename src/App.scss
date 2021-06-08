@@ -2039,6 +2039,11 @@
   }
 }
 
+
+* {
+  font-feature-settings: normal !important
+}  
+
 .header{
   z-index: 10;
   position: fixed;

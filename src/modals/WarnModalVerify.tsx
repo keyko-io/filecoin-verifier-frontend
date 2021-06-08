@@ -34,7 +34,7 @@ class WarnModalVerify extends Component<ModalProps, ModalState> {
                 if (this.props.selectedClientRequests.includes(request.number)) {
                     requestToShow.push({
                         address: request.data.address,
-                        datacap: request.data.datacap
+                        datacap: request.data.datacap ? request.data.datacap : request.datacap 
                     })
                 }
             }
