@@ -6,7 +6,7 @@ import { ButtonPrimary } from "slate-react-system";
 class LearnMore extends Component {
 
     navigate = () => {
-          window.open('https://github.com/filecoin-project/filecoin-plus-client-onboarding', '_blank')
+          window.open('https://docs.filecoin.io/store/filecoin-plus/', '_blank')
       }
 
     render() {

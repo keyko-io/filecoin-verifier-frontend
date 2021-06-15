@@ -265,6 +265,7 @@
       position: relative;
       height: 190px;
       margin-bottom: 70px;
+      top:50px;
 
       .textinfo {
         font-family: "suisseintl";
@@ -328,6 +329,7 @@
     margin-top: 20px;
 
     .tabsholder {
+      padding-top: 50px;
       display: flex;
       justify-content: space-between;
       font-family: "suisseintl";
@@ -730,6 +732,7 @@
     text-align: center;
     max-width: 100%;
     height: 200px;
+    top: 50px;
     left: 0;
     right: 0;
     margin-left: auto;
@@ -1159,7 +1162,7 @@
   .headerlogo {
     padding: 5px 5px;
     position: relative;
-    width: 180px;
+    width: 100px;
     margin: auto;
     cursor: pointer;
   }
@@ -1539,10 +1542,14 @@
 .footer {
   position: absolute;
   bottom: 0;
-  width: 150px;
+  width: 90px;
   height: 15px;
   left: 0;
+  right: 0;
+  margin: auto;
   font-size: 12px;
+  top: 980px;
+  padding-bottom: 40px;
 }
 
 .notaryinfoModal {
@@ -2030,5 +2037,18 @@
     top: 50px;
     height: 650px;
   }
+}
 
+
+* {
+  font-feature-settings: normal !important
+}  
+
+.header{
+  z-index: 10;
+  position: fixed;
+  width: 100%;
+  height: 50px;
+  top: 0;
+  background-color: white;
 }

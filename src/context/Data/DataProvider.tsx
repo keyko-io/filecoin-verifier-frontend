@@ -8,6 +8,7 @@ import { tableSort } from '../../utils/SortFilter';
 import { v4 as uuidv4 } from 'uuid';
 import { anyToBytes } from "../../utils/Filters"
 const utils = require('@keyko-io/filecoin-verifier-tools/utils/issue-parser')
+const largeutils = require('@keyko-io/filecoin-verifier-tools/utils/large-issue-parser')
 const parser = require('@keyko-io/filecoin-verifier-tools/utils/notary-issue-parser')
 
 interface DataProviderStates {
@@ -25,6 +26,7 @@ interface DataProviderStates {
     verified: any[]
     loadVerified: any,
     updateGithubVerified: any
+    updateGithubVerifiedLarge: any
     createRequest: any
     selectedNotaryRequests: any[]
     selectNotaryRequest: any
@@ -68,25 +70,72 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
                     labels: 'state:Verifying'
                 })
                 const issues: any[] = []
-                const largeissues: any[] = []
+                let pendingLarge: any[] = []
+                if (this.props.wallet.multisigID) {
+                    const pendingLargeTxs = await this.props.wallet.api.pendingTransactions(this.props.wallet.multisigID)
+                    pendingLarge = await Promise.all(pendingLargeTxs.map(async (tx: any) => {
+                        const address = await this.props.wallet.api.actorKey(tx.parsed.params.address)
+                        return {
+                            address,
+                            tx
+                        }
+                    }))
+                }
                 for (const rawIssue of rawIssues.data) {
                     const data = utils.parseIssue(rawIssue.body)
                     if (data.correct && rawIssue.assignees.find((a: any) => a.login === user.data.login) !== undefined) {
-                        const datacap = anyToBytes(data.datacap)
-                        if (datacap > config.largeClientRequest) {
-                            largeissues.push({
-                                number: rawIssue.number,
-                                url: rawIssue.html_url,
-                                owner: rawIssue.user.login,
-                                data
+                        issues.push({
+                            number: rawIssue.number,
+                            url: rawIssue.html_url,
+                            owner: rawIssue.user.login,
+                            data
+                        })
+                    }
+                }
+                const rawLargeIssues = await this.props.github.githubOcto.issues.listForRepo({
+                    owner: config.onboardingLargeOwner,
+                    repo: config.onboardingLargeClientRepo,
+                    assignee: '*',
+                    state: 'open',
+                    labels: 'bot:readyToSign'
+                })
+                const largeissues: any[] = []
+                for (const rawLargeIssue of rawLargeIssues.data) {
+                    const data = largeutils.parseIssue(rawLargeIssue.body)
+                    if (data.correct) {
+                        try {
+                            const rawLargeClientComments = await this.props.github.githubOcto.issues.listComments({
+                                owner: config.onboardingLargeOwner,
+                                repo: config.onboardingLargeClientRepo,
+                                issue_number: rawLargeIssue.number,
+                                per_page: 100
                             })
-                        } else {
-                            issues.push({
-                                number: rawIssue.number,
-                                url: rawIssue.html_url,
-                                owner: rawIssue.user.login,
-                                data
-                            })
+                            const comments = rawLargeClientComments.data.filter((comment: any) => {
+                                const commentParsed = largeutils.parseReleaseRequest(comment.body)
+                                return commentParsed.multisigMessage && commentParsed.correct && comment.performed_via_github_app == null
+                            }
+                            ).map((comment: any) => largeutils.parseReleaseRequest(comment.body))
+
+                            const comment = comments[comments.length - 1]
+
+                            if (comment && comment.multisigMessage && comment.correct) {
+                                let largeRequest: any = {
+                                    issue_number: rawLargeIssue.number,
+                                    issue_Url: rawLargeIssue.html_url,
+                                    address: comment.clientAddress,
+                                    multisig: comment.notaryAddress,
+                                    datacap: comment.allocationDatacap,
+                                    url: rawLargeIssue.html_url,
+                                    number: rawLargeIssue.number,
+                                    mine: rawLargeIssue.assignees.find((a: any) => a.login === user.data.login) !== undefined,
+                                    approvals: pendingLarge.filter((tx: any) => tx.address === comment.clientAddress).length,
+                                    tx: pendingLarge.map((tx: any) => tx.address === comment.clientAddress ? tx.tx : null).filter((tx: any) => tx !== null),
+                                    data
+                                }
+                                largeissues.push(largeRequest)
+                            }
+                        } catch (e) {
+                            console.log('error', e)
                         }
                     }
                 }
@@ -313,7 +362,10 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
                 const approvedVerifiers = await this.props.wallet.api.listVerifiers()
                 let verified = []
                 for (const verifiedAddress of approvedVerifiers) {
-                    const verifierAccount = await this.props.wallet.api.actorKey(verifiedAddress.verifier)
+                    let verifierAccount = await this.props.wallet.api.actorKey(verifiedAddress.verifier)
+                    if (verifierAccount == verifiedAddress.verifier) {
+                        verifierAccount = await this.props.wallet.api.actorAddress(verifiedAddress.verifier)
+                    }
                     verified.push({
                         verifier: verifiedAddress.verifier,
                         verifierAccount,
@@ -405,6 +457,32 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
                     issue_number: requestNumber,
                     state: 'closed',
                 })
+            },
+            updateGithubVerifiedLarge: async (requestNumber: any, messageID: string, address: string, datacap: any, approvals: number) => {
+
+                let commentContent = `## Request Approved\nYour Datacap Allocation Request has been approved by the Notary\n#### Message sent to Filecoin Network\n>${messageID} \n#### Address \n> ${address}\n#### Datacap Allocated\n> ${datacap}\n#### You can check the status of the message here: https://filfox.info/en/message/${messageID}`
+
+                await this.props.github.githubOcto.issues.createComment({
+                    owner: config.onboardingLargeOwner,
+                    repo: config.onboardingLargeClientRepo,
+                    issue_number: requestNumber,
+                    body: commentContent,
+                })
+
+                if ((approvals + 1) === config.approvalsThreshold) {
+                    await this.props.github.githubOcto.issues.removeAllLabels({
+                        owner: config.onboardingLargeOwner,
+                        repo: config.onboardingLargeClientRepo,
+                        issue_number: requestNumber,
+                    })
+                    await this.props.github.githubOcto.issues.addLabels({
+                        owner: config.onboardingLargeOwner,
+                        repo: config.onboardingLargeClientRepo,
+                        issue_number: requestNumber,
+                        labels: ['state:Granted'],
+                    })
+                }
+
             },
             assignToIssue: async (issue_number: any, assignees: any) => {
                 let isAssigned = false

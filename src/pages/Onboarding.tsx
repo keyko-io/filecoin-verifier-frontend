@@ -76,8 +76,8 @@ class Onboarding extends Component<{}, States> {
             })}
           </div>
           <LearnMore />
+          <Footer />
         </div>
-        <Footer></Footer>
       </div>
     );
   }
