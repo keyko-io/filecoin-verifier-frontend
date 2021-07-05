@@ -1,6 +1,6 @@
 {
-  "short_name": "React App",
-  "name": "Create React App Sample",
+  "short_name": "Filecoin Plus",
+  "name": "Filecoin Plus is a layer of social trust on top of the Filecoin Network to help incentivize the storage of real data.",
   "icons": [
     {
       "src": "favicon.ico",
