@@ -16,7 +16,8 @@ export default class TableVerifiers extends Component {
         checks: [],
         miners: [],
         minersIds: [],
-        apiData: new Array,
+        verifiedPrice: new Array,
+        minPieceSize: new Array,
         loadingApiData: true,
         initialIndex: 0,
         finalIndex: 5,
@@ -48,11 +49,6 @@ export default class TableVerifiers extends Component {
                 actualPage: page,
             })
         }
-        // async () => {
-        // console.log("initial index ", this.state.initialIndex)
-        // console.log("final index ", this.state.finalIndex)
-        //     await this.loadMinersApiData();
-        // }
     }
 
     loadData = async () => {
@@ -77,37 +73,20 @@ export default class TableVerifiers extends Component {
         await this.fetchApiData(minersIds)
     }
 
-    // fetchApiData = async (minerId: any) => {
-    //     // this.setState({ loadingApiData: true })
-    //     const res = await fetch(`https://api.filrep.io/api/v1/miners?search=${minerId}`)
-    //     const json = await res.json()
-    //     console.log(json)
-    //     const arr: any = this.state.apiData.push(json.miners[0].address)
-    //     this.setState({
-    //         apiData: arr
-    //     })
-    // }
     fetchApiData = async (minersIds: any[]) => {
-        // this.setState({ loadingApiData: true })
-        console.log(":::f023467")
-        const res = await fetch(`https://api.filrep.io/api/v1/miners?search=f023467`)
-        console.log(res)
-        const json = await res.json()
-        console.log(json)
 
         Promise.all(
             minersIds.map(async id => {
-                console.log("id", id)
                 const res = await fetch(`https://api.filrep.io/api/v1/miners?search=${id}`)
                 console.log(res)
-                // const res = await fetch(`https://api.filrep.io/api/v1/miners?search=f023467`)
                 const json = await res.json()
                 console.log(json)
-                const arr: any = this.state.apiData.push(json.miners[0].address)
-                console.log(arr)
+                // const arr: any = this.state.apiData.push(json.miners[0].address)
+                // console.log(arr)
                 this.setState({
-                    apiData: arr
-                })
+                    verifiedPrice: [...this.state.verifiedPrice, json.miners[0].address || "not found"],
+                    minPieceSize: [...this.state.minPieceSize, json.miners[0].address || "not found"],
+                }, ()=> console.log(this.state.verifiedPrice))
             })
         )
     }
@@ -124,8 +103,9 @@ export default class TableVerifiers extends Component {
                                 <td>Location</td>
                                 <td>Miner ID</td>
                                 <td>Contact Info</td>
-                                <td>Features</td>
+                                {/* <td>Features</td> */}
                                 <td>verifiedPrice</td>
+                                <td>minPieceSize</td>
                             </tr>
                         </thead>
                         <tbody>
@@ -152,14 +132,22 @@ export default class TableVerifiers extends Component {
                                                 href={miner.children[7].children[1]}
                                                 type="Contact" />
                                         </td>
-                                        <td>
+                                        {/* <td>
                                             <TableCell
                                                 text={miner.children[11].children[0].content} />
+                                        </td> */}
+                                        <td>
+                                            {this.state.verifiedPrice[i] ?
+                                             <TableCell
+                                             text={this.state.verifiedPrice[i]} />
+                                             :
+                                             "Loading Api Data"
+                                            }
                                         </td>
                                         <td>
-                                            {this.state.apiData[i] ?
+                                            {this.state.verifiedPrice[i] ?
                                              <TableCell
-                                             text={this.state.apiData[i]} />
+                                             text={this.state.verifiedPrice[i]} />
                                              :
                                              "Loading Api Data"
                                             }
