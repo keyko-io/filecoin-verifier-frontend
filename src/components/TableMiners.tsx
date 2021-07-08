@@ -16,8 +16,8 @@ export default class TableVerifiers extends Component {
         checks: [],
         miners: [],
         minersIds: [],
-        verifiedPrice: new Array,
-        minPieceSize: new Array,
+        verifiedPrice: new Array(),
+        minPieceSize: new Array(),
         loadingApiData: true,
         initialIndex: 0,
         finalIndex: 5,
@@ -77,7 +77,8 @@ export default class TableVerifiers extends Component {
 
         Promise.all(
             minersIds.map(async id => {
-                const res = await fetch(`https://api.filrep.io/api/v1/miners?search=${id}`)
+                const res = await fetch(`https://api.filrep.io/api/v1/miners?search=${id}`,
+                {mode: 'no-cors'})
                 console.log(res)
                 const json = await res.json()
                 console.log(json)
@@ -141,7 +142,7 @@ export default class TableVerifiers extends Component {
                                              <TableCell
                                              text={this.state.verifiedPrice[i]} />
                                              :
-                                             "Loading Api Data"
+                                             "Loading Api Data..."
                                             }
                                         </td>
                                         <td>
@@ -149,7 +150,7 @@ export default class TableVerifiers extends Component {
                                              <TableCell
                                              text={this.state.verifiedPrice[i]} />
                                              :
-                                             "Loading Api Data"
+                                             "Loading Api Data..."
                                             }
                                         </td>
                                     </tr>
