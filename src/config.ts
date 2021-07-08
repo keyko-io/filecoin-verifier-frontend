@@ -10,7 +10,7 @@ export const config = {
     networks: process.env.REACT_APP_NETWORKS || 'Mainnet,Nerpanet',
     domain: process.env.REACT_APP_DOMAIN || "https://plus.fil.org/",
     githubGenericToken: process.env.REACT_APP_GITHUB_GENERIC_TOKEN,
-    minersUrl: 'https://raw.githubusercontent.com/filecoin-project/filecoin-plus-client-onboarding/main/miners.md',
+    minersUrl: 'https://raw.githubusercontent.com/keyko-io/filecoin-large-clients-onboarding/main/miners.md?token=ALGRNDNQNZFOFKBIDC7JK23A53WEI',
     defaultAssign: ['philippbanhardt'],
     validateAddress: process.env.REACT_APP_VALIDATE_ADDRESS || true,
     approvalsThreshold: process.env.REACT_APP_APPROVALS_THRESHOLD || 2,
