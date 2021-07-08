@@ -74,7 +74,7 @@ export default class TableVerifiers extends Component {
 
         const minersIds = miners.map((miner: any) => miner.children[5].children[0].content)
         this.setState({ minersIds })
-         await this.fetchApiData(minersIds)
+        await this.fetchApiData(minersIds)
     }
 
     // fetchApiData = async (minerId: any) => {
@@ -89,27 +89,27 @@ export default class TableVerifiers extends Component {
     // }
     fetchApiData = async (minersIds: any[]) => {
         // this.setState({ loadingApiData: true })
-        for(let id of minersIds){
-            console.log("id",id)
-            const res = await fetch(`https://api.filrep.io/api/v1/miners?search=f023467`)
+        console.log(":::f023467")
+        const res = await fetch(`https://api.filrep.io/api/v1/miners?search=f023467`)
+        console.log(res)
+        const json = await res.json()
+        console.log(json)
+
+        Promise.all(
+            minersIds.map(async id => {
+                console.log("id", id)
+                const res = await fetch(`https://api.filrep.io/api/v1/miners?search=${id}`)
+                console.log(res)
+                // const res = await fetch(`https://api.filrep.io/api/v1/miners?search=f023467`)
                 const json = await res.json()
                 console.log(json)
-        }
-
-        // Promise.all(
-        //     minersIds.map(async id => {
-        //         console.log("id",id)
-        //         const res = await fetch(`https://api.filrep.io/api/v1/miners?search=${id}`)
-                // const res = await fetch(`https://api.filrep.io/api/v1/miners?search=f023467`)
-                // const json = await res.json()
-        //         console.log(json)
-        //         // const arr: any = this.state.apiData.push(json.miners[0].address)
-        //         // console.log(arr)
-        //         // this.setState({
-        //         //     apiData: arr
-        //         // })
-        //     })
-        // )
+                const arr: any = this.state.apiData.push(json.miners[0].address)
+                console.log(arr)
+                this.setState({
+                    apiData: arr
+                })
+            })
+        )
     }
 
 
@@ -157,7 +157,12 @@ export default class TableVerifiers extends Component {
                                                 text={miner.children[11].children[0].content} />
                                         </td>
                                         <td>
-                                            {this.state.apiData[i]}
+                                            {this.state.apiData[i] ?
+                                             <TableCell
+                                             text={this.state.apiData[i]} />
+                                             :
+                                             "Loading Api Data"
+                                            }
                                         </td>
                                     </tr>
                                     : null
