@@ -6,6 +6,7 @@ import parserMarkdown from '../utils/Markdown'
 // @ts-ignore
 import { parse } from "himalaya";
 import TableCell from '../components/TableCell'
+import { exception } from 'console';
 
 
 export default class TableVerifiers extends Component {
@@ -74,22 +75,23 @@ export default class TableVerifiers extends Component {
     }
 
     fetchApiData = async (minersIds: any[]) => {
-
-        Promise.all(
-            minersIds.map(async id => {
-                const res = await fetch(`https://api.filrep.io/api/v1/miners?search=${id}`,
-                {mode: 'no-cors'})
-                console.log(res)
-                const json = await res.json()
-                console.log(json)
-                // const arr: any = this.state.apiData.push(json.miners[0].address)
-                // console.log(arr)
-                this.setState({
-                    verifiedPrice: [...this.state.verifiedPrice, json.miners[0].address || "not found"],
-                    minPieceSize: [...this.state.minPieceSize, json.miners[0].address || "not found"],
-                }, ()=> console.log(this.state.verifiedPrice))
+            Promise.all(
+                minersIds.map(async id => {
+                    const res = await fetch(`https://api.filrep.io/api/v1/miners?search=${id}`,
+                    {mode: 'no-cors'})
+                    const json = await res.json()
+                    console.log(json)
+                    this.setState({
+                        verifiedPrice: [...this.state.verifiedPrice, json.miners[0].address || "not found"],
+                        minPieceSize: [...this.state.minPieceSize, json.miners[0].address || "not found"],
+                    }, ()=> console.log(this.state.verifiedPrice))
+                })
+            ).catch(error => {
+                console.error(error)
+                return 
             })
-        )
+            
+       
     }
 
 
