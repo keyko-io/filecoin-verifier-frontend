@@ -104,7 +104,9 @@ class LogInModal extends Component<ModalProps, ModalStates> {
                             </div>
                         </div>
                         <div className="buttons">
-                            {!config.networks.includes('Mainnet') ?
+                            {
+                                
+                            !config.networks.includes(process.env.NODE_ENV === "production" ? 'Mainnet': "xxxx") ?
                             <div className="button left">
                                 <ButtonPrimary onClick={this.loadBurnerWallet}>
                                     <img src={Logo} alt={'Logo'} />
@@ -112,7 +114,7 @@ class LogInModal extends Component<ModalProps, ModalStates> {
                                 </ButtonPrimary>
                             </div>
                             : null}
-                            <div className={config.networks.includes('Mainnet') ? "button center" : "button right"}>
+                            <div className={config.networks.includes(process.env.NODE_ENV === "production" ? 'Mainnet': "xxxx") ? "button center" : "button right"}>
                                 <ButtonPrimary onClick={this.loadLedgerWallet}>
                                     <img src={Ledger} alt={'Ledger'} />
                                     Load Ledger Wallet
