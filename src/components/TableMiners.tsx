@@ -48,6 +48,10 @@ export default class TableVerifiers extends Component {
                 finalIndex: page * 5,
                 initialIndex: (page * 5) - 5,
                 actualPage: page,
+            }, () => {
+                console.log("initialIndex: ", this.state.initialIndex)
+                console.log("finalIndex: ", this.state.finalIndex)
+                this.fetchApiData(this.state.minersIds.slice(this.state.initialIndex + 1, this.state.finalIndex))
             })
         }
     }
@@ -71,27 +75,70 @@ export default class TableVerifiers extends Component {
 
         const minersIds = miners.map((miner: any) => miner.children[5].children[0].content)
         this.setState({ minersIds })
-        await this.fetchApiData(minersIds)
+        await this.fetchApiData(minersIds.slice(0, 5))
     }
 
     fetchApiData = async (minersIds: any[]) => {
-            Promise.all(
-                minersIds.map(async id => {
-                    const res = await fetch(`https://api.filrep.io/api/v1/miners?search=${id}`,
-                    {mode: 'no-cors'})
-                    const json = await res.json()
-                    console.log(json)
-                    this.setState({
-                        verifiedPrice: [...this.state.verifiedPrice, json.miners[0].address || "not found"],
-                        minPieceSize: [...this.state.minPieceSize, json.miners[0].address || "not found"],
-                    }, ()=> console.log(this.state.verifiedPrice))
-                })
-            ).catch(error => {
-                console.error(error)
-                return 
-            })
-            
-       
+
+        try {
+            console.log("minersIds: ", minersIds)
+            this.setState({
+                verifiedPrice: [],
+                // verifiedPrice: [...this.state.verifiedPrice, json.miners[0].verifiedPrice, json.miners[0].address || "not found"],
+                minPieceSize: [],
+            }, () => console.log("resetstate: ", this.state.verifiedPrice))
+            for (let id of minersIds) {
+                const res = await fetch(`https://api.filrep.io/api/v1/miners?search=${id}`)
+                const json = await res.json()
+                this.setState({
+                    verifiedPrice: [...this.state.verifiedPrice, json.miners[0]?.address || "not found"],
+                    // verifiedPrice: [...this.state.verifiedPrice, json.miners[0].verifiedPrice, json.miners[0].address || "not found"],
+                    minPieceSize: [...this.state.minPieceSize, json.miners[0]?.address || "not found"],
+                }, () => {
+                    console.log(this.state.verifiedPrice)
+
+                }
+
+                )
+            }
+
+        } catch (error) {
+            console.error(error)
+            return
+        }
+        // console.log(minersIds)
+        // Promise.all(
+        //     minersIds.map(async id => {
+        //         let opts = {
+        //             headers: {
+        //               'mode':'cors',
+        //               'Access-Control-Allow-Origin': '*'
+        //             }
+        //           }
+
+        //         const res = await fetch(`https://api.filrep.io/api/v1/miners?search=${id}`,opts)
+        //         const json = await res.json()
+        //         console.log(json)
+
+        // this.setState({
+        //     verifiedPrice: [...this.state.verifiedPrice, json.miners[0].address || "not found"],
+        //     // verifiedPrice: [...this.state.verifiedPrice, json.miners[0].verifiedPrice, json.miners[0].address || "not found"],
+        //     minPieceSize: [...this.state.minPieceSize, json.miners[0].address || "not found"],
+        // }, ()=> {
+        //     console.log(this.state.verifiedPrice)
+        //     setTimeout(() => {
+        //         console.log("wait....")
+        //     }, 1500);
+        // }
+
+        // )
+        //     })
+        // ).catch(error => {
+        //     console.error(error)
+        //     return 
+        // })
+
+
     }
 
 
@@ -116,7 +163,7 @@ export default class TableVerifiers extends Component {
 
                                 this.checkIndex(i) ?
 
-                                    <tr key={i}>
+                                    <tr key={i} >
                                         <td>
                                             {miner.children[1].children[0].content}
                                         </td>
@@ -140,19 +187,25 @@ export default class TableVerifiers extends Component {
                                                 text={miner.children[11].children[0].content} />
                                         </td> */}
                                         <td>
-                                            {this.state.verifiedPrice[i] ?
-                                             <TableCell
-                                             text={this.state.verifiedPrice[i]} />
-                                             :
-                                             "Loading Api Data..."
+                                            {
+                                                this.state.verifiedPrice[i] ?
+                                                    <TableCell
+                                                        text={
+                                                            i === 0 ? this.state.verifiedPrice[0] :
+                                                                this.state.verifiedPrice[i % 5 - 1] === 0 ?
+                                                                    this.state.verifiedPrice[1] :
+                                                                    this.state.verifiedPrice[i % 5 ]
+                                                        } />
+                                                    :
+                                                    "Loading Api Data..."
                                             }
                                         </td>
                                         <td>
                                             {this.state.verifiedPrice[i] ?
-                                             <TableCell
-                                             text={this.state.verifiedPrice[i]} />
-                                             :
-                                             "Loading Api Data..."
+                                                <TableCell
+                                                    text={this.state.verifiedPrice[i]} />
+                                                :
+                                                "Loading Api Data..."
                                             }
                                         </td>
                                     </tr>

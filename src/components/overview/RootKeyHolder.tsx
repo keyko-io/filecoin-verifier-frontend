@@ -302,6 +302,7 @@ export default class RootKeyHolder extends Component<RootKeyHolderProps, RootKey
                                     this.context.verifierAndPendingRequests.filter((element: any) => tableElementFilter(this.props.searchString, element) === true)
                                         .filter((_: any, i: any) => this.state.refRequests?.checkIndex(i))
                                         .map((notaryReq: any) =>
+                                        
                                             <tr key={notaryReq.id} className={notaryReq.proposedBy === this.context.wallet.activeAccount ? 'ownedrow' : ''}>
                                                 <td><input type="checkbox" onChange={() => this.selectNotaryRow(notaryReq.id)} checked={this.context.selectedNotaryRequests.includes(notaryReq.id)} /></td>
                                                 <td>{notaryReq.proposed === true ? 'Proposed' : 'Pending'}</td>
