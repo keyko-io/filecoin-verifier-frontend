@@ -71,12 +71,7 @@ class MakeRequestModal extends Component<ModalProps, States> {
         e.preventDefault()
 
         if (this.state.gitHubMethod) {
-            const existingAddress = await this.checkAddress()
-            existingAddress.actor.length > 0 ?
-                this.setState({
-                    errorAddressMessage: `The address already has a ${bytesToiB(existingAddress.actor[0].datacap)} datacap allocation`
-                })
-                : this.handleGithubSubmit()
+             this.handleGithubSubmit()
         }
 
         if (this.state.emailMethod) {
