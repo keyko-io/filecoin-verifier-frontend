@@ -6,12 +6,14 @@ import parserMarkdown from '../utils/Markdown'
 // @ts-ignore
 import { parse } from "himalaya";
 import TableCell from '../components/TableCell'
-import { exception } from 'console';
+import { HashLoader, PacmanLoader } from "react-spinners";
+import { bytesToiB } from '../utils/Filters';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 
+const NUMBER_OF_PAGES = 8;
 export default class TableVerifiers extends Component {
     public static contextType = Data
-
     state = {
         selectedVerifier: 0,
         checks: [],
@@ -21,20 +23,25 @@ export default class TableVerifiers extends Component {
         minPieceSize: new Array(),
         loadingApiData: true,
         initialIndex: 0,
-        finalIndex: 5,
+        finalIndex: NUMBER_OF_PAGES,
         pages: [],
         actualPage: 1
     }
 
     componentDidMount() {
         this.loadData()
+        
     }
 
     setPage = async (e: any) => {
         const actualPage = Number(e.target.id)
-        this.setState({ finalIndex: actualPage * 5 })
-        this.setState({ initialIndex: (actualPage * 5) - 5 })
-        this.setState({ actualPage })
+        this.setState({
+            finalIndex: actualPage * NUMBER_OF_PAGES,
+            initialIndex: (actualPage * NUMBER_OF_PAGES) - NUMBER_OF_PAGES,
+            actualPage
+        }, () => {
+            this.fetchApiData(this.state.minersIds.slice(this.state.initialIndex, this.state.finalIndex))
+        })
     }
 
     checkIndex = (index: number) => {
@@ -45,13 +52,11 @@ export default class TableVerifiers extends Component {
         const page = this.state.actualPage + index
         if (page <= this.state.pages.length && page >= 1) {
             this.setState({
-                finalIndex: page * 5,
-                initialIndex: (page * 5) - 5,
+                finalIndex: page * NUMBER_OF_PAGES,
+                initialIndex: (page * NUMBER_OF_PAGES) - NUMBER_OF_PAGES,
                 actualPage: page,
             }, () => {
-                console.log("initialIndex: ", this.state.initialIndex)
-                console.log("finalIndex: ", this.state.finalIndex)
-                this.fetchApiData(this.state.minersIds.slice(this.state.initialIndex + 1, this.state.finalIndex))
+                this.fetchApiData(this.state.minersIds.slice(this.state.initialIndex, this.state.finalIndex))
             })
         }
     }
@@ -66,7 +71,7 @@ export default class TableVerifiers extends Component {
             .filter((ele: any) => ele.type === "element")
         this.setState({ miners })
 
-        const numerOfPages = Math.ceil(this.state.miners.length / 5)
+        const numerOfPages = Math.ceil(this.state.miners.length / NUMBER_OF_PAGES)
         let pages = []
         for (let index = 0; index < numerOfPages; index++) {
             pages.push(index + 1)
@@ -75,68 +80,74 @@ export default class TableVerifiers extends Component {
 
         const minersIds = miners.map((miner: any) => miner.children[5].children[0].content)
         this.setState({ minersIds })
-        await this.fetchApiData(minersIds.slice(0, 5))
+        await this.fetchApiData(minersIds.slice(0, NUMBER_OF_PAGES))
+    }
+
+    formatFil(val : string){
+        const n = Number(val);
+        let retVal = ''
+        if(val === "0"){
+            return '0 FIL'
+        }
+        if(val.length > 18){
+            retVal= `${n/1000000000000000000} FIL`
+            // console.log("/10^18 ", `${n/1000000000000000000} FIL`)
+            return retVal
+        }
+        if(val.length <= 18 && val.length > 6){
+            retVal= `${n/1000000000} nanoFIL`   
+            // console.log("/10^9 ", `${n/1000000000} nanoFIL`)
+            return retVal
+        }
+        if(val.length <= 6 ){
+            retVal= `${n/1000} attoFIL`
+            // console.log("/10^9 ", `${n/1000} attoFIL`)
+            return retVal
+        }
+       
     }
 
     fetchApiData = async (minersIds: any[]) => {
+        console.log(minersIds)
+        Promise.all(
+            minersIds.map(async id => {
+                let opts = {
+                    headers: {
+                        'mode': 'cors',
+                        'Access-Control-Allow-Origin': '*'
+                    }
+                }
+                //check if id is contained in state so I don't make the call
+                const isPriceInList = this.state.verifiedPrice.includes((item: any) => item.address === id)
+                const isSizeInList = this.state.verifiedPrice.includes((item: any) => item.address === id)
 
-        try {
-            console.log("minersIds: ", minersIds)
-            this.setState({
-                verifiedPrice: [],
-                // verifiedPrice: [...this.state.verifiedPrice, json.miners[0].verifiedPrice, json.miners[0].address || "not found"],
-                minPieceSize: [],
-            }, () => console.log("resetstate: ", this.state.verifiedPrice))
-            for (let id of minersIds) {
-                const res = await fetch(`https://api.filrep.io/api/v1/miners?search=${id}`)
+                if (isPriceInList && isSizeInList) {
+                    return null
+                }
+                const res = await fetch(`https://api.filrep.io/api/v1/miners?search=${id}`, opts)
                 const json = await res.json()
-                this.setState({
-                    verifiedPrice: [...this.state.verifiedPrice, json.miners[0]?.address || "not found"],
-                    // verifiedPrice: [...this.state.verifiedPrice, json.miners[0].verifiedPrice, json.miners[0].address || "not found"],
-                    minPieceSize: [...this.state.minPieceSize, json.miners[0]?.address || "not found"],
-                }, () => {
-                    console.log(this.state.verifiedPrice)
 
+                let verPrice = {
+                    address: id,
+                    price: json.miners[0]?.verifiedPrice ? this.formatFil(json.miners[0]?.verifiedPrice) : "not found"
+                }
+                let minSize = {
+                    address: id,
+                    size: bytesToiB(json.miners[0]?.minPieceSize) === "NaNB" ? "not found" : bytesToiB(json.miners[0]?.minPieceSize)
                 }
 
-                )
-            }
-
-        } catch (error) {
+                this.setState({
+                    verifiedPrice: [...this.state.verifiedPrice, verPrice],
+                    minPieceSize: [...this.state.minPieceSize, minSize],
+                }, () => {
+                    console.log(this.state.verifiedPrice)
+                    console.log(this.state.minPieceSize)
+                })
+            })
+        ).catch(error => {
             console.error(error)
             return
-        }
-        // console.log(minersIds)
-        // Promise.all(
-        //     minersIds.map(async id => {
-        //         let opts = {
-        //             headers: {
-        //               'mode':'cors',
-        //               'Access-Control-Allow-Origin': '*'
-        //             }
-        //           }
-
-        //         const res = await fetch(`https://api.filrep.io/api/v1/miners?search=${id}`,opts)
-        //         const json = await res.json()
-        //         console.log(json)
-
-        // this.setState({
-        //     verifiedPrice: [...this.state.verifiedPrice, json.miners[0].address || "not found"],
-        //     // verifiedPrice: [...this.state.verifiedPrice, json.miners[0].verifiedPrice, json.miners[0].address || "not found"],
-        //     minPieceSize: [...this.state.minPieceSize, json.miners[0].address || "not found"],
-        // }, ()=> {
-        //     console.log(this.state.verifiedPrice)
-        //     setTimeout(() => {
-        //         console.log("wait....")
-        //     }, 1500);
-        // }
-
-        // )
-        //     })
-        // ).catch(error => {
-        //     console.error(error)
-        //     return 
-        // })
+        })
 
 
     }
@@ -154,8 +165,15 @@ export default class TableVerifiers extends Component {
                                 <td>Miner ID</td>
                                 <td>Contact Info</td>
                                 {/* <td>Features</td> */}
-                                <td>verifiedPrice</td>
-                                <td>minPieceSize</td>
+                                <td>
+                                    Last Price for Verified Deals
+                                    <FontAwesomeIcon title={"This information is coming from filrep.io"} icon={["fas", "info-circle"]} />
+                                </td>
+                                <td>
+                                    Min Piece Size
+                                    <FontAwesomeIcon title={"This information is coming from filrep.io"} icon={["fas", "info-circle"]} />
+                                </td>
+
                             </tr>
                         </thead>
                         <tbody>
@@ -187,25 +205,19 @@ export default class TableVerifiers extends Component {
                                                 text={miner.children[11].children[0].content} />
                                         </td> */}
                                         <td>
-                                            {
-                                                this.state.verifiedPrice[i] ?
-                                                    <TableCell
-                                                        text={
-                                                            i === 0 ? this.state.verifiedPrice[0] :
-                                                                this.state.verifiedPrice[i % 5 - 1] === 0 ?
-                                                                    this.state.verifiedPrice[1] :
-                                                                    this.state.verifiedPrice[i % 5 ]
-                                                        } />
-                                                    :
-                                                    "Loading Api Data..."
+                                            {this.state.verifiedPrice.find(item => item.address === miner.children[5].children[0].content) !== undefined ?
+                                                <TableCell
+                                                    text={this.state.verifiedPrice.find(item => item.address === miner.children[5].children[0].content).price} />
+                                                :
+                                                <PacmanLoader speedMultiplier={0.8} size={13} color={"rgb(24,160,237)"} />
                                             }
                                         </td>
                                         <td>
-                                            {this.state.verifiedPrice[i] ?
+                                            {this.state.verifiedPrice.find(item => item.address === miner.children[5].children[0].content) !== undefined ?
                                                 <TableCell
-                                                    text={this.state.verifiedPrice[i]} />
+                                                    text={this.state.minPieceSize.find(item => item.address === miner.children[5].children[0].content).size} />
                                                 :
-                                                "Loading Api Data..."
+                                                <PacmanLoader speedMultiplier={0.8} size={13} color={"rgb(24,160,237)"} />
                                             }
                                         </td>
                                     </tr>
