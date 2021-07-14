@@ -306,11 +306,11 @@ export default class RootKeyHolder extends Component<RootKeyHolderProps, RootKey
                                     this.context.verifierAndPendingRequests.filter((element: any) => tableElementFilter(this.props.searchString, element) === true)
                                         .filter((_: any, i: any) => this.state.refRequests?.checkIndex(i))
                                         .map((notaryReq: any) =>
+                                        notaryReq.issue_number !== "" ?
                                             <tr key={notaryReq.id} className={notaryReq.proposedBy === this.context.wallet.activeAccount ? 'ownedrow' : ''}>
                                                 <td><input type="checkbox" onChange={() => this.selectNotaryRow(notaryReq.id)} checked={this.context.selectedNotaryRequests.includes(notaryReq.id)} /></td>
                                                 <td>{notaryReq.proposed === true ? 'Proposed' : 'Pending'}</td>
-                                                {/* <td><a target="_blank" rel="noopener noreferrer" href={notaryReq.issue_Url}>#{notaryReq.issue_number}</a></td> */}
-                                                <td><a target="_blank" rel="noopener noreferrer" href={notaryReq.issue_Url}>{notaryReq.issue_number && `#${notaryReq.issue_number}`}</a></td>
+                                                <td><a target="_blank" rel="noopener noreferrer" href={notaryReq.issue_Url}>#{notaryReq.issue_number}</a></td>
                                                 <td>
                                                     {notaryReq.addresses.map((address: any, index: any) =>
                                                         <div key={index}>{address}</div>
@@ -328,7 +328,7 @@ export default class RootKeyHolder extends Component<RootKeyHolderProps, RootKey
                                                 </td>
                                                 <td>{notaryReq.proposedBy}</td>
                                                 <td>{notaryReq.proposedBy === this.context.wallet.activeAccount ? <ButtonPrimary onClick={(e: any) => this.showWarnPropose(e, "Cancel", [notaryReq.id])}>Cancel</ButtonPrimary> : null}</td>
-                                            </tr>
+                                            </tr> :null
                                         ) : null}
                             </tbody>
                         </table>
