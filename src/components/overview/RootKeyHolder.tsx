@@ -172,7 +172,9 @@ export default class RootKeyHolder extends Component<RootKeyHolderProps, RootKey
                                 await this.context.wallet.api.approveVerifier(tx.verifier, BigInt(tx.datacap), tx.signer, tx.id, this.context.wallet.walletIndex);
 
                             const txReceipt = this.context.wallet.api.getReceipt(messageID)
-                            if (txReceipt.ExitCode !== 0) errorMessage += `#### @${assignee} There was an error processing the message >${messageID}`
+                            if (txReceipt.ExitCode !== 0 || txReceipt === null || txReceipt === undefined) {
+                                errorMessage += `#### @${assignee} There was an error processing the message >${messageID}`
+                            }
                             messageIds.push(messageID)
                             this.context.wallet.dispatchNotification('Accepting Message sent with ID: ' + messageID)
                             filfox += `#### You can check the status of the message here: https://filfox.info/en/message/${messageID}\n`
@@ -205,7 +207,9 @@ export default class RootKeyHolder extends Component<RootKeyHolderProps, RootKey
 
                                 console.log("messageID: " + messageID)
                                 const txReceipt = await this.context.wallet.api.getReceipt(messageID)
-                                if (txReceipt.ExitCode !== 0) errorMessage += `#### @${assignee} There was an error processing the message\n>${messageID}`
+                                if (txReceipt.ExitCode !== 0 || txReceipt === null || txReceipt === undefined) {
+                                    errorMessage += `#### @${assignee} There was an error processing the message >${messageID}`
+                                }
                                 messageIds.push(messageID)
                                 this.context.wallet.dispatchNotification('Accepting Message sent with ID: ' + messageID)
                                 filfox += `#### You can check the status of the message here: https://filfox.info/en/message/${messageID}\n`
@@ -305,7 +309,8 @@ export default class RootKeyHolder extends Component<RootKeyHolderProps, RootKey
                                             <tr key={notaryReq.id} className={notaryReq.proposedBy === this.context.wallet.activeAccount ? 'ownedrow' : ''}>
                                                 <td><input type="checkbox" onChange={() => this.selectNotaryRow(notaryReq.id)} checked={this.context.selectedNotaryRequests.includes(notaryReq.id)} /></td>
                                                 <td>{notaryReq.proposed === true ? 'Proposed' : 'Pending'}</td>
-                                                <td><a target="_blank" rel="noopener noreferrer" href={notaryReq.issue_Url}>#{notaryReq.issue_number}</a></td>
+                                                {/* <td><a target="_blank" rel="noopener noreferrer" href={notaryReq.issue_Url}>#{notaryReq.issue_number}</a></td> */}
+                                                <td><a target="_blank" rel="noopener noreferrer" href={notaryReq.issue_Url}>{notaryReq.issue_number && `#${notaryReq.issue_number}`}</a></td>
                                                 <td>
                                                     {notaryReq.addresses.map((address: any, index: any) =>
                                                         <div key={index}>{address}</div>
