@@ -171,7 +171,7 @@ export default class RootKeyHolder extends Component<RootKeyHolderProps, RootKey
                                 :
                                 await this.context.wallet.api.approveVerifier(tx.verifier, BigInt(tx.datacap), tx.signer, tx.id, this.context.wallet.walletIndex);
 
-                            const txReceipt = this.context.wallet.api.getReceipt(messageID)
+                            const txReceipt = await this.context.wallet.api.getReceipt(messageID)
                             if (txReceipt.ExitCode !== 0) errorMessage += `#### @${assignee} There was an error processing the message >${messageID}`
                             messageIds.push(messageID)
                             this.context.wallet.dispatchNotification('Accepting Message sent with ID: ' + messageID)
@@ -301,6 +301,7 @@ export default class RootKeyHolder extends Component<RootKeyHolderProps, RootKey
                                 {this.state.refRequests && this.state.refRequests.checkIndex ?
                                     this.context.verifierAndPendingRequests.filter((element: any) => tableElementFilter(this.props.searchString, element) === true)
                                         .filter((_: any, i: any) => this.state.refRequests?.checkIndex(i))
+                                        .filter((notaryReq: any) => notaryReq.issue_number !== "")
                                         .map((notaryReq: any) =>
                                             <tr key={notaryReq.id} className={notaryReq.proposedBy === this.context.wallet.activeAccount ? 'ownedrow' : ''}>
                                                 <td><input type="checkbox" onChange={() => this.selectNotaryRow(notaryReq.id)} checked={this.context.selectedNotaryRequests.includes(notaryReq.id)} /></td>
