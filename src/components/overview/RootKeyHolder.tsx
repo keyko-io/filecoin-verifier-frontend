@@ -171,7 +171,7 @@ export default class RootKeyHolder extends Component<RootKeyHolderProps, RootKey
                                 :
                                 await this.context.wallet.api.approveVerifier(tx.verifier, BigInt(tx.datacap), tx.signer, tx.id, this.context.wallet.walletIndex);
 
-                            const txReceipt = this.context.wallet.api.getReceipt(messageID)
+                            const txReceipt = await this.context.wallet.api.getReceipt(messageID)
                             if (txReceipt.ExitCode !== 0) errorMessage += `#### @${assignee} There was an error processing the message >${messageID}`
                             messageIds.push(messageID)
                             this.context.wallet.dispatchNotification('Accepting Message sent with ID: ' + messageID)
