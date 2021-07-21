@@ -11,7 +11,7 @@
             "max_datacap_allocation": "5 TB",
             "email": "notaryb@a.com",
             "github_user": [
-                "philippbanhardt"
+                "dannyob"
             ],
             "private_request": "false"
         },
@@ -21,8 +21,8 @@
             "use_case": [
                 "General"
             ],
-            "location": "Greater China",
-            "website": "https://fenbushi.vc",
+            "location": "Greater China Region",
+            "website": "https://fenbushi.vc, @Zhehao Chen - Fenbushi Capital on Filecoin Slack",
             "max_datacap_allocation": "5 TB",
             "email": "notaryb@a.com",
             "github_user": [
@@ -70,7 +70,7 @@
             "use_case": [
                 "Media and Entertainment"
             ],
-            "location": "Asia minus GCN",
+            "location": "Asia minus GCR",
             "website": "https://blotocol.com/",
             "max_datacap_allocation": "5 TB",
             "email": "notaryb@a.com",
@@ -88,7 +88,7 @@
                 "Media and Entertainment"
             ],
             "location": "North America",
-            "website": "@ Dr.Ann Shin on Filecoin Slack",
+            "website": "@XnMatrixSV on Filecoin Slack",
             "max_datacap_allocation": "5 TB",
             "email": "notaryb@a.com",
             "github_user": [
@@ -104,7 +104,7 @@
                 "Blockchain Data",
                 "Web3 DApp"
             ],
-            "location": "Asia minus GCN",
+            "location": "Asia minus GCR",
             "website": "mathwallet.org",
             "max_datacap_allocation": "5 TB",
             "email": "notaryb@a.com",
@@ -121,7 +121,7 @@
                 "Scientific Data",
                 "Media & Entertainment"
             ],
-            "location": "Greater China",
+            "location": "Greater China Region",
             "website": "@Steven on Filecoin Slack, @Steven004_Li on Twitter",
             "max_datacap_allocation": "5 TB",
             "email": "notaryb@a.com",
@@ -138,8 +138,8 @@
                 "Scientific Datasets",
                 "Video & Music"
             ],
-            "location": "Greater China",
-            "website": "@Neo Ge on Filecoin Slack",
+            "location": "Greater China Region",
+            "website": "@neogeweb3 on Filecoin Slack",
             "max_datacap_allocation": "5 TB",
             "email": "notaryb@a.com",
             "github_user": [
@@ -154,7 +154,7 @@
                 "General"
             ],
             "location": "Europe",
-            "website": "s0nik42 on Filecoin Slack",
+            "website": "@Julien NOEL - Twin Quasar (s0nik42) on Filecoin Slack",
             "max_datacap_allocation": "5 TB",
             "email": "notaryb@a.com",
             "github_user": [
@@ -168,7 +168,7 @@
             "use_case": [
                 "General"
             ],
-            "location": "Greater China",
+            "location": "Greater China Region",
             "website": "1475ipfs.com, @simon686-1475 on Filecoin Slack",
             "max_datacap_allocation": "5 TB",
             "email": "notaryb@a.com",
@@ -184,13 +184,180 @@
                 "General"
             ],
             "location": "North America",
-            "website": "https://performive.com/",
+            "website": "@Performive on Filecoin Slack",
             "max_datacap_allocation": "5 TB",
             "email": "notaryb@a.com",
             "github_user": [
                 "Broz221"
             ],
             "private_request": "false"
-        }
+        },
+        {
+            "id": 14,
+            "name": "12ships Foundation",
+            "use_case": [
+                "Public datasets",
+                "User data",
+                "dApps"
+            ],
+            "location": "Asia minus GCR",
+            "website": "@IreneYoung-12Ships on Filecoin Slack",
+            "max_datacap_allocation": "5 TB",
+            "email": "notaryb@a.com",
+            "github_user": [
+                "IreneYoung"
+            ],
+            "private_request": "false"
+        },
+        {
+            "id": 15,
+            "name": "Nicklas Reiersen / TechHedge",
+            "use_case": [
+                "General"
+            ],
+            "location": "Europe",
+            "website": "@Reiers on Filecoin Slack",
+            "max_datacap_allocation": "5 TB",
+            "email": "notaryb@a.com",
+            "github_user": [
+                "Reiers"
+            ],
+            "private_request": "false"
+        },
+        {
+            "id": 16',
+            "name": "Speedium",
+            "use_case": [
+                "General"
+            ],
+            "location": "Europe",
+            "website": "@Wijnand Schouten on Filecoin Slack",
+            "max_datacap_allocation": "5 TB",
+            "email": "notaryb@a.com",
+            "github_user": [
+                "cryptowhizzard"
+            ],
+            "private_request": "false"
+        },
+        {
+            "id": 17,
+            "name": "IPFSUnion - Steve Song",
+            "use_case": [
+                "General"
+            ],
+            "location": "Greater China Region",
+            "website": "@IPFSUnion.cn on Filecoin Slack",
+            "max_datacap_allocation": "5 TB",
+            "email": "notaryb@a.com",
+            "github_user": [
+                "IPFSUnion"
+            ],
+            "private_request": "false"
+        },
+        {
+            "id": 18,
+            "name": "ByteBase",
+            "use_case": [
+                "General"
+            ],
+            "location": "Greater China Region",
+            "website": "@ByteBase Official on Filecoin Slack",
+            "max_datacap_allocation": "5 TB",
+            "email": "notaryb@a.com",
+            "github_user": [
+                "swatchliu"
+            ],
+            "private_request": "false"
+        },
+        {
+            "id": 19,
+            "name": "Wise R&D Center",
+            "use_case": [
+                "General"
+            ],
+            "location": "Greater China Region",
+            "website": "@wjywood on Filecoin Slack",
+            "max_datacap_allocation": "5 TB",
+            "email": "notaryb@a.com",
+            "github_user": [
+                "wjywood"
+            ],
+            "private_request": "false"
+        },
+        {
+            "id": 20,
+            "name": "Binghe Distributed Storage Lab",
+            "use_case": [
+                "General"
+            ],
+            "location": "Greater China Region",
+            "website": "@Binghe Lab(冰河分布式存储实验室) on Filecoin Slack",
+            "max_datacap_allocation": "5 TB",
+            "email": "notaryb@a.com",
+            "github_user": [
+                "MRJAVAZHAO"
+            ],
+            "private_request": "false"
+        },
+        {
+            "id": 21,
+            "name": "Koda Inc.",
+            "use_case": [
+                "General"
+            ],
+            "location": "North America",
+            "website": "@Emma-Koda CEO on Filecoin Slack",
+            "max_datacap_allocation": "5 TB",
+            "email": "notaryb@a.com",
+            "github_user": [
+                "KodaRobotDog"
+            ],
+            "private_request": "false"
+        },
+        {
+            "id": 22,
+            "name": "Filswan NBFS",
+            "use_case": [
+                "General"
+            ],
+            "location": "North America",
+            "website": "@Charles Cao - FilSwan on Filecoin Slack",
+            "max_datacap_allocation": "5 TB",
+            "email": "notaryb@a.com",
+            "github_user": [
+                "flyworker"
+            ],
+            "private_request": "false"
+        },
+        {
+            "id": 22,
+            "name": "SECUREXPERTS Inc.",
+            "use_case": [
+                "General"
+            ],
+            "location": "North America",
+            "website": "@Darnell Washington on Filecoin Slack",
+            "max_datacap_allocation": "5 TB",
+            "email": "notaryb@a.com",
+            "github_user": [
+                "DarnellWashington"
+            ],
+            "private_request": "false"
+        },
+        {
+            "id": 23,
+            "name": "SECUREXPERTS Inc.",
+            "use_case": [
+                "General"
+            ],
+            "location": "North America",
+            "website": "@Meg Dennis on Filecoin Slack",
+            "max_datacap_allocation": "5 TB",
+            "email": "notaryb@a.com",
+            "github_user": [
+                "MegTei"
+            ],
+            "private_request": "false"
+        },
     ]
 }
