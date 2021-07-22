@@ -6,7 +6,7 @@ import parserMarkdown from '../utils/Markdown'
 // @ts-ignore
 import { parse } from "himalaya";
 import TableCell from '../components/TableCell'
-import { HashLoader, PacmanLoader } from "react-spinners";
+import { PuffLoader } from "react-spinners";
 import { bytesToiB } from '../utils/Filters';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
@@ -21,12 +21,24 @@ export default class TableVerifiers extends Component {
         minersIds: [],
         verifiedPrice: new Array(),
         minPieceSize: new Array(),
+        reputationScore: new Array(),
         loadingApiData: true,
         initialIndex: 0,
         finalIndex: NUMBER_OF_PAGES,
         pages: [],
         actualPage: 1
     }
+
+    columns = [
+        { key: "miner", name: "Miner" },
+        { key: "location", name: "Location" },
+        { key: "miner_id", name: "Miner ID" },
+        { key: "contact_info", name: "Contact Info" },
+        { key: "flst_price_for_verified_deals", name: "Last Price for Verified Deals", info: true },
+        { key: "min_piece_size", name: "Min Piece Size", info: true },
+        { key: "reputation_score", name: "Reputation Score", info: true }
+    ]
+
 
     componentDidMount() {
         this.loadData()
@@ -120,15 +132,19 @@ export default class TableVerifiers extends Component {
                 //check if id is contained in state so I don't make the call
                 const isPriceInList = this.state.verifiedPrice.includes((item: any) => item.address === id)
                 const isSizeInList = this.state.minPieceSize.includes((item: any) => item.address === id)
+                const isReputationScoreInList = this.state.reputationScore.includes((item: any) => item.address === id)
 
-                if (isPriceInList && isSizeInList) {
+                if (isPriceInList && isSizeInList && isReputationScoreInList) {
                     return null
                 }
 
                 const res = await fetch(`https://api.filrep.io/api/v1/miners?search=${id}`, opts)
                 const json = await res.json()
-
+              
                 let verPrice = {}
+                let minSize = {}
+                let rep = {}
+
                 if (!isPriceInList) {
                     verPrice = {
                         address: id,
@@ -141,7 +157,7 @@ export default class TableVerifiers extends Component {
                     })
                 }
 
-                let minSize = {}
+
                 if (!isSizeInList) {
                     minSize = {
                         address: id,
@@ -151,6 +167,19 @@ export default class TableVerifiers extends Component {
                         minPieceSize: [...this.state.minPieceSize, minSize],
                     }, () => {
                         // console.log(this.state.minPieceSize)
+                    })
+                }
+
+                if (!isReputationScoreInList) {
+                    rep = {
+                        address: id,
+                        reputation: json.miners[0]?.scores !== undefined ? json.miners[0]?.scores.total : "not found",
+                        color: !Number(json.miners[0]?.scores.total) ? "black" : Number(json.miners[0]?.score) < 50 ? "red" : " green",
+                    }
+                    this.setState({
+                        reputationScore: [...this.state.reputationScore, rep],
+                    }, () => {
+                        // console.log(this.state.reputationScore)
                     })
                 }
             })
@@ -170,20 +199,18 @@ export default class TableVerifiers extends Component {
                     <table>
                         <thead>
                             <tr>
-                                <td>Miner</td>
-                                <td>Location</td>
-                                <td>Miner ID</td>
-                                <td>Contact Info</td>
-                                {/* <td>Features</td> */}
-                                <td>
-                                    Last Price for Verified Deals
-                                    <FontAwesomeIcon title={"This information is coming from filrep.io"} icon={["fas", "info-circle"]} />
-                                </td>
-                                <td>
-                                    Min Piece Size
-                                    <FontAwesomeIcon title={"This information is coming from filrep.io"} icon={["fas", "info-circle"]} />
-                                </td>
-
+                                {this.columns.map((item: any) =>
+                                    item.info ?
+                                        <td style={{ "textAlign": "center" }}>
+                                            {item.name}
+                                            {/* <FontAwesomeIcon icon={["fas", "sort"]} id={item.key} /> */}
+                                            <FontAwesomeIcon title={"This information is coming from filrep.io"} icon={["fas", "info-circle"]} />
+                                        </td> :
+                                        <td style={{ "textAlign": "center" }}>
+                                            {item.name}
+                                            {/* <FontAwesomeIcon icon={["fas", "sort"]} id={item.key} /> */}
+                                        </td>
+                                )}
                             </tr>
                         </thead>
                         <tbody>
@@ -192,19 +219,19 @@ export default class TableVerifiers extends Component {
                                 this.checkIndex(i) ?
 
                                     <tr key={i} >
-                                        <td>
+                                        <td style={{ "textAlign": "center" }}>
                                             {miner.children[1].children[0].content}
                                         </td>
-                                        <td>
+                                        <td style={{ "textAlign": "center" }}>
                                             <TableCell
                                                 text={miner.children[3].children[0].content}
                                                 type="Location" />
                                         </td>
-                                        <td>
+                                        <td style={{ "textAlign": "center" }}>
                                             <TableCell
                                                 text={miner.children[5].children[0].content} />
                                         </td>
-                                        <td>
+                                        <td style={{ "textAlign": "center" }}>
                                             <TableCell
                                                 text={miner.children[7].children[0].content}
                                                 href={miner.children[7].children[1]}
@@ -214,22 +241,38 @@ export default class TableVerifiers extends Component {
                                             <TableCell
                                                 text={miner.children[11].children[0].content} />
                                         </td> */}
-                                        <td>
+                                        <td style={{ "textAlign": "center" }}>
                                             {this.state.verifiedPrice.find(item => item.address === miner.children[5].children[0].content) !== undefined ?
                                                 <TableCell
                                                     text={this.state.verifiedPrice?.find(item => item.address === miner.children[5].children[0].content)?.price} />
                                                 :
-                                                <PacmanLoader speedMultiplier={0.8} size={13} color={"rgb(24,160,237)"} />
+                                                <PuffLoader speedMultiplier={0.8} size={30} color={"rgb(24,160,237)"} />
                                             }
                                         </td>
-                                        <td>
+                                        <td style={{ "textAlign": "center" }}>
                                             {this.state.minPieceSize.find(item => item.address === miner.children[5].children[0].content) !== undefined ?
                                                 <TableCell
                                                     text={this.state.minPieceSize?.find(item => item.address === miner.children[5].children[0].content)?.size} />
                                                 :
-                                                <PacmanLoader speedMultiplier={0.8} size={13} color={"rgb(24,160,237)"} />
+                                                <PuffLoader speedMultiplier={0.8} size={30} color={"rgb(24,160,237)"} />
                                             }
                                         </td>
+                                        {this.state.reputationScore.find(item => item.address === miner.children[5].children[0].content) !== undefined ?
+                                            <td style={{
+                                                "textAlign": "center",
+                                                "color": this.state.reputationScore?.find(item => item.address === miner.children[5].children[0].content)?.color
+
+                                            }} 
+                                            >
+
+                                                <TableCell
+                                                    text={this.state.reputationScore?.find(item => item.address === miner.children[5].children[0].content)?.reputation} />
+                                            </td>   
+                                            :
+                                            <td style={{ "textAlign": "center" }}>
+                                                <PuffLoader speedMultiplier={0.8} size={30} color={"rgb(24,160,237)"} />
+                                            </td>
+                                        }
                                     </tr>
                                     : null
                             )
