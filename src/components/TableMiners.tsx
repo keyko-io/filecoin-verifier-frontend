@@ -11,7 +11,7 @@ import { bytesToiB } from '../utils/Filters';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 
-const NUMBER_OF_PAGES = 8;
+const NUMBER_OF_PAGES = 9;
 export default class TableVerifiers extends Component {
     public static contextType = Data
     state = {
