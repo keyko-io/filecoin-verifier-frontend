@@ -39,7 +39,7 @@ export const config = {
         name: 'Localhost',
         code: 1,
         url: 'ws://localhost:1234/rpc/v0',
-        token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBbGxvdyI6WyJyZWFkIiwid3JpdGUiLCJzaWduIiwiYWRtaW4iXX0.OJlFIgYG3D23RjWWXfjdTluG6Qx2EOgwMeWQxnUQrMM',
+        token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBbGxvdyI6WyJyZWFkIiwid3JpdGUiLCJzaWduIiwiYWRtaW4iXX0.7VNjKDHP4sPToCdlZZAtKE9puTxXt75yhB8DkqhOowg',
         notaryRepo: 'filecoin-notaries-onboarding',
         notaryOwner: 'keyko-io',
         rkhMultisig: 't080',
