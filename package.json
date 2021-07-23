@@ -42,6 +42,7 @@
     "react-login-github": "^1.0.6",
     "react-router-dom": "^5.2.0",
     "react-scripts": "3.4.1",
+    "react-spinners": "^0.11.0",
     "sass-loader": "^9.0.2",
     "slate-react-system": "file:./tmp/slate-react-system-0.1.0.tgz",
     "typescript": "^3.7.5",
