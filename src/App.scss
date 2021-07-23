@@ -866,6 +866,7 @@
       .optiondesc {
         margin-top: 10px;
         width: 350px;
+        height: 100px;
         left: 0;
         right: 0;
         margin-left: auto;
@@ -997,7 +998,7 @@
   .learnmore {
     top: 855px !important;
   }
-
+  
   .buttonsholder {
     padding-left: 120px !important;
   }
@@ -1367,6 +1368,11 @@
     background: #fff;
     color: #0091ff;
   }
+
+  button:not(:hover){
+    background-color: #fff;
+  }
+  
 }
 
 .learnmoreoptions {
@@ -1387,7 +1393,6 @@
   border-bottom: 1px solid #0091ff;
 
   button,
-  button:checked,
   button:active,
   button:hover,
   button:visited,
@@ -1407,8 +1412,12 @@
     border-left: 1px solid #0091ff;
     border-bottom: 1px solid #0091ff;
     width: 180px;
-    background: #fff;
+    background-color: #fff;
     color: #0091ff;
+  }
+
+  button:not(:hover){
+    background-color: #fff;
   }
 
   .learnleft {
@@ -1417,13 +1426,6 @@
 
   .learnright {
     padding-left: 20%;
-    button{
-      border-right: 1px solid #1A1A1A;
-      border-top: 1px solid #1A1A1A;
-      border-left: 1px solid #1A1A1A;
-      border-bottom: 1px solid #1A1A1A;
-      color: #1A1A1A;
-    }
   }
 }
 
