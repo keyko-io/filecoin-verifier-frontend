@@ -6,7 +6,7 @@ class Footer extends Component {
     render() {
         return (
             <div className="footer">
-                App version {packageJson.version}
+                <p style={{"display":"none"}}>App version {packageJson.version}</p>
             </div >
         )
     }
