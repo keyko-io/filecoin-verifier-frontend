@@ -219,12 +219,14 @@ export default class Notary extends Component<NotaryProps, NotaryStates> {
 
                     let messageID
 
-                    request.approvals == 0 ?
+                    const approvals = request.approvals[0] && request.approvals[0].tx ? request.approvals[0].tx.signers.length : 0
+
+                    approvals == 0 ?
                         messageID = await this.context.wallet.api.multisigVerifyClient(this.context.wallet.multisigID, address, BigInt(datacap), this.context.wallet.walletIndex)
                         :
                         messageID = await this.context.wallet.api.approvePending(this.context.wallet.multisigID, request.tx[0], this.context.wallet.walletIndex)
 
-                    this.context.updateGithubVerifiedLarge(request.number, messageID, address, datacap, request.approvals)
+                    this.context.updateGithubVerifiedLarge(request.number, messageID, address, datacap, approvals)
                     this.context.wallet.dispatchNotification('Verify Client Message sent with ID: ' + messageID)
                     this.context.loadClientRequests()
                 } catch (e) {
@@ -396,7 +398,7 @@ export default class Notary extends Component<NotaryProps, NotaryStates> {
                                                 <td><FontAwesomeIcon icon={["fas", "info-circle"]} id={index} onClick={(e) => this.showClientDetail(e)} /> {clientReq.data.name} </td>
                                                 <td>{clientReq.address}</td>
                                                 <td>{clientReq.datacap}</td>
-                                                <td>{clientReq.approvals}</td>
+                                                <td>{clientReq.approvals[0] && clientReq.approvals[0].tx ? clientReq.approvals[0].tx.signers.length : 0}</td>
                                                 <td><a target="_blank" rel="noopener noreferrer" href={clientReq.url}>#{clientReq.number}</a></td>
                                             </tr>
                                         ) : null}

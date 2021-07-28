@@ -128,7 +128,7 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
                                     url: rawLargeIssue.html_url,
                                     number: rawLargeIssue.number,
                                     mine: rawLargeIssue.assignees.find((a: any) => a.login === user.data.login) !== undefined,
-                                    approvals: pendingLarge.filter((tx: any) => tx.address === comment.clientAddress).length,
+                                    approvals: pendingLarge.filter((tx: any) => tx.address === comment.clientAddress),
                                     tx: pendingLarge.map((tx: any) => tx.address === comment.clientAddress ? tx.tx : null).filter((tx: any) => tx !== null),
                                     data
                                 }

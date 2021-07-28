@@ -25,7 +25,7 @@ import { CookiesProvider } from 'react-cookie';
 
 
 // redirect to domain if user access fleek url
-if (window.location.host.includes('fleek')) {
+if (window.location.host.includes('fleek') && config.willRedirect) {
   window.location.href = config.domain;
 }
 
