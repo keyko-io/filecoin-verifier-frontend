@@ -49,7 +49,7 @@ export default class Overview extends Component<{}, OverviewStates> {
                                 <div className="text">Datacap Granted</div>
                             </div>
                             <div className="textinfodatablock">
-                                <div className="data">{this.context.verifierAndPendingRequests.length}</div>
+                                <div className="data">{this.context.verifierAndPendingRequests.filter((notaryReq: any) => notaryReq.issue_number !== "").length}</div>
                                 <div className="text">Pending Notaries</div>
                             </div>
                             <div className="textinfodatablock">
