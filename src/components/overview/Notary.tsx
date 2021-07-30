@@ -398,7 +398,7 @@ export default class Notary extends Component<NotaryProps, NotaryStates> {
                                                 <td><FontAwesomeIcon icon={["fas", "info-circle"]} id={index} onClick={(e) => this.showClientDetail(e)} /> {clientReq.data.name} </td>
                                                 <td>{clientReq.address}</td>
                                                 <td>{clientReq.datacap}</td>
-                                                <td>{clientReq.approvals[0] && clientReq.approvals[0].tx ? clientReq.approvals[0].tx.signers.length : 0}</td>
+                                                <td>{clientReq.approvals ? clientReq.approvals : 0}</td> 
                                                 <td><a target="_blank" rel="noopener noreferrer" href={clientReq.url}>#{clientReq.number}</a></td>
                                             </tr>
                                         ) : null}
