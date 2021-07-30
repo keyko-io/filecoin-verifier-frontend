@@ -309,7 +309,8 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
                         proposed: true
                     })
                 }
-                this.setState({ verifierAndPendingRequests: issues })
+                const filteredIssues = issues.filter((notaryReq: any) => notaryReq.issue_number !== "")
+                this.setState({ verifierAndPendingRequests: filteredIssues })
             },
             verifierAndPendingRequests: [],
             loadNotificationVerifierRequests: async () => {
