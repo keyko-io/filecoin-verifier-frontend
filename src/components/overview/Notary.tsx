@@ -219,7 +219,8 @@ export default class Notary extends Component<NotaryProps, NotaryStates> {
 
                     let messageID
 
-                    const approvals = request.approvals[0] && request.approvals[0].tx ? request.approvals[0].tx.signers.length : 0
+                    // const approvals = request.approvals[0] && request.approvals[0].tx ? request.approvals[0].tx.signers.length : 0
+                    const approvals = request.approvals ? request.approvals : 0
 
                     approvals == 0 ?
                         messageID = await this.context.wallet.api.multisigVerifyClient(this.context.wallet.multisigID, address, BigInt(datacap), this.context.wallet.walletIndex)
