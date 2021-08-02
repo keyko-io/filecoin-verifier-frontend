@@ -118,7 +118,7 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
 
                             const comment = comments[comments.length - 1]
                             const pendingLargeTxs = await this.props.wallet.api.pendingTransactions(comment.notaryAddress)
-                            const signers = pendingLargeTxs.filter((pending: any) => pending.parsed.params.address === comment.clientAddress)[0].signers
+                            const txs = pendingLargeTxs.filter((pending: any) => pending.parsed.params.address === comment.clientAddress)
 
                             if (comment && comment.multisigMessage && comment.correct) {
                                 let largeRequest: any = {
@@ -130,8 +130,8 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
                                     url: rawLargeIssue.html_url,
                                     number: rawLargeIssue.number,
                                     mine: rawLargeIssue.assignees.find((a: any) => a.login === user.data.login) !== undefined,
-                                    approvals: signers.length,
-                                    tx: pendingLarge.map((tx: any) => tx.address === comment.clientAddress ? tx.tx : null).filter((tx: any) => tx !== null),
+                                    approvals: txs.length > 0 ? txs[0].signers.length : 0,
+                                    tx: txs.length > 0 ? txs[0].tx : null,
                                     data
                                 }
                                 largeissues.push(largeRequest)
