@@ -7,7 +7,8 @@ type ModalProps = {
     clientRequests: any[],
     selectedClientRequests: any[],
     onClick: (target: any) => void;
-    origin: string
+    origin: string,
+    largeAddress?: boolean
 }
 
 type ModalState = {
@@ -33,8 +34,8 @@ class WarnModalVerify extends Component<ModalProps, ModalState> {
             for (const request of this.props.clientRequests) {
                 if (this.props.selectedClientRequests.includes(request.number)) {
                     requestToShow.push({
-                        address: request.data.address,
-                        datacap: request.data.datacap ? request.data.datacap : request.datacap 
+                        address: this.props.largeAddress ? request.address : request.data.address,
+                        datacap: request.data.datacap ? request.data.datacap : request.datacap
                     })
                 }
             }

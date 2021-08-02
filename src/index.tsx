@@ -22,12 +22,24 @@ import Miners from './pages/Miners';
 import Title from './components/Title';
 import ClientDetails from './pages/ClientDetails'
 import { CookiesProvider } from 'react-cookie';
-
+import * as Sentry from "@sentry/react";
+import { Integrations } from "@sentry/tracing";
 
 // redirect to domain if user access fleek url
 if (window.location.host.includes('fleek') && config.willRedirect) {
   window.location.href = config.domain;
 }
+
+Sentry.init({
+  dsn: "https://488b3be98a124c008cd88fce8b8abe1c@o933704.ingest.sentry.io/5882860",
+  integrations: [new Integrations.BrowserTracing()],
+
+  // Set tracesSampleRate to 1.0 to capture 100%
+  // of transactions for performance monitoring.
+  // We recommend adjusting this value in production
+  tracesSampleRate: 1.0,
+});
+
 
 
 

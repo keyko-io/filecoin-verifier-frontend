@@ -14,7 +14,8 @@ import WarnModalVerify from '../../modals/WarnModalVerify';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { tableElementFilter } from '../../utils/SortFilter';
 import Pagination from '../Pagination';
-import history from '../../context/History'
+import history from '../../context/History';
+import * as Sentry from "@sentry/react";
 
 
 
@@ -161,6 +162,7 @@ export default class Notary extends Component<NotaryProps, NotaryStates> {
                                 : origin === 'Large' ? this.verifyLargeClients.bind(this)
                                     : this.requestDatacap.bind(this)
                     }
+                    largeAddress={origin == "Large" ? true : false}
                     origin={origin === 'Notary' || 'Large' ? 'Notary' : "single-message"}
                 />
             }
@@ -202,7 +204,6 @@ export default class Notary extends Component<NotaryProps, NotaryStates> {
 
 
     verifyLargeClients = async () => {
-
         dispatchCustomEvent({ name: "delete-modal", detail: {} })
 
         for (const request of this.context.largeClientRequests) {
@@ -210,7 +211,7 @@ export default class Notary extends Component<NotaryProps, NotaryStates> {
                 try {
                     const datacap = anyToBytes(request.datacap)
                     console.log('datacap', datacap)
-                    let address = request.data.address
+                    let address = request.address
                     if (address.length < 12) {
                         address = await this.context.wallet.api.actorKey(address)
                     }
@@ -219,12 +220,13 @@ export default class Notary extends Component<NotaryProps, NotaryStates> {
 
                     let messageID
 
-                    const approvals = request.approvals[0] && request.approvals[0].tx ? request.approvals[0].tx.signers.length : 0
+                    // const approvals = request.approvals[0] && request.approvals[0].tx ? request.approvals[0].tx.signers.length : 0
+                    const approvals = request.approvals ? request.approvals : 0
 
                     approvals == 0 ?
                         messageID = await this.context.wallet.api.multisigVerifyClient(this.context.wallet.multisigID, address, BigInt(datacap), this.context.wallet.walletIndex)
                         :
-                        messageID = await this.context.wallet.api.approvePending(this.context.wallet.multisigID, request.tx[0], this.context.wallet.walletIndex)
+                        messageID = await this.context.wallet.api.approvePending(this.context.wallet.multisigID, request.tx, this.context.wallet.walletIndex)
 
                     this.context.updateGithubVerifiedLarge(request.number, messageID, address, datacap, approvals)
                     this.context.wallet.dispatchNotification('Verify Client Message sent with ID: ' + messageID)
@@ -232,6 +234,7 @@ export default class Notary extends Component<NotaryProps, NotaryStates> {
                 } catch (e) {
                     this.context.wallet.dispatchNotification('Verification failed: ' + e.message)
                     console.log(e.stack)
+                    Sentry.captureException(e);
                 }
             }
         }
@@ -398,7 +401,7 @@ export default class Notary extends Component<NotaryProps, NotaryStates> {
                                                 <td><FontAwesomeIcon icon={["fas", "info-circle"]} id={index} onClick={(e) => this.showClientDetail(e)} /> {clientReq.data.name} </td>
                                                 <td>{clientReq.address}</td>
                                                 <td>{clientReq.datacap}</td>
-                                                <td>{clientReq.approvals[0] && clientReq.approvals[0].tx ? clientReq.approvals[0].tx.signers.length : 0}</td>
+                                                <td>{clientReq.approvals ? clientReq.approvals : 0}</td> 
                                                 <td><a target="_blank" rel="noopener noreferrer" href={clientReq.url}>#{clientReq.number}</a></td>
                                             </tr>
                                         ) : null}
