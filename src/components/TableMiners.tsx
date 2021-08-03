@@ -74,8 +74,6 @@ export default class TableMiners extends Component {
     }
 
     setPage = async (e: any, n?: any) => {
-        console.log("e", e)
-        console.log("n", n)
         const actualPage = Number(e !== null ? e.target.id : n)
         this.setState({
             finalIndex: actualPage * NUMBER_OF_ROWS,
@@ -173,7 +171,6 @@ export default class TableMiners extends Component {
     }
 
     filter = async (search: string) => {
-        console.log("this.state.allMiners", this.state.allMiners)
         const miners = await tableMinerFilter(search, this.state.allMiners as [])
         this.setState({ miners })
         this.setPage(null, 1)

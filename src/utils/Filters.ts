@@ -49,7 +49,6 @@ export function anyToFil(val: string): string {
 
 export function filToAny(val: string): number {
     if (val === "not found") {
-        console.log(val)
         return -1
     }
     const num = Number(val.slice(0, val.indexOf(" ")))
