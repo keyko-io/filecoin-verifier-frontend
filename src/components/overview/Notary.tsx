@@ -208,8 +208,8 @@ export default class Notary extends Component<NotaryProps, NotaryStates> {
 
         for (const request of this.context.largeClientRequests) {
             if (this.state.selectedLargeClientRequests.includes(request.number)) {
-                
-                // send all the data to sentry, if it is not an error is just like a log, otherwise it is managed in the catch block
+
+                // object attached with sentry event, captureMessage or captureError
                 let breadCrumb = {
                     category: "verifyLargeClients",
                     message: `verifyLargeClients, request number: ${request.number}`,
@@ -264,7 +264,6 @@ export default class Notary extends Component<NotaryProps, NotaryStates> {
                     //tracing
                     breadCrumb.level = Sentry.Severity.Error;
                     Sentry.addBreadcrumb(breadCrumb);
-                    Sentry.captureMessage(breadCrumb.message)
                     Sentry.captureException(e);
                 }
             }
