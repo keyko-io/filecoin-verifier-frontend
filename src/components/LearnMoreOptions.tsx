@@ -7,7 +7,7 @@ import history from '../context/History'
 class LearnMoreOptions extends Component {
 
     navigate = () => {
-        window.open('https://github.com/filecoin-project/filecoin-plus-client-onboarding', '_blank')
+        window.open('https://docs.filecoin.io/store/filecoin-plus/', '_blank')
     }
 
     miners = () => {
@@ -23,7 +23,7 @@ class LearnMoreOptions extends Component {
     render() {
         return (
             <div className="learnmoreoptions">
-                <div className="learnleft"><ButtonPrimary onClick={() => this.checkDatacap()}>Check DataCap</ButtonPrimary></div>
+                <div className="learnleft"><ButtonPrimary onClick={() => this.checkDatacap()}>Check Remaining DataCap</ButtonPrimary></div>
                 <div className="learnright"><ButtonPrimary onClick={() => this.navigate()}>Learn More</ButtonPrimary></div>
             </div >
         )
