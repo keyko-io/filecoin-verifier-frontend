@@ -48,13 +48,13 @@ class Miners extends Component<{}> {
             <div className="tableselects">
             {/* <div className="tableselects" style={this.context.github.githubLogged === false ? { zIndex: -1 } : {}}> */}
             <div className="tabletitle">
-                <div className="title">Search Notary</div>
+                <div className="title">Search for a Storage Provider</div>
                 <div className="formname">
                   <form>
                     <Input
                       name="search"
                       value={this.state.search}
-                      placeholder="Search Notary"
+                      placeholder="Search"
                       onChange={this.handleChange}
                     />
                   </form>

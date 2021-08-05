@@ -10,6 +10,8 @@ import { ClimbingBoxLoader } from "react-spinners";
 import { bytesToiB, anyToFil } from '../utils/Filters';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { tableMinerFilter, tableSortMiners } from '../utils/SortFilter';
+import { faExternalLinkAlt } from '@fortawesome/free-solid-svg-icons'
+import ReactDOM from 'react-dom';
 
 type TableMinersProps = {
     ref: any
@@ -58,9 +60,9 @@ export default class TableMiners extends Component {
     }
 
     columns = [
-        { key: "name", name: "Miner", sort: true },
+        { key: "name", name: "Storage Provider", sort: true },
         { key: "location", name: "Location", sort: true },
-        { key: "minerId", name: "Miner ID", sort: true },
+        { key: "minerId", name: "Storage Provider ID", sort: true },
         { key: "contact_info", name: "Contact Info", sort: false },
         { key: "verifiedPrice", name: "Last Price for Verified Deals", info: true, sort: true },
         { key: "minPieceSize", name: "Min Piece Size", info: true, sort: true },
@@ -172,30 +174,65 @@ export default class TableMiners extends Component {
 
     filter = async (search: string) => {
         const miners = await tableMinerFilter(search, this.state.allMiners as [])
-        this.setState({ miners })
+
         this.setPage(null, 1)
-        // React.createRef().current.calculatePages()
+        const numerOfPages = Math.ceil(miners.length / NUMBER_OF_ROWS)
+        let pages = []
+        for (let index = 0; index < numerOfPages; index++) {
+            pages.push(index + 1)
+        }
+        this.setState({ miners, pages })
     }
 
-    renderContact = (contacts: any) => {
+
+
+    showCopyElem(id: any, elem: any, type: any) {
+
+        let hideElem = document.getElementById(`${type}Hide${id}`)!
+        if (hideElem.innerHTML === "Slack" || hideElem.innerHTML === "Mail") {
+            hideElem.innerHTML = elem
+            hideElem.title = "Copied to clipboard!"
+            navigator.clipboard.writeText(elem)
+        } else {
+            hideElem.innerHTML = type
+            hideElem.title = "Click to copy!"
+        }
+    }
+
+
+    renderContact = (contacts: any, id: any) => {
         if (contacts.href?.includes("@")) {
             return <div className="contacvalue">
-                Slack
-                <FontAwesomeIcon title={contacts.slack} icon={["fas", "info-circle"]} />
+                <span id={`SlackHide${id}`} className={"slack"} >
+                    Slack
+                </span>
+                <FontAwesomeIcon icon={"copy"} className={"iconExtLink"} onClick={() => this.showCopyElem(id, contacts.slack, "Slack")} title={"Click to copy!"}/>
                 <br></br>
-                <a href={`mailto:${contacts.href}`}>Email </a>
+                <span id={`MailHide${id}`} className={"slack"} >
+                    Mail
+                </span>
+                    <FontAwesomeIcon icon={"copy"} className={"iconExtLink"} onClick={() => this.showCopyElem(id, contacts.href, "Mail")} title={"Click to copy!"}/>
             </div>
         } else if (contacts.href === undefined) {
             return <div className="contacvalue">
-                Slack
-                <FontAwesomeIcon title={contacts.slack} icon={["fas", "info-circle"]} />
+                <span id={`SlackHide${id}`} className={"slack"} >
+                    Slack
+                </span>
+                <FontAwesomeIcon icon={"copy"} className={"iconExtLink"} onClick={() => this.showCopyElem(id, contacts.slack, "Slack")} title={"Click to copy!"}/>
             </div>
         } else {
             return <div className="contacvalue">
-                Slack
-                <FontAwesomeIcon title={contacts.slack} icon={["fas", "info-circle"]} />
+                <span id={`SlackHide${id}`} className={"slack"} onClick={() => this.showCopyElem(id, contacts.slack, "Slack")} title={"Click to copy!"}>
+                    Slack
+                    
+                </span>
+                <FontAwesomeIcon icon={"copy"} className={"iconExtLink"} onClick={() => this.showCopyElem(id, contacts.slack, "Slack")} title={"Click to copy!"}/>
                 <br></br>
-                <a href={contacts.href}>Website</a>
+                <span >
+                    Website
+                <a className={"slack"} href={contacts.href} target={"_blank"}>
+                    <FontAwesomeIcon icon={"external-link-square-alt"} className={"iconExtLink"} /></a>
+                </span>
             </div>
         }
 
@@ -223,8 +260,8 @@ export default class TableMiners extends Component {
                 <div className="tableverifiers miners">
                     <table>
                         <thead>
-                            <tr>
-                                {this.columns.map((item: any) =>
+                            <tr >
+                                {this.columns.map((item: any, i: any) =>
                                     item.info ?
                                         <td style={{ "textAlign": "center" }}>
                                             {item.name}
@@ -258,8 +295,7 @@ export default class TableMiners extends Component {
                                             {miner?.minerId}
                                         </td>
                                         <td style={{ "textAlign": "center" }} >
-
-                                            {this.renderContact(miner?.contacts)}
+                                            {this.renderContact(miner?.contacts, miner?.minerId)}
                                         </td>
                                         {/* <td>
                                             <TableCell
@@ -282,12 +318,23 @@ export default class TableMiners extends Component {
                                             </td>
                                         }
                                         {miner?.reputationScore > 50 ?
-                                            <td style={{ "textAlign": "center", "color": "green" }}>
-                                                {miner?.reputationScore}
+                                            <td >
+                                                <a href={`https://filrep.io/?search=${miner?.minerId}`}
+                                                    target={"_blank"}
+                                                    style={{ "textAlign": "center", "color": "green", "textDecoration": "none" }}
+                                                >{miner?.reputationScore}
+                                                    <FontAwesomeIcon icon={"external-link-square-alt"} className={"iconExtLink"} />
+                                                </a>
                                             </td>
                                             :
-                                            <td style={{ "textAlign": "center", "color": "red" }}>
-                                                {miner?.reputationScore}
+                                            <td >
+                                                <a href={`https://filrep.io/?search=${miner?.minerId}`}
+                                                    target={"_blank"}
+                                                    style={{ "textAlign": "center", "color": "red", "textDecoration": "none" }}
+                                                >{miner?.reputationScore}
+                                                    <FontAwesomeIcon icon={"external-link-square-alt"} className={"iconExtLink"} />
+                                                </a>
+
                                             </td>
 
                                         }
@@ -300,16 +347,23 @@ export default class TableMiners extends Component {
                     </table>
                 </div>
                 <div className="pagination paginationminers">
-                    <div className="pagenumber paginator" onClick={e => this.movePage(-1)}>{"<"}</div>
-                    {this.state.pages.map((page: any, i) =>
-                        <div className="pagenumber"
-                            style={this.state.actualPage === i + 1 ? { backgroundColor: "#33A7FF", color: 'white' } : {}}
-                            id={(i + 1).toString()}
-                            onClick={e => this.setPage(e)}>
-                            {page}
-                        </div>
-                    )}
-                    <div className="pagenumber paginator" onClick={e => this.movePage(1)}>{">"}</div>
+                    {
+                        this.state.pages.length !== 0 &&
+                        <div className="pagenumber paginator" onClick={e => this.movePage(-1)}>{"<"}</div>
+                    }
+                    {
+                        this.state.pages.map((page: any, i) =>
+                            <div className="pagenumber"
+                                style={this.state.actualPage === i + 1 ? { backgroundColor: "#33A7FF", color: 'white' } : {}}
+                                id={(i + 1).toString()}
+                                onClick={e => this.setPage(e)}>
+                                {page}
+                            </div>
+                        )}
+                    {
+                        this.state.pages.length !== 0 &&
+                        <div className="pagenumber paginator" onClick={e => this.movePage(1)}>{">"}</div>
+                    }
                 </div>
             </div>
         )
