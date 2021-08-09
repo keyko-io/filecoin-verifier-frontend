@@ -32,11 +32,11 @@ const options: OptionsType = [
   {
     title: "Get Verified",
     subtitle: "Large vs. Small Storage Request",
-    desc: "Get a small vs. large amount of DataCap automatically or for general storage requests! You’ll be asked to select an option upon clicking below.",
+    desc: "Get a small amount of DataCap (32GB) through an automated Notary to make a few deals to test on the network, or apply to a specific Notary for more DataCap.",
     imgSrc: TiB.toString()
   },
   {
-    title: "Find a Miner",
+    title: "Find a Storage Provider",
     subtitle: "... to store your data!",
     desc: "Filecoin has a diversity of miners spread out across the globe - find one who can support your use case!",
     imgSrc: Mining.toString()
@@ -93,12 +93,12 @@ class Landing extends Component<{}, States> {
                 id={index}
                 title={option.title}
                 desc={option.desc}
-                subtitle={option.subtitle}
+                // subtitle={option.subtitle}
                 available={option.available}
                 imgSrc={option.imgSrc}
                 active={this.state.optionSelected[index]}
                 onClick={this.changeActive.bind(this)}
-                buttonName={index === 0 ? "Get Verified" : "Find a Miner"}
+                buttonName={index === 0 ? "Get DataCap" : "Find a Storage Provider"}
               />
             })}
           </div>

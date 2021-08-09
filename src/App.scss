@@ -866,6 +866,7 @@
       .optiondesc {
         margin-top: 10px;
         width: 350px;
+        height: 100px;
         left: 0;
         right: 0;
         margin-left: auto;
@@ -997,7 +998,7 @@
   .learnmore {
     top: 855px !important;
   }
-
+  
   .buttonsholder {
     padding-left: 120px !important;
   }
@@ -1034,7 +1035,11 @@
   border-bottom: 1px solid #0091ff;
 }
 
+
 .verifiers {
+
+  
+  
   .tableverifiers {
     position: absolute;
     margin-left: auto;
@@ -1048,7 +1053,21 @@
     text-align: center;
     display: flex;
     box-sizing: border-box;
-
+    
+    .minersTableLoadSpinner{
+      display: flex;
+      justify-content: center;
+      align-items: top;
+     }
+     
+    @keyframes tableAppearSmooth {
+      0% {
+        opacity: 0;
+      }
+      100% {
+        opacity: 1;
+      }
+    }
 
     table {
       position: absolute;
@@ -1058,7 +1077,13 @@
       left: 0;
       right: 0;
       border-collapse: collapse;
+      opacity: 1;
+      -webkit-transition: opacity 2s;
+      transition: opacity 2s;
+      animation: 1.5s tableAppearSmooth;
     }
+
+    
 
     thead {
       font-weight: bold;
@@ -1115,7 +1140,7 @@
   }
 
   .miners {
-    top: 0px !important;
+    top: 90px !important;
     text-align: left;
 
     a {
@@ -1126,6 +1151,7 @@
       padding-left: 3px;
     }
   }
+  
 }
 
 .preonboarding {
@@ -1301,16 +1327,15 @@
   left: 0;
   right: 0;
   background: #ffffff;
-
+  
   .tabletitle {
-    padding: 8px 100px;
     font-family: "suisseintl";
     font-style: normal;
     font-weight: 600;
     font-size: 16px;
     line-height: 24px;
-    position: absolute;
-    width: 1280px;
+    margin: 0px 12.5px 0px 12.5px;
+    max-width: 1280px;
 
     .title{
       padding-top: 12px;
@@ -1367,6 +1392,11 @@
     background: #fff;
     color: #0091ff;
   }
+
+  button:not(:hover){
+    background-color: #fff;
+  }
+  
 }
 
 .learnmoreoptions {
@@ -1387,7 +1417,6 @@
   border-bottom: 1px solid #0091ff;
 
   button,
-  button:checked,
   button:active,
   button:hover,
   button:visited,
@@ -1407,8 +1436,12 @@
     border-left: 1px solid #0091ff;
     border-bottom: 1px solid #0091ff;
     width: 180px;
-    background: #fff;
+    background-color: #fff;
     color: #0091ff;
+  }
+
+  button:not(:hover){
+    background-color: #fff;
   }
 
   .learnleft {
@@ -1417,13 +1450,6 @@
 
   .learnright {
     padding-left: 20%;
-    button{
-      border-right: 1px solid #1A1A1A;
-      border-top: 1px solid #1A1A1A;
-      border-left: 1px solid #1A1A1A;
-      border-bottom: 1px solid #1A1A1A;
-      color: #1A1A1A;
-    }
   }
 }
 
@@ -2052,3 +2078,13 @@
   top: 0;
   background-color: white;
 }
+
+.iconExtLink{
+  color: lightseagreen
+}
+.iconExtLink:hover{
+  color: #0091ff;
+}
+
+
+
