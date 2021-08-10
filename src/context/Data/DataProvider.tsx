@@ -124,7 +124,7 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
                                 let largeRequest: any = {
                                     issue_number: rawLargeIssue.number,
                                     issue_Url: rawLargeIssue.html_url,
-                                    address: comment.clientAddress,
+                                    address: comment.clientAddress.trim(),
                                     multisig: comment.notaryAddress,
                                     datacap: comment.allocationDatacap,
                                     url: rawLargeIssue.html_url,
@@ -273,7 +273,7 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
                                 id: uuidv4(),
                                 issue_number: rawIssue.number,
                                 issue_Url: rawIssue.html_url,
-                                addresses: comment.addresses,
+                                addresses: comment.addresses.map((addr:any) => addr.trim()),
                                 datacaps: comment.datacaps,
                                 txs: [],
                                 proposedBy: ""
