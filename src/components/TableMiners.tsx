@@ -56,7 +56,8 @@ export default class TableMiners extends Component {
         actualPage: 1,
         orderBy: "name",
         sortOrder: -1,
-        allMiners: []
+        allMiners: [],
+        shownContacts: [] as string[]
     }
 
     columns = [
@@ -70,8 +71,16 @@ export default class TableMiners extends Component {
     ]
 
 
-    componentDidMount() {
-        this.loadData()
+    async componentDidMount() {
+        const queryParams = new URLSearchParams(window.location.search);
+        const search = queryParams.get('search');
+        if(search === null || search === ""){
+            this.loadData()
+        }else{
+            await  this.loadData();
+            this.filter(search)
+        }
+
 
     }
 
@@ -184,54 +193,77 @@ export default class TableMiners extends Component {
         this.setState({ miners, pages })
     }
 
-
-
-    showCopyElem(id: any, elem: any, type: any) {
-
-        let hideElem = document.getElementById(`${type}Hide${id}`)!
-        if (hideElem.innerHTML === "Slack" || hideElem.innerHTML === "Mail") {
-            hideElem.innerHTML = elem
-            hideElem.title = "Copied to clipboard!"
-            navigator.clipboard.writeText(elem)
+    showContact = (id: any) => {
+        const v = this.state.shownContacts.find((item: string) => item === id);
+        if (v === undefined) {
+            this.setState({ shownContacts: [...this.state.shownContacts, id] })
         } else {
-            hideElem.innerHTML = type
-            hideElem.title = "Click to copy!"
+            this.setState({ shownContacts: this.state.shownContacts.filter((item: string) => item !== id) })
         }
     }
 
+    copyElem = (elem: any) => {
+        navigator.clipboard.writeText(elem)
+        this.context.wallet.dispatchNotification(elem + ' copied to clipboard')
+    }
 
     renderContact = (contacts: any, id: any) => {
         if (contacts.href?.includes("@")) {
             return <div className="contacvalue">
-                <span id={`SlackHide${id}`} className={"slack"} >
-                    Slack
-                </span>
-                <FontAwesomeIcon icon={"copy"} className={"iconExtLink"} onClick={() => this.showCopyElem(id, contacts.slack, "Slack")} title={"Click to copy!"}/>
+                {this.state.shownContacts.find((item: string) => item === `SlackHide${id}`) !== undefined ?
+                    <span id={`SlackHide${id}`} className={"slack"} onClick={() => this.showContact(`SlackHide${id}`)}>
+                        {contacts.slack}
+                        <FontAwesomeIcon icon={"copy"} className={"iconExtLink"} onClick={() => this.copyElem(contacts.slack)} title={"Click to copy!"} />
+                    </span>
+                    :
+                    <span id={`SlackHide${id}`} className={"slack"} onClick={() => this.showContact(`SlackHide${id}`)}>
+                        Slack
+                        <FontAwesomeIcon icon={"eye"} className={"iconExtLink"} />
+                    </span>
+                }
                 <br></br>
-                <span id={`MailHide${id}`} className={"slack"} >
-                    Mail
-                </span>
-                    <FontAwesomeIcon icon={"copy"} className={"iconExtLink"} onClick={() => this.showCopyElem(id, contacts.href, "Mail")} title={"Click to copy!"}/>
+                {this.state.shownContacts.find((item: string) => item === `MailHide${id}`) !== undefined ?
+                    <span id={`MailHide${id}`} className={"slack"} onClick={() => this.showContact(`MailHide${id}`)}>
+                        {contacts.href}
+                        <FontAwesomeIcon icon={"copy"} className={"iconExtLink"} onClick={() => this.copyElem(contacts.href)} title={"Click to copy!"} />
+                    </span> :
+                    <span id={`MailHide${id}`} className={"slack"} onClick={() => this.showContact(`MailHide${id}`)}>
+                        Mail
+                         <FontAwesomeIcon icon={"eye"} className={"iconExtLink"} />
+                    </span>
+                }
             </div>
         } else if (contacts.href === undefined) {
             return <div className="contacvalue">
-                <span id={`SlackHide${id}`} className={"slack"} >
-                    Slack
-                </span>
-                <FontAwesomeIcon icon={"copy"} className={"iconExtLink"} onClick={() => this.showCopyElem(id, contacts.slack, "Slack")} title={"Click to copy!"}/>
+                {this.state.shownContacts.find((item: string) => item === `SlackHide${id}`) !== undefined ?
+                    <span id={`SlackHide${id}`} className={"slack"} onClick={() => this.showContact(`SlackHide${id}`)}>
+                        {contacts.slack}
+                        <FontAwesomeIcon icon={"copy"} className={"iconExtLink"} onClick={() => this.copyElem(contacts.slack)} title={"Click to copy!"} />
+                    </span> :
+                    <span id={`SlackHide${id}`} className={"slack"} onClick={() => this.showContact(`SlackHide${id}`)}>
+                        Slack
+                       <FontAwesomeIcon icon={"eye"} className={"iconExtLink"} />
+                    </span>
+                }
             </div>
         } else {
             return <div className="contacvalue">
-                <span id={`SlackHide${id}`} className={"slack"} onClick={() => this.showCopyElem(id, contacts.slack, "Slack")} title={"Click to copy!"}>
-                    Slack
-                    
-                </span>
-                <FontAwesomeIcon icon={"copy"} className={"iconExtLink"} onClick={() => this.showCopyElem(id, contacts.slack, "Slack")} title={"Click to copy!"}/>
+                {this.state.shownContacts.find((item: string) => item === `SlackHide${id}`) !== undefined ?
+                    <span id={`SlackHide${id}`} className={"slack"} onClick={() => this.showContact(`SlackHide${id}`)}>
+                        {contacts.slack}
+                        <FontAwesomeIcon icon={"copy"} className={"iconExtLink"} onClick={() => this.copyElem(contacts.slack)} title={"Click to copy!"} />
+                    </span> :
+                    <span id={`SlackHide${id}`} className={"slack"} onClick={() => this.showContact(`SlackHide${id}`)}>
+                        Slack
+                       <FontAwesomeIcon icon={"eye"} className={"iconExtLink"} />
+                    </span>
+                }
                 <br></br>
                 <span >
-                    Website
-                <a className={"slack"} href={contacts.href} target={"_blank"}>
-                    <FontAwesomeIcon icon={"external-link-square-alt"} className={"iconExtLink"} /></a>
+                    
+                    <a  href={contacts.href} target={"_blank"}>
+                    <span className={"website"} >Website</span>
+                        <FontAwesomeIcon icon={"external-link-square-alt"} className={"iconExtLink"} /></a>
                 </span>
             </div>
         }
@@ -280,7 +312,9 @@ export default class TableMiners extends Component {
                             </tr>
                         </thead>
                         <tbody>
-                            {this.state.miners.map((miner: Miner, i) =>
+                            {
+                            this.state.miners.length >0 ? 
+                            this.state.miners.map((miner: Miner, i) =>
 
                                 this.checkIndex(i) ?
 
@@ -294,8 +328,10 @@ export default class TableMiners extends Component {
                                         <td style={{ "textAlign": "center" }}>
                                             {miner?.minerId}
                                         </td>
-                                        <td style={{ "textAlign": "center" }} >
-                                            {this.renderContact(miner?.contacts, miner?.minerId)}
+                                        <td style={{ "textAlign": "center" }}  >
+                                            <span id={"spanId" + miner?.minerId} >
+                                                {this.renderContact(miner?.contacts, miner?.minerId)}
+                                            </span>
                                         </td>
                                         {/* <td>
                                             <TableCell
@@ -341,7 +377,7 @@ export default class TableMiners extends Component {
 
                                     </tr>
                                     : null
-                            )
+                            ): <tr ><td colSpan={7} id={"notFound"} >No result</td></tr>
                             }
                         </tbody>
                     </table>
