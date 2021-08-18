@@ -2086,5 +2086,15 @@
   color: #0091ff;
 }
 
+.selected{
+  color:rgb(255, 230, 0);
+  background-color: #0091ff;
+  border-radius: 4px;
+  padding: 3px;
+  margin-bottom: 4px;
+  box-shadow: 2px 2px grey;
+  transition: 0.1s;
+}
+
 
 
