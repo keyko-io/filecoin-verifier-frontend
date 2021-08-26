@@ -67,6 +67,7 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
                     repo: config.onboardingClientRepo,
                     assignee: '*',
                     state: 'open',
+                    per_page: 100,
                     labels: 'state:Verifying'
                 })
                 const issues: any[] = []

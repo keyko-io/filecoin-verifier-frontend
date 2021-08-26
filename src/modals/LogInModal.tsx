@@ -80,7 +80,7 @@ class LogInModal extends Component<ModalProps, ModalStates> {
             multisig: false
         })
     }
-
+    
     loadMultisig = () => {
         this.setState({
             multisig: true
@@ -135,8 +135,8 @@ class LogInModal extends Component<ModalProps, ModalStates> {
                             </div>
                         </div>
                         <div className="tabs">
-                            <div className="tab" onClick={()=>this.loadPrivate()}>Individual</div>
-                            <div className="tab" onClick={()=>this.loadMultisig()}>Organization</div>
+                            <div className={this.state.multisig ? "tab" : "tab selected"} onClick={()=>this.loadPrivate()}>Individual</div>
+                            <div className={this.state.multisig ? "tab selected" : "tab"}  onClick={()=>this.loadMultisig()}>Organization</div>
                         </div>
                         <div className="buttons">
                             {!config.networks.includes('Mainnet') ?
