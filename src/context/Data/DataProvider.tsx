@@ -364,18 +364,22 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
             verified: [],
             loadVerified: async () => {
                 const approvedVerifiers = await this.props.wallet.api.listVerifiers()
-                let verified = []
-                for (const verifiedAddress of approvedVerifiers) {
-                    let verifierAccount = await this.props.wallet.api.actorKey(verifiedAddress.verifier)
-                    if (verifierAccount == verifiedAddress.verifier) {
-                        verifierAccount = await this.props.wallet.api.actorAddress(verifiedAddress.verifier)
-                    }
-                    verified.push({
-                        verifier: verifiedAddress.verifier,
-                        verifierAccount,
-                        datacap: verifiedAddress.datacap
-                    })
-                }
+                let verified: any = []
+                const promArr = approvedVerifiers
+                    .map(async (verifiedAddress: any) =>
+                        new Promise(() => {
+                            let verifierAccount = this.props.wallet.api.actorKey(verifiedAddress.verifier)
+                            if (verifierAccount == verifiedAddress.verifier) {
+                                verifierAccount = this.props.wallet.api.actorAddress(verifiedAddress.verifier)
+                            }
+                            verified.push({
+                                verifier: verifiedAddress.verifier,
+                                verifierAccount,
+                                datacap: verifiedAddress.datacap
+                            })
+                        }))
+                Promise.all(promArr)
+
                 this.setState({ verified })
             },
             loadClients: async () => {
