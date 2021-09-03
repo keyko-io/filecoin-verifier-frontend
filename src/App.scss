@@ -2096,5 +2096,9 @@
   transition: 0.1s;
 }
 
-
-
+.zeroOpaque{
+  opacity: 0.1;
+  z-index: 0;
+  position: absolute;
+  padding-left:19px;
+}
