@@ -274,7 +274,7 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
                                 id: uuidv4(),
                                 issue_number: rawIssue.number,
                                 issue_Url: rawIssue.html_url,
-                                addresses: comment.addresses.map((addr:any) => addr.trim()),
+                                addresses: comment.addresses.map((addr: any) => addr.trim()),
                                 datacaps: comment.datacaps,
                                 txs: [],
                                 proposedBy: ""
@@ -380,13 +380,19 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
             },
             loadClients: async () => {
                 const clients = await this.props.wallet.api.listVerifiedClients()
+                console.log(clients)
                 let clientsamount = new BigNumber(0)
-                for (const txs of clients) {
-                    const amountBN = new BigNumber(txs.datacap)
-                    clientsamount = amountBN.plus(clientsamount)
-                    txs['key'] = await this.props.wallet.api.actorKey(txs.verified)
 
-                }
+                const promArr = clients
+                    .map(async (txs: any) =>
+                        new Promise(() => {
+                            const amountBN = new BigNumber(txs.datacap)
+                            txs['key'] = this.props.wallet.api.actorKey(txs.verified)
+                            return clientsamount = amountBN.plus(clientsamount)
+                        }))
+                Promise.all(promArr)
+
+
                 this.setState({ clients, clientsAmount: clientsamount.toString() })
             },
             sortClients: async (e: any, previousOrderBy: string, previousOrder: number) => {
