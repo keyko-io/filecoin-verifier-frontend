@@ -35,14 +35,16 @@ export default class Overview extends Component<{}, OverviewStates> {
     }
 
     loadData = async () => {
-         this.context.refreshGithubData()
-         this.context.loadVerified().then(() =>  this.setState({
-            approvedNotariesLoading: false
-        }))
-         this.context.loadClients().then(() =>  this.setState({
+        this.context.refreshGithubData()
+        this.context.loadVerified().then(() =>
+
+            this.setState({
+                approvedNotariesLoading: false
+            }))
+        this.context.loadClients().then(() => this.setState({
             dcGrantedLoading: false
         }))
-         this.context.loadVerifierAndPendingRequests().then(() =>  this.setState({
+        this.context.loadVerifierAndPendingRequests().then(() => this.setState({
             pendingNotariesLoading: false
         }))
     }
@@ -59,35 +61,35 @@ export default class Overview extends Component<{}, OverviewStates> {
                         <div className="textinfodata">
                             <div className="textinfodatablock">
                                 <div className="data">{
-                                 this.state.dcGrantedLoading?
-                                 <div>
-                                    <span className="zeroOpaque">0B</span>
-                                    <BeatLoader size={15} color={"rgb(24,160,237)"} />
-                                </div>
-                                 :
-                                bytesToiB(this.context.clientsAmount)}</div>
+                                    this.state.dcGrantedLoading ?
+                                        <div>
+                                            <span className="zeroOpaque">0B</span>
+                                            <BeatLoader size={15} color={"rgb(24,160,237)"} />
+                                        </div>
+                                        :
+                                        bytesToiB(this.context.clientsAmount)}</div>
                                 <div className="text">Datacap Granted</div>
                             </div>
                             <div className="textinfodatablock">
                                 <div className="data">{
-                                this.state.pendingNotariesLoading?
-                                <div>
-                                    <span className="zeroOpaque">0</span>
-                                    <BeatLoader size={15} color={"rgb(24,160,237)"} />
-                                </div>
-                                :
-                                this.context.verifierAndPendingRequests.length}</div>
+                                    this.state.pendingNotariesLoading ?
+                                        <div>
+                                            <span className="zeroOpaque">0</span>
+                                            <BeatLoader size={15} color={"rgb(24,160,237)"} />
+                                        </div>
+                                        :
+                                        this.context.verifierAndPendingRequests.length}</div>
                                 <div className="text">Pending Notaries</div>
                             </div>
                             <div className="textinfodatablock">
                                 <div className="data">{
-                                 this.state.approvedNotariesLoading?
-                                 <div>
-                                    <span className="zeroOpaque">0</span>
-                                    <BeatLoader size={15} color={"rgb(24,160,237)"} />
-                                </div>
-                                 :
-                                this.context.verified.length}</div>
+                                    this.state.approvedNotariesLoading || this.context.verified.length === 0 ?
+                                        <div>
+                                            <span className="zeroOpaque">0</span>
+                                            <BeatLoader size={15} color={"rgb(24,160,237)"} />
+                                        </div>
+                                        :
+                                        this.context.verified.length}</div>
                                 <div className="text">Approved Notaries</div>
                             </div>
                         </div>

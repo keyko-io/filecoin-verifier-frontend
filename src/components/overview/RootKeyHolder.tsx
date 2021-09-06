@@ -10,6 +10,8 @@ import WarnModalVerify from '../../modals/WarnModalVerify';
 import Pagination from '../Pagination';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { tableElementFilter } from '../../utils/SortFilter';
+import { BeatLoader } from "react-spinners";
+
 const parser = require('@keyko-io/filecoin-verifier-tools/utils/notary-issue-parser')
 
 type RootKeyHolderState = {
@@ -327,7 +329,7 @@ export default class RootKeyHolder extends Component<RootKeyHolderProps, RootKey
                                         ) : null}
                             </tbody>
                         </table>
-                        {this.context.verifierAndPendingRequests.length === 0 ? <div className="nodata">No requests yet</div> : null}
+                        {this.context.verifierAndPendingRequests.length === 0 ? <div className="nodata"> <BeatLoader size={15} color={"rgb(24,160,237)"} /></div> : null}
                         <Pagination
                             elements={this.context.verifierAndPendingRequests}
                             maxElements={10}

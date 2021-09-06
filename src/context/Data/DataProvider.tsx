@@ -233,28 +233,42 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
                 let pendingTxs = await this.props.wallet.api.pendingRootTransactions()
 
                 let verifierAndPendingRequests: any[] = []
+                let promArr = []
                 for (let txs in pendingTxs) {
                     if (pendingTxs[txs].parsed.name !== 'addVerifier' && pendingTxs[txs].parsed.name !== 'removeVerifier') {
                         continue
                     }
-                    const verifierAddress = await this.props.wallet.api.actorKey(
-                        pendingTxs[txs].parsed.name === 'removeVerifier' ?
-                            pendingTxs[txs].parsed.params
-                            :
-                            pendingTxs[txs].parsed.params.verifier
+                    promArr.push(new Promise<any>(async (resolve) => {
 
-                    )
-                    const signerAddress = await this.props.wallet.api.actorKey(pendingTxs[txs].signers[0])
-                    verifierAndPendingRequests.push({
-                        id: pendingTxs[txs].id,
-                        type: pendingTxs[txs].parsed.name === 'removeVerifier' ? 'Revoke' : pendingTxs[txs].parsed.params.cap.toString() === '0' ? 'Revoke' : 'Add',
-                        verifier: pendingTxs[txs].parsed.name === 'removeVerifier' ? pendingTxs[txs].parsed.params : pendingTxs[txs].parsed.params.verifier,
-                        verifierAddress: verifierAddress,
-                        datacap: pendingTxs[txs].parsed.name === 'removeVerifier' ? 0 : pendingTxs[txs].parsed.params.cap,
-                        signer: pendingTxs[txs].signers[0],
-                        signerAddress: signerAddress
-                    })
+
+                        const verifierAddress = await this.props.wallet.api.actorKey(
+                            pendingTxs[txs].parsed.name === 'removeVerifier' ?
+                                pendingTxs[txs].parsed.params
+                                :
+                                pendingTxs[txs].parsed.params.verifier
+
+                        )
+
+
+                        const signerAddress = await this.props.wallet.api.actorKey(pendingTxs[txs].signers[0])
+                        verifierAndPendingRequests.push({
+                            id: pendingTxs[txs].id,
+                            type: pendingTxs[txs].parsed.name === 'removeVerifier' ? 'Revoke' : pendingTxs[txs]?.parsed?.params?.cap?.toString() === '0' ? 'Revoke' : 'Add',
+                            verifier: pendingTxs[txs].parsed.name === 'removeVerifier' ? pendingTxs[txs].parsed.params : pendingTxs[txs].parsed.params.verifier,
+                            verifierAddress: verifierAddress,
+                            datacap: pendingTxs[txs].parsed.name === 'removeVerifier' ? 0 : pendingTxs[txs].parsed.params.cap,
+                            signer: pendingTxs[txs].signers[0],
+                            signerAddress: signerAddress
+                        })
+                        resolve(verifierAndPendingRequests)
+                    }
+
+
+                    ))
                 }
+
+                await Promise.all(promArr).then((res) => console.log("res promise get verifierAndPendingRequests", res))
+                // verifierAndPendingRequests.map((item: any) => item.signerAddress = )
                 // For each issue
                 for (const rawIssue of rawIssues) {
                     const data = parser.parseIssue(rawIssue.body, rawIssue.title)
@@ -361,44 +375,64 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
                     this.setState({ viewroot: true })
                 }
             },
+
             verified: [],
             loadVerified: async () => {
-                const approvedVerifiers = await this.props.wallet.api.listVerifiers()
-                let verified: any = []
-                const promArr = approvedVerifiers
-                    .map(async (verifiedAddress: any) =>
-                        new Promise(() => {
-                            let verifierAccount = this.props.wallet.api.actorKey(verifiedAddress.verifier)
-                            if (verifierAccount == verifiedAddress.verifier) {
-                                verifierAccount = this.props.wallet.api.actorAddress(verifiedAddress.verifier)
-                            }
-                            verified.push({
-                                verifier: verifiedAddress.verifier,
-                                verifierAccount,
-                                datacap: verifiedAddress.datacap
-                            })
-                        }))
-                Promise.all(promArr)
+                try {
+                    const approvedVerifiers = await this.props.wallet.api.listVerifiers()
 
-                this.setState({ verified })
+                    let verified: any = []
+
+                    const promArr = approvedVerifiers
+                        .map((verifiedAddress: any) =>
+                            new Promise<any>(async (resolve) => {
+
+                                let verifierAccount = await this.props.wallet.api.actorKey(verifiedAddress.verifier)
+                                if (verifierAccount == verifiedAddress.verifier) {
+                                    verifierAccount = await this.props.wallet.api.actorAddress(verifiedAddress.verifier)
+                                }
+                                verified.push({
+                                    verifier: verifiedAddress.verifier,
+                                    verifierAccount,
+                                    datacap: verifiedAddress.datacap
+                                })
+                                resolve(verified)
+                            }))
+                            
+                            
+                            this.setState({ verified })
+                            await Promise.all(promArr).then((res) => console.log("loadVerified promise result", res))
+                            
+                } catch (error) {
+                    console.error("error in resolving promises", error)
+                }
             },
+
             loadClients: async () => {
-                const clients = await this.props.wallet.api.listVerifiedClients()
-                console.log(clients)
-                let clientsamount = new BigNumber(0)
+                try {
+                    const clients = await this.props.wallet.api.listVerifiedClients()
+                    let clientsamount = new BigNumber(0)
+                    let promArr: Promise<void>[] = []
 
-                const promArr = clients
-                    .map(async (txs: any) =>
-                        new Promise(() => {
+
+                    for (let txs of clients) {
+                        promArr.push(new Promise<any>(async (resolve) => {
                             const amountBN = new BigNumber(txs.datacap)
-                            txs['key'] = this.props.wallet.api.actorKey(txs.verified)
-                            return clientsamount = amountBN.plus(clientsamount)
+                            clientsamount = amountBN.plus(clientsamount)
+                            txs['key'] = await this.props.wallet.api.actorKey(txs.verified)
+                            resolve(txs)
                         }))
-                Promise.all(promArr)
+                    }
 
+                   Promise.all(promArr).then((res) => console.log("loadClients promise result", res))
+                    // this.setState({ clients, clientsAmount: clientsamount.toString() }, () => console.log("clients, to sum up the total datacap granted (note the field key- the resolved promise)", clients))
+                    this.setState({ clients, clientsAmount: clientsamount.toString() })
+                } catch (error) {
+                    console.error("error in resolving promises", error)
+                }
 
-                this.setState({ clients, clientsAmount: clientsamount.toString() })
             },
+
             sortClients: async (e: any, previousOrderBy: string, previousOrder: number) => {
                 const { arraySorted, orderBy, sortOrder } =
                     tableSort(
