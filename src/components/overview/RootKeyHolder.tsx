@@ -107,6 +107,10 @@ export default class RootKeyHolder extends Component<RootKeyHolderProps, RootKey
 
     showWarnPropose = async (e: any, origin: string, selected: any[]) => {
         await e.preventDefault()
+        if(selected.length === 0){
+            this.context.wallet.dispatchNotification("Plese, select at least one client to sign")
+            return
+        }
         dispatchCustomEvent({
             name: "create-modal", detail: {
                 id: Math.random().toString(36).replace(/[^a-z]+/g, '').substr(0, 5),
@@ -158,16 +162,20 @@ export default class RootKeyHolder extends Component<RootKeyHolderProps, RootKey
                 var label = ''
                 let filfox = ''
                 let errorMessage = ''
+                try {
                 const assignee = (await this.context.github.githubOctoGeneric.octokit.issues.get({
                     owner: config.lotusNodes[this.context.wallet.networkIndex].notaryOwner,
                     repo: config.lotusNodes[this.context.wallet.networkIndex].notaryRepo,
                     issue_number: request.issue_number,
-                })).data.assignee.login
-
-                try {
+                }))?.data?.assignee?.login
+                if(!assignee){
+                    throw new Error("You should assign the issue to someone")
+                }
+                
                     if (request.proposed === true) {
                         // for each tx
                         for (const tx of request.txs) {
+                            debugger
                             let messageID = tx.datacap === 0 ?
                                 await this.context.wallet.api.removeVerifier(tx.verifier, tx.signer, tx.id, this.context.wallet.walletIndex)
                                 :
@@ -177,9 +185,11 @@ export default class RootKeyHolder extends Component<RootKeyHolderProps, RootKey
                             if (txReceipt.ExitCode !== 0) errorMessage += `#### @${assignee} There was an error processing the message >${messageID}`
                             messageIds.push(messageID)
                             this.context.wallet.dispatchNotification('Accepting Message sent with ID: ' + messageID)
+                            this.setState({approveLoading:false})
                             filfox += `#### You can check the status of the message here: https://filfox.info/en/message/${messageID}\n`
                         }
                         // comment to issue
+                        debugger
                         commentContent = `## The request has been signed by a new Root Key Holder\n#### Message sent to Filecoin Network\n>${messageIds.join()}\n${errorMessage}\n${filfox}`
                         label = errorMessage === '' ? 'status:AddedOnchain' : 'status:Error'
                     } else {
@@ -210,9 +220,11 @@ export default class RootKeyHolder extends Component<RootKeyHolderProps, RootKey
                                 if (txReceipt.ExitCode !== 0) errorMessage += `#### @${assignee} There was an error processing the message\n>${messageID}`
                                 messageIds.push(messageID)
                                 this.context.wallet.dispatchNotification('Accepting Message sent with ID: ' + messageID)
+                                this.setState({approveLoading:false})
                                 filfox += `#### You can check the status of the message here: https://filfox.info/en/message/${messageID}\n`
                             }
                         }
+                        debugger
                         commentContent = `## The request has been signed by a new Root Key Holder\n#### Message sent to Filecoin Network\n>${messageIds.join()}\n ${errorMessage}\n ${filfox}`
                         label = errorMessage === '' ?
                             config.lotusNodes[this.context.wallet.networkIndex].rkhtreshold > 1 ? 'status:StartSignOnchain' : 'status:AddedOnchain'
@@ -242,6 +254,7 @@ export default class RootKeyHolder extends Component<RootKeyHolderProps, RootKey
                     }
                 } catch (e) {
                     this.context.wallet.dispatchNotification('Failed: ' + e.message)
+                    this.setState({approveLoading:false})
                     console.log('faile', e.stack)
                 }
             }
@@ -279,7 +292,10 @@ export default class RootKeyHolder extends Component<RootKeyHolderProps, RootKey
                         <div className={this.state.tabs === "2" ? "selected" : ""} onClick={() => { this.showApproved() }}>Accepted Notaries ({this.context.verified.length})</div>
                     </div>
                     <div className="tabssadd">
-                        {this.state.tabs === "0" ? <>
+                        {
+                        this.state.approveLoading ? 
+                        <BeatLoader size={15} color={"rgb(24,160,237)"} /> :
+                        this.state.tabs === "0" ? <>
                             <ButtonPrimary onClick={(e: any) => this.showWarnPropose(e, "ProposeSign", this.context.selectedNotaryRequests)}>Sign On-chain</ButtonPrimary>
                         </>
                             : null}

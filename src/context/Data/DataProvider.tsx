@@ -120,7 +120,6 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
                             const comment = comments[comments.length - 1]
                             const pendingLargeTxs = await this.props.wallet.api.pendingTransactions(comment.notaryAddress)
                             const txs = pendingLargeTxs.filter((pending: any) => pending.parsed.params.address === comment.clientAddress)
-
                             if (comment && comment.multisigMessage && comment.correct) {
                                 let largeRequest: any = {
                                     issue_number: rawLargeIssue.number,
@@ -267,7 +266,9 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
                     ))
                 }
 
-                await Promise.all(promArr).then((res) => console.log("res promise get verifierAndPendingRequests", res))
+                const promRes = await Promise.all(promArr)
+                console.log("res promise get verifierAndPendingRequests", promRes)
+
                 // verifierAndPendingRequests.map((item: any) => item.signerAddress = )
                 // For each issue
                 for (const rawIssue of rawIssues) {
@@ -385,24 +386,30 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
 
                     const promArr = approvedVerifiers
                         .map((verifiedAddress: any) =>
-                            new Promise<any>(async (resolve) => {
+                            new Promise<any>(async (resolve, reject) => {
+                                try {
+                                    let verifierAccount = await this.props.wallet.api.actorKey(verifiedAddress.verifier)
+                                    if (verifierAccount == verifiedAddress.verifier) {
+                                        verifierAccount = await this.props.wallet.api.actorAddress(verifiedAddress.verifier)
+                                    }
+                                    verified.push({
+                                        verifier: verifiedAddress.verifier,
+                                        verifierAccount,
+                                        datacap: verifiedAddress.datacap
+                                    })
+                                    resolve(verified)
 
-                                let verifierAccount = await this.props.wallet.api.actorKey(verifiedAddress.verifier)
-                                if (verifierAccount == verifiedAddress.verifier) {
-                                    verifierAccount = await this.props.wallet.api.actorAddress(verifiedAddress.verifier)
+                                } catch (error) {
+                                    reject(error)
                                 }
-                                verified.push({
-                                    verifier: verifiedAddress.verifier,
-                                    verifierAccount,
-                                    datacap: verifiedAddress.datacap
-                                })
-                                resolve(verified)
                             }))
-                            
-                            
-                            this.setState({ verified })
-                            await Promise.all(promArr).then((res) => console.log("loadVerified promise result", res))
-                            
+
+
+                    this.setState({ verified })
+                    const promRes = await Promise.all(promArr)
+                    console.log("loadVerified promise result", promRes)
+
+
                 } catch (error) {
                     console.error("error in resolving promises", error)
                 }
@@ -424,8 +431,9 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
                         }))
                     }
 
-                   Promise.all(promArr).then((res) => console.log("loadClients promise result", res))
-                    // this.setState({ clients, clientsAmount: clientsamount.toString() }, () => console.log("clients, to sum up the total datacap granted (note the field key- the resolved promise)", clients))
+                    const promRes = await Promise.all(promArr)
+                    console.log("loadClients promise result", promRes)
+
                     this.setState({ clients, clientsAmount: clientsamount.toString() })
                 } catch (error) {
                     console.error("error in resolving promises", error)
@@ -507,7 +515,6 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
                 })
             },
             updateGithubVerifiedLarge: async (requestNumber: any, messageID: string, address: string, datacap: any, approvals: number) => {
-
                 let commentContent = `## Request Approved\nYour Datacap Allocation Request has been approved by the Notary\n#### Message sent to Filecoin Network\n>${messageID} \n#### Address \n> ${address}\n#### Datacap Allocated\n> ${datacap}\n#### You can check the status of the message here: https://filfox.info/en/message/${messageID}`
 
                 await this.props.github.githubOcto.issues.createComment({
@@ -516,19 +523,19 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
                     issue_number: requestNumber,
                     body: commentContent,
                 })
-
-                if ((approvals + 1) === config.approvalsThreshold) {
+                if ((approvals + 1) == config.approvalsThreshold )  {
                     await this.props.github.githubOcto.issues.removeAllLabels({
                         owner: config.onboardingLargeOwner,
                         repo: config.onboardingLargeClientRepo,
                         issue_number: requestNumber,
                     })
-                    await this.props.github.githubOcto.issues.addLabels({
+                    const labelGranted = await this.props.github.githubOcto.issues.addLabels({
                         owner: config.onboardingLargeOwner,
                         repo: config.onboardingLargeClientRepo,
                         issue_number: requestNumber,
                         labels: ['state:Granted'],
                     })
+                    console.log(labelGranted)
                 }
 
             },

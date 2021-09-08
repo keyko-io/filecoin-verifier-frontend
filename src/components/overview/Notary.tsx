@@ -205,7 +205,6 @@ export default class Notary extends Component<NotaryProps, NotaryStates> {
 
     verifyLargeClients = async () => {
         dispatchCustomEvent({ name: "delete-modal", detail: {} })
-
         for (const request of this.context.largeClientRequests) {
             if (this.state.selectedLargeClientRequests.includes(request.number)) {
 
@@ -253,7 +252,6 @@ export default class Notary extends Component<NotaryProps, NotaryStates> {
 
                     Sentry.addBreadcrumb(breadCrumb);
                     Sentry.captureMessage(breadCrumb.message)
-
                     this.context.updateGithubVerifiedLarge(request.number, messageID, address, datacap, approvals)
                     this.context.wallet.dispatchNotification('Verify Client Message sent with ID: ' + messageID)
                     this.context.loadClientRequests()
