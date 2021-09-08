@@ -215,7 +215,6 @@ export default class RootKeyHolder extends Component<RootKeyHolderProps, RootKey
                                     await this.context.wallet.api.proposeRemoveVerifier(address, this.context.wallet.walletIndex)
                                     :
                                     await this.context.wallet.api.proposeVerifier(address, BigInt(datacap), this.context.wallet.walletIndex)
-                                debugger
                                 console.log("messageID: " + messageID)
                                 const txReceipt = await this.context.wallet.api.getReceipt(messageID)
                                 if (txReceipt.ExitCode !== 0) errorMessage += `#### @${assignee} There was an error processing the message\n>${messageID}`
