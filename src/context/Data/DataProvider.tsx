@@ -473,7 +473,7 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
                     body: commentContent,
                 })
 
-                if ((approvals + 1) === config.approvalsThreshold) {
+                if ((approvals + 1) == config.approvalsThreshold) {
                     await this.props.github.githubOcto.issues.removeAllLabels({
                         owner: config.onboardingLargeOwner,
                         repo: config.onboardingLargeClientRepo,
