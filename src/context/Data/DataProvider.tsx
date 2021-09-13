@@ -6,7 +6,7 @@ import { IssueBody } from '../../utils/IssueBody'
 import BigNumber from 'bignumber.js'
 import { tableSort } from '../../utils/SortFilter';
 import { v4 as uuidv4 } from 'uuid';
-import { anyToBytes } from "../../utils/Filters"
+import { anyToBytes, bytesToiB } from "../../utils/Filters"
 const utils = require('@keyko-io/filecoin-verifier-tools/utils/issue-parser')
 const largeutils = require('@keyko-io/filecoin-verifier-tools/utils/large-issue-parser')
 const parser = require('@keyko-io/filecoin-verifier-tools/utils/notary-issue-parser')
@@ -486,6 +486,7 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
                 return { orderBy, sortOrder }
             },
             updateGithubVerified: async (requestNumber: any, messageID: string, address: string, datacap: any) => {
+                const formattedDc = bytesToiB(datacap)
                 await this.props.github.githubOcto.issues.removeAllLabels({
                     owner: config.onboardingOwner,
                     repo: config.onboardingClientRepo,
@@ -497,8 +498,8 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
                     issue_number: requestNumber,
                     labels: ['state:Granted'],
                 })
-
-                let commentContent = `## Request Approved\nYour Datacap Allocation Request has been approved by the Notary\n#### Message sent to Filecoin Network\n>${messageID} \n#### Address \n> ${address}\n#### Datacap Allocated\n> ${datacap}\n#### You can check the status of the message here: https://filfox.info/en/message/${messageID}`
+                
+                let commentContent = `## Request Approved\nYour Datacap Allocation Request has been approved by the Notary\n#### Message sent to Filecoin Network\n>${messageID} \n#### Address \n> ${address}\n#### Datacap Allocated\n> ${formattedDc}\n#### You can check the status of the message here: https://filfox.info/en/message/${messageID}`
 
                 await this.props.github.githubOcto.issues.createComment({
                     owner: config.onboardingOwner,
@@ -515,7 +516,8 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
                 })
             },
             updateGithubVerifiedLarge: async (requestNumber: any, messageID: string, address: string, datacap: any, approvals: number) => {
-                let commentContent = `## Request Approved\nYour Datacap Allocation Request has been approved by the Notary\n#### Message sent to Filecoin Network\n>${messageID} \n#### Address \n> ${address}\n#### Datacap Allocated\n> ${datacap}\n#### You can check the status of the message here: https://filfox.info/en/message/${messageID}`
+                const formattedDc = bytesToiB(datacap)
+                let commentContent = `## Request Approved\nYour Datacap Allocation Request has been approved by the Notary\n#### Message sent to Filecoin Network\n>${messageID} \n#### Address \n> ${address}\n#### Datacap Allocated\n> ${formattedDc}\n#### You can check the status of the message here: https://filfox.info/en/message/${messageID}`
 
                 await this.props.github.githubOcto.issues.createComment({
                     owner: config.onboardingLargeOwner,

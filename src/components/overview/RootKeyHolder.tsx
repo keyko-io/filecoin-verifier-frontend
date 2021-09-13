@@ -175,7 +175,6 @@ export default class RootKeyHolder extends Component<RootKeyHolderProps, RootKey
                     if (request.proposed === true) {
                         // for each tx
                         for (const tx of request.txs) {
-                            debugger
                             let messageID = tx.datacap === 0 ?
                                 await this.context.wallet.api.removeVerifier(tx.verifier, tx.signer, tx.id, this.context.wallet.walletIndex)
                                 :
@@ -189,7 +188,6 @@ export default class RootKeyHolder extends Component<RootKeyHolderProps, RootKey
                             filfox += `#### You can check the status of the message here: https://filfox.info/en/message/${messageID}\n`
                         }
                         // comment to issue
-                        debugger
                         commentContent = `## The request has been signed by a new Root Key Holder\n#### Message sent to Filecoin Network\n>${messageIds.join()}\n${errorMessage}\n${filfox}`
                         label = errorMessage === '' ? 'status:AddedOnchain' : 'status:Error'
                     } else {
@@ -224,7 +222,6 @@ export default class RootKeyHolder extends Component<RootKeyHolderProps, RootKey
                                 filfox += `#### You can check the status of the message here: https://filfox.info/en/message/${messageID}\n`
                             }
                         }
-                        debugger
                         commentContent = `## The request has been signed by a new Root Key Holder\n#### Message sent to Filecoin Network\n>${messageIds.join()}\n ${errorMessage}\n ${filfox}`
                         label = errorMessage === '' ?
                             config.lotusNodes[this.context.wallet.networkIndex].rkhtreshold > 1 ? 'status:StartSignOnchain' : 'status:AddedOnchain'

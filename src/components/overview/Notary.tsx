@@ -32,7 +32,8 @@ type NotaryStates = {
     orderByLargePublic: string,
     sortOrderPublic: number,
     orderByPublic: string,
-    refPublic: any
+    refPublic: any,
+    approveLoading: boolean
 }
 
 type NotaryProps = {
@@ -77,7 +78,8 @@ export default class Notary extends Component<NotaryProps, NotaryStates> {
         sortOrderLargePublic: -1,
         orderByLargePublic: "name",
         refPublic: {} as any,
-        regLargePublic: {} as any
+        regLargePublic: {} as any,
+        approveLoading:false
     }
 
     componentDidMount() {
@@ -204,6 +206,7 @@ export default class Notary extends Component<NotaryProps, NotaryStates> {
 
 
     verifyLargeClients = async () => {
+        this.setState({ approveLoading: true })
         dispatchCustomEvent({ name: "delete-modal", detail: {} })
         for (const request of this.context.largeClientRequests) {
             if (this.state.selectedLargeClientRequests.includes(request.number)) {
@@ -254,10 +257,12 @@ export default class Notary extends Component<NotaryProps, NotaryStates> {
                     Sentry.captureMessage(breadCrumb.message)
                     this.context.updateGithubVerifiedLarge(request.number, messageID, address, datacap, approvals)
                     this.context.wallet.dispatchNotification('Verify Client Message sent with ID: ' + messageID)
+                    this.setState({ approveLoading: false })
                     this.context.loadClientRequests()
                 } catch (e) {
                     this.context.wallet.dispatchNotification('Verification failed: ' + e.message)
                     console.log(e.stack)
+                    this.setState({ approveLoading: false })
 
                     //tracing
                     breadCrumb.level = Sentry.Severity.Error;
