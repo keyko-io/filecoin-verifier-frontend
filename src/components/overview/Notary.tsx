@@ -175,14 +175,17 @@ export default class Notary extends Component<NotaryProps, NotaryStates> {
 
         for (const request of this.context.clientRequests) {
             if (this.state.selectedClientRequests.includes(request.number)) {
+                let messageID = ""
+                let address = ""
+                let dc = request.data.datacap
+                let sentryData: any = {}
                 try {
                     const datacap = anyToBytes(request.data.datacap)
                     console.log('datacap', datacap)
-                    let address = request.data.address
+                    address = request.data.address
                     if (address.length < 12) {
                         address = await this.context.wallet.api.actorKey(address)
                     }
-                    let messageID
                     if (this.context.wallet.multisig) {
                         messageID = await this.context.wallet.api.multisigVerifyClient(this.context.wallet.multisigID, address, BigInt(datacap), this.context.wallet.walletIndex)
                     } else {
@@ -194,9 +197,26 @@ export default class Notary extends Component<NotaryProps, NotaryStates> {
                     // send notifications
                     this.context.wallet.dispatchNotification('Verify Client Message sent with ID: ' + messageID)
                     this.context.loadClientRequests()
+                    sentryData = {
+                        messageID: messageID,
+                        address: address,
+                        dataCap: dc,
+                        multisigId: this.context.wallet.multisigID,
+                        activeAccount: this.context.wallet.activeAccount,
+                        accounts: this.context.wallet.accounts,
+                        walletIndex: this.context.wallet.walletIndex
+                    }
                 } catch (e) {
+                    sentryData = {
+                        ...sentryData,
+                        error: e
+                    }
+
+                    this.context.logToSentry("verifyClients", e.message, "error", sentryData)
                     this.context.wallet.dispatchNotification('Verification failed: ' + e.message)
                     console.log(e.stack)
+                } finally {
+                    this.context.logToSentry("verifyClients", "verifyClients info", "info", sentryData)
                 }
             }
         }
@@ -208,25 +228,11 @@ export default class Notary extends Component<NotaryProps, NotaryStates> {
 
         for (const request of this.context.largeClientRequests) {
             if (this.state.selectedLargeClientRequests.includes(request.number)) {
-
-                // object attached with sentry event, captureMessage or captureError
-                let breadCrumb = {
-                    category: "verifyLargeClients",
-                    message: `verifyLargeClients, request number: ${request.number}`,
-                    level: Sentry.Severity.Info,
-                    data: {
-                        address: "",
-                        datacap: "",
-                        approvals: "",
-                        messageID: "",
-                        requestNumber: request.number.toString()
-                    }
-                }
-
+                let sentryData: any = {}
                 try {
                     const datacap = anyToBytes(request.datacap)
                     console.log('datacap', datacap)
-                    breadCrumb.data.datacap = datacap.toString()
+                    sentryData.datacap = datacap.toString()
 
                     let address = request.address
 
@@ -235,24 +241,20 @@ export default class Notary extends Component<NotaryProps, NotaryStates> {
                     }
 
                     console.log('address', address)
-                    breadCrumb.data.address = address
+                    sentryData.address = address
 
                     let messageID
 
                     // const approvals = request.approvals[0] && request.approvals[0].tx ? request.approvals[0].tx.signers.length : 0
                     const approvals = request.approvals ? request.approvals : 0
-                    breadCrumb.data.approvals = approvals
+                    sentryData.approvals = approvals
 
                     approvals == 0 ?
                         messageID = await this.context.wallet.api.multisigVerifyClient(this.context.wallet.multisigID, address, BigInt(datacap), this.context.wallet.walletIndex)
                         :
                         messageID = await this.context.wallet.api.approvePending(this.context.wallet.multisigID, request.tx, this.context.wallet.walletIndex)
 
-                    breadCrumb.data.messageID = messageID
-                    
-
-                    Sentry.addBreadcrumb(breadCrumb);
-                    Sentry.captureMessage(breadCrumb.message)
+                    sentryData.messageID = messageID
 
                     this.context.updateGithubVerifiedLarge(request.number, messageID, address, datacap, approvals)
                     this.context.wallet.dispatchNotification('Verify Client Message sent with ID: ' + messageID)
@@ -260,11 +262,13 @@ export default class Notary extends Component<NotaryProps, NotaryStates> {
                 } catch (e) {
                     this.context.wallet.dispatchNotification('Verification failed: ' + e.message)
                     console.log(e.stack)
-
-                    //tracing
-                    breadCrumb.level = Sentry.Severity.Error;
-                    Sentry.addBreadcrumb(breadCrumb);
-                    Sentry.captureException(e);
+                    sentryData = {
+                        ...sentryData,
+                        error: e
+                    }
+                    this.context.logToSentry("verifyLargeClients", e.message, "error", sentryData)
+                } finally {
+                    this.context.logToSentry("verifyLargeClients", "verifyLargeClients info", "info", sentryData)
                 }
             }
         }
