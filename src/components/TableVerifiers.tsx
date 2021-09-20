@@ -26,8 +26,9 @@ export default class TableVerifiers extends Component<TableVerifiersProps> {
         { key: "use_case", name: "Use Case" },
         { key: "location", name: "Location" },
         { key: "website", name: "Website / Social Media" },
-        { key: "max_datacap_allocation", name: "Max Datacap Allocation", visible: false },
-        { key: "private_request", name: "Private Requests" }
+        { key: "contacts", name: "Contacts", order: "false" },
+        { key: "active_signer", name: "Active Signer", order: "false" },
+        { key: "address", name: "Address", order: "false" },
     ]
 
 
@@ -42,7 +43,7 @@ export default class TableVerifiers extends Component<TableVerifiersProps> {
     }
 
     componentDidMount() {
-        this.loadData()
+         this.loadData()
     }
 
     loadData = async () => {
@@ -59,6 +60,7 @@ export default class TableVerifiers extends Component<TableVerifiersProps> {
         const dataSource = config.dataSource;
         console.log(`../data/${dataSource}.json`)
         const verifiers = require(`../data/${dataSource}.json`);
+        this.shuffleArray(verifiers.notaries)
         this.setState({ verifiers: verifiers.notaries })
         this.setState({ allVerifiers: verifiers.notaries })
 
@@ -108,6 +110,12 @@ export default class TableVerifiers extends Component<TableVerifiersProps> {
         await this.setState({ verifiers })
         this.child.current.calculatePages()
     }
+     shuffleArray(array: any[]) {
+        for (let i = array.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [array[i], array[j]] = [array[j], array[i]];
+        }
+    }
 
     public render() {
         return (
@@ -120,9 +128,12 @@ export default class TableVerifiers extends Component<TableVerifiersProps> {
                                     <td></td>
                                     {this.columns.map((column: any) =>
                                         column.visible === false ? null :
-                                            <td>{column.name}
-                                                <FontAwesomeIcon icon={["fas", "sort"]} id={column.key} onClick={this.order} />
-                                            </td>
+                                            column.order !== "false" ?
+                                                <td>{column.name}
+                                                    <FontAwesomeIcon icon={["fas", "sort"]} id={column.key} onClick={this.order} />
+                                                </td>
+                                                :
+                                                <td>{column.name}</td>
                                     )}
                                 </tr>
                             </thead>
@@ -148,7 +159,9 @@ export default class TableVerifiers extends Component<TableVerifiersProps> {
                                                 )}</td>
                                                 <td>{verifier.location}</td>
                                                 <td>{verifier.website}</td>
-                                                <td>{verifier.private_request}</td>
+                                                <td>Slack: {verifier.fil_slack_id} <br /> Github: {verifier.github_user[0]}</td>
+                                                <td>{verifier.ldn_config.active_signer}</td>
+                                                <td>{verifier.ldn_config.signing_address}</td>
                                             </tr>
                                             : null
                                     )
@@ -156,8 +169,8 @@ export default class TableVerifiers extends Component<TableVerifiersProps> {
                             </tbody>
                         </table>
                         : <div className="nodata">There are not available notaries yet</div>}
+                    <Pagination elements={this.state.verifiers} search={this.props.search} ref={this.child} maxElements={5} refresh={() => this.setState({})} />
                 </div>
-                <Pagination elements={this.state.verifiers} search={this.props.search} ref={this.child} maxElements={5} refresh={() => this.setState({})} />
             </div>
         )
     }
