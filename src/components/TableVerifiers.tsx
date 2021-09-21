@@ -5,7 +5,7 @@ import MakeRequestModal from '../modals/MakeRequestModal';
 import NotaryInfoModal from '../modals/NotaryInfoModal';
 import { config } from '../config'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { tableFilter, tableSort } from '../utils/SortFilter';
+import { tableFilter, tableMinerFilter, tableSort } from '../utils/SortFilter';
 import Pagination from './Pagination';
 
 type TableVerifiersProps = {
@@ -25,10 +25,7 @@ export default class TableVerifiers extends Component<TableVerifiersProps> {
         { key: "name", name: "Notary Name", type: "FILE_LINK", width: "98px" },
         { key: "use_case", name: "Use Case" },
         { key: "location", name: "Location" },
-        { key: "website", name: "Website / Social Media" },
         { key: "contacts", name: "Contacts", order: "false" },
-        { key: "active_signer", name: "Active Signer", order: "false" },
-        { key: "address", name: "Address", order: "false" },
     ]
 
 
@@ -43,7 +40,7 @@ export default class TableVerifiers extends Component<TableVerifiersProps> {
     }
 
     componentDidMount() {
-         this.loadData()
+        this.loadData()
     }
 
     loadData = async () => {
@@ -106,11 +103,12 @@ export default class TableVerifiers extends Component<TableVerifiersProps> {
     }
 
     filter = async (search: string) => {
-        const verifiers = await tableFilter(search, this.state.allVerifiers as [])
-        await this.setState({ verifiers })
+        const verifiers = await tableMinerFilter(search, this.state.allVerifiers as [])
+        this.setState({ verifiers })
         this.child.current.calculatePages()
     }
-     shuffleArray(array: any[]) {
+
+    shuffleArray(array: any[]) {
         for (let i = array.length - 1; i > 0; i--) {
             const j = Math.floor(Math.random() * (i + 1));
             [array[i], array[j]] = [array[j], array[i]];
@@ -158,10 +156,7 @@ export default class TableVerifiers extends Component<TableVerifiersProps> {
                                                     <p style={{ padding: 3 }}>{useCase}</p>
                                                 )}</td>
                                                 <td>{verifier.location}</td>
-                                                <td>{verifier.website}</td>
                                                 <td>Slack: {verifier.fil_slack_id} <br /> Github: {verifier.github_user[0]}</td>
-                                                <td>{verifier.ldn_config.active_signer}</td>
-                                                <td>{verifier.ldn_config.signing_address}</td>
                                             </tr>
                                             : null
                                     )
