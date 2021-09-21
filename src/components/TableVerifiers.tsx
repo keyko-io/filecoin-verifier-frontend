@@ -50,6 +50,11 @@ export default class TableVerifiers extends Component<TableVerifiersProps> {
             initialChecks.push(false)
         })
         this.setState({ checks: initialChecks })
+        const queryParams = new URLSearchParams(window.location.search);
+        const search = queryParams.get('search');
+        if(search !== null){
+            this.filter(search)
+        }
         this.child.current.calculatePages()
     }
 
