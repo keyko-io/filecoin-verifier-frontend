@@ -4,9 +4,13 @@ import { bytesToiB } from "../utils/Filters"
 // @ts-ignore
 import RootKeyHolder from './overview/RootKeyHolder';
 import Notary from './overview/Notary';
+import { BeatLoader } from "react-spinners";
 
 type OverviewStates = {
     tabs: string
+    dcGrantedLoading: boolean
+    pendingNotariesLoading: boolean,
+    approvedNotariesLoading: boolean
 }
 
 export default class Overview extends Component<{}, OverviewStates> {
@@ -14,13 +18,18 @@ export default class Overview extends Component<{}, OverviewStates> {
     interval: any
 
     state = {
-        tabs: '1'
+        tabs: '1',
+        dcGrantedLoading: true,
+        pendingNotariesLoading: true,
+        approvedNotariesLoading: true
     }
 
     componentDidMount() {
+       
         this.context.github.checkToken()
         this.loadData()
         this.interval = setInterval(() => { this.loadData() }, 5 * 60 * 1000);
+
     }
 
     componentWillUnmount() {
@@ -29,9 +38,17 @@ export default class Overview extends Component<{}, OverviewStates> {
 
     loadData = async () => {
         this.context.refreshGithubData()
-        this.context.loadVerified()
-        this.context.loadClients()
-        this.context.loadVerifierAndPendingRequests()
+        this.context.loadVerified().then(() =>
+
+            this.setState({
+                approvedNotariesLoading: false
+            }))
+        this.context.loadClients().then(() => this.setState({
+            dcGrantedLoading: false
+        }))
+        this.context.loadVerifierAndPendingRequests().then(() => this.setState({
+            pendingNotariesLoading: false
+        }))
     }
 
     public render() {
@@ -45,15 +62,36 @@ export default class Overview extends Component<{}, OverviewStates> {
                         </div>
                         <div className="textinfodata">
                             <div className="textinfodatablock">
-                                <div className="data">{bytesToiB(this.context.clientsAmount)}</div>
+                                <div className="data">{
+                                    this.state.dcGrantedLoading ?
+                                        <div>
+                                            <span className="zeroOpaque">0B</span>
+                                            <BeatLoader size={15} color={"rgb(24,160,237)"} />
+                                        </div>
+                                        :
+                                        bytesToiB(this.context.clientsAmount)}</div>
                                 <div className="text">Datacap Granted</div>
                             </div>
                             <div className="textinfodatablock">
-                                <div className="data">{this.context.verifierAndPendingRequests.length}</div>
+                                <div className="data">{
+                                    this.state.pendingNotariesLoading ?
+                                        <div>
+                                            <span className="zeroOpaque">0</span>
+                                            <BeatLoader size={15} color={"rgb(24,160,237)"} />
+                                        </div>
+                                        :
+                                        this.context.verifierAndPendingRequests.length}</div>
                                 <div className="text">Pending Notaries</div>
                             </div>
                             <div className="textinfodatablock">
-                                <div className="data">{this.context.verified.length}</div>
+                                <div className="data">{
+                                    this.state.approvedNotariesLoading || this.context.verified.length === 0 ?
+                                        <div>
+                                            <span className="zeroOpaque">0</span>
+                                            <BeatLoader size={15} color={"rgb(24,160,237)"} />
+                                        </div>
+                                        :
+                                        this.context.verified.length}</div>
                                 <div className="text">Approved Notaries</div>
                             </div>
                         </div>
