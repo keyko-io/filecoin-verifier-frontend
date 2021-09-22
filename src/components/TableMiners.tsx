@@ -156,6 +156,11 @@ export default class TableMiners extends Component {
                 minersIds,
                 loadingApiData: false
             })
+            const queryParams = new URLSearchParams(window.location.search);
+            const search = queryParams.get('search');
+            if (search !== null) {
+                this.filter(search)
+            }
         } catch (error) {
 
         }
@@ -206,32 +211,32 @@ export default class TableMiners extends Component {
                 <span id={`SlackHide${id}`} className={"slack"} >
                     Slack
                 </span>
-                <FontAwesomeIcon icon={"copy"} className={"iconExtLink"} onClick={() => this.showCopyElem(id, contacts.slack, "Slack")} title={"Click to copy!"}/>
+                <FontAwesomeIcon icon={"copy"} className={"iconExtLink"} onClick={() => this.showCopyElem(id, contacts.slack, "Slack")} title={"Click to copy!"} />
                 <br></br>
                 <span id={`MailHide${id}`} className={"slack"} >
                     Mail
                 </span>
-                    <FontAwesomeIcon icon={"copy"} className={"iconExtLink"} onClick={() => this.showCopyElem(id, contacts.href, "Mail")} title={"Click to copy!"}/>
+                <FontAwesomeIcon icon={"copy"} className={"iconExtLink"} onClick={() => this.showCopyElem(id, contacts.href, "Mail")} title={"Click to copy!"} />
             </div>
         } else if (contacts.href === undefined) {
             return <div className="contacvalue">
                 <span id={`SlackHide${id}`} className={"slack"} >
                     Slack
                 </span>
-                <FontAwesomeIcon icon={"copy"} className={"iconExtLink"} onClick={() => this.showCopyElem(id, contacts.slack, "Slack")} title={"Click to copy!"}/>
+                <FontAwesomeIcon icon={"copy"} className={"iconExtLink"} onClick={() => this.showCopyElem(id, contacts.slack, "Slack")} title={"Click to copy!"} />
             </div>
         } else {
             return <div className="contacvalue">
                 <span id={`SlackHide${id}`} className={"slack"} onClick={() => this.showCopyElem(id, contacts.slack, "Slack")} title={"Click to copy!"}>
                     Slack
-                    
+
                 </span>
-                <FontAwesomeIcon icon={"copy"} className={"iconExtLink"} onClick={() => this.showCopyElem(id, contacts.slack, "Slack")} title={"Click to copy!"}/>
+                <FontAwesomeIcon icon={"copy"} className={"iconExtLink"} onClick={() => this.showCopyElem(id, contacts.slack, "Slack")} title={"Click to copy!"} />
                 <br></br>
                 <span >
                     Website
-                <a className={"slack"} href={contacts.href} target={"_blank"}>
-                    <FontAwesomeIcon icon={"external-link-square-alt"} className={"iconExtLink"} /></a>
+                    <a className={"slack"} href={contacts.href} target={"_blank"}>
+                        <FontAwesomeIcon icon={"external-link-square-alt"} className={"iconExtLink"} /></a>
                 </span>
             </div>
         }
