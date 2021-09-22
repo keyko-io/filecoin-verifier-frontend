@@ -7,6 +7,7 @@ import BigNumber from 'bignumber.js'
 import { tableSort } from '../../utils/SortFilter';
 import { v4 as uuidv4 } from 'uuid';
 import { anyToBytes, bytesToiB } from "../../utils/Filters"
+import * as Sentry from "@sentry/react";
 const utils = require('@keyko-io/filecoin-verifier-tools/utils/issue-parser')
 const largeutils = require('@keyko-io/filecoin-verifier-tools/utils/large-issue-parser')
 const parser = require('@keyko-io/filecoin-verifier-tools/utils/notary-issue-parser')
@@ -43,7 +44,8 @@ interface DataProviderStates {
     search: any
     searchString: string
     refreshGithubData: any
-    searchUserIssues: any
+    searchUserIssues: any,
+    logToSentry: any
 }
 
 interface DataProviderProps {
@@ -56,6 +58,16 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
     constructor(props: DataProviderProps) {
         super(props);
         this.state = {
+            logToSentry: (category: string, message: string, level: "info" | "error", data: any) => {
+                let breadCrumb = {
+                    category,
+                    message,
+                    level: level == "info" ? Sentry.Severity.Info : Sentry.Severity.Error,
+                    data
+                }
+                Sentry.addBreadcrumb(breadCrumb);
+                Sentry.captureMessage(breadCrumb.message)
+            },
             loadClientRequests: async () => {
                 if (this.props.github.githubLogged === false) {
                     this.setState({ clientRequests: [], largeClientRequests: [] })
@@ -525,7 +537,8 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
                     issue_number: requestNumber,
                     body: commentContent,
                 })
-                if ((approvals + 1) == config.approvalsThreshold )  {
+
+                if ((approvals + 1) == config.approvalsThreshold) {
                     await this.props.github.githubOcto.issues.removeAllLabels({
                         owner: config.onboardingLargeOwner,
                         repo: config.onboardingLargeClientRepo,

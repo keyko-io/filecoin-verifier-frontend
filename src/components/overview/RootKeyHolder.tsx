@@ -12,6 +12,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { tableElementFilter } from '../../utils/SortFilter';
 import { BeatLoader } from "react-spinners";
 
+import * as Sentry from "@sentry/react";
 const parser = require('@keyko-io/filecoin-verifier-tools/utils/notary-issue-parser')
 
 type RootKeyHolderState = {
@@ -167,11 +168,19 @@ export default class RootKeyHolder extends Component<RootKeyHolderProps, RootKey
                     owner: config.lotusNodes[this.context.wallet.networkIndex].notaryOwner,
                     repo: config.lotusNodes[this.context.wallet.networkIndex].notaryRepo,
                     issue_number: request.issue_number,
-                }))?.data?.assignee?.login
+               }))?.data?.assignee?.login
                 if(!assignee){
                     throw new Error("You should assign the issue to someone")
                 }
-                
+
+                    let breadCrumb = {
+                        category: "handleSubmitApproveSign",
+                        message: `handleSubmitApproveSign, request id: ${request.id}, missing the messageID`,
+                        level: Sentry.Severity.Warning,
+                        data: {
+                            request: request,
+                        }
+                    }
                     if (request.proposed === true) {
                         // for each tx
                         for (const tx of request.txs) {
@@ -186,6 +195,10 @@ export default class RootKeyHolder extends Component<RootKeyHolderProps, RootKey
                             this.context.wallet.dispatchNotification('Accepting Message sent with ID: ' + messageID)
                             this.setState({approveLoading:false})
                             filfox += `#### You can check the status of the message here: https://filfox.info/en/message/${messageID}\n`
+                        }
+                        if(messageIds.length === 0){
+                            Sentry.addBreadcrumb(breadCrumb);
+                            Sentry.captureMessage(breadCrumb.message)
                         }
                         // comment to issue
                         commentContent = `## The request has been signed by a new Root Key Holder\n#### Message sent to Filecoin Network\n>${messageIds.join()}\n${errorMessage}\n${filfox}`
@@ -212,7 +225,6 @@ export default class RootKeyHolder extends Component<RootKeyHolderProps, RootKey
                                     await this.context.wallet.api.proposeRemoveVerifier(address, this.context.wallet.walletIndex)
                                     :
                                     await this.context.wallet.api.proposeVerifier(address, BigInt(datacap), this.context.wallet.walletIndex)
-
                                 console.log("messageID: " + messageID)
                                 const txReceipt = await this.context.wallet.api.getReceipt(messageID)
                                 if (txReceipt.ExitCode !== 0) errorMessage += `#### @${assignee} There was an error processing the message\n>${messageID}`
@@ -221,6 +233,10 @@ export default class RootKeyHolder extends Component<RootKeyHolderProps, RootKey
                                 this.setState({approveLoading:false})
                                 filfox += `#### You can check the status of the message here: https://filfox.info/en/message/${messageID}\n`
                             }
+                        }
+                        if(messageIds.length === 0){
+                            Sentry.addBreadcrumb(breadCrumb);
+                            Sentry.captureMessage(breadCrumb.message)
                         }
                         commentContent = `## The request has been signed by a new Root Key Holder\n#### Message sent to Filecoin Network\n>${messageIds.join()}\n ${errorMessage}\n ${filfox}`
                         label = errorMessage === '' ?

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { tableFilter } from '../utils/SortFilter';
+import { tableFilter, tableMinerFilter } from '../utils/SortFilter';
 
 type PaginationProps = {
     elements: any[],
@@ -39,7 +39,7 @@ class Pagination extends Component<PaginationProps> {
     }
 
     calculatePages = async () => {
-        const elementsToShow = await tableFilter(
+        const elementsToShow = await tableMinerFilter(
             this.props.search,
             this.props.elements[0] && this.props.elements[0].data ?
                 this.props.elements.map(ele => ele.data) as []

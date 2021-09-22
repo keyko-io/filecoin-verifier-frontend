@@ -5,7 +5,7 @@ import MakeRequestModal from '../modals/MakeRequestModal';
 import NotaryInfoModal from '../modals/NotaryInfoModal';
 import { config } from '../config'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { tableFilter, tableSort } from '../utils/SortFilter';
+import { tableFilter, tableMinerFilter, tableSort } from '../utils/SortFilter';
 import Pagination from './Pagination';
 
 type TableVerifiersProps = {
@@ -25,9 +25,7 @@ export default class TableVerifiers extends Component<TableVerifiersProps> {
         { key: "name", name: "Notary Name", type: "FILE_LINK", width: "98px" },
         { key: "use_case", name: "Use Case" },
         { key: "location", name: "Location" },
-        { key: "website", name: "Website / Social Media" },
-        { key: "max_datacap_allocation", name: "Max Datacap Allocation", visible: false },
-        { key: "private_request", name: "Private Requests" }
+        { key: "contacts", name: "Contacts", order: "false" },
     ]
 
 
@@ -52,6 +50,11 @@ export default class TableVerifiers extends Component<TableVerifiersProps> {
             initialChecks.push(false)
         })
         this.setState({ checks: initialChecks })
+        const queryParams = new URLSearchParams(window.location.search);
+        const search = queryParams.get('search');
+        if(search !== null){
+            this.filter(search)
+        }
         this.child.current.calculatePages()
     }
 
@@ -59,6 +62,7 @@ export default class TableVerifiers extends Component<TableVerifiersProps> {
         const dataSource = config.dataSource;
         console.log(`../data/${dataSource}.json`)
         const verifiers = require(`../data/${dataSource}.json`);
+        this.shuffleArray(verifiers.notaries)
         this.setState({ verifiers: verifiers.notaries })
         this.setState({ allVerifiers: verifiers.notaries })
 
@@ -104,9 +108,16 @@ export default class TableVerifiers extends Component<TableVerifiersProps> {
     }
 
     filter = async (search: string) => {
-        const verifiers = await tableFilter(search, this.state.allVerifiers as [])
-        await this.setState({ verifiers })
+        const verifiers = await tableMinerFilter(search, this.state.allVerifiers as [])
+        this.setState({ verifiers })
         this.child.current.calculatePages()
+    }
+
+    shuffleArray(array: any[]) {
+        for (let i = array.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [array[i], array[j]] = [array[j], array[i]];
+        }
     }
 
     public render() {
@@ -120,9 +131,12 @@ export default class TableVerifiers extends Component<TableVerifiersProps> {
                                     <td></td>
                                     {this.columns.map((column: any) =>
                                         column.visible === false ? null :
-                                            <td>{column.name}
-                                                <FontAwesomeIcon icon={["fas", "sort"]} id={column.key} onClick={this.order} />
-                                            </td>
+                                            column.order !== "false" ?
+                                                <td>{column.name}
+                                                    <FontAwesomeIcon icon={["fas", "sort"]} id={column.key} onClick={this.order} />
+                                                </td>
+                                                :
+                                                <td>{column.name}</td>
                                     )}
                                 </tr>
                             </thead>
@@ -147,8 +161,7 @@ export default class TableVerifiers extends Component<TableVerifiersProps> {
                                                     <p style={{ padding: 3 }}>{useCase}</p>
                                                 )}</td>
                                                 <td>{verifier.location}</td>
-                                                <td>{verifier.website}</td>
-                                                <td>{verifier.private_request}</td>
+                                                <td>Slack: {verifier.fil_slack_id} <br /> Github: {verifier.github_user[0]}</td>
                                             </tr>
                                             : null
                                     )
@@ -156,8 +169,8 @@ export default class TableVerifiers extends Component<TableVerifiersProps> {
                             </tbody>
                         </table>
                         : <div className="nodata">There are not available notaries yet</div>}
+                    <Pagination elements={this.state.verifiers} search={this.props.search} ref={this.child} maxElements={5} refresh={() => this.setState({})} />
                 </div>
-                <Pagination elements={this.state.verifiers} search={this.props.search} ref={this.child} maxElements={5} refresh={() => this.setState({})} />
             </div>
         )
     }
