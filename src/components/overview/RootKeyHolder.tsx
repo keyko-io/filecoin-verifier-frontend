@@ -197,6 +197,7 @@ export default class RootKeyHolder extends Component<RootKeyHolderProps, RootKey
                             filfox += `#### You can check the status of the message here: https://filfox.info/en/message/${messageID}\n`
                         }
                         if(messageIds.length === 0){
+                            this.setState({approveLoading:false})
                             Sentry.addBreadcrumb(breadCrumb);
                             Sentry.captureMessage(breadCrumb.message)
                         }
@@ -235,6 +236,7 @@ export default class RootKeyHolder extends Component<RootKeyHolderProps, RootKey
                             }
                         }
                         if(messageIds.length === 0){
+                            this.setState({approveLoading:false})
                             Sentry.addBreadcrumb(breadCrumb);
                             Sentry.captureMessage(breadCrumb.message)
                         }
