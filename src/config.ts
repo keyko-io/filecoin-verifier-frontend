@@ -14,7 +14,7 @@ export const config = {
     defaultAssign: ['philippbanhardt'],
     willRedirect: process.env.REACT_APP_REDIRECTION || false,
     validateAddress: process.env.REACT_APP_VALIDATE_ADDRESS || true,
-    approvalsThreshold: process.env.REACT_APP_APPROVALS_THRESHOLD || 2,
+    approvalsThreshold: process.env.REACT_APP_APPROVALS_THRESHOLD || 1,
     largeClientRequest: 5497558000000000000000000,
     lotusNodes: [{
         name: 'Mainnet',
@@ -29,7 +29,7 @@ export const config = {
     }, {
         name: 'Nerpanet',
         code: 1,
-        url: 'https://beta-verify.filecoin.io/api/rpc/v0',
+        url: 'wss://lotus.filecoin.nevermined.rocks/rpc/v0',
         token: process.env.REACT_APP_NERPANET_TOKEN,
         notaryRepo: 'filecoin-notaries-onboarding',
         notaryOwner: 'keyko-io',
