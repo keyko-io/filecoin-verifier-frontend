@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 // @ts-ignore
 import { dispatchCustomEvent } from "slate-react-system";
+import WarnModal from '../modals/WarnModal';
 import MakeRequestModal from '../modals/MakeRequestModal';
 import NotaryInfoModal from '../modals/NotaryInfoModal';
 import { config } from '../config'
@@ -52,7 +53,7 @@ export default class TableVerifiers extends Component<TableVerifiersProps> {
         this.setState({ checks: initialChecks })
         const queryParams = new URLSearchParams(window.location.search);
         const search = queryParams.get('search');
-        if(search !== null){
+        if (search !== null) {
             this.filter(search)
         }
         this.child.current.calculatePages()
@@ -90,11 +91,20 @@ export default class TableVerifiers extends Component<TableVerifiersProps> {
     }
 
     contactVerifier = async () => {
-        let verifier: any = this.state.verifiers[this.state.selectedVerifier]
+        if (this.state.checks.some((item: any) => item === "on")) {
+            let verifier: any = this.state.verifiers[this.state.selectedVerifier]
+            dispatchCustomEvent({
+                name: "create-modal", detail: {
+                    id: Math.random().toString(36).replace(/[^a-z]+/g, '').substr(0, 5),
+                    modal: <MakeRequestModal verifier={verifier} />
+                }
+            })
+            return
+        }
         dispatchCustomEvent({
             name: "create-modal", detail: {
                 id: Math.random().toString(36).replace(/[^a-z]+/g, '').substr(0, 5),
-                modal: <MakeRequestModal verifier={verifier} />
+                modal: <WarnModal message={'Please select at least one verifier'} />
             }
         })
     }
@@ -146,7 +156,7 @@ export default class TableVerifiers extends Component<TableVerifiersProps> {
                                         this.child.current.checkIndex(i) ?
                                             <tr>
                                                 <td>
-                                                    <input type="checkbox" key={i} name={String(i)}
+                                                    <input type="radio" key={i} name={String(i)}
                                                         checked={this.state.checks[i]}
                                                         onChange={(e) => this.updateChecks(e)}
                                                     />

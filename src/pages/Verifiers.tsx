@@ -46,7 +46,9 @@ class Verifiers extends Component<{}> {
             <div className="tableselects">
               <div className="tabletitle">
                 <div className="title">Select Notary, Send Request</div>
-                <div className="formname">
+                <div className="searchMakeReuestForm doublebutton">
+                  <ButtonPrimary onClick={() => this.makeRequest()}> Make Request </ButtonPrimary>
+                  <ButtonPrimary onClick={() => this.navigate()}>Learn More</ButtonPrimary>
                   <form>
                     <Input
                       name="search"
@@ -63,7 +65,7 @@ class Verifiers extends Component<{}> {
               <div className="doublebutton">
                 <ButtonPrimary onClick={() => this.makeRequest()}>
                   Make Request
-              </ButtonPrimary>
+                </ButtonPrimary>
                 <ButtonPrimary onClick={() => this.navigate()}>Learn More</ButtonPrimary>
               </div>
             </div>

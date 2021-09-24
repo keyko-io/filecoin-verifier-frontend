@@ -1336,6 +1336,7 @@
     line-height: 24px;
     margin: 0px 12.5px 0px 12.5px;
     max-width: 1280px;
+    display:flex;
 
     .title{
       padding-top: 12px;
@@ -2101,4 +2102,14 @@
   z-index: 0;
   position: absolute;
   padding-left:19px;
+}
+
+.searchMakeReuestForm{
+  display:flex;
+  flex-direction: row;
+  margin-left: 10%;
+    button{
+      width: 30%;
+      margin-right: 10px;
+    }
 }
