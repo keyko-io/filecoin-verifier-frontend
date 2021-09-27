@@ -200,6 +200,7 @@ export default class Notary extends Component<NotaryProps, NotaryStates> {
                     this.context.wallet.dispatchNotification('Verify Client Message sent with ID: ' + messageID)
                     this.context.loadClientRequests()
                     sentryData = {
+                        requestNumber: request.number,
                         messageID: messageID,
                         address: address,
                         dataCap: dc,
@@ -214,11 +215,10 @@ export default class Notary extends Component<NotaryProps, NotaryStates> {
                         error: e
                     }
 
-                    this.context.logToSentry("verifyClients", e.message, "error", sentryData)
+                    this.context.logToSentry(`verifyClients issue n. ${request.number}`, `verifyClients error: ${e.message}`, "error", sentryData)
                     this.context.wallet.dispatchNotification('Verification failed: ' + e.message)
-                    console.log(e.stack)
                 } finally {
-                    this.context.logToSentry("verifyClients", "verifyClients info", "info", sentryData)
+                    this.context.logToSentry(`verifyClients issue n. ${request.number}`, "verifyClients info", "info", sentryData)
                 }
             }
         }
@@ -231,6 +231,7 @@ export default class Notary extends Component<NotaryProps, NotaryStates> {
         for (const request of this.context.largeClientRequests) {
             if (this.state.selectedLargeClientRequests.includes(request.number)) {
                 let sentryData: any = {}
+                sentryData.requestNumber = request.number
                 try {
                     const datacap = anyToBytes(request.datacap)
                     console.log('datacap', datacap)
@@ -270,9 +271,9 @@ export default class Notary extends Component<NotaryProps, NotaryStates> {
                         ...sentryData,
                         error: e
                     }
-                    this.context.logToSentry("verifyLargeClients", e.message, "error", sentryData)
+                    this.context.logToSentry(`verifyLargeClients issue n. ${request.number}`, `verifyLargeClients error: ${e.message}`, "error", sentryData)
                 } finally {
-                    this.context.logToSentry("verifyLargeClients", "verifyLargeClients info", "info", sentryData)
+                    this.context.logToSentry(`verifyLargeClients issue n. ${request.number}`, "verifyLargeClients info", "info", sentryData)
                 }
             }
         }
