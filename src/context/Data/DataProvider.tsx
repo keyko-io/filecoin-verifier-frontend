@@ -132,7 +132,7 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
                             const comment = comments[comments.length - 1]
                             const pendingLargeTxs = await this.props.wallet.api.pendingTransactions(comment.notaryAddress)
                             const txs = pendingLargeTxs.filter((pending: any) => pending.parsed.params.address === comment.clientAddress)
-                            if (comment && comment.multisigMessage && comment.correct) {
+                            if (comment && comment.multisigMessage && comment.correct && this.props.wallet.multisigID === comment.notaryAddress) {
                                 let largeRequest: any = {
                                     issue_number: rawLargeIssue.number,
                                     issue_Url: rawLargeIssue.html_url,

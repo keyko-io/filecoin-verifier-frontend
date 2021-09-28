@@ -60,6 +60,7 @@ export default class Notary extends Component<NotaryProps, NotaryStates> {
     largeRequestColums = [
         { id: "name", value: "Client" },
         { id: "address", value: "Address" },
+        { id: "multisig", value: "multisig"},
         { id: "datacap", value: "Datacap" },
         { id: "approvals", value: "Approvals" },
         { id: "audittrail", value: "Audit Trail" }
@@ -359,7 +360,8 @@ export default class Notary extends Component<NotaryProps, NotaryStates> {
                 <div className="tabsholder">
                     <div className="tabs">
                         <div className={this.state.tabs === "1" ? "selected" : ""} onClick={() => { this.showClientRequests() }}>Public Requests ({this.context.clientRequests.length})</div>
-                        <div className={this.state.tabs === "3" ? "selected" : ""} onClick={() => { this.showLargeRequests() }}>Large Requests ({this.context.largeClientRequests.length})</div>
+                        {this.context.wallet.multisig &&
+                        <div className={this.state.tabs === "3" ? "selected" : ""} onClick={() => { this.showLargeRequests() }}>Large Requests ({this.context.largeClientRequests.length})</div>}
                         <div className={this.state.tabs === "2" ? "selected" : ""} onClick={() => { this.showVerifiedClients() }}>Verified clients ({this.props.clients.length})</div>
                     </div>
                     <div className="tabssadd">
@@ -439,6 +441,7 @@ export default class Notary extends Component<NotaryProps, NotaryStates> {
                                                 <td><input type="checkbox" onChange={() => this.selectLargeClientRow(clientReq.number)} checked={this.state.selectedLargeClientRequests.includes(clientReq.number)} /></td>
                                                 <td><FontAwesomeIcon icon={["fas", "info-circle"]} id={index} onClick={(e) => this.showClientDetail(e)} /> {clientReq.data.name} </td>
                                                 <td>{clientReq.address}</td>
+                                                <td>{clientReq.multisig}</td>
                                                 <td>{clientReq.datacap}</td>
                                                 <td>{clientReq.approvals ? clientReq.approvals : 0}</td>
                                                 <td><a target="_blank" rel="noopener noreferrer" href={clientReq.url}>#{clientReq.number}</a></td>
