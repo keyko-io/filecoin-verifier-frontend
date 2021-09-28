@@ -33,7 +33,7 @@ export default class TableVerifiers extends Component<TableVerifiersProps> {
     state = {
         verifiers: [],
         allVerifiers: [],
-        selectedVerifier: 0,
+        selectedVerifier: null as any,
         checks: [],
         pages: [] as any[],
         sortOrder: -1,
@@ -70,14 +70,7 @@ export default class TableVerifiers extends Component<TableVerifiersProps> {
     }
 
     updateChecks = (e: any) => {
-        let checks = [] as any[]
-        this.state.checks.forEach((_, i) => {
-            checks.push(Number(e.target.name) === i ?
-                e.target.value :
-                false)
-        })
-        this.setState({ checks: checks })
-        this.setState({ selectedVerifier: Number(e.target.name) })
+        this.setState({ selectedVerifier: Number(e.target.id) })
     }
 
     showNotaryInfo = (e: any) => {
@@ -91,7 +84,7 @@ export default class TableVerifiers extends Component<TableVerifiersProps> {
     }
 
     contactVerifier = async () => {
-        if (this.state.checks.some((item: any) => item === "on")) {
+        if (this.state.selectedVerifier !== null) {
             let verifier: any = this.state.verifiers[this.state.selectedVerifier]
             dispatchCustomEvent({
                 name: "create-modal", detail: {
@@ -154,24 +147,29 @@ export default class TableVerifiers extends Component<TableVerifiersProps> {
                                 {
                                     this.state.verifiers.map((verifier: any, i) =>
                                         this.child.current.checkIndex(i) ?
-                                            <tr>
-                                                <td>
-                                                    <input type="radio" key={i} name={String(i)}
-                                                        checked={this.state.checks[i]}
+                                            <tr
+                                                onClick={(e) => this.updateChecks(e)}
+                                            >
+                                                <td
+                                                    key={i} id={String(i)}
+                                                    onClick={(e) => this.updateChecks(e)}
+                                                >
+                                                    <input type="radio" key={i} name={"verifiers"} id={String(i)}
                                                         onChange={(e) => this.updateChecks(e)}
+                                                        checked={this.state.selectedVerifier == i}
                                                     />
                                                 </td>
-                                                <td>{verifier.name}
-                                                    <div className="notaryinfo" id={i.toString()}
+                                                <td id={String(i)}>{verifier.name}
+                                                    <div className="notaryinfo" id={String(i)}
                                                         onClick={(e) => this.showNotaryInfo(e)}>
-                                                        <FontAwesomeIcon icon={["fas", "info-circle"]} />
+                                                            <FontAwesomeIcon icon={["fas", "info-circle"]} />
                                                     </div>
                                                 </td>
-                                                <td>{verifier.use_case.map((useCase: any) =>
-                                                    <p style={{ padding: 3 }}>{useCase}</p>
+                                                <td id={String(i)}>{verifier.use_case.map((useCase: any) =>
+                                                    <p id={String(i)} style={{ padding: 3 }}>{useCase}</p>
                                                 )}</td>
-                                                <td>{verifier.location}</td>
-                                                <td>Slack: {verifier.fil_slack_id} <br /> Github: {verifier.github_user[0]}</td>
+                                                <td id={String(i)}>{verifier.location}</td>
+                                                <td id={String(i)}>Slack: {verifier.fil_slack_id} <br /> Github: {verifier.github_user[0]}</td>
                                             </tr>
                                             : null
                                     )
