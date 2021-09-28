@@ -104,7 +104,7 @@ export default class TableVerifiers extends Component<TableVerifiersProps> {
         dispatchCustomEvent({
             name: "create-modal", detail: {
                 id: Math.random().toString(36).replace(/[^a-z]+/g, '').substr(0, 5),
-                modal: <WarnModal message={'Please select at least one verifier'} />
+                modal: <WarnModal message={'Please select one verifier'} />
             }
         })
     }
