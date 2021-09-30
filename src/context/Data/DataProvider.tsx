@@ -6,7 +6,7 @@ import { IssueBody } from '../../utils/IssueBody'
 import BigNumber from 'bignumber.js'
 import { tableSort } from '../../utils/SortFilter';
 import { v4 as uuidv4 } from 'uuid';
-import { anyToBytes } from "../../utils/Filters"
+import { bytesToiB } from "../../utils/Filters"
 import * as Sentry from "@sentry/react";
 const utils = require('@keyko-io/filecoin-verifier-tools/utils/issue-parser')
 const largeutils = require('@keyko-io/filecoin-verifier-tools/utils/large-issue-parser')
@@ -132,8 +132,7 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
                             const comment = comments[comments.length - 1]
                             const pendingLargeTxs = await this.props.wallet.api.pendingTransactions(comment.notaryAddress)
                             const txs = pendingLargeTxs.filter((pending: any) => pending.parsed.params.address === comment.clientAddress)
-
-                            if (comment && comment.multisigMessage && comment.correct) {
+                            if (comment && comment.multisigMessage && comment.correct && this.props.wallet.multisigID === comment.notaryAddress) {
                                 let largeRequest: any = {
                                     issue_number: rawLargeIssue.number,
                                     issue_Url: rawLargeIssue.html_url,
@@ -245,28 +244,40 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
                 let pendingTxs = await this.props.wallet.api.pendingRootTransactions()
 
                 let verifierAndPendingRequests: any[] = []
+                let promArr = []
                 for (let txs in pendingTxs) {
                     if (pendingTxs[txs].parsed.name !== 'addVerifier' && pendingTxs[txs].parsed.name !== 'removeVerifier') {
                         continue
                     }
-                    const verifierAddress = await this.props.wallet.api.actorKey(
-                        pendingTxs[txs].parsed.name === 'removeVerifier' ?
-                            pendingTxs[txs].parsed.params
-                            :
-                            pendingTxs[txs].parsed.params.verifier
+                    promArr.push(new Promise<any>(async (resolve) => {
 
-                    )
-                    const signerAddress = await this.props.wallet.api.actorKey(pendingTxs[txs].signers[0])
-                    verifierAndPendingRequests.push({
-                        id: pendingTxs[txs].id,
-                        type: pendingTxs[txs].parsed.name === 'removeVerifier' ? 'Revoke' : pendingTxs[txs].parsed.params.cap.toString() === '0' ? 'Revoke' : 'Add',
-                        verifier: pendingTxs[txs].parsed.name === 'removeVerifier' ? pendingTxs[txs].parsed.params : pendingTxs[txs].parsed.params.verifier,
-                        verifierAddress: verifierAddress,
-                        datacap: pendingTxs[txs].parsed.name === 'removeVerifier' ? 0 : pendingTxs[txs].parsed.params.cap,
-                        signer: pendingTxs[txs].signers[0],
-                        signerAddress: signerAddress
+
+                        const verifierAddress = await this.props.wallet.api.actorKey(
+                            pendingTxs[txs].parsed.name === 'removeVerifier' ?
+                                pendingTxs[txs].parsed.params
+                                :
+                                pendingTxs[txs].parsed.params.verifier
+
+                        )
+
+                        const signerAddress = await this.props.wallet.api.actorKey(pendingTxs[txs].signers[0])
+                        verifierAndPendingRequests.push({
+                            id: pendingTxs[txs].id,
+                            type: pendingTxs[txs].parsed.name === 'removeVerifier' ? 'Revoke' : pendingTxs[txs]?.parsed?.params?.cap?.toString() === '0' ? 'Revoke' : 'Add',
+                            verifier: pendingTxs[txs].parsed.name === 'removeVerifier' ? pendingTxs[txs].parsed.params : pendingTxs[txs].parsed.params.verifier,
+                            verifierAddress: verifierAddress,
+                            datacap: pendingTxs[txs].parsed.name === 'removeVerifier' ? 0 : pendingTxs[txs].parsed.params.cap,
+                            signer: pendingTxs[txs].signers[0],
+                            signerAddress: signerAddress
+                        })
+                        resolve(verifierAndPendingRequests)
                     })
+                    )
                 }
+
+                const promRes = await Promise.all(promArr)
+                // console.log("res promise get verifierAndPendingRequests", promRes)
+
                 // For each issue
                 for (const rawIssue of rawIssues) {
                     const data = parser.parseIssue(rawIssue.body, rawIssue.title)
@@ -286,7 +297,7 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
                                 id: uuidv4(),
                                 issue_number: rawIssue.number,
                                 issue_Url: rawIssue.html_url,
-                                addresses: comment.addresses.map((addr:any) => addr.trim()),
+                                addresses: comment.addresses.map((addr: any) => addr.trim()),
                                 datacaps: comment.datacaps,
                                 txs: [],
                                 proposedBy: ""
@@ -373,34 +384,71 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
                     this.setState({ viewroot: true })
                 }
             },
+
             verified: [],
             loadVerified: async () => {
-                const approvedVerifiers = await this.props.wallet.api.listVerifiers()
-                let verified = []
-                for (const verifiedAddress of approvedVerifiers) {
-                    let verifierAccount = await this.props.wallet.api.actorKey(verifiedAddress.verifier)
-                    if (verifierAccount == verifiedAddress.verifier) {
-                        verifierAccount = await this.props.wallet.api.actorAddress(verifiedAddress.verifier)
-                    }
-                    verified.push({
-                        verifier: verifiedAddress.verifier,
-                        verifierAccount,
-                        datacap: verifiedAddress.datacap
-                    })
-                }
-                this.setState({ verified })
-            },
-            loadClients: async () => {
-                const clients = await this.props.wallet.api.listVerifiedClients()
-                let clientsamount = new BigNumber(0)
-                for (const txs of clients) {
-                    const amountBN = new BigNumber(txs.datacap)
-                    clientsamount = amountBN.plus(clientsamount)
-                    txs['key'] = await this.props.wallet.api.actorKey(txs.verified)
+                try {
+                    const approvedVerifiers = await this.props.wallet.api.listVerifiers()
 
+                    let verified: any = []
+
+                    const promArr = approvedVerifiers
+                        .map((verifiedAddress: any) =>
+                            new Promise<any>(async (resolve, reject) => {
+                                try {
+                                    let verifierAccount = await this.props.wallet.api.actorKey(verifiedAddress.verifier)
+                                    if (verifierAccount == verifiedAddress.verifier) {
+                                        verifierAccount = await this.props.wallet.api.actorAddress(verifiedAddress.verifier)
+                                    }
+                                    verified.push({
+                                        verifier: verifiedAddress.verifier,
+                                        verifierAccount,
+                                        datacap: verifiedAddress.datacap
+                                    })
+                                    resolve(verified)
+
+                                } catch (error) {
+                                    reject(error)
+                                }
+                            }))
+
+
+                    this.setState({ verified })
+                    const promRes = await Promise.all(promArr)
+                    // console.log("loadVerified promise result", promRes)
+
+
+                } catch (error) {
+                    console.error("error in resolving promises", error)
                 }
-                this.setState({ clients, clientsAmount: clientsamount.toString() })
             },
+
+            loadClients: async () => {
+                try {
+                    const clients = await this.props.wallet.api.listVerifiedClients()
+                    let clientsamount = new BigNumber(0)
+                    let promArr: Promise<void>[] = []
+
+
+                    for (let txs of clients) {
+                        promArr.push(new Promise<any>(async (resolve) => {
+                            const amountBN = new BigNumber(txs.datacap)
+                            clientsamount = amountBN.plus(clientsamount)
+                            txs['key'] = await this.props.wallet.api.actorKey(txs.verified)
+                            resolve(txs)
+                        }))
+                    }
+
+                    const promRes = await Promise.all(promArr)
+                    // console.log("loadClients promise result", promRes)
+
+                    this.setState({ clients, clientsAmount: clientsamount.toString() })
+                } catch (error) {
+                    console.error("error in resolving promises", error)
+                }
+
+            },
+
             sortClients: async (e: any, previousOrderBy: string, previousOrder: number) => {
                 const { arraySorted, orderBy, sortOrder } =
                     tableSort(
@@ -446,6 +494,7 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
                 return { orderBy, sortOrder }
             },
             updateGithubVerified: async (requestNumber: any, messageID: string, address: string, datacap: any) => {
+                const formattedDc = bytesToiB(datacap)
                 await this.props.github.githubOcto.issues.removeAllLabels({
                     owner: config.onboardingOwner,
                     repo: config.onboardingClientRepo,
@@ -458,7 +507,7 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
                     labels: ['state:Granted'],
                 })
 
-                let commentContent = `## Request Approved\nYour Datacap Allocation Request has been approved by the Notary\n#### Message sent to Filecoin Network\n>${messageID} \n#### Address \n> ${address}\n#### Datacap Allocated\n> ${datacap}\n#### You can check the status of the message here: https://filfox.info/en/message/${messageID}`
+                let commentContent = `## Request Approved\nYour Datacap Allocation Request has been approved by the Notary\n#### Message sent to Filecoin Network\n>${messageID} \n#### Address \n> ${address}\n#### Datacap Allocated\n> ${formattedDc}\n#### You can check the status of the message here: https://filfox.info/en/message/${messageID}`
 
                 await this.props.github.githubOcto.issues.createComment({
                     owner: config.onboardingOwner,
@@ -475,8 +524,8 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
                 })
             },
             updateGithubVerifiedLarge: async (requestNumber: any, messageID: string, address: string, datacap: any, approvals: number) => {
-
-                let commentContent = `## Request Approved\nYour Datacap Allocation Request has been approved by the Notary\n#### Message sent to Filecoin Network\n>${messageID} \n#### Address \n> ${address}\n#### Datacap Allocated\n> ${datacap}\n#### You can check the status of the message here: https://filfox.info/en/message/${messageID}`
+                const formattedDc = bytesToiB(datacap)
+                let commentContent = `## Request Approved\nYour Datacap Allocation Request has been approved by the Notary\n#### Message sent to Filecoin Network\n>${messageID} \n#### Address \n> ${address}\n#### Datacap Allocated\n> ${formattedDc}\n#### You can check the status of the message here: https://filfox.info/en/message/${messageID}`
 
                 await this.props.github.githubOcto.issues.createComment({
                     owner: config.onboardingLargeOwner,

@@ -937,7 +937,7 @@
 
   .started {
     position: absolute;
-    top: 630px;
+    top: 740px;
     max-width: 1280px;
     left: 0;
     right: 0;
@@ -1005,7 +1005,6 @@
 }
 
 .doublebutton button,
-.doublebutton button:hover,
 .doublebutton button:visited {
   margin-right: 80px;
   height: 20px;
@@ -1081,6 +1080,14 @@
       -webkit-transition: opacity 2s;
       transition: opacity 2s;
       animation: 1.5s tableAppearSmooth;
+      text-align: left;
+
+      tr:hover{
+        background-color: #34bad1;
+        transition:  background-color 0.3s;
+
+
+      }
     }
 
     
@@ -1336,6 +1343,7 @@
     line-height: 24px;
     margin: 0px 12.5px 0px 12.5px;
     max-width: 1280px;
+    display:flex;
 
     .title{
       padding-top: 12px;
@@ -1639,7 +1647,8 @@
 }
 
 .notaryinfo {
-  float: right;
+  float: left;
+  margin-right: 10px;
 }
 
 .loginmodal {
@@ -1798,7 +1807,7 @@
 
 .pagination {
   position: absolute;
-  top: 580px;
+  top: 595px;
   max-width: 1280px;
   left: 0;
   right: 0;
@@ -2096,5 +2105,19 @@
   transition: 0.1s;
 }
 
+.zeroOpaque{
+  opacity: 0.1;
+  z-index: 0;
+  position: absolute;
+  padding-left:19px;
+}
 
-
+.searchMakeReuestForm{
+  display:flex;
+  flex-direction: row;
+  margin-left: 10%;
+    button{
+      width: 30%;
+      margin-right: 10px;
+    }
+}

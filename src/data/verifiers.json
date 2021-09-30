@@ -1,106 +1,80 @@
 {
     "notaries": [
         {
-            "id": 1,
-            "name": "Notary A",
-            "use_case": [
-                "Computer Vision",
-                "Geological Data"
-            ],
-            "location": "US",
-            "website": "google.com",
-            "max_datacap_allocation": "1 PB",
-            "email": "notarya@a.com",
-            "github_user": [
-                "ialberquilla"
-            ],
-            "private_request": "true",
-            "info_markdown": "true",
-            "info": "The general strategy is to provide access to DataCap by types of Client and by stages, which means (i) different types of Client will be subject to respective on-boarding requirements and procedures to have access to DataCap; and (ii) the granted DataCap will be gradually available to the Client over time with a view to our continuing control of the Client’s proper spending.\r\n1.  Allocation by Client Types\r\nFirst of all, we will allocate the available DataCap by types (business entity vs. non-profit organization) and scores of the Clients who request such allocations (“applicants”).\r\nIt is envisaged that 70% of our available DataCap will be allocated to business entity applicants while the rest 30% will be set aside for non-profit organizations that serve the public welfare of the society, inter alia, public health, education and environmental protection. \r\nAccordingly, different requirements and procedures will apply to these two types of applicant:\r\n1)Business Entity Applicants\r\nEach business entity applicant will be rated by us in accordance with the following factors and criteria in order to be granted any amount of the DataCap:\"\r\n\r\nFactors | Details | Rationale & Considerations | Rating Weight\r\n-- | -- | -- | --\r\nBusiness Model | 1, Product model   2, Data type and size   3, State   of vertical Industries | To analyze   how solid the upstream/downstream industries’ demands will be for the applicant’s   product, and evaluate the potential size of overall data storage needed, and   etc. | 30%\r\nOperating Data | 1, Demographics   of users   2, Users   activity   3, Data   usage | To know   the current data size and user profiles of the applicant’s product and assess   its growth velocity. | 50%\r\nTechnology | 1. Technological level   of the applicant’s business / product   2. Technological synergies   with IPFS/Filecoin | To assess   applicant’s technological capability and resource, and analyze how its   business/product would technologically synergize with or benefit from IPFS/Filecoin. | 10%\r\nTrack Record and Background | 1, Credential   and track record of the applicant (and its top management).   2, Legal   standing and history of the applicant as a business entity.   3. Branding   and social reputation of the applicant | To ascertain   the applicant’s (i) experience in and dedication to its business; (ii) legal   compliance; and (iii) reputation; furthermore, to verify the authenticity of   the information provided by the applicant. | 10% (but If   anything illegal or fraudulent is spotted, the applicant will be disqualified   outright).\r\n\r\nA business entity applicant who scores 60 or above will be allocated 0.1-10% of the total DataCap available to us.  Generally speaking, the higher score it gets, the more DataCap will be allocated, subject to the actual data size concerned.\r\n2）Non-Profit Organization Applicants\r\nUnlike a business entity applicant, a non-profit organization will not be rated as above to be on board for DataCap allocation.  Instead, a non-profit organization will be allocated 0.1-5% of our available DataCap (subject to the actual data size concerned) upon duly proving its legal standing and existing data.\r\n\r\n2.Allocation by Stages\r\nFurthermore, the DataCap for any applicant will only be allocated by stages (as opposed to in one batch). \r\nUsually only 20%-30% of the granted DataCap will be available to the relevant applicant in the first trial stage, whereupon we will keep monitoring how that applicant will spend the same to ensure its proper use. \r\nThe applicant must meet the requirements pre-specified in our allocation decision to have the subsequent portions of the granted DataCap unlocked, which requirements are expected to include, inter alia, low concentration of miners and storage of approved data only.  Accordingly, failure to meet the aforementioned requirements will result in delay of allocation or even cancellation of the remaining DataCap.\" // You can use this to share information with Clients about your allocation strategy / reqs"
-        },
-        {
             "id": 2,
-            "name": "Notary B",
+            "name": "Filecoin Foundation",
             "use_case": [
-                "Long-term backups",
-                "Long-term log storage",
-                "Personal Storage"
+                "General"
             ],
-            "location": "EUR",
-            "website": "google.com",
-            "max_datacap_allocation": "100 GB",
+            "location": "Europe",
+            "website": "https://fil.org/",
             "email": "notaryb@a.com",
+            "fil_slack_id": "@Danny O'Brien",
             "github_user": [
-                "notaryb"
+                "dannyob"
             ],
-            "private_request": "true",
-            "info": "aditional info of the notary... Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged."
+            "ldn_config": {
+                "active_signer": "true",
+                "signing_address": "t1fmqtnifrcnv4753hoyhjalgsv5klimrxmk7ekoq"
+            }
         },
         {
             "id": 3,
-            "name": "Notary C",
+            "name": "Fenbushi Capital",
             "use_case": [
-                "Computer Vision",
-                "Geological Data",
-                "Autonomous Driving"
+                "General"
             ],
-            "location": "EUR",
-            "website": "google.com",
-            "max_datacap_allocation": "100 GB",
-            "email": "notaryc@a.com",
+            "location": "Greater China Region",
+            "website": "https://fenbushi.vc",
+            "email": "notaryb@a.com",
+            "fil_slack_id": "@Zhehao Chen",
             "github_user": [
-                "notaryc"
+                "Fenbushi-Filecoin"
             ],
-            "private_request": "true",
-            "info": ""
-        },
-        {
-            "id": 4,
-            "name": "Notary D",
-            "use_case": [
-                "Web 2 applications",
-                "Decentralized applications"
-            ],
-            "location": "ASIA",
-            "website": "google.com",
-            "max_datacap_allocation": "1 PB",
-            "email": "notaryd@a.com",
-            "github_user": [
-                "notaryd"
-            ],
-            "private_request": "true",
-            "info": ""
+            "ldn_config": {
+                "active_signer": "true",
+                "signing_address": "t1us742aljq3rregf6eldkdbi2ymsnfifhq7meyly"
+            },
+            "docs_url": "https://github.com/filecoin-project/filecoin-plus-client-onboarding/tree/main/Fenbushi%20Capital",
+            "info": "Before submitting your request, please make sure to check out the guidelines and criteria to accept Datacap request for [Fenbushi Capital](https://github.com/filecoin-project/filecoin-plus-client-onboarding/tree/main/Fenbushi%20Capital)"
         },
         {
             "id": 5,
-            "name": "Notary E",
+            "name": "Textile",
             "use_case": [
-                "Use Case"
+                "Web3",
+                "Web2 integrations",
+                "Data Warehousing"
             ],
-            "location": "AFR",
-            "website": "google.com",
-            "max_datacap_allocation": "100 GB",
-            "email": "notarye@a.com",
+            "location": "North America",
+            "website": "textile.io",
+            "email": "notaryb@a.com",
+            "fil_slack_id": "@andrewxhill (textile.io)",
             "github_user": [
-                "notarye"
+                "andrewxhill"
             ],
-            "private_request": "true",
-            "info": ""
+            "ldn_config": {
+                "active_signer": "true",
+                "signing_address": "t1gechnbsldgbqan4q2dwjsicbh25n5xvvdzhqd3y"
+            }
         },
         {
             "id": 6,
-            "name": "Notary F",
+            "name": "Blotocol Japan",
             "use_case": [
-                "Use Case"
+                "Media and Entertainment"
             ],
-            "location": "AMER",
-            "website": "google.com",
-            "max_datacap_allocation": "100 GB",
-            "email": "notaryf@a.com",
+            "location": "Asia minus GCR",
+            "website": "https://blotocol.com/",
+            "email": "notaryb@a.com",
+            "fil_slack_id": "@masaaki nawatani",
             "github_user": [
-                "notaryf"
+                "MasaakiNawatani"
             ],
-            "private_request": "false"
+            "ldn_config": {
+                "active_signer": "true",
+                "signing_address": "t1o47ee4dqp6fn7hacdalcai5seoxtms2327bpccq"
+            }
         }
     ]
 }
