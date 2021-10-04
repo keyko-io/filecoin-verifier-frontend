@@ -4,7 +4,7 @@ import { config } from '../../config';
 // @ts-ignore
 import { IssueBody } from '../../utils/IssueBody'
 import BigNumber from 'bignumber.js'
-import { tableSort } from '../../utils/SortFilter';
+import { tableSort, tableSortLargeRequest, tableSortPublicRequest} from '../../utils/SortFilter';
 import { v4 as uuidv4 } from 'uuid';
 import { bytesToiB } from "../../utils/Filters"
 import * as Sentry from "@sentry/react";
@@ -35,7 +35,8 @@ interface DataProviderStates {
     loadClientsGithub: any
     loadClients: any
     sortClients: any
-    sortRequests: any
+    sortLargeRequests: any
+    sortPublicRequests: any
     sortVerified: any
     sortNotaryRequests: any
     assignToIssue: any
@@ -132,7 +133,7 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
                             const comment = comments[comments.length - 1]
                             const pendingLargeTxs = await this.props.wallet.api.pendingTransactions(comment.notaryAddress)
                             const txs = pendingLargeTxs.filter((pending: any) => pending.parsed.params.address === comment.clientAddress)
-                            if (comment && comment.multisigMessage && comment.correct && this.props.wallet.multisigID === comment.notaryAddress) {
+                            if (comment && comment.multisigMessage && comment.correct) {
                                 let largeRequest: any = {
                                     issue_number: rawLargeIssue.number,
                                     issue_Url: rawLargeIssue.html_url,
@@ -460,15 +461,26 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
                 this.setState({ clients: arraySorted })
                 return { orderBy, sortOrder }
             },
-            sortRequests: async (e: any, previousOrderBy: string, previousOrder: number) => {
+            sortPublicRequests: async (e: any, previousOrderBy: string, previousOrder: number) => {
                 const { arraySorted, orderBy, sortOrder } =
-                    tableSort(
+                tableSortPublicRequest(
                         e,
                         this.state.clientRequests as [],
                         previousOrderBy,
                         previousOrder)
 
                 this.setState({ clientRequests: arraySorted })
+                return { orderBy, sortOrder }
+            },
+            sortLargeRequests: async (e: any, previousOrderBy: string, previousOrder: number) => {
+                const { arraySorted, orderBy, sortOrder } =
+                tableSortLargeRequest(
+                        e,
+                        this.state.largeClientRequests as [],
+                        previousOrderBy,
+                        previousOrder)
+
+                this.setState({ largeClientRequests: arraySorted })
                 return { orderBy, sortOrder }
             },
             sortNotaryRequests: async (e: any, previousOrderBy: string, previousOrder: number) => {
