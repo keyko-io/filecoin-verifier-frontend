@@ -54,7 +54,7 @@ export default class Notary extends Component<NotaryProps, NotaryStates> {
         { id: "name", value: "Client" },
         { id: "address", value: "Address" },
         { id: "datacap", value: "Datacap" },
-        { id: "audittrail", value: "Audit Trail" }
+        { id: "number", value: "Audit Trail" }
     ]
 
     largeRequestColums = [
@@ -63,7 +63,7 @@ export default class Notary extends Component<NotaryProps, NotaryStates> {
         { id: "multisig", value: "multisig"},
         { id: "datacap", value: "Datacap" },
         { id: "approvals", value: "Approvals" },
-        { id: "audittrail", value: "Audit Trail" }
+        { id: "issue_number", value: "Audit Trail" }
     ]
 
     state = {
@@ -326,12 +326,12 @@ export default class Notary extends Component<NotaryProps, NotaryStates> {
     }
 
     orderPublic = async (e: any) => {
-        const { orderBy, sortOrder } = await this.context.sortRequests(e, this.state.orderByPublic, this.state.sortOrderPublic)
+        const { orderBy, sortOrder } = await this.context.sortPublicRequests(e, this.state.orderByPublic, this.state.sortOrderPublic, this.context.clientRequests)
         this.setState({ orderByPublic: orderBy, sortOrderPublic: sortOrder })
     }
 
-    orderLargePublic = async (e: any) => {
-        const { orderBy, sortOrder } = await this.context.sortRequests(e, this.state.orderByLargePublic, this.state.sortOrderLargePublic)
+    orderLarge = async (e: any) => {
+        const { orderBy, sortOrder } = await this.context.sortLargeRequests(e, this.state.orderByLargePublic, this.state.sortOrderLargePublic)
         this.setState({ orderByLargePublic: orderBy, sortOrderLargePublic: sortOrder })
     }
 
@@ -353,6 +353,20 @@ export default class Notary extends Component<NotaryProps, NotaryStates> {
 
     }
 
+    sortBeginning(msig: boolean) {
+        console.log("this.context.largeClientRequests", this.context.largeClientRequests)
+        if (!msig) {
+            return this.context.largeClientRequests
+        }
+        const indexArrSignable = this.context.largeClientRequests.findIndex((clientReq: any) => this.context.wallet.multisigID === clientReq?.multisig)
+        if (!indexArrSignable) {
+            return this.context.largeClientRequests
+        }
+        const element = this.context.largeClientRequests.splice(indexArrSignable, 1)
+        this.context.largeClientRequests.unshift(element[0])
+        return this.context.largeClientRequests
+    }
+
 
     public render() {
         return (
@@ -360,8 +374,7 @@ export default class Notary extends Component<NotaryProps, NotaryStates> {
                 <div className="tabsholder">
                     <div className="tabs">
                         <div className={this.state.tabs === "1" ? "selected" : ""} onClick={() => { this.showClientRequests() }}>Public Requests ({this.context.clientRequests.length})</div>
-                        {this.context.wallet.multisig &&
-                        <div className={this.state.tabs === "3" ? "selected" : ""} onClick={() => { this.showLargeRequests() }}>Large Requests ({this.context.largeClientRequests.length})</div>}
+                        <div className={this.state.tabs === "3" ? "selected" : ""} onClick={() => { this.showLargeRequests() }}>Large Requests ({this.context.largeClientRequests.length})</div>
                         <div className={this.state.tabs === "2" ? "selected" : ""} onClick={() => { this.showVerifiedClients() }}>Verified clients ({this.props.clients.length})</div>
                     </div>
                     <div className="tabssadd">
@@ -426,25 +439,29 @@ export default class Notary extends Component<NotaryProps, NotaryStates> {
                                 <tr>
                                     <td></td>
                                     {this.largeRequestColums.map((column: any) => <td
-                                        id={column.id} onClick={this.orderLargePublic}>
+                                        id={column.id} onClick={this.orderLarge}>
                                         {column.value}
                                         <FontAwesomeIcon icon={["fas", "sort"]} />
                                     </td>)}
                                 </tr>
                             </thead>
                             <tbody>
-                                {this.state.regLargePublic && this.state.regLargePublic.checkIndex ?
-                                    this.context.largeClientRequests.filter((element: any) => tableElementFilter(this.props.searchString, element.data) === true)
+                            {this.state.regLargePublic && this.state.regLargePublic.checkIndex && this.context.largeClientRequests[0] !== undefined ?
+                                    this.sortBeginning(this.context.wallet.multisig)
+                                        .filter((element: any) => tableElementFilter(this.props.searchString, element?.data) === true)
                                         .filter((_: any, i: any) => this.state.regLargePublic?.checkIndex(i))
                                         .map((clientReq: any, index: any) =>
                                             <tr key={index}>
-                                                <td><input type="checkbox" onChange={() => this.selectLargeClientRow(clientReq.number)} checked={this.state.selectedLargeClientRequests.includes(clientReq.number)} /></td>
-                                                <td><FontAwesomeIcon icon={["fas", "info-circle"]} id={index} onClick={(e) => this.showClientDetail(e)} /> {clientReq.data.name} </td>
-                                                <td>{clientReq.address}</td>
-                                                <td>{clientReq.multisig}</td>
-                                                <td>{clientReq.datacap}</td>
-                                                <td>{clientReq.approvals ? clientReq.approvals : 0}</td>
-                                                <td><a target="_blank" rel="noopener noreferrer" href={clientReq.url}>#{clientReq.number}</a></td>
+                                                {this.context.wallet.multisigID === clientReq?.multisig &&
+                                                    <td><input type="checkbox" onChange={() => this.selectLargeClientRow(clientReq?.number)} checked={this.state.selectedLargeClientRequests.includes(clientReq?.number)} /></td>}
+                                                {this.context.wallet.multisigID !== clientReq?.multisig &&
+                                                    <td><input type="checkbox" disabled title="You need to log in with the right notary address to sign this request" /></td>}
+                                                <td><FontAwesomeIcon icon={["fas", "info-circle"]} id={index} onClick={(e) => this.showClientDetail(e)} /> {clientReq?.data?.name} </td>
+                                                <td>{clientReq?.address}</td>
+                                                <td>{clientReq?.multisig}</td>
+                                                <td>{clientReq?.datacap}</td>
+                                                <td>{clientReq?.approvals ? clientReq?.approvals : 0}</td>
+                                                <td><a target="_blank" rel="noopener noreferrer" href={clientReq?.url}>#{clientReq?.number}</a></td>
                                             </tr>
                                         ) : null}
                             </tbody>

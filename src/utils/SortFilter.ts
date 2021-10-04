@@ -100,3 +100,52 @@ export const tableElementFilter = (search: string, element: any) => {
     }
     );
 }
+
+export const tableSortLargeRequest = (e: any, arrayToSort: any[], previousOrderBy: string, previousSortOrder: number) => {
+    const orderBy = e.currentTarget.id
+    const sortOrder = orderBy === previousOrderBy ? previousSortOrder * -1 : -1
+    return sortLargeTable(arrayToSort, orderBy, sortOrder)
+
+}
+
+export const tableSortPublicRequest = (e: any, arrayToSort: any[], previousOrderBy: string, previousSortOrder: number) => {
+    const orderBy = e.currentTarget.id
+    const sortOrder = orderBy === previousOrderBy ? previousSortOrder * -1 : -1
+    return sortPublicTable(arrayToSort, orderBy, sortOrder)
+
+}
+
+const sortPublicTable = (arrayToSort: any[], orderBy: string, sortOrder: number) => {
+    const arraySorted = arrayToSort.sort((a: any, b: any) => {
+        if (orderBy === "number") {
+            return a[orderBy] < b[orderBy] ?
+            sortOrder :
+            a[orderBy] > b[orderBy] ?
+                sortOrder * -1 : 0;
+        }
+        console.log(a.data[orderBy])
+        return a.data[orderBy] < b.data[orderBy] ?
+            sortOrder :
+            a.data[orderBy] > b.data[orderBy] ?
+                sortOrder * -1 : 0;
+    });
+
+    return { arraySorted, orderBy, sortOrder }
+}
+const sortLargeTable = (arrayToSort: any[], orderBy: string, sortOrder: number) => {
+    const arraySorted = arrayToSort.sort((a: any, b: any) => {
+        if (orderBy === "name") {
+            return a.data[orderBy] < b.data[orderBy] ?
+            sortOrder :
+            a.data[orderBy] > b.data[orderBy] ?
+                sortOrder * -1 : 0;
+        }
+
+        return a[orderBy] < b[orderBy] ?
+            sortOrder :
+            a[orderBy] > b[orderBy] ?
+                sortOrder * -1 : 0;
+    });
+
+    return { arraySorted, orderBy, sortOrder }
+}
