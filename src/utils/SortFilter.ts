@@ -2,7 +2,6 @@ import { filToAny } from '../utils/Filters';
 
 export const tableSort = (e: any, arrayToSort: any[], previousOrderBy: string, previousSortOrder: number) => {
     const orderBy = e.currentTarget.id
-    console.log(orderBy)
     const sortOrder = orderBy === previousOrderBy ? previousSortOrder * -1 : -1
     return arrayToSort[0] && arrayToSort[0].data ?
         sortTableObject(arrayToSort, orderBy, sortOrder)
