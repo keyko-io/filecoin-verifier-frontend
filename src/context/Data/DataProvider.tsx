@@ -69,93 +69,100 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
                 Sentry.captureMessage(breadCrumb.message)
             },
             loadClientRequests: async () => {
-                if (this.props.github.githubLogged === false) {
-                    this.setState({ clientRequests: [], largeClientRequests: [] })
-                    return
-                }
-                const user = await this.props.github.githubOcto.users.getAuthenticated();
-                const rawIssues = await this.props.github.githubOcto.issues.listForRepo({
-                    owner: config.onboardingOwner,
-                    repo: config.onboardingClientRepo,
-                    assignee: '*',
-                    state: 'open',
-                    per_page: 100,
-                    labels: 'state:Verifying'
-                })
-                const issues: any[] = []
-                let pendingLarge: any[] = []
-                if (this.props.wallet.multisigID) {
-                    const pendingLargeTxs = await this.props.wallet.api.pendingTransactions(this.props.wallet.multisigID)
-                    pendingLarge = await Promise.all(pendingLargeTxs.map(async (tx: any) => {
-                        const address = await this.props.wallet.api.actorKey(tx.parsed.params.address)
-                        return {
-                            address,
-                            tx
-                        }
-                    }))
-                }
-                for (const rawIssue of rawIssues.data) {
-                    const data = utils.parseIssue(rawIssue.body)
-                    if (data.correct && rawIssue.assignees.find((a: any) => a.login === user.data.login) !== undefined) {
-                        issues.push({
-                            number: rawIssue.number,
-                            url: rawIssue.html_url,
-                            owner: rawIssue.user.login,
-                            data
-                        })
+                try {
+                    if (this.props.github.githubLogged === false) {
+                        this.setState({ clientRequests: [], largeClientRequests: [] })
+                        return
                     }
-                }
-                const rawLargeIssues = await this.props.github.githubOcto.issues.listForRepo({
-                    owner: config.onboardingLargeOwner,
-                    repo: config.onboardingLargeClientRepo,
-                    assignee: '*',
-                    state: 'open',
-                    labels: 'bot:readyToSign'
-                })
-                const largeissues: any[] = []
-                for (const rawLargeIssue of rawLargeIssues.data) {
-                    const data = largeutils.parseIssue(rawLargeIssue.body)
-                    if (data.correct) {
-                        try {
-                            const rawLargeClientComments = await this.props.github.githubOcto.issues.listComments({
-                                owner: config.onboardingLargeOwner,
-                                repo: config.onboardingLargeClientRepo,
-                                issue_number: rawLargeIssue.number,
-                                per_page: 100
+                    const user = await this.props.github.githubOcto.users.getAuthenticated();
+                    const rawIssues = await this.props.github.githubOcto.issues.listForRepo({
+                        owner: config.onboardingOwner,
+                        repo: config.onboardingClientRepo,
+                        assignee: '*',
+                        state: 'open',
+                        per_page: 100,
+                        labels: 'state:Verifying'
+                    })
+                    const issues: any[] = []
+                    let pendingLarge: any[] = []
+                    if (this.props.wallet.multisigID) {
+                        const pendingLargeTxs = await this.props.wallet.api.pendingTransactions(this.props.wallet.multisigID)
+                        pendingLarge = await Promise.all(pendingLargeTxs.map(async (tx: any) => {
+                            const address = await this.props.wallet.api.actorKey(tx.parsed.params.address)
+                            return {
+                                address,
+                                tx
+                            }
+                        }))
+                    }
+                    for (const rawIssue of rawIssues.data) {
+                        const data = utils.parseIssue(rawIssue.body)
+                        if (data.correct && rawIssue.assignees.find((a: any) => a.login === user.data.login) !== undefined) {
+                            issues.push({
+                                number: rawIssue.number,
+                                url: rawIssue.html_url,
+                                owner: rawIssue.user.login,
+                                data
                             })
-                            const comments = rawLargeClientComments.data.filter((comment: any) => {
-                                const commentParsed = largeutils.parseReleaseRequest(comment.body)
-                                return commentParsed.multisigMessage && commentParsed.correct && comment.performed_via_github_app == null
-                            }
-                            ).map((comment: any) => largeutils.parseReleaseRequest(comment.body))
-
-                            const comment = comments[comments.length - 1]
-                            const pendingLargeTxs = await this.props.wallet.api.pendingTransactions(comment.notaryAddress)
-                            const txs = pendingLargeTxs.filter((pending: any) => pending.parsed.params.address === comment.clientAddress)
-                            if (comment && comment.multisigMessage && comment.correct && this.props.wallet.multisigID === comment.notaryAddress) {
-                                let largeRequest: any = {
-                                    issue_number: rawLargeIssue.number,
-                                    issue_Url: rawLargeIssue.html_url,
-                                    address: comment.clientAddress.trim(),
-                                    multisig: comment.notaryAddress,
-                                    datacap: comment.allocationDatacap,
-                                    url: rawLargeIssue.html_url,
-                                    number: rawLargeIssue.number,
-                                    mine: rawLargeIssue.assignees.find((a: any) => a.login === user.data.login) !== undefined,
-                                    approvals: txs.length > 0 ? txs[0].signers.length : 0,
-                                    tx: txs.length > 0 ? txs[0] : null,
-                                    data
-                                }
-                                largeissues.push(largeRequest)
-                            }
-                        } catch (e) {
-                            console.log('error', e)
                         }
                     }
+                    const rawLargeIssues = await this.props.github.githubOcto.issues.listForRepo({
+                        owner: config.onboardingLargeOwner,
+                        repo: config.onboardingLargeClientRepo,
+                        assignee: '*',
+                        state: 'open',
+                        labels: 'bot:readyToSign'
+                    })
+                    const largeissues: any[] = []
+                    for (const rawLargeIssue of rawLargeIssues.data) {
+                        const data = largeutils.parseIssue(rawLargeIssue.body)
+                        if (data.correct) {
+                            try {
+                                const rawLargeClientComments = await this.props.github.githubOcto.issues.listComments({
+                                    owner: config.onboardingLargeOwner,
+                                    repo: config.onboardingLargeClientRepo,
+                                    issue_number: rawLargeIssue.number,
+                                    per_page: 100
+                                })
+                                const comments = rawLargeClientComments.data.filter((comment: any) => {
+                                    const commentParsed = largeutils.parseReleaseRequest(comment.body)
+                                    return commentParsed.multisigMessage && commentParsed.correct && comment.performed_via_github_app == null
+                                }
+                                ).map((comment: any) => largeutils.parseReleaseRequest(comment.body))
+    
+                                const comment = comments[comments.length - 1]
+                                const pendingLargeTxs = await this.props.wallet.api.pendingTransactions(comment.notaryAddress)
+                                const txs = pendingLargeTxs.filter((pending: any) => pending.parsed.params.address === comment.clientAddress)
+                                if (comment && comment.multisigMessage && comment.correct && this.props.wallet.multisigID === comment.notaryAddress) {
+                                    let largeRequest: any = {
+                                        issue_number: rawLargeIssue.number,
+                                        issue_Url: rawLargeIssue.html_url,
+                                        address: comment.clientAddress.trim(),
+                                        multisig: comment.notaryAddress,
+                                        datacap: comment.allocationDatacap,
+                                        url: rawLargeIssue.html_url,
+                                        number: rawLargeIssue.number,
+                                        mine: rawLargeIssue.assignees.find((a: any) => a.login === user.data.login) !== undefined,
+                                        approvals: txs.length > 0 ? txs[0].signers.length : 0,
+                                        tx: txs.length > 0 ? txs[0] : null,
+                                        data
+                                    }
+                                    largeissues.push(largeRequest)
+                                }
+                            } catch (e) {
+                                console.log('error', e)
+                            }
+                        }
+                    }
+                    this.setState({
+                        clientRequests: issues, largeClientRequests: largeissues
+                    })
+                    
+                } catch (error) {
+                    console.error(error)
+                    this.props.wallet.dispatchNotification('Something went wrong. please try logging again')
                 }
-                this.setState({
-                    clientRequests: issues, largeClientRequests: largeissues
-                })
+                
             },
             searchUserIssues: async (user: string) => {
                 await this.props.github.githubOctoGenericLogin()
