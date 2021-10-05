@@ -4,7 +4,7 @@ import { config } from '../../config';
 // @ts-ignore
 import { IssueBody } from '../../utils/IssueBody'
 import BigNumber from 'bignumber.js'
-import { tableSort } from '../../utils/SortFilter';
+import { tableSort, tableSortLargeRequest, tableSortPublicRequest} from '../../utils/SortFilter';
 import { v4 as uuidv4 } from 'uuid';
 import { bytesToiB } from "../../utils/Filters"
 import * as Sentry from "@sentry/react";
@@ -35,7 +35,8 @@ interface DataProviderStates {
     loadClientsGithub: any
     loadClients: any
     sortClients: any
-    sortRequests: any
+    sortLargeRequests: any
+    sortPublicRequests: any
     sortVerified: any
     sortNotaryRequests: any
     assignToIssue: any
@@ -497,15 +498,26 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
                 this.setState({ clients: arraySorted })
                 return { orderBy, sortOrder }
             },
-            sortRequests: async (e: any, previousOrderBy: string, previousOrder: number) => {
+            sortPublicRequests: async (e: any, previousOrderBy: string, previousOrder: number) => {
                 const { arraySorted, orderBy, sortOrder } =
-                    tableSort(
+                tableSortPublicRequest(
                         e,
                         this.state.clientRequests as [],
                         previousOrderBy,
                         previousOrder)
 
                 this.setState({ clientRequests: arraySorted })
+                return { orderBy, sortOrder }
+            },
+            sortLargeRequests: async (e: any, previousOrderBy: string, previousOrder: number) => {
+                const { arraySorted, orderBy, sortOrder } =
+                tableSortLargeRequest(
+                        e,
+                        this.state.largeClientRequests as [],
+                        previousOrderBy,
+                        previousOrder)
+
+                this.setState({ largeClientRequests: arraySorted })
                 return { orderBy, sortOrder }
             },
             sortNotaryRequests: async (e: any, previousOrderBy: string, previousOrder: number) => {
@@ -560,9 +572,9 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
                     state: 'closed',
                 })
             },
-            updateGithubVerifiedLarge: async (requestNumber: any, messageID: string, address: string, datacap: any, approvals: number) => {
+            updateGithubVerifiedLarge: async (requestNumber: any, messageID: string, address: string, datacap: any, approvals: number, signer: string) => {
                 const formattedDc = bytesToiB(datacap)
-                let commentContent = `## Request Approved\nYour Datacap Allocation Request has been approved by the Notary\n#### Message sent to Filecoin Network\n>${messageID} \n#### Address \n> ${address}\n#### Datacap Allocated\n> ${formattedDc}\n#### You can check the status of the message here: https://filfox.info/en/message/${messageID}`
+                let commentContent = `## Request Approved\nYour Datacap Allocation Request has been approved by the Notary\n#### Message sent to Filecoin Network\n>${messageID} \n#### Address \n> ${address}\n#### Datacap Allocated\n> ${formattedDc}\n#### Signer Address\n> ${signer}\n#### You can check the status of the message here: https://filfox.info/en/message/${messageID}`
 
                 await this.props.github.githubOcto.issues.createComment({
                     owner: config.onboardingLargeOwner,
