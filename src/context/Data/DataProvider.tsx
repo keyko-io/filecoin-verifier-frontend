@@ -252,14 +252,14 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
 
                 let verifierAndPendingRequests: any[] = []
                 let promArr = []
+                promArr.push(new Promise<any>(async (resolve) => {
                 for (let txs in pendingTxs) {
                     if (pendingTxs[txs].parsed.name !== 'addVerifier' && pendingTxs[txs].parsed.name !== 'removeVerifier') {
                         continue
                     }
-                    promArr.push(new Promise<any>(async (resolve) => {
 
 
-                        const verifierAddress = await this.props.wallet.api.actorKey(
+                        const verifierAddress = await  this.props.wallet.api.actorKey(
                             pendingTxs[txs].parsed.name === 'removeVerifier' ?
                                 pendingTxs[txs].parsed.params
                                 :
@@ -267,7 +267,7 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
 
                         )
 
-                        const signerAddress = await this.props.wallet.api.actorKey(pendingTxs[txs].signers[0])
+                        const signerAddress =  await this.props.wallet.api.actorKey(pendingTxs[txs].signers[0])
                         verifierAndPendingRequests.push({
                             id: pendingTxs[txs].id,
                             type: pendingTxs[txs].parsed.name === 'removeVerifier' ? 'Revoke' : pendingTxs[txs]?.parsed?.params?.cap?.toString() === '0' ? 'Revoke' : 'Add',
@@ -278,23 +278,38 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
                             signerAddress: signerAddress
                         })
                         resolve(verifierAndPendingRequests)
+                    }
                     })
                     )
-                }
 
                 const promRes = await Promise.all(promArr)
-                // console.log("res promise get verifierAndPendingRequests", promRes)
+                console.log("res promise get verifierAndPendingRequests", promRes)
+
+
+            //     const promArrDue = []
+            //     for (const rawIssue of rawIssues) {
+            //     promArrDue.push(new Promise<any>(async (resolve) => {
+            //         const rawComments = await this.props.github.githubOctoGeneric.octokit.issues.listComments({
+            //             owner: config.lotusNodes[this.props.wallet.networkIndex].notaryOwner,
+            //             repo: config.lotusNodes[this.props.wallet.networkIndex].notaryRepo,
+            //             issue_number: rawIssue.number,
+            //         });
+            //         resolve(rawComments)
+            //     }))
+            // }
+            // const rawComments : any = await Promise.all(promArrDue) 
+            // console.log("rawComments", rawComments)
+        
 
                 // For each issue
                 for (const rawIssue of rawIssues) {
                     const data = parser.parseIssue(rawIssue.body, rawIssue.title)
-                    //if (data.correct !== true) continue
+                    if (data.correct !== true) continue
                     // get comments
-                    const rawComments = await this.props.github.githubOctoGeneric.octokit.issues.listComments({
-                        owner: config.lotusNodes[this.props.wallet.networkIndex].notaryOwner,
-                        repo: config.lotusNodes[this.props.wallet.networkIndex].notaryRepo,
-                        issue_number: rawIssue.number,
-                    });
+                        const rawComments = await this.props.github.githubOctoGeneric.octokit.issues.listComments({
+                            owner: config.lotusNodes[this.props.wallet.networkIndex].notaryOwner,
+                            repo: config.lotusNodes[this.props.wallet.networkIndex].notaryRepo,
+                            issue_number: rawIssue.number})
                     // loop over comments
                     for (const rawComment of rawComments.data) {
                         const comment = parser.parseMultipleApproveComment(rawComment.body)
