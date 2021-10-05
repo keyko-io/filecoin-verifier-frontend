@@ -193,11 +193,9 @@ export default class RootKeyHolder extends Component<RootKeyHolderProps, RootKey
                             if (txReceipt.ExitCode !== 0) errorMessage += `#### @${assignee} There was an error processing the message >${messageID}`
                             messageIds.push(messageID)
                             this.context.wallet.dispatchNotification('Accepting Message sent with ID: ' + messageID)
-                            this.setState({approveLoading:false})
                             filfox += `#### You can check the status of the message here: https://filfox.info/en/message/${messageID}\n`
                         }
                         if(messageIds.length === 0){
-                            this.setState({approveLoading:false})
                             Sentry.addBreadcrumb(breadCrumb);
                             Sentry.captureMessage(breadCrumb.message)
                         }
@@ -231,12 +229,10 @@ export default class RootKeyHolder extends Component<RootKeyHolderProps, RootKey
                                 if (txReceipt.ExitCode !== 0) errorMessage += `#### @${assignee} There was an error processing the message\n>${messageID}`
                                 messageIds.push(messageID)
                                 this.context.wallet.dispatchNotification('Accepting Message sent with ID: ' + messageID)
-                                this.setState({approveLoading:false})
                                 filfox += `#### You can check the status of the message here: https://filfox.info/en/message/${messageID}\n`
                             }
                         }
                         if(messageIds.length === 0){
-                            this.setState({approveLoading:false})
                             Sentry.addBreadcrumb(breadCrumb);
                             Sentry.captureMessage(breadCrumb.message)
                         }
@@ -274,6 +270,7 @@ export default class RootKeyHolder extends Component<RootKeyHolderProps, RootKey
                 }
             }
         }
+        this.setState({approveLoading:false})
     }
 
     onRefAccepted = (refAccepted: any) => {
@@ -360,7 +357,9 @@ export default class RootKeyHolder extends Component<RootKeyHolderProps, RootKey
                                         ) : null}
                             </tbody>
                         </table>
-                        {this.context.verifierAndPendingRequests.length === 0 ? <div className="nodata"> <BeatLoader size={15} color={"rgb(24,160,237)"} /></div> : null}
+                        {this.context.approvedNotariesLoading ? <div className="nodata"> <BeatLoader size={15} color={"rgb(24,160,237)"} /></div> : 
+                        <div className="nodata">No pending transaction</div>
+                        }
                         <Pagination
                             elements={this.context.verifierAndPendingRequests}
                             maxElements={10}

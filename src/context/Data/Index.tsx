@@ -23,6 +23,7 @@ export const Data = React.createContext({
     search: any,
     refreshGithubData: any,
     logToSentry:(category: string, message:string,level:"info"|"error",data: Map<string, any>) => {},
+    approvedNotariesLoading: true,
     // passed by props
     github: {} as any,
     wallet: {} as any
