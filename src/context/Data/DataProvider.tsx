@@ -292,7 +292,7 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
                     )
                     
                     const promRes = await Promise.all(promArr)
-                    console.log("res promise get verifierAndPendingRequests", promRes)
+                    // console.log("res promise get verifierAndPendingRequests", promRes)
 
 
                     //     const promArrDue = []
