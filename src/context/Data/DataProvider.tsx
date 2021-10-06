@@ -4,7 +4,7 @@ import { config } from '../../config';
 // @ts-ignore
 import { IssueBody } from '../../utils/IssueBody'
 import BigNumber from 'bignumber.js'
-import { tableSort, tableSortLargeRequest, tableSortPublicRequest} from '../../utils/SortFilter';
+import { tableSort, tableSortLargeRequest, tableSortPublicRequest } from '../../utils/SortFilter';
 import { v4 as uuidv4 } from 'uuid';
 import { bytesToiB } from "../../utils/Filters"
 import * as Sentry from "@sentry/react";
@@ -253,27 +253,21 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
                     rawIssues = rawIssues.concat(dataApproved.data)
                     // Get list of pending Transactions
                     let pendingTxs = await this.props.wallet.api.pendingRootTransactions()
-                    
-                    if(pendingTxs.length === 0){
-                        this.setState({ verifierAndPendingRequests: [] })
-                        this.setState({approvedNotariesLoading: false})
-                        return
-                    }
+
                     let verifierAndPendingRequests: any[] = []
                     let promArr = []
-                    promArr.push(new Promise<any>(async (resolve) => {
-                        for (let txs in pendingTxs) {
-                            if (pendingTxs[txs].parsed.name !== 'addVerifier' && pendingTxs[txs].parsed.name !== 'removeVerifier') {
-                                continue
-                            }
 
+                    for (let txs in pendingTxs) {
+                        if (pendingTxs[txs].parsed.name !== 'addVerifier' && pendingTxs[txs].parsed.name !== 'removeVerifier') {
+                            continue
+                        }
+                        promArr.push(new Promise<any>(async (resolve) => {
 
                             const verifierAddress = await this.props.wallet.api.actorKey(
                                 pendingTxs[txs].parsed.name === 'removeVerifier' ?
                                     pendingTxs[txs].parsed.params
                                     :
                                     pendingTxs[txs].parsed.params.verifier
-
                             )
 
                             const signerAddress = await this.props.wallet.api.actorKey(pendingTxs[txs].signers[0])
@@ -287,27 +281,13 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
                                 signerAddress: signerAddress
                             })
                             resolve(verifierAndPendingRequests)
-                        }
-                    })
-                    )
-                    
-                    const promRes = await Promise.all(promArr)
+                        }))
+                    }
+                    const promRes = promArr.length > 0 ? await Promise.all(promArr) : []
+
                     // console.log("res promise get verifierAndPendingRequests", promRes)
 
 
-                    //     const promArrDue = []
-                    //     for (const rawIssue of rawIssues) {
-                    //     promArrDue.push(new Promise<any>(async (resolve) => {
-                    //         const rawComments = await this.props.github.githubOctoGeneric.octokit.issues.listComments({
-                    //             owner: config.lotusNodes[this.props.wallet.networkIndex].notaryOwner,
-                    //             repo: config.lotusNodes[this.props.wallet.networkIndex].notaryRepo,
-                    //             issue_number: rawIssue.number,
-                    //         });
-                    //         resolve(rawComments)
-                    //     }))
-                    // }
-                    // const rawComments : any = await Promise.all(promArrDue) 
-                    // console.log("rawComments", rawComments)
 
 
                     // For each issue
@@ -325,24 +305,19 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
                             const comment = parser.parseMultipleApproveComment(rawComment.body)
                             // found correct comment
                             if (comment.approvedMessage && comment.correct) {
+                                const addresses = comment.addresses.map((addr: any) => addr.trim())
+                                const txs = verifierAndPendingRequests.length > 0 ? verifierAndPendingRequests.filter((item: any) => item.verifierAddress === addresses[0] && comment.datacaps[0] == bytesToiB(item.datacap)) : []
+                                const proposedBy = verifierAndPendingRequests.length > 0 ? verifierAndPendingRequests.find((item: any) => item.verifierAddress === addresses[0])?.signerAddress : ""
                                 let issue: any = {
                                     id: uuidv4(),
                                     issue_number: rawIssue.number,
                                     issue_Url: rawIssue.html_url,
                                     addresses: comment.addresses.map((addr: any) => addr.trim()),
                                     datacaps: comment.datacaps,
-                                    txs: [],
-                                    proposedBy: ""
+                                    txs,
+                                    proposedBy: proposedBy ? proposedBy : ""
                                 }
-                                for (let i = 0; i < verifierAndPendingRequests.length; i++) {
-                                    const index = issue.addresses.indexOf(verifierAndPendingRequests[i].verifierAddress)
-                                    if (index !== -1) {
-                                        issue.txs[index] = verifierAndPendingRequests[i]
-                                        issue.proposedBy = verifierAndPendingRequests[i].signerAddress
-                                        verifierAndPendingRequests.splice(i, 1)
-                                        i--
-                                    }
-                                }
+
                                 if (rawIssue.labels.findIndex((label: any) => label.name === 'status:StartSignOnchain') !== -1) {
                                     issue.proposed = true
                                 }
@@ -354,24 +329,19 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
                             }
                         }
                     }
-                    // handle non issues
-                    for (let tx of verifierAndPendingRequests) {
-                        issues.push({
-                            id: uuidv4(),
-                            issue_number: "",
-                            issue_Url: "",
-                            addresses: [tx.verifier],
-                            datacaps: [tx.datacap],
-                            txs: [tx],
-                            proposedBy: tx.signerAddress,
-                            proposed: true
-                        })
-                    }
+
 
                     const filteredIssues = issues.filter((notaryReq: any) => notaryReq.issue_number !== "")
-                    this.setState({ verifierAndPendingRequests: filteredIssues })
-                
-                } catch(error) {
+
+                    this.setState({
+                        verifierAndPendingRequests: filteredIssues,
+                        approvedNotariesLoading: false
+                    })
+
+                } catch (error) {
+                    this.setState({
+                        approvedNotariesLoading: false
+                    })
                     console.error("error in verifierAndPendingRequests", error)
                 }
 
@@ -500,7 +470,7 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
             },
             sortPublicRequests: async (e: any, previousOrderBy: string, previousOrder: number) => {
                 const { arraySorted, orderBy, sortOrder } =
-                tableSortPublicRequest(
+                    tableSortPublicRequest(
                         e,
                         this.state.clientRequests as [],
                         previousOrderBy,
@@ -511,7 +481,7 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
             },
             sortLargeRequests: async (e: any, previousOrderBy: string, previousOrder: number) => {
                 const { arraySorted, orderBy, sortOrder } =
-                tableSortLargeRequest(
+                    tableSortLargeRequest(
                         e,
                         this.state.largeClientRequests as [],
                         previousOrderBy,
