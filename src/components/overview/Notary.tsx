@@ -374,16 +374,19 @@ export default class Notary extends Component<NotaryProps, NotaryStates> {
         return (
             <div className="main">
                 <div className="tabsholder">
-                    <div className="tabs">
-                        <div className={this.state.tabs === "1" ? "selected" : ""} onClick={() => { this.showClientRequests() }}>Public Requests ({this.context.clientRequests.length})</div>
-                        {
-                            this.context.ldnRequestsLoading ?
+                    {
+                        this.context.ldnRequestsLoading ?
+                            <div className="tabs">
+                                <div className={this.state.tabs === "1" ? "selected" : ""} onClick={() => { this.showClientRequests() }}><BeatLoader size={15} color={"rgb(24,160,237)"} /></div>
                                 <div className={this.state.tabs === "3" ? "selected" : ""} onClick={() => { this.showLargeRequests() }}><BeatLoader size={15} color={"rgb(24,160,237)"} /></div>
-                                :
+                                <div className={this.state.tabs === "2" ? "selected" : ""} onClick={() => { this.showVerifiedClients() }}>Verified clients ({this.props.clients.length})</div>
+                            </div> :
+                            <div className="tabs">
+                                <div className={this.state.tabs === "1" ? "selected" : ""} onClick={() => { this.showClientRequests() }}>Public Requests ({this.context.clientRequests.length})</div>
                                 <div className={this.state.tabs === "3" ? "selected" : ""} onClick={() => { this.showLargeRequests() }}>Large Requests ({this.context.largeClientRequests.length})</div>
-                        }
-                        <div className={this.state.tabs === "2" ? "selected" : ""} onClick={() => { this.showVerifiedClients() }}>Verified clients ({this.props.clients.length})</div>
-                    </div>
+                                <div className={this.state.tabs === "2" ? "selected" : ""} onClick={() => { this.showVerifiedClients() }}>Verified clients ({this.props.clients.length})</div>
+                            </div>
+                    }
                     <div className="tabssadd">
                         {this.state.tabs !== "3" ? <ButtonPrimary onClick={() => this.requestDatacap()}>Approve Private Request</ButtonPrimary> : null}
                         {this.state.tabs === "1" || this.state.tabs === "3" ? <>
