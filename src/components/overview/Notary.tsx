@@ -357,17 +357,15 @@ export default class Notary extends Component<NotaryProps, NotaryStates> {
     }
 
     sortBeginning(msig: boolean) {
-        console.log("this.context.largeClientRequests", this.context.largeClientRequests)
         if (!msig) {
             return this.context.largeClientRequests
         }
-        const indexArrSignable = this.context.largeClientRequests.findIndex((clientReq: any) => this.context.wallet.multisigID === clientReq?.multisig)
-        if (!indexArrSignable) {
+        const arrSignable = this.context.largeClientRequests.filter((clientReq: any) => this.context.wallet.multisigID === clientReq?.multisig)
+        if (!arrSignable || arrSignable.length === 0) {
             return this.context.largeClientRequests
         }
-        const element = this.context.largeClientRequests.splice(indexArrSignable, 1)
-        this.context.largeClientRequests.unshift(element[0])
-        return this.context.largeClientRequests
+        const arrUnSignable = this.context.largeClientRequests.filter((clientReq: any) => this.context.wallet.multisigID !== clientReq?.multisig)
+        return arrSignable.concat(arrUnSignable)
     }
 
 
