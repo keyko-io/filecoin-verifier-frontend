@@ -259,11 +259,11 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
 
                     if (pendingTxs.length > 0) {
 
-                        promArr.push(new Promise<any>(async (resolve) => {
-                            for (let txs in pendingTxs) {
-                                if (pendingTxs[txs].parsed.name !== 'addVerifier' && pendingTxs[txs].parsed.name !== 'removeVerifier') {
-                                    continue
-                                }
+                        for (let txs in pendingTxs) {
+                            if (pendingTxs[txs].parsed.name !== 'addVerifier' && pendingTxs[txs].parsed.name !== 'removeVerifier') {
+                                continue
+                            }
+                            promArr.push(new Promise<any>(async (resolve) => {
 
                                 const verifierAddress = await this.props.wallet.api.actorKey(
                                     pendingTxs[txs].parsed.name === 'removeVerifier' ?
@@ -283,8 +283,8 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
                                     signerAddress: signerAddress
                                 })
                                 resolve(verifierAndPendingRequests)
-                            }
-                        }))
+                            }))
+                        }
                         const promRes = await Promise.all(promArr)
                     }
 
@@ -309,24 +309,31 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
                             const comment = parser.parseMultipleApproveComment(rawComment.body)
                             // found correct comment
                             if (comment.approvedMessage && comment.correct) {
+                                const addresses = comment.addresses.map((addr: any) => addr.trim())
+                                const txs = verifierAndPendingRequests.length > 0 ? verifierAndPendingRequests.filter((item: any) => item.verifierAddress === addresses[0] && comment.datacaps[0] == bytesToiB(item.datacap)) : []
+                                const proposedBy = verifierAndPendingRequests.length > 0 ? verifierAndPendingRequests.find((item: any) => item.verifierAddress === addresses[0])?.signerAddress : ""
                                 let issue: any = {
                                     id: uuidv4(),
                                     issue_number: rawIssue.number,
                                     issue_Url: rawIssue.html_url,
                                     addresses: comment.addresses.map((addr: any) => addr.trim()),
                                     datacaps: comment.datacaps,
-                                    txs: [],
-                                    proposedBy: ""
+                                    txs,
+                                    proposedBy: proposedBy ? proposedBy : ""
                                 }
-                                for (let i = 0; i < verifierAndPendingRequests.length; i++) {
-                                    const index = issue.addresses.indexOf(verifierAndPendingRequests[i].verifierAddress)
-                                    if (index !== -1) {
-                                        issue.txs[index] = verifierAndPendingRequests[i]
-                                        issue.proposedBy = verifierAndPendingRequests[i].signerAddress
-                                        verifierAndPendingRequests.splice(i, 1)
-                                        i--
-                                    }
-                                }
+                                // REMOVED, MAKING THIS LOOP IN 2 LINES IN PREVIOUS IF STATEMENT
+                                // for (let i = 0; i < verifierAndPendingRequests.length; i++) {
+                                //     const index = issue.addresses.indexOf(verifierAndPendingRequests[i].verifierAddress)
+                                //     // const verifierPendingDcTib = bytesToiB(verifierAndPendingRequests[i].datacap)
+                                //     // const indexDatacap = issue.datacaps.indexOf(verifierPendingDcTib)
+                                //     if (index !== -1 ) {
+                                //     // if (index !== -1 &&  indexDatacap !== -1 && indexDatacap == index) {
+                                //         issue.txs[index] = verifierAndPendingRequests[i]
+                                //         issue.proposedBy = verifierAndPendingRequests[i].signerAddress
+                                //         verifierAndPendingRequests.splice(i, 1)
+                                //         i--
+                                //     }
+                                // }
 
                                 if (rawIssue.labels.findIndex((label: any) => label.name === 'status:StartSignOnchain') !== -1) {
                                     issue.proposed = true
@@ -340,18 +347,19 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
                         }
                     }
                     // handle non issues
-                    for (let tx of verifierAndPendingRequests) {
-                        issues.push({
-                            id: uuidv4(),
-                            issue_number: "",
-                            issue_Url: "",
-                            addresses: [tx.verifier],
-                            datacaps: [tx.datacap],
-                            txs: [tx],
-                            proposedBy: tx.signerAddress,
-                            proposed: true
-                        })
-                    }
+                    // REMOVED BECAUSE LOOKS issues then get filtered
+                    // for (let tx of verifierAndPendingRequests) {
+                    //     issues.push({
+                    //         id: uuidv4(),
+                    //         issue_number: "",
+                    //         issue_Url: "",
+                    //         addresses: [tx.verifier],
+                    //         datacaps: [tx.datacap],
+                    //         txs: [tx],
+                    //         proposedBy: tx.signerAddress,
+                    //         proposed: true
+                    //     })
+                    // }
 
 
                     const filteredIssues = issues.filter((notaryReq: any) => notaryReq.issue_number !== "")
@@ -362,6 +370,9 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
                     })
 
                 } catch (error) {
+                    this.setState({
+                        approvedNotariesLoading: false
+                    })
                     console.error("error in verifierAndPendingRequests", error)
                 }
 

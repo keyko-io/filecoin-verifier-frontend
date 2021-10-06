@@ -359,7 +359,7 @@ export default class RootKeyHolder extends Component<RootKeyHolderProps, RootKey
                         </table>
                         { this.context.approvedNotariesLoading ?  <div className="nodata"><BeatLoader size={15} color={"rgb(24,160,237)"} /></div> : 
                         !this.context.approvedNotariesLoading  && this.context.verifierAndPendingRequests.length == 0  ?
-                        <div className="nodata">No pending transaction</div> :  null
+                        <div className="nodata">No Pending Notary</div> :  null
                         
 
                         }
