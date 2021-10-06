@@ -257,37 +257,33 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
                     let verifierAndPendingRequests: any[] = []
                     let promArr = []
 
-                    if (pendingTxs.length > 0) {
-
-                        for (let txs in pendingTxs) {
-                            if (pendingTxs[txs].parsed.name !== 'addVerifier' && pendingTxs[txs].parsed.name !== 'removeVerifier') {
-                                continue
-                            }
-                            promArr.push(new Promise<any>(async (resolve) => {
-
-                                const verifierAddress = await this.props.wallet.api.actorKey(
-                                    pendingTxs[txs].parsed.name === 'removeVerifier' ?
-                                        pendingTxs[txs].parsed.params
-                                        :
-                                        pendingTxs[txs].parsed.params.verifier
-                                )
-
-                                const signerAddress = await this.props.wallet.api.actorKey(pendingTxs[txs].signers[0])
-                                verifierAndPendingRequests.push({
-                                    id: pendingTxs[txs].id,
-                                    type: pendingTxs[txs].parsed.name === 'removeVerifier' ? 'Revoke' : pendingTxs[txs]?.parsed?.params?.cap?.toString() === '0' ? 'Revoke' : 'Add',
-                                    verifier: pendingTxs[txs].parsed.name === 'removeVerifier' ? pendingTxs[txs].parsed.params : pendingTxs[txs].parsed.params.verifier,
-                                    verifierAddress: verifierAddress,
-                                    datacap: pendingTxs[txs].parsed.name === 'removeVerifier' ? 0 : pendingTxs[txs].parsed.params.cap,
-                                    signer: pendingTxs[txs].signers[0],
-                                    signerAddress: signerAddress
-                                })
-                                resolve(verifierAndPendingRequests)
-                            }))
+                    for (let txs in pendingTxs) {
+                        if (pendingTxs[txs].parsed.name !== 'addVerifier' && pendingTxs[txs].parsed.name !== 'removeVerifier') {
+                            continue
                         }
-                        const promRes = await Promise.all(promArr)
-                    }
+                        promArr.push(new Promise<any>(async (resolve) => {
 
+                            const verifierAddress = await this.props.wallet.api.actorKey(
+                                pendingTxs[txs].parsed.name === 'removeVerifier' ?
+                                    pendingTxs[txs].parsed.params
+                                    :
+                                    pendingTxs[txs].parsed.params.verifier
+                            )
+
+                            const signerAddress = await this.props.wallet.api.actorKey(pendingTxs[txs].signers[0])
+                            verifierAndPendingRequests.push({
+                                id: pendingTxs[txs].id,
+                                type: pendingTxs[txs].parsed.name === 'removeVerifier' ? 'Revoke' : pendingTxs[txs]?.parsed?.params?.cap?.toString() === '0' ? 'Revoke' : 'Add',
+                                verifier: pendingTxs[txs].parsed.name === 'removeVerifier' ? pendingTxs[txs].parsed.params : pendingTxs[txs].parsed.params.verifier,
+                                verifierAddress: verifierAddress,
+                                datacap: pendingTxs[txs].parsed.name === 'removeVerifier' ? 0 : pendingTxs[txs].parsed.params.cap,
+                                signer: pendingTxs[txs].signers[0],
+                                signerAddress: signerAddress
+                            })
+                            resolve(verifierAndPendingRequests)
+                        }))
+                    }
+                    const promRes = promArr.length > 0 ? await Promise.all(promArr) : []
 
                     // console.log("res promise get verifierAndPendingRequests", promRes)
 
@@ -321,19 +317,6 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
                                     txs,
                                     proposedBy: proposedBy ? proposedBy : ""
                                 }
-                                // REMOVED, MAKING THIS LOOP IN 2 LINES IN PREVIOUS IF STATEMENT
-                                // for (let i = 0; i < verifierAndPendingRequests.length; i++) {
-                                //     const index = issue.addresses.indexOf(verifierAndPendingRequests[i].verifierAddress)
-                                //     // const verifierPendingDcTib = bytesToiB(verifierAndPendingRequests[i].datacap)
-                                //     // const indexDatacap = issue.datacaps.indexOf(verifierPendingDcTib)
-                                //     if (index !== -1 ) {
-                                //     // if (index !== -1 &&  indexDatacap !== -1 && indexDatacap == index) {
-                                //         issue.txs[index] = verifierAndPendingRequests[i]
-                                //         issue.proposedBy = verifierAndPendingRequests[i].signerAddress
-                                //         verifierAndPendingRequests.splice(i, 1)
-                                //         i--
-                                //     }
-                                // }
 
                                 if (rawIssue.labels.findIndex((label: any) => label.name === 'status:StartSignOnchain') !== -1) {
                                     issue.proposed = true
@@ -346,20 +329,6 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
                             }
                         }
                     }
-                    // handle non issues
-                    // REMOVED BECAUSE LOOKS issues then get filtered
-                    // for (let tx of verifierAndPendingRequests) {
-                    //     issues.push({
-                    //         id: uuidv4(),
-                    //         issue_number: "",
-                    //         issue_Url: "",
-                    //         addresses: [tx.verifier],
-                    //         datacaps: [tx.datacap],
-                    //         txs: [tx],
-                    //         proposedBy: tx.signerAddress,
-                    //         proposed: true
-                    //     })
-                    // }
 
 
                     const filteredIssues = issues.filter((notaryReq: any) => notaryReq.issue_number !== "")
