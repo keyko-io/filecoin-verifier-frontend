@@ -47,7 +47,8 @@ interface DataProviderStates {
     refreshGithubData: any
     searchUserIssues: any,
     logToSentry: any,
-    approvedNotariesLoading: boolean
+    approvedNotariesLoading: boolean,
+    ldnRequestsLoading: boolean
 }
 
 interface DataProviderProps {
@@ -73,7 +74,7 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
             loadClientRequests: async () => {
                 try {
                     if (this.props.github.githubLogged === false) {
-                        this.setState({ clientRequests: [], largeClientRequests: [] })
+                        this.setState({ clientRequests: [], largeClientRequests: [], ldnRequestsLoading: false })
                         return
                     }
                     const user = await this.props.github.githubOcto.users.getAuthenticated();
@@ -157,11 +158,12 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
                         }
                     }
                     this.setState({
-                        clientRequests: issues, largeClientRequests: largeissues
+                        clientRequests: issues, largeClientRequests: largeissues, ldnRequestsLoading: false
                     })
 
                 } catch (error) {
                     console.error(error)
+                    this.setState({ldnRequestsLoading: false})
                     this.props.wallet.dispatchNotification('Something went wrong. please try logging again')
                 }
 
@@ -191,6 +193,7 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
             clientRequests: [],
             largeClientRequests: [],
             approvedNotariesLoading: true,
+            ldnRequestsLoading: true,
             loadNotificationClientRequests: async () => {
                 if (this.props.github.githubLogged === false) {
                     this.setState({ clientRequests: [], largeClientRequests: [] })
@@ -289,7 +292,7 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
 
 
 
-
+                    
                     // For each issue
                     for (const rawIssue of rawIssues) {
                         const data = parser.parseIssue(rawIssue.body, rawIssue.title)
