@@ -15,7 +15,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { tableElementFilter } from '../../utils/SortFilter';
 import Pagination from '../Pagination';
 import history from '../../context/History';
-import * as Sentry from "@sentry/react";
+import { BeatLoader } from "react-spinners";
 
 
 
@@ -357,17 +357,15 @@ export default class Notary extends Component<NotaryProps, NotaryStates> {
     }
 
     sortBeginning(msig: boolean) {
-        console.log("this.context.largeClientRequests", this.context.largeClientRequests)
         if (!msig) {
             return this.context.largeClientRequests
         }
-        const indexArrSignable = this.context.largeClientRequests.findIndex((clientReq: any) => this.context.wallet.multisigID === clientReq?.multisig)
-        if (!indexArrSignable) {
+        const arrSignable = this.context.largeClientRequests.filter((clientReq: any) => this.context.wallet.multisigID === clientReq?.multisig)
+        if (!arrSignable || arrSignable.length === 0) {
             return this.context.largeClientRequests
         }
-        const element = this.context.largeClientRequests.splice(indexArrSignable, 1)
-        this.context.largeClientRequests.unshift(element[0])
-        return this.context.largeClientRequests
+        const arrUnSignable = this.context.largeClientRequests.filter((clientReq: any) => this.context.wallet.multisigID !== clientReq?.multisig)
+        return arrSignable.concat(arrUnSignable)
     }
 
 
@@ -377,7 +375,12 @@ export default class Notary extends Component<NotaryProps, NotaryStates> {
                 <div className="tabsholder">
                     <div className="tabs">
                         <div className={this.state.tabs === "1" ? "selected" : ""} onClick={() => { this.showClientRequests() }}>Public Requests ({this.context.clientRequests.length})</div>
+                        {
+                        this.context.ldnRequestsLoading  ?
+                        <div className={this.state.tabs === "3" ? "selected" : ""} onClick={() => { this.showLargeRequests() }}><BeatLoader size={15} color={"rgb(24,160,237)"} /></div>
+                        :
                         <div className={this.state.tabs === "3" ? "selected" : ""} onClick={() => { this.showLargeRequests() }}>Large Requests ({this.context.largeClientRequests.length})</div>
+                        }
                         <div className={this.state.tabs === "2" ? "selected" : ""} onClick={() => { this.showVerifiedClients() }}>Verified clients ({this.props.clients.length})</div>
                     </div>
                     <div className="tabssadd">

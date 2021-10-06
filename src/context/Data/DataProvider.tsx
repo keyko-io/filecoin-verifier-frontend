@@ -47,7 +47,8 @@ interface DataProviderStates {
     refreshGithubData: any
     searchUserIssues: any,
     logToSentry: any,
-    approvedNotariesLoading: boolean
+    approvedNotariesLoading: boolean,
+    ldnRequestsLoading: boolean
 }
 
 interface DataProviderProps {
@@ -73,7 +74,7 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
             loadClientRequests: async () => {
                 try {
                     if (this.props.github.githubLogged === false) {
-                        this.setState({ clientRequests: [], largeClientRequests: [] })
+                        this.setState({ clientRequests: [], largeClientRequests: [], ldnRequestsLoading: false })
                         return
                     }
                     const user = await this.props.github.githubOcto.users.getAuthenticated();
@@ -135,7 +136,7 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
                                 const comment = comments[comments.length - 1]
                                 const pendingLargeTxs = await this.props.wallet.api.pendingTransactions(comment.notaryAddress)
                                 const txs = pendingLargeTxs.filter((pending: any) => pending.parsed.params.address === comment.clientAddress)
-                                if (comment && comment.multisigMessage && comment.correct && this.props.wallet.multisigID === comment.notaryAddress) {
+                                if (comment && comment.multisigMessage && comment.correct) {
                                     let largeRequest: any = {
                                         issue_number: rawLargeIssue.number,
                                         issue_Url: rawLargeIssue.html_url,
@@ -152,16 +153,17 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
                                     largeissues.push(largeRequest)
                                 }
                             } catch (e) {
-                                console.log('error', e)
+                                // console.log('error', e)
                             }
                         }
                     }
                     this.setState({
-                        clientRequests: issues, largeClientRequests: largeissues
+                        clientRequests: issues, largeClientRequests: largeissues, ldnRequestsLoading: false
                     })
 
                 } catch (error) {
                     console.error(error)
+                    this.setState({ldnRequestsLoading: false})
                     this.props.wallet.dispatchNotification('Something went wrong. please try logging again')
                 }
 
@@ -191,6 +193,7 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
             clientRequests: [],
             largeClientRequests: [],
             approvedNotariesLoading: true,
+            ldnRequestsLoading: true,
             loadNotificationClientRequests: async () => {
                 if (this.props.github.githubLogged === false) {
                     this.setState({ clientRequests: [], largeClientRequests: [] })
@@ -289,7 +292,7 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
 
 
 
-
+                    
                     // For each issue
                     for (const rawIssue of rawIssues) {
                         const data = parser.parseIssue(rawIssue.body, rawIssue.title)
