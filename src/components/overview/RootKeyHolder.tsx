@@ -108,7 +108,7 @@ export default class RootKeyHolder extends Component<RootKeyHolderProps, RootKey
 
     showWarnPropose = async (e: any, origin: string, selected: any[]) => {
         await e.preventDefault()
-        if(selected.length === 0){
+        if (selected.length === 0) {
             this.context.wallet.dispatchNotification("Plese, select at least one client to sign")
             return
         }
@@ -164,14 +164,14 @@ export default class RootKeyHolder extends Component<RootKeyHolderProps, RootKey
                 let filfox = ''
                 let errorMessage = ''
                 try {
-                const assignee = (await this.context.github.githubOctoGeneric.octokit.issues.get({
-                    owner: config.lotusNodes[this.context.wallet.networkIndex].notaryOwner,
-                    repo: config.lotusNodes[this.context.wallet.networkIndex].notaryRepo,
-                    issue_number: request.issue_number,
-               }))?.data?.assignee?.login
-                if(!assignee){
-                    throw new Error("You should assign the issue to someone")
-                }
+                    const assignee = (await this.context.github.githubOctoGeneric.octokit.issues.get({
+                        owner: config.lotusNodes[this.context.wallet.networkIndex].notaryOwner,
+                        repo: config.lotusNodes[this.context.wallet.networkIndex].notaryRepo,
+                        issue_number: request.issue_number,
+                    }))?.data?.assignee?.login
+                    if (!assignee) {
+                        throw new Error("You should assign the issue to someone")
+                    }
 
                     let breadCrumb = {
                         category: "handleSubmitApproveSign",
@@ -193,11 +193,9 @@ export default class RootKeyHolder extends Component<RootKeyHolderProps, RootKey
                             if (txReceipt.ExitCode !== 0) errorMessage += `#### @${assignee} There was an error processing the message >${messageID}`
                             messageIds.push(messageID)
                             this.context.wallet.dispatchNotification('Accepting Message sent with ID: ' + messageID)
-                            this.setState({approveLoading:false})
                             filfox += `#### You can check the status of the message here: https://filfox.info/en/message/${messageID}\n`
                         }
-                        if(messageIds.length === 0){
-                            this.setState({approveLoading:false})
+                        if (messageIds.length === 0) {
                             Sentry.addBreadcrumb(breadCrumb);
                             Sentry.captureMessage(breadCrumb.message)
                         }
@@ -231,12 +229,10 @@ export default class RootKeyHolder extends Component<RootKeyHolderProps, RootKey
                                 if (txReceipt.ExitCode !== 0) errorMessage += `#### @${assignee} There was an error processing the message\n>${messageID}`
                                 messageIds.push(messageID)
                                 this.context.wallet.dispatchNotification('Accepting Message sent with ID: ' + messageID)
-                                this.setState({approveLoading:false})
                                 filfox += `#### You can check the status of the message here: https://filfox.info/en/message/${messageID}\n`
                             }
                         }
-                        if(messageIds.length === 0){
-                            this.setState({approveLoading:false})
+                        if (messageIds.length === 0) {
                             Sentry.addBreadcrumb(breadCrumb);
                             Sentry.captureMessage(breadCrumb.message)
                         }
@@ -269,11 +265,12 @@ export default class RootKeyHolder extends Component<RootKeyHolderProps, RootKey
                     }
                 } catch (e) {
                     this.context.wallet.dispatchNotification('Failed: ' + e.message)
-                    this.setState({approveLoading:false})
+                    this.setState({ approveLoading: false })
                     console.log('faile', e.stack)
                 }
             }
         }
+        this.setState({ approveLoading: false })
     }
 
     onRefAccepted = (refAccepted: any) => {
@@ -308,12 +305,12 @@ export default class RootKeyHolder extends Component<RootKeyHolderProps, RootKey
                     </div>
                     <div className="tabssadd">
                         {
-                        this.state.approveLoading ? 
-                        <BeatLoader size={15} color={"rgb(24,160,237)"} /> :
-                        this.state.tabs === "0" ? <>
-                            <ButtonPrimary onClick={(e: any) => this.showWarnPropose(e, "ProposeSign", this.context.selectedNotaryRequests)}>Sign On-chain</ButtonPrimary>
-                        </>
-                            : null}
+                            this.state.approveLoading ?
+                                <BeatLoader size={15} color={"rgb(24,160,237)"} /> :
+                                this.state.tabs === "0" ? <>
+                                    <ButtonPrimary onClick={(e: any) => this.showWarnPropose(e, "ProposeSign", this.context.selectedNotaryRequests)}>Sign On-chain</ButtonPrimary>
+                                </>
+                                    : null}
                     </div>
                 </div>
                 {this.state.tabs === "0" ?
@@ -360,7 +357,12 @@ export default class RootKeyHolder extends Component<RootKeyHolderProps, RootKey
                                         ) : null}
                             </tbody>
                         </table>
-                        {this.context.verifierAndPendingRequests.length === 0 ? <div className="nodata"> <BeatLoader size={15} color={"rgb(24,160,237)"} /></div> : null}
+                        { this.context.approvedNotariesLoading ?  <div className="nodata"><BeatLoader size={15} color={"rgb(24,160,237)"} /></div> : 
+                        !this.context.approvedNotariesLoading  && this.context.verifierAndPendingRequests.length == 0  ?
+                        <div className="nodata">No Pending Notary</div> :  null
+                        
+
+                        }
                         <Pagination
                             elements={this.context.verifierAndPendingRequests}
                             maxElements={10}

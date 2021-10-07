@@ -1199,6 +1199,10 @@
     margin: auto;
     cursor: pointer;
   }
+  
+  .headerLogoCtrlPanel{
+    cursor: pointer;
+  }
 
   .headerback {
     cursor: pointer;
@@ -1806,7 +1810,7 @@
 }
 
 .pagination {
-  position: absolute;
+  position:absolute;
   top: 595px;
   max-width: 1280px;
   left: 0;
@@ -2120,4 +2124,9 @@
       width: 30%;
       margin-right: 10px;
     }
+}
+
+.disabledRow{
+  color: rgb(97, 96, 96);
+  opacity: 0.9
 }

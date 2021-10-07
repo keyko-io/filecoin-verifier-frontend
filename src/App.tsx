@@ -52,6 +52,12 @@ class App extends Component<{}, States> {
     }
   }
 
+  onClick = () => {
+    history.push({
+        pathname: "/"
+    })
+}
+
 
   openNetworkSelect = (e: any) => {
     this.setState({
@@ -130,7 +136,7 @@ class App extends Component<{}, States> {
     return (
       <div className="App">
         <div className="header">
-          <div><img src={Logo} alt="Filecoin" /></div>
+          <div className="headerLogoCtrlPanel" onClick={() => this.onClick()}><img src={Logo} title="Return to home page" alt="Filecoin" /></div>
           <div className="networkselect" onClick={this.openNetworkSelect}>
             {this.state.networkSelect ?
               <div className="networkselectholder">

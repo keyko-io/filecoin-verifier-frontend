@@ -15,7 +15,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { tableElementFilter } from '../../utils/SortFilter';
 import Pagination from '../Pagination';
 import history from '../../context/History';
-import * as Sentry from "@sentry/react";
+import { BeatLoader } from "react-spinners";
 
 
 
@@ -40,9 +40,10 @@ type NotaryProps = {
     clients: any[]
     searchString: string
 }
-
+const CANT_SIGN_MESSAGE = "You can currently only approve the allocation requests associated with the multisig organization you signed in with. Signing proposals for additional DataCap allocations will require you to sign in again"
 export default class Notary extends Component<NotaryProps, NotaryStates> {
     public static contextType = Data
+
 
     verifiedClientsColums = [
         { id: "verified", value: "ID" },
@@ -54,16 +55,16 @@ export default class Notary extends Component<NotaryProps, NotaryStates> {
         { id: "name", value: "Client" },
         { id: "address", value: "Address" },
         { id: "datacap", value: "Datacap" },
-        { id: "audittrail", value: "Audit Trail" }
+        { id: "number", value: "Audit Trail" }
     ]
 
     largeRequestColums = [
         { id: "name", value: "Client" },
         { id: "address", value: "Address" },
-        { id: "multisig", value: "multisig"},
+        { id: "multisig", value: "multisig" },
         { id: "datacap", value: "Datacap" },
         { id: "approvals", value: "Approvals" },
-        { id: "audittrail", value: "Audit Trail" }
+        { id: "issue_number", value: "Audit Trail" }
     ]
 
     state = {
@@ -80,7 +81,7 @@ export default class Notary extends Component<NotaryProps, NotaryStates> {
         orderByLargePublic: "name",
         refPublic: {} as any,
         regLargePublic: {} as any,
-        approveLoading:false
+        approveLoading: false
     }
 
     componentDidMount() {
@@ -260,7 +261,10 @@ export default class Notary extends Component<NotaryProps, NotaryStates> {
 
                     sentryData.messageID = messageID
 
-                    this.context.updateGithubVerifiedLarge(request.number, messageID, address, datacap, approvals)
+                    const signer = this.context.wallet.activeAccount ? this.context.wallet.activeAccount : ""
+                    this.context.updateGithubVerifiedLarge(request.number, messageID, address, datacap, approvals, signer)
+                    sentryData.signer = signer
+
                     this.context.wallet.dispatchNotification('Verify Client Message sent with ID: ' + messageID)
                     this.setState({ approveLoading: false })
                     this.context.loadClientRequests()
@@ -326,12 +330,12 @@ export default class Notary extends Component<NotaryProps, NotaryStates> {
     }
 
     orderPublic = async (e: any) => {
-        const { orderBy, sortOrder } = await this.context.sortRequests(e, this.state.orderByPublic, this.state.sortOrderPublic)
+        const { orderBy, sortOrder } = await this.context.sortPublicRequests(e, this.state.orderByPublic, this.state.sortOrderPublic, this.context.clientRequests)
         this.setState({ orderByPublic: orderBy, sortOrderPublic: sortOrder })
     }
 
-    orderLargePublic = async (e: any) => {
-        const { orderBy, sortOrder } = await this.context.sortRequests(e, this.state.orderByLargePublic, this.state.sortOrderLargePublic)
+    orderLarge = async (e: any) => {
+        const { orderBy, sortOrder } = await this.context.sortLargeRequests(e, this.state.orderByLargePublic, this.state.sortOrderLargePublic)
         this.setState({ orderByLargePublic: orderBy, sortOrderLargePublic: sortOrder })
     }
 
@@ -353,17 +357,36 @@ export default class Notary extends Component<NotaryProps, NotaryStates> {
 
     }
 
+    sortBeginning(msig: boolean) {
+        if (!msig) {
+            return this.context.largeClientRequests
+        }
+        const arrSignable = this.context.largeClientRequests.filter((clientReq: any) => this.context.wallet.multisigID === clientReq?.multisig)
+        if (!arrSignable || arrSignable.length === 0) {
+            return this.context.largeClientRequests
+        }
+        const arrUnSignable = this.context.largeClientRequests.filter((clientReq: any) => this.context.wallet.multisigID !== clientReq?.multisig)
+        return arrSignable.concat(arrUnSignable)
+    }
+
 
     public render() {
         return (
             <div className="main">
                 <div className="tabsholder">
-                    <div className="tabs">
-                        <div className={this.state.tabs === "1" ? "selected" : ""} onClick={() => { this.showClientRequests() }}>Public Requests ({this.context.clientRequests.length})</div>
-                        {this.context.wallet.multisig &&
-                        <div className={this.state.tabs === "3" ? "selected" : ""} onClick={() => { this.showLargeRequests() }}>Large Requests ({this.context.largeClientRequests.length})</div>}
-                        <div className={this.state.tabs === "2" ? "selected" : ""} onClick={() => { this.showVerifiedClients() }}>Verified clients ({this.props.clients.length})</div>
-                    </div>
+                    {
+                        this.context.ldnRequestsLoading ?
+                            <div className="tabs">
+                                <div className={this.state.tabs === "1" ? "selected" : ""} onClick={() => { this.showClientRequests() }}><BeatLoader size={15} color={"rgb(24,160,237)"} /></div>
+                                <div className={this.state.tabs === "3" ? "selected" : ""} onClick={() => { this.showLargeRequests() }}><BeatLoader size={15} color={"rgb(24,160,237)"} /></div>
+                                <div className={this.state.tabs === "2" ? "selected" : ""} onClick={() => { this.showVerifiedClients() }}>Verified clients ({this.props.clients.length})</div>
+                            </div> :
+                            <div className="tabs">
+                                <div className={this.state.tabs === "1" ? "selected" : ""} onClick={() => { this.showClientRequests() }}>Public Requests ({this.context.clientRequests.length})</div>
+                                <div className={this.state.tabs === "3" ? "selected" : ""} onClick={() => { this.showLargeRequests() }}>Large Requests ({this.context.largeClientRequests.length})</div>
+                                <div className={this.state.tabs === "2" ? "selected" : ""} onClick={() => { this.showVerifiedClients() }}>Verified clients ({this.props.clients.length})</div>
+                            </div>
+                    }
                     <div className="tabssadd">
                         {this.state.tabs !== "3" ? <ButtonPrimary onClick={() => this.requestDatacap()}>Approve Private Request</ButtonPrimary> : null}
                         {this.state.tabs === "1" || this.state.tabs === "3" ? <>
@@ -391,7 +414,7 @@ export default class Notary extends Component<NotaryProps, NotaryStates> {
                                     this.context.clientRequests.filter((element: any) => tableElementFilter(this.props.searchString, element.data) === true)
                                         .filter((_: any, i: any) => this.state.refPublic?.checkIndex(i))
                                         .map((clientReq: any, index: any) =>
-                                            <tr key={index}>
+                                            <tr key={index} >
                                                 <td><input type="checkbox" onChange={() => this.selectClientRow(clientReq.number)} checked={this.state.selectedClientRequests.includes(clientReq.number)} /></td>
                                                 <td><FontAwesomeIcon icon={["fas", "info-circle"]} id={index} onClick={(e) => this.showClientDetail(e)} /> {clientReq.data.name} </td>
                                                 <td>{clientReq.data.address}</td>
@@ -426,25 +449,32 @@ export default class Notary extends Component<NotaryProps, NotaryStates> {
                                 <tr>
                                     <td></td>
                                     {this.largeRequestColums.map((column: any) => <td
-                                        id={column.id} onClick={this.orderLargePublic}>
+                                        id={column.id} onClick={this.orderLarge}>
                                         {column.value}
                                         <FontAwesomeIcon icon={["fas", "sort"]} />
                                     </td>)}
                                 </tr>
                             </thead>
                             <tbody>
-                                {this.state.regLargePublic && this.state.regLargePublic.checkIndex ?
-                                    this.context.largeClientRequests.filter((element: any) => tableElementFilter(this.props.searchString, element.data) === true)
+                                {this.state.regLargePublic && this.state.regLargePublic.checkIndex && this.context.largeClientRequests[0] !== undefined ?
+                                    this.sortBeginning(this.context.wallet.multisig)
+                                        .filter((element: any) => tableElementFilter(this.props.searchString, element?.data) === true)
                                         .filter((_: any, i: any) => this.state.regLargePublic?.checkIndex(i))
                                         .map((clientReq: any, index: any) =>
-                                            <tr key={index}>
-                                                <td><input type="checkbox" onChange={() => this.selectLargeClientRow(clientReq.number)} checked={this.state.selectedLargeClientRequests.includes(clientReq.number)} /></td>
-                                                <td><FontAwesomeIcon icon={["fas", "info-circle"]} id={index} onClick={(e) => this.showClientDetail(e)} /> {clientReq.data.name} </td>
-                                                <td>{clientReq.address}</td>
-                                                <td>{clientReq.multisig}</td>
-                                                <td>{clientReq.datacap}</td>
-                                                <td>{clientReq.approvals ? clientReq.approvals : 0}</td>
-                                                <td><a target="_blank" rel="noopener noreferrer" href={clientReq.url}>#{clientReq.number}</a></td>
+                                            <tr key={index}
+                                                className={this.context.wallet.multisigID !== clientReq?.multisig ? "disabledRow" : ""}
+                                                onClick={() => this.context.wallet.multisigID !== clientReq?.multisig ?
+                                                    this.context.wallet.dispatchNotification(CANT_SIGN_MESSAGE) : {}}>
+                                                {this.context.wallet.multisigID === clientReq?.multisig &&
+                                                    <td><input type="checkbox" onChange={() => this.selectLargeClientRow(clientReq?.number)} checked={this.state.selectedLargeClientRequests.includes(clientReq?.number)} /></td>}
+                                                {this.context.wallet.multisigID !== clientReq?.multisig &&
+                                                    <td><input type="checkbox" disabled title={CANT_SIGN_MESSAGE} /></td>}
+                                                <td><FontAwesomeIcon icon={["fas", "info-circle"]} id={index} onClick={(e) => this.showClientDetail(e)} /> {clientReq?.data?.name} </td>
+                                                <td>{clientReq?.address}</td>
+                                                <td>{clientReq?.multisig}</td>
+                                                <td>{clientReq?.datacap}</td>
+                                                <td>{clientReq?.approvals ? clientReq?.approvals : 0}</td>
+                                                <td><a target="_blank" rel="noopener noreferrer" href={clientReq?.url}>#{clientReq?.number}</a></td>
                                             </tr>
                                         ) : null}
                             </tbody>
