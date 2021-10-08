@@ -6,7 +6,7 @@ import { IssueBody } from '../../utils/IssueBody'
 import BigNumber from 'bignumber.js'
 import { tableSort, tableSortLargeRequest, tableSortPublicRequest } from '../../utils/SortFilter';
 import { v4 as uuidv4 } from 'uuid';
-import { bytesToiB } from "../../utils/Filters"
+import { anyToBytes, bytesToiB } from "../../utils/Filters"
 import * as Sentry from "@sentry/react";
 const utils = require('@keyko-io/filecoin-verifier-tools/utils/issue-parser')
 const largeutils = require('@keyko-io/filecoin-verifier-tools/utils/large-issue-parser')
@@ -163,7 +163,7 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
 
                 } catch (error) {
                     console.error(error)
-                    this.setState({ldnRequestsLoading: false})
+                    this.setState({ ldnRequestsLoading: false })
                     this.props.wallet.dispatchNotification('Something went wrong. please try logging again')
                 }
 
@@ -292,7 +292,7 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
 
 
 
-                    
+
                     // For each issue
                     for (const rawIssue of rawIssues) {
                         const data = parser.parseIssue(rawIssue.body, rawIssue.title)
@@ -309,7 +309,8 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
                             // found correct comment
                             if (comment.approvedMessage && comment.correct) {
                                 const addresses = comment.addresses.map((addr: any) => addr.trim())
-                                const txs = verifierAndPendingRequests.length > 0 ? verifierAndPendingRequests.filter((item: any) => item.verifierAddress === addresses[0] && comment.datacaps[0] == bytesToiB(item.datacap)) : []
+                                const commentDc = comment.datacaps[0].endsWith("B") ? anyToBytes(comment.datacaps[0]) : comment.datacaps[0]
+                                const txs = verifierAndPendingRequests.length > 0 ? verifierAndPendingRequests.filter((item: any) => item.verifierAddress === addresses[0] && commentDc == item.datacap) : []
                                 const proposedBy = verifierAndPendingRequests.length > 0 ? verifierAndPendingRequests.find((item: any) => item.verifierAddress === addresses[0])?.signerAddress : ""
                                 let issue: any = {
                                     id: uuidv4(),
