@@ -8,9 +8,11 @@ import { tableSort, tableSortLargeRequest, tableSortPublicRequest } from '../../
 import { v4 as uuidv4 } from 'uuid';
 import { anyToBytes, bytesToiB } from "../../utils/Filters"
 import * as Sentry from "@sentry/react";
+import { EVENT_TYPE, MetricsApiParams } from "../../utils/Metrics"
 const utils = require('@keyko-io/filecoin-verifier-tools/utils/issue-parser')
 const largeutils = require('@keyko-io/filecoin-verifier-tools/utils/large-issue-parser')
 const parser = require('@keyko-io/filecoin-verifier-tools/utils/notary-issue-parser')
+const { callMetricsApi } = require('@keyko-io/filecoin-verifier-tools/metrics/metrics')
 
 interface DataProviderStates {
     loadClientRequests: any
@@ -546,7 +548,7 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
                     state: 'closed',
                 })
             },
-            updateGithubVerifiedLarge: async (requestNumber: any, messageID: string, address: string, datacap: any, approvals: number, signer: string) => {
+            updateGithubVerifiedLarge: async (requestNumber: any, messageID: string, address: string, datacap: any, approvals: number, signer: string, msigAddress: string, name:string) => {
                 const formattedDc = bytesToiB(datacap)
                 let commentContent = `## Request Approved\nYour Datacap Allocation Request has been approved by the Notary\n#### Message sent to Filecoin Network\n>${messageID} \n#### Address \n> ${address}\n#### Datacap Allocated\n> ${formattedDc}\n#### Signer Address\n> ${signer}\n#### You can check the status of the message here: https://filfox.info/en/message/${messageID}`
 
@@ -569,6 +571,15 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
                         issue_number: requestNumber,
                         labels: ['state:Granted'],
                     })
+
+                    //METRICS
+                    const params: MetricsApiParams = {
+                        name,
+                        clientAddress: address,
+                        msigAddress,
+                        amount: formattedDc
+                    }
+                    console.log(callMetricsApi(requestNumber, EVENT_TYPE.DC_ALLOCATION, params)) //TEST
                 }
 
             },
