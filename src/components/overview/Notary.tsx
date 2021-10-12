@@ -174,7 +174,6 @@ export default class Notary extends Component<NotaryProps, NotaryStates> {
     }
 
     verifyClients = async () => {
-
         dispatchCustomEvent({ name: "delete-modal", detail: {} })
 
         for (const request of this.context.clientRequests) {
@@ -196,7 +195,8 @@ export default class Notary extends Component<NotaryProps, NotaryStates> {
                         messageID = await this.context.wallet.api.verifyClient(address, BigInt(datacap.toFixed()), this.context.wallet.walletIndex)
                     }
                     // github update
-                    this.context.updateGithubVerified(request.number, messageID, address, request.data.datacap)
+                    const signer = this.context.wallet.activeAccount ? this.context.wallet.activeAccount : ""
+                    this.context.updateGithubVerified(request.number, messageID, address, request.data.datacap, signer)
 
                     // send notifications
                     this.context.wallet.dispatchNotification('Verify Client Message sent with ID: ' + messageID)
