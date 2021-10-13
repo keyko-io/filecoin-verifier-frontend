@@ -11,9 +11,12 @@ import Pagination from '../Pagination';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { tableElementFilter } from '../../utils/SortFilter';
 import { BeatLoader } from "react-spinners";
-
+import { EVENT_TYPE, MetricsApiParams } from "../../utils/Metrics"
 import * as Sentry from "@sentry/react";
+
+const { callMetricsApi } = require('@keyko-io/filecoin-verifier-tools/metrics/metrics')
 const parser = require('@keyko-io/filecoin-verifier-tools/utils/notary-issue-parser')
+const largeutils = require('@keyko-io/filecoin-verifier-tools/utils/large-issue-parser')
 
 type RootKeyHolderState = {
     tabs: string
@@ -263,6 +266,31 @@ export default class RootKeyHolder extends Component<RootKeyHolderProps, RootKey
                             labels: [label],
                         })
                     }
+                    //METRICS 
+                    if (label === 'status:AddedOnchain') {
+                        const notaryGovissue = await this.context.github.githubOctoGeneric.octokit.issues.get({
+                            owner: config.lotusNodes[this.context.wallet.networkIndex].notaryOwner,
+                            repo: config.lotusNodes[this.context.wallet.networkIndex].notaryRepo,
+                            issue_number: request.issue_number,
+                        })
+                        const ldnIssueNameSplitted = parser.parseIssue(notaryGovissue.data.body).name.split(" ")
+                        const ldnIssueNumber = ldnIssueNameSplitted[ldnIssueNameSplitted.length-1]
+                        const ldnIssue = await this.context.github.githubOctoGeneric.octokit.issues.get({
+                            owner: config.onboardingLargeOwner,
+                            repo: config.onboardingLargeClientRepo,
+                            issue_number: ldnIssueNumber,
+                        })
+
+                        const issueParsed = largeutils.parseIssue(ldnIssue.data.body)
+                        const params: MetricsApiParams = {
+                            name: issueParsed.name,
+                            clientAddress: issueParsed.address,
+                            msigAddress: request.addresses[0] ? request.addresses[0] : "",
+                            messageCid: messageIds[0] ? messageIds[0] : ""
+                        }
+                        callMetricsApi(request.issue_number, EVENT_TYPE.MULTISIG_APPROVED, params)
+
+                    }
                 } catch (e) {
                     this.context.wallet.dispatchNotification('Failed: ' + e.message)
                     this.setState({ approveLoading: false })
@@ -357,10 +385,10 @@ export default class RootKeyHolder extends Component<RootKeyHolderProps, RootKey
                                         ) : null}
                             </tbody>
                         </table>
-                        { this.context.approvedNotariesLoading ?  <div className="nodata"><BeatLoader size={15} color={"rgb(24,160,237)"} /></div> : 
-                        !this.context.approvedNotariesLoading  && this.context.verifierAndPendingRequests.length == 0  ?
-                        <div className="nodata">No Pending Notary</div> :  null
-                        
+                        {this.context.approvedNotariesLoading ? <div className="nodata"><BeatLoader size={15} color={"rgb(24,160,237)"} /></div> :
+                            !this.context.approvedNotariesLoading && this.context.verifierAndPendingRequests.length == 0 ?
+                                <div className="nodata">No Pending Notary</div> : null
+
 
                         }
                         <Pagination
