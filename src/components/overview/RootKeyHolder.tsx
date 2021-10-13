@@ -288,7 +288,7 @@ export default class RootKeyHolder extends Component<RootKeyHolderProps, RootKey
                             msigAddress: request.addresses[0] ? request.addresses[0] : "",
                             messageCid: messageIds[0] ? messageIds[0] : ""
                         }
-                        callMetricsApi(request.issue_number, EVENT_TYPE.MULTISIG_APPROVED, params)
+                        callMetricsApi(request.issue_number, EVENT_TYPE.MULTISIG_APPROVED, params, config.metrics_api_environment)
 
                     }
                 } catch (e) {

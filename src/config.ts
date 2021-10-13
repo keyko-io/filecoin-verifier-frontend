@@ -15,6 +15,7 @@ export const config = {
     willRedirect: process.env.REACT_APP_REDIRECTION || false,
     validateAddress: process.env.REACT_APP_VALIDATE_ADDRESS || true,
     approvalsThreshold: process.env.REACT_APP_APPROVALS_THRESHOLD || 1,
+    metrics_api_environment: process.env.REACT_APP_METRICS_API_ENVIRONMENT || "test",
     largeClientRequest: 5497558000000000000000000,
     lotusNodes: [{
         name: 'Mainnet',
