@@ -577,9 +577,10 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
                         name,
                         clientAddress: address,
                         msigAddress,
-                        amount: formattedDc
+                        amount: formattedDc,
+                        messageCid: messageID
                     }
-                    console.log(callMetricsApi(requestNumber, EVENT_TYPE.DC_ALLOCATION, params)) //TEST
+                    console.log(callMetricsApi(requestNumber, EVENT_TYPE.DC_ALLOCATION, params)) 
                 }
 
             },
