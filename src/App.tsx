@@ -17,6 +17,8 @@ import { dispatchCustomEvent, Toggle, SVG, LoaderSpinner, Input } from "slate-re
 import { config } from './config'
 import Blockies from 'react-blockies'
 import history from './context/History'
+import LogInModal from './modals/LogInModal';
+import LogAsNotaryModal from './modals/LogAsNotaryModal'
 
 
 library.add(fab, far, fas)
@@ -97,6 +99,16 @@ class App extends Component<{}, States> {
       name: "create-modal", detail: {
         id: Math.random().toString(36).replace(/[^a-z]+/g, '').substr(0, 5),
         modal: <WalletModal />
+      }
+    })
+  }
+
+
+   openLoginModalNotary= async () => {
+    dispatchCustomEvent({
+      name: "create-modal", detail: {
+        id: Math.random().toString(36).replace(/[^a-z]+/g, '').substr(0, 5),
+        modal: <LogAsNotaryModal type={"login"} />
       }
     })
   }
@@ -243,7 +255,11 @@ class App extends Component<{}, States> {
                   </div>
                 })}
                 {this.context.wallet.wallet !== 'ledger' ?
+                <div>
                   <div className="importseedphrase" onClick={() => { this.openWallet() }}>Import seedphrase</div>
+                  <div className="importseedphrase" onClick={() => { this.openLoginModalNotary() }}>Change multisig</div>
+
+                </div>
                   : null
                 }
               </div>
@@ -274,3 +290,4 @@ class App extends Component<{}, States> {
 }
 
 export default App;
+
