@@ -262,7 +262,7 @@ export default class Notary extends Component<NotaryProps, NotaryStates> {
                     sentryData.messageID = messageID
 
                     const signer = this.context.wallet.activeAccount ? this.context.wallet.activeAccount : ""
-                    this.context.updateGithubVerifiedLarge(request.number, messageID, address, datacap, approvals, signer)
+                    this.context.updateGithubVerifiedLarge(request.number, messageID, address, datacap, approvals, signer,this.context.wallet.multisigID, request.data.name)
                     sentryData.signer = signer
 
                     this.context.wallet.dispatchNotification('Verify Client Message sent with ID: ' + messageID)
