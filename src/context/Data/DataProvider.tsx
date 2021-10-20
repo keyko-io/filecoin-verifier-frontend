@@ -518,8 +518,33 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
                 this.setState({ clientRequests: arraySorted })
                 return { orderBy, sortOrder }
             },
-            updateGithubVerified: async (requestNumber: any, messageID: string, address: string, datacap: any, signer:string) => {
+            updateGithubVerified: async (requestNumber: any, messageID: string, address: string, datacap: any, signer: string, errorMessage: string) => {
                 const formattedDc = bytesToiB(datacap)
+                let commentContent = errorMessage !== '' ? errorMessage : `## Request Approved\nYour Datacap Allocation Request has been approved by the Notary\n#### Message sent to Filecoin Network\n>${messageID} \n#### Address \n> ${address}\n#### Datacap Allocated\n> ${formattedDc}\n#### Signer Address\n> ${signer}\n#### You can check the status of the message here: https://filfox.info/en/message/${messageID}`
+
+                //if error, post error comment and error label
+                if (errorMessage !== '') {
+                    await this.props.github.githubOcto.issues.removeAllLabels({
+                        owner: config.onboardingOwner,
+                        repo: config.onboardingClientRepo,
+                        issue_number: requestNumber,
+                    })
+                    await this.props.github.githubOcto.issues.addLabels({
+                        owner: config.onboardingOwner,
+                        repo: config.onboardingClientRepo,
+                        issue_number: requestNumber,
+                        labels: ['status:Error'],
+                    })
+                    await this.props.github.githubOcto.issues.createComment({
+                        owner: config.onboardingOwner,
+                        repo: config.onboardingClientRepo,
+                        issue_number: requestNumber,
+                        body: commentContent,
+                    })
+                    return
+                }
+
+                // add granted label comment and close issue
                 await this.props.github.githubOcto.issues.removeAllLabels({
                     owner: config.onboardingOwner,
                     repo: config.onboardingClientRepo,
@@ -531,16 +556,12 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
                     issue_number: requestNumber,
                     labels: ['state:Granted'],
                 })
-
-                let commentContent = `## Request Approved\nYour Datacap Allocation Request has been approved by the Notary\n#### Message sent to Filecoin Network\n>${messageID} \n#### Address \n> ${address}\n#### Datacap Allocated\n> ${formattedDc}\n#### Signer Address\n> ${signer}\n#### You can check the status of the message here: https://filfox.info/en/message/${messageID}`
-
                 await this.props.github.githubOcto.issues.createComment({
                     owner: config.onboardingOwner,
                     repo: config.onboardingClientRepo,
                     issue_number: requestNumber,
                     body: commentContent,
                 })
-
                 await this.props.github.githubOcto.issues.update({
                     owner: config.onboardingOwner,
                     repo: config.onboardingClientRepo,
@@ -548,10 +569,33 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
                     state: 'closed',
                 })
             },
-            updateGithubVerifiedLarge: async (requestNumber: any, messageID: string, address: string, datacap: any, approvals: number, signer: string, msigAddress: string, name: string) => {
+            updateGithubVerifiedLarge: async (requestNumber: any, messageID: string, address: string, datacap: any, approvals: number, signer: string, msigAddress: string, name: string, errorMessage: string) => {
                 const formattedDc = bytesToiB(datacap)
-                let commentContent = `## Request Approved\nYour Datacap Allocation Request has been approved by the Notary\n#### Message sent to Filecoin Network\n>${messageID} \n#### Address \n> ${address}\n#### Datacap Allocated\n> ${formattedDc}\n#### Signer Address\n> ${signer}\n#### You can check the status of the message here: https://filfox.info/en/message/${messageID}`
+                let commentContent = errorMessage !== '' ? errorMessage : `## Request Approved\nYour Datacap Allocation Request has been approved by the Notary\n#### Message sent to Filecoin Network\n>${messageID} \n#### Address \n> ${address}\n#### Datacap Allocated\n> ${formattedDc}\n#### Signer Address\n> ${signer}\n#### You can check the status of the message here: https://filfox.info/en/message/${messageID}`
 
+                 //if error, post error comment and error label
+                if (errorMessage !== '') {
+                    await this.props.github.githubOcto.issues.removeAllLabels({
+                        owner: config.onboardingLargeOwner,
+                        repo: config.onboardingLargeClientRepo,
+                        issue_number: requestNumber,
+                    })
+                    await this.props.github.githubOcto.issues.addLabels({
+                        owner: config.onboardingLargeOwner,
+                        repo: config.onboardingLargeClientRepo,
+                        issue_number: requestNumber,
+                        labels: ['status:Error'],
+                    })
+                    await this.props.github.githubOcto.issues.createComment({
+                        owner: config.onboardingLargeOwner,
+                        repo: config.onboardingLargeClientRepo,
+                        issue_number: requestNumber,
+                        body: commentContent,
+                    })
+                    return
+                }
+
+                //create approval comment
                 await this.props.github.githubOcto.issues.createComment({
                     owner: config.onboardingLargeOwner,
                     repo: config.onboardingLargeClientRepo,
@@ -559,6 +603,7 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
                     body: commentContent,
                 })
 
+                // if the threshold is met add granted label and send metrics
                 if ((approvals + 1) == config.approvalsThreshold) {
                     await this.props.github.githubOcto.issues.removeAllLabels({
                         owner: config.onboardingLargeOwner,
@@ -571,16 +616,16 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
                         issue_number: requestNumber,
                         labels: ['state:Granted'],
                     })
+                    //METRICS
+                    const params: MetricsApiParams = {
+                        name,
+                        clientAddress: address,
+                        msigAddress,
+                        amount: formattedDc,
+                        messageCid: messageID
+                    }
+                    callMetricsApi(requestNumber, EVENT_TYPE.DC_ALLOCATION, params, config.metrics_api_environment)
                 }
-                //METRICS
-                const params: MetricsApiParams = {
-                    name,
-                    clientAddress: address,
-                    msigAddress,
-                    amount: formattedDc,
-                    messageCid: messageID
-                }
-                callMetricsApi(requestNumber, EVENT_TYPE.DC_ALLOCATION, params, config.metrics_api_environment)
 
             },
             assignToIssue: async (issue_number: any, assignees: any) => {
