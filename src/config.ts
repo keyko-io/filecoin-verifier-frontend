@@ -14,7 +14,7 @@ export const config = {
     defaultAssign: ['philippbanhardt'],
     willRedirect: process.env.REACT_APP_REDIRECTION || false,
     validateAddress: process.env.REACT_APP_VALIDATE_ADDRESS || true,
-    approvalsThreshold: process.env.REACT_APP_APPROVALS_THRESHOLD || 1,
+    approvalsThreshold: process.env.REACT_APP_APPROVALS_THRESHOLD || '1',
     largeClientRequest: 5497558000000000000000000,
     metrics_api_environment: process.env.REACT_APP_METRICS_API_ENVIRONMENT || "test",
     lotusNodes: [{
