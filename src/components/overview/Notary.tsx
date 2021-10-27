@@ -264,7 +264,7 @@ export default class Notary extends Component<NotaryProps, NotaryStates> {
                     sentryData.approvals = approvals
 
                     approvals == 0 ?
-                        messageID = await this.context.wallet.api.multisigVerifyClient(this.context.wallet.multisigID, address, BigInt(datacap), this.context.wallet.walletIndex)
+                        messageID = await this.context.wallet.api.multisigVerifyClient(this.context.wallet.multisigID, address, BigInt(Math.floor(datacap)), this.context.wallet.walletIndex)
                         :
                         messageID = await this.context.wallet.api.approvePending(this.context.wallet.multisigID, request.tx, this.context.wallet.walletIndex)
 
@@ -275,12 +275,11 @@ export default class Notary extends Component<NotaryProps, NotaryStates> {
                     const txReceipt = await this.context.wallet.api.getReceipt(messageID)
                     if (txReceipt.ExitCode !== 0) {
                         errorMessage += `#### There was an error processing the message \n>${messageID}, retry later.`
-                        this.context.updateGithubVerifiedLarge(request.number, messageID, address, datacap, approvals, signer, this.context.wallet.multisigID, request.data.name, errorMessage)
+                        await this.context.updateGithubVerifiedLarge(request.number, messageID, address, datacap, approvals, signer, this.context.wallet.multisigID, request.data.name, errorMessage)
                         this.context.wallet.dispatchNotification('Error processing the message: ' + messageID)
                         throw Error(errorMessage)
                     }
-
-                    this.context.updateGithubVerifiedLarge(request.number, messageID, address, datacap, approvals, signer,this.context.wallet.multisigID, request.data.name, '')
+                    await this.context.updateGithubVerifiedLarge(request.number, messageID, address, datacap, approvals, signer, this.context.wallet.multisigID, request.data.name, '')
                     this.context.wallet.dispatchNotification('Verify Client Message sent with ID: ' + messageID)
                     this.setState({ approveLoading: false })
                     this.context.loadClientRequests()
