@@ -240,9 +240,6 @@ export default class Notary extends Component<NotaryProps, NotaryStates> {
         this.setState({ approveLoading: true })
         dispatchCustomEvent({ name: "delete-modal", detail: {} })
         for (const request of this.context.largeClientRequests) {
-            debugger
-            console.log("request", request)
-
             if (this.state.selectedLargeClientRequests.includes(request.number)) {
                 let sentryData: any = {}
                 sentryData.request = {...request}
