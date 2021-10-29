@@ -183,6 +183,7 @@ export default class Notary extends Component<NotaryProps, NotaryStates> {
                 let sentryData: any = {}
                 let errorMessage = ''
                 try {
+                    sentryData.request = {...request}
                     const datacap = anyToBytes(request.data.datacap)
                     console.log('datacap', datacap)
                     address = request.data.address
@@ -239,8 +240,12 @@ export default class Notary extends Component<NotaryProps, NotaryStates> {
         this.setState({ approveLoading: true })
         dispatchCustomEvent({ name: "delete-modal", detail: {} })
         for (const request of this.context.largeClientRequests) {
+            debugger
+            console.log("request", request)
+
             if (this.state.selectedLargeClientRequests.includes(request.number)) {
                 let sentryData: any = {}
+                sentryData.request = {...request}
                 sentryData.requestNumber = request.number
                 let errorMessage = ''
                 try {
@@ -248,6 +253,8 @@ export default class Notary extends Component<NotaryProps, NotaryStates> {
                     console.log('datacap', datacap)
                     sentryData.datacap = datacap.toString()
 
+
+                   
                     let address = request.address
 
                     if (address.length < 12) {
@@ -279,7 +286,7 @@ export default class Notary extends Component<NotaryProps, NotaryStates> {
                         this.context.wallet.dispatchNotification('Error processing the message: ' + messageID)
                         throw Error(errorMessage)
                     }
-                    await this.context.updateGithubVerifiedLarge(request.number, messageID, address, datacap, approvals, signer, this.context.wallet.multisigID, request.data.name, '')
+                    await this.context.updateGithubVerifiedLarge(request.number, messageID, address, datacap, approvals as boolean, signer, this.context.wallet.multisigID, request.data.name, '')
                     this.context.wallet.dispatchNotification('Verify Client Message sent with ID: ' + messageID)
                     this.setState({ approveLoading: false })
                     this.context.loadClientRequests()

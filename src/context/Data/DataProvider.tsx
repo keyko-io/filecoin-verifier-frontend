@@ -569,7 +569,7 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
                     state: 'closed',
                 })
             },
-            updateGithubVerifiedLarge: async (requestNumber: any, messageID: string, address: string, datacap: any, approvals: any, signer: string, msigAddress: string, name: string, errorMessage: string) => {
+            updateGithubVerifiedLarge: async (requestNumber: any, messageID: string, address: string, datacap: any, approvals: boolean, signer: string, msigAddress: string, name: string, errorMessage: string) => {
                 const formattedDc = bytesToiB(datacap)
                 let commentContent = errorMessage !== '' ? errorMessage : `## Request Approved\nYour Datacap Allocation Request has been approved by the Notary\n#### Message sent to Filecoin Network\n>${messageID} \n#### Address \n> ${address}\n#### Datacap Allocated\n> ${formattedDc}\n#### Signer Address\n> ${signer}\n#### You can check the status of the message here: https://filfox.info/en/message/${messageID}`
 
@@ -604,7 +604,8 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
                 })
 
                 // if the threshold is met add granted label and send metrics
-                if (parseInt(approvals) + 1 === parseInt(config.approvalsThreshold)) {
+                if (approvals === true) {
+                // if (parseInt(approvals) + 1 === parseInt(config.approvalsThreshold)) {
                     await this.props.github.githubOcto.issues.removeAllLabels({
                         owner: config.onboardingLargeOwner,
                         repo: config.onboardingLargeClientRepo,
