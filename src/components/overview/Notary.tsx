@@ -183,6 +183,7 @@ export default class Notary extends Component<NotaryProps, NotaryStates> {
                 let sentryData: any = {}
                 let errorMessage = ''
                 try {
+                    sentryData.request = {...request}
                     const datacap = anyToBytes(request.data.datacap)
                     console.log('datacap', datacap)
                     address = request.data.address
@@ -241,6 +242,7 @@ export default class Notary extends Component<NotaryProps, NotaryStates> {
         for (const request of this.context.largeClientRequests) {
             if (this.state.selectedLargeClientRequests.includes(request.number)) {
                 let sentryData: any = {}
+                sentryData.request = {...request}
                 sentryData.requestNumber = request.number
                 let errorMessage = ''
                 try {
@@ -248,6 +250,8 @@ export default class Notary extends Component<NotaryProps, NotaryStates> {
                     console.log('datacap', datacap)
                     sentryData.datacap = datacap.toString()
 
+
+                   
                     let address = request.address
 
                     if (address.length < 12) {
@@ -260,10 +264,10 @@ export default class Notary extends Component<NotaryProps, NotaryStates> {
                     let messageID
 
                     // const approvals = request.approvals[0] && request.approvals[0].tx ? request.approvals[0].tx.signers.length : 0
-                    const approvals = request.approvals ? request.approvals : 0
+                    const approvals : boolean = request.approvals ? true : false
                     sentryData.approvals = approvals
 
-                    approvals == 0 ?
+                    !approvals  ?
                         messageID = await this.context.wallet.api.multisigVerifyClient(this.context.wallet.multisigID, address, BigInt(Math.floor(datacap)), this.context.wallet.walletIndex)
                         :
                         messageID = await this.context.wallet.api.approvePending(this.context.wallet.multisigID, request.tx, this.context.wallet.walletIndex)
