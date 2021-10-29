@@ -267,10 +267,10 @@ export default class Notary extends Component<NotaryProps, NotaryStates> {
                     let messageID
 
                     // const approvals = request.approvals[0] && request.approvals[0].tx ? request.approvals[0].tx.signers.length : 0
-                    const approvals = request.approvals ? request.approvals : 0
+                    const approvals : boolean = request.approvals ? true : false
                     sentryData.approvals = approvals
 
-                    approvals == 0 ?
+                    !approvals  ?
                         messageID = await this.context.wallet.api.multisigVerifyClient(this.context.wallet.multisigID, address, BigInt(Math.floor(datacap)), this.context.wallet.walletIndex)
                         :
                         messageID = await this.context.wallet.api.approvePending(this.context.wallet.multisigID, request.tx, this.context.wallet.walletIndex)
@@ -286,7 +286,7 @@ export default class Notary extends Component<NotaryProps, NotaryStates> {
                         this.context.wallet.dispatchNotification('Error processing the message: ' + messageID)
                         throw Error(errorMessage)
                     }
-                    await this.context.updateGithubVerifiedLarge(request.number, messageID, address, datacap, approvals as boolean, signer, this.context.wallet.multisigID, request.data.name, '')
+                    await this.context.updateGithubVerifiedLarge(request.number, messageID, address, datacap, approvals, signer, this.context.wallet.multisigID, request.data.name, '')
                     this.context.wallet.dispatchNotification('Verify Client Message sent with ID: ' + messageID)
                     this.setState({ approveLoading: false })
                     this.context.loadClientRequests()
