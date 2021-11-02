@@ -33,7 +33,8 @@ type NotaryStates = {
     sortOrderPublic: number,
     orderByPublic: string,
     refPublic: any,
-    approveLoading: boolean
+    approveLoading: boolean,
+    approvedDcRequests:any[]
 }
 
 type NotaryProps = {
@@ -81,7 +82,8 @@ export default class Notary extends Component<NotaryProps, NotaryStates> {
         orderByLargePublic: "name",
         refPublic: {} as any,
         regLargePublic: {} as any,
-        approveLoading: false
+        approveLoading: false,
+        approvedDcRequests:[] as any[]
     }
 
     componentDidMount() {
@@ -285,8 +287,12 @@ export default class Notary extends Component<NotaryProps, NotaryStates> {
                     }
                     await this.context.updateGithubVerifiedLarge(request.number, messageID, address, datacap, approvals, signer, this.context.wallet.multisigID, request.data.name, '')
                     this.context.wallet.dispatchNotification('Verify Client Message sent with ID: ' + messageID)
+
+                    if (approvals){
+                        this.setState({approvedDcRequests: [...this.state.approvedDcRequests,request.number ]})
+                    }
+
                     this.setState({ approveLoading: false })
-                    this.context.loadClientRequests()
                 } catch (e) {
                     this.context.wallet.dispatchNotification('Verification failed: ' + e.message)
                     console.log(e.stack)
@@ -483,8 +489,9 @@ export default class Notary extends Component<NotaryProps, NotaryStates> {
                                     this.sortBeginning(this.context.wallet.multisig)
                                         .filter((element: any) => tableElementFilter(this.props.searchString, element?.data) === true)
                                         .filter((_: any, i: any) => this.state.regLargePublic?.checkIndex(i))
+                                        .filter((clientReq: any, i: any) => !this.state.approvedDcRequests?.includes(clientReq?.number))
                                         .map((clientReq: any, index: any) =>
-                                            <tr key={index}
+                                           <tr key={index}
                                                 className={this.context.wallet.multisigID !== clientReq?.multisig ? "disabledRow" : ""}
                                                 onClick={() => this.context.wallet.multisigID !== clientReq?.multisig ?
                                                     this.context.wallet.dispatchNotification(CANT_SIGN_MESSAGE) : {}}>
