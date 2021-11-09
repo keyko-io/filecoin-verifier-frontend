@@ -150,6 +150,7 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
                                         mine: rawLargeIssue.assignees.find((a: any) => a.login === user.data.login) !== undefined,
                                         approvals: txs.length > 0 ? txs[0].signers.length : 0,
                                         tx: txs.length > 0 ? txs[0] : null,
+                                        labels: rawLargeIssue.labels.map((item: any) => item.name),
                                         data
                                     }
                                     largeissues.push(largeRequest)
@@ -569,7 +570,7 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
                     state: 'closed',
                 })
             },
-            updateGithubVerifiedLarge: async (requestNumber: any, messageID: string, address: string, datacap: any, approvals: boolean, signer: string, msigAddress: string, name: string, errorMessage: string) => {
+            updateGithubVerifiedLarge: async (requestNumber: any, messageID: string, address: string, datacap: any, approvals: boolean, signer: string, msigAddress: string, name: string, errorMessage: string, labels: string[]) => {
                 const formattedDc = bytesToiB(datacap)
                 let commentContent = errorMessage !== '' ? errorMessage : `## Request Approved\nYour Datacap Allocation Request has been approved by the Notary\n#### Message sent to Filecoin Network\n>${messageID} \n#### Address \n> ${address}\n#### Datacap Allocated\n> ${formattedDc}\n#### Signer Address\n> ${signer}\n#### You can check the status of the message here: https://filfox.info/en/message/${messageID}`
 
@@ -602,10 +603,8 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
                     issue_number: requestNumber,
                     body: commentContent,
                 })
-
-                // if the threshold is met add granted label and send metrics
-                if (approvals === true) {
-                // if (parseInt(approvals) + 1 === parseInt(config.approvalsThreshold)) {
+                
+                if (labels.find((item:any)=> item === "state:StartSignDatacap")) {
                     await this.props.github.githubOcto.issues.removeAllLabels({
                         owner: config.onboardingLargeOwner,
                         repo: config.onboardingLargeClientRepo,
@@ -626,8 +625,15 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
                         messageCid: messageID
                     }
                     callMetricsApi(requestNumber, EVENT_TYPE.DC_ALLOCATION, params, config.metrics_api_environment)
+                    return
                 }
 
+                await this.props.github.githubOcto.issues.addLabels({
+                    owner: config.onboardingLargeOwner,
+                    repo: config.onboardingLargeClientRepo,
+                    issue_number: requestNumber,
+                    labels: ['state:StartSignDatacap'],
+                })
             },
             assignToIssue: async (issue_number: any, assignees: any) => {
                 let isAssigned = false
