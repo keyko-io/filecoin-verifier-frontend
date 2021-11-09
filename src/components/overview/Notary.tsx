@@ -281,11 +281,11 @@ export default class Notary extends Component<NotaryProps, NotaryStates> {
                     const txReceipt = await this.context.wallet.api.getReceipt(messageID)
                     if (txReceipt.ExitCode !== 0) {
                         errorMessage += `#### There was an error processing the message \n>${messageID}, retry later.`
-                        await this.context.updateGithubVerifiedLarge(request.number, messageID, address, datacap, approvals, signer, this.context.wallet.multisigID, request.data.name, errorMessage)
+                        await this.context.updateGithubVerifiedLarge(request.number, messageID, address, datacap, approvals, signer, this.context.wallet.multisigID, request.data.name, errorMessage, [])
                         this.context.wallet.dispatchNotification('Error processing the message: ' + messageID)
                         throw Error(errorMessage)
                     }
-                    await this.context.updateGithubVerifiedLarge(request.number, messageID, address, datacap, approvals, signer, this.context.wallet.multisigID, request.data.name, '')
+                    await this.context.updateGithubVerifiedLarge(request.number, messageID, address, datacap, approvals, signer, this.context.wallet.multisigID, request.data.name, '', request.labels)
                     this.context.wallet.dispatchNotification('Verify Client Message sent with ID: ' + messageID)
 
                     if (approvals){
