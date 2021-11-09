@@ -166,6 +166,8 @@ export default class RootKeyHolder extends Component<RootKeyHolderProps, RootKey
                 var label = ''
                 let filfox = ''
                 let errorMessage = ''
+                let messageID = ''
+                let sentryData: any = {}
                 try {
                     const assignee = (await this.context.github.githubOctoGeneric.octokit.issues.get({
                         owner: config.lotusNodes[this.context.wallet.networkIndex].notaryOwner,
@@ -175,19 +177,10 @@ export default class RootKeyHolder extends Component<RootKeyHolderProps, RootKey
                     if (!assignee) {
                         throw new Error("You should assign the issue to someone")
                     }
-
-                    let breadCrumb = {
-                        category: "handleSubmitApproveSign",
-                        message: `handleSubmitApproveSign, request id: ${request.id}, missing the messageID`,
-                        level: Sentry.Severity.Warning,
-                        data: {
-                            request: request,
-                        }
-                    }
                     if (request.proposed === true) {
                         // for each tx
                         for (const tx of request.txs) {
-                            let messageID = tx.datacap === 0 ?
+                            messageID = tx.datacap === 0 ?
                                 await this.context.wallet.api.removeVerifier(tx.verifier, tx.signer, tx.id, this.context.wallet.walletIndex)
                                 :
                                 await this.context.wallet.api.approveVerifier(tx.verifier, BigInt(tx.datacap), tx.signer, tx.id, this.context.wallet.walletIndex);
@@ -197,10 +190,6 @@ export default class RootKeyHolder extends Component<RootKeyHolderProps, RootKey
                             messageIds.push(messageID)
                             this.context.wallet.dispatchNotification('Accepting Message sent with ID: ' + messageID)
                             filfox += `#### You can check the status of the message here: https://filfox.info/en/message/${messageID}\n`
-                        }
-                        if (messageIds.length === 0) {
-                            Sentry.addBreadcrumb(breadCrumb);
-                            Sentry.captureMessage(breadCrumb.message)
                         }
                         // comment to issue
                         commentContent = `## The request has been signed by a new Root Key Holder\n#### Message sent to Filecoin Network\n>${messageIds.join()}\n${errorMessage}\n${filfox}`
@@ -223,7 +212,7 @@ export default class RootKeyHolder extends Component<RootKeyHolderProps, RootKey
 
                                 console.log("address to propose: " + address)
 
-                                let messageID = datacap === 0 ?
+                                messageID = datacap === 0 ?
                                     await this.context.wallet.api.proposeRemoveVerifier(address, this.context.wallet.walletIndex)
                                     :
                                     await this.context.wallet.api.proposeVerifier(address, BigInt(datacap), this.context.wallet.walletIndex)
@@ -235,15 +224,22 @@ export default class RootKeyHolder extends Component<RootKeyHolderProps, RootKey
                                 filfox += `#### You can check the status of the message here: https://filfox.info/en/message/${messageID}\n`
                             }
                         }
-                        if (messageIds.length === 0) {
-                            Sentry.addBreadcrumb(breadCrumb);
-                            Sentry.captureMessage(breadCrumb.message)
-                        }
                         commentContent = `## The request has been signed by a new Root Key Holder\n#### Message sent to Filecoin Network\n>${messageIds.join()}\n ${errorMessage}\n ${filfox}`
                         label = errorMessage === '' ?
                             config.lotusNodes[this.context.wallet.networkIndex].rkhtreshold > 1 ? 'status:StartSignOnchain' : 'status:AddedOnchain'
                             : 'status:Error'
                     }
+
+                    // Sentry logs
+                    sentryData = {
+                        request,
+                        messageIDs: messageIds.length > 0 ? messageIds : "not found",
+                        rkhSigner: this.context.wallet.activeAccount
+                    }
+                    if (messageIds.length === 0) {
+                        this.context.logToSentry("handleSubmitApproveSign", `handleSubmitApproveSign missing messageID -issue n ${request.issue_number}`, "error", sentryData)
+                    }
+
                     if (commentContent != '') {
                         await this.context.github.githubOctoGeneric.octokit.issues.createComment({
                             owner: config.lotusNodes[this.context.wallet.networkIndex].notaryOwner,
@@ -274,7 +270,7 @@ export default class RootKeyHolder extends Component<RootKeyHolderProps, RootKey
                             issue_number: request.issue_number,
                         })
                         const ldnIssueNameSplitted = parser.parseIssue(notaryGovissue.data.body).name.split(" ")
-                        const ldnIssueNumber = ldnIssueNameSplitted[ldnIssueNameSplitted.length-1]
+                        const ldnIssueNumber = ldnIssueNameSplitted[ldnIssueNameSplitted.length - 1]
                         const ldnIssue = await this.context.github.githubOctoGeneric.octokit.issues.get({
                             owner: config.onboardingLargeOwner,
                             repo: config.onboardingLargeClientRepo,
@@ -294,7 +290,14 @@ export default class RootKeyHolder extends Component<RootKeyHolderProps, RootKey
                 } catch (e) {
                     this.context.wallet.dispatchNotification('Failed: ' + e.message)
                     this.setState({ approveLoading: false })
-                    console.log('faile', e.stack)
+                    console.log('failed', e.stack)
+                    const errData = {
+                        ...sentryData,
+                        error: e,
+                    }
+                    this.context.logToSentry("handleSubmitApproveSign", `handleSubmitApproveSign error -issue n ${request.issue_number}`, "error", errData)
+                } finally {
+                    this.context.logToSentry("handleSubmitApproveSign", `handleSubmitApproveSign info -issue n ${request.issue_number}`, "info", sentryData)
                 }
             }
         }
@@ -385,10 +388,10 @@ export default class RootKeyHolder extends Component<RootKeyHolderProps, RootKey
                                         ) : null}
                             </tbody>
                         </table>
-                        { this.context.approvedNotariesLoading ?  <div className="nodata"><BeatLoader size={15} color={"rgb(24,160,237)"} /></div> : 
-                        !this.context.approvedNotariesLoading  && this.context.verifierAndPendingRequests.length == 0  ?
-                        <div className="nodata">No Pending Notary</div> :  null
-                        
+                        {this.context.approvedNotariesLoading ? <div className="nodata"><BeatLoader size={15} color={"rgb(24,160,237)"} /></div> :
+                            !this.context.approvedNotariesLoading && this.context.verifierAndPendingRequests.length == 0 ?
+                                <div className="nodata">No Pending Notary</div> : null
+
 
                         }
                         <Pagination
