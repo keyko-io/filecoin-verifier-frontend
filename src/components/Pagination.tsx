@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { tableFilter, tableMinerFilter } from '../utils/SortFilter';
+import { tableMinerFilter } from '../utils/SortFilter';
 
 type PaginationProps = {
     elements: any[],

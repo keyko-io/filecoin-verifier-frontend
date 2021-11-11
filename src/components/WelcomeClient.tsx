@@ -11,9 +11,9 @@ type WelcomeClientProps = {
 
 class WelcomeClient extends Component<WelcomeClientProps> {
 
-    constructor(props: WelcomeClientProps) {
-        super(props);
-    }
+    // constructor(props: WelcomeClientProps) {
+    //     super(props);
+    // }
 
     render() {
         return (
