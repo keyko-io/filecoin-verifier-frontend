@@ -8,7 +8,6 @@ import { anyToBytes } from "../utils/Filters"
 // @ts-ignore
 import LoginGithub from 'react-login-github';
 import { BurnerWallet } from '../context/Wallet/BurnerWallet';
-import { bytesToiB } from '../utils/Filters';
 
 type States = {
     address: string
@@ -279,7 +278,7 @@ class MakeRequestModal extends Component<ModalProps, States> {
                         </div>
                         {this.props.verifier.docs_url ?
                             <div className="docsmessage">Before submitting your request, please make sure to check out the
-                             guidelines and criteria to accept Datacap request for <a href={this.props.verifier.docs_url} target="_blank">{this.props.verifier.name}</a></div>
+                             guidelines and criteria to accept Datacap request for <a href={this.props.verifier.docs_url} target="_blank" rel="noopener noreferrer">{this.props.verifier.name}</a></div>
                             :
                             null}
                     </div>

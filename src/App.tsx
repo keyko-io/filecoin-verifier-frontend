@@ -17,7 +17,6 @@ import { dispatchCustomEvent, Toggle, SVG, LoaderSpinner, Input } from "slate-re
 import { config } from './config'
 import Blockies from 'react-blockies'
 import history from './context/History'
-import LogInModal from './modals/LogInModal';
 import LogAsNotaryModal from './modals/LogAsNotaryModal'
 
 

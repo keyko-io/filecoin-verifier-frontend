@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import RootKey from '../svg/root-key.svg';
 import Verifiers from '../svg/verifier-wallet.svg';
 import Logo from '../svg/logo-button.svg';
 import Ledger from '../svg/ledger-logo.svg';

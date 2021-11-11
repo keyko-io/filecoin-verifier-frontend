@@ -10,9 +10,9 @@ type WelcomeClientProps = {
 export default class TableClientDetails extends Component<WelcomeClientProps> {
     public static contextType = Data
 
-    constructor(props: WelcomeClientProps) {
-        super(props);
-    }
+    // constructor(props: WelcomeClientProps) {
+    //     super(props);
+    // }
 
     columns = [
         { key: "address", name: "Address" },

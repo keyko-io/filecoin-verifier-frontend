@@ -132,14 +132,14 @@ export default class TableVerifiers extends Component<TableVerifiersProps> {
                             <thead>
                                 <tr>
                                     <td></td>
-                                    {this.columns.map((column: any) =>
+                                    {this.columns.map((column: any, i:any) =>
                                         column.visible === false ? null :
                                             column.order !== "false" ?
-                                                <td>{column.name}
+                                                <td key={i}>{column.name}
                                                     <FontAwesomeIcon icon={["fas", "sort"]} id={column.key} onClick={this.order} />
                                                 </td>
                                                 :
-                                                <td>{column.name}</td>
+                                                <td key={i}>{column.name}</td>
                                     )}
                                 </tr>
                             </thead>
@@ -147,11 +147,11 @@ export default class TableVerifiers extends Component<TableVerifiersProps> {
                                 {
                                     this.state.verifiers.map((verifier: any, i) =>
                                         this.child.current.checkIndex(i) ?
-                                            <tr
+                                            <tr key={i}
                                                 onClick={(e) => this.updateChecks(e)}
                                             >
                                                 <td
-                                                    key={i} id={String(i)}
+                                                     id={String(i)}
                                                     onClick={(e) => this.updateChecks(e)}
                                                 >
                                                     <input type="radio" key={i} name={"verifiers"} id={String(i)}
@@ -165,8 +165,8 @@ export default class TableVerifiers extends Component<TableVerifiersProps> {
                                                             <FontAwesomeIcon icon={["fas", "info-circle"]} />
                                                     </div>
                                                 </td>
-                                                <td id={String(i)}>{verifier.use_case.map((useCase: any) =>
-                                                    <p id={String(i)} style={{ padding: 3 }}>{useCase}</p>
+                                                <td key={i} id={String(i)}>{verifier.use_case.map((useCase: any) =>
+                                                    <p key={useCase} id={String(i)} style={{ padding: 3 }}>{useCase}</p>
                                                 )}</td>
                                                 <td id={String(i)}>{verifier.location}</td>
                                                 <td id={String(i)}>Slack: {verifier.fil_slack_id} <br /> Github: {verifier.github_user[0]}</td>

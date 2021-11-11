@@ -13,7 +13,6 @@ import { tableElementFilter } from '../../utils/SortFilter';
 import { BeatLoader } from "react-spinners";
 import { EVENT_TYPE, MetricsApiParams } from "../../utils/Metrics"
 
-import * as Sentry from "@sentry/react";
 const { callMetricsApi } = require('@keyko-io/filecoin-verifier-tools/metrics/metrics')
 const parser = require('@keyko-io/filecoin-verifier-tools/utils/notary-issue-parser')
 const largeutils = require('@keyko-io/filecoin-verifier-tools/utils/large-issue-parser')
@@ -157,7 +156,7 @@ export default class RootKeyHolder extends Component<RootKeyHolderProps, RootKey
         dispatchCustomEvent({ name: "delete-modal", detail: {} })
         this.setState({ approveLoading: true })
         // loop over selected rows
-        const multisigInfo = await this.context.wallet.api.multisigInfo(config.lotusNodes[this.context.wallet.networkIndex].rkhMultisig)
+        await this.context.wallet.api.multisigInfo(config.lotusNodes[this.context.wallet.networkIndex].rkhMultisig)
         await this.context.github.githubOctoGenericLogin()
         for (const request of this.context.verifierAndPendingRequests) {
             if (this.context.selectedNotaryRequests.includes(request.id)) {
@@ -351,7 +350,7 @@ export default class RootKeyHolder extends Component<RootKeyHolderProps, RootKey
                                 <tr>
                                     <td></td>
                                     {this.requestColums.map((column: any) => <td
-                                        id={column.id} onClick={this.orderRequest}>
+                                        key={column.id} id={column.id} onClick={this.orderRequest}>
                                         {column.value}
                                         <FontAwesomeIcon icon={["fas", "sort"]} />
                                     </td>)}
@@ -407,9 +406,9 @@ export default class RootKeyHolder extends Component<RootKeyHolderProps, RootKey
                     <div>
                         <table>
                             <thead>
-                                <tr>
+                                <tr  >
                                     {this.acceptedNotaryColums.map((column: any) => <td
-                                        id={column.id} onClick={this.orderAccepted}>
+                                        key={column.id} id={column.id} onClick={this.orderAccepted}>
                                         {column.value}
                                         <FontAwesomeIcon icon={["fas", "sort"]} />
                                     </td>)}
