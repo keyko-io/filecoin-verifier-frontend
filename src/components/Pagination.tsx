@@ -86,7 +86,8 @@ class Pagination extends Component<PaginationProps> {
             <div className="pagination">
                 <div className="pagenumber paginator" onClick={e => this.movePage(-1)}>{"<"}</div>
                 {this.state.pages.map((page: any, i) =>
-                    <div className="pagenumber"
+                    <div key={i}
+                        className="pagenumber"
                         style={this.state.actualPage === i + 1 ? { backgroundColor: "#33A7FF", color: 'white' } : {}}
                         id={(i + 1).toString()}
                         onClick={e => this.setPage(e)}>

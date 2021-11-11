@@ -351,7 +351,7 @@ export default class RootKeyHolder extends Component<RootKeyHolderProps, RootKey
                                 <tr>
                                     <td></td>
                                     {this.requestColums.map((column: any) => <td
-                                        id={column.id} onClick={this.orderRequest}>
+                                        key={column.id} id={column.id} onClick={this.orderRequest}>
                                         {column.value}
                                         <FontAwesomeIcon icon={["fas", "sort"]} />
                                     </td>)}
@@ -407,7 +407,7 @@ export default class RootKeyHolder extends Component<RootKeyHolderProps, RootKey
                     <div>
                         <table>
                             <thead>
-                                <tr>
+                                <tr  key={"xxx"}>
                                     {this.acceptedNotaryColums.map((column: any) => <td
                                         id={column.id} onClick={this.orderAccepted}>
                                         {column.value}
