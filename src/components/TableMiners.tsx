@@ -268,17 +268,17 @@ export default class TableMiners extends Component {
                             <tr >
                                 {this.columns.map((item: any, i: any) =>
                                     item.info ?
-                                        <td style={{ "textAlign": "center" }}>
+                                        <td key={i} style={{ "textAlign": "center" }}>
                                             {item.name}
                                             {
                                                 <FontAwesomeIcon icon={["fas", "sort"]} id={item.key} onClick={async (e) => this.order(e)} />}
                                             <FontAwesomeIcon title={"This information is coming from filrep.io"} icon={["fas", "info-circle"]} />
                                         </td> : item.sort ?
-                                            <td style={{ "textAlign": "center" }}>
+                                            <td key={i} style={{ "textAlign": "center" }}>
                                                 {item.name}
                                                 <FontAwesomeIcon icon={["fas", "sort"]} id={item.key} onClick={async (e) => this.order(e)} />
                                             </td> :
-                                            <td style={{ "textAlign": "center" }}>
+                                            <td key={i} style={{ "textAlign": "center" }}>
                                                 {item.name}
                                             </td>
                                 )}
@@ -359,6 +359,7 @@ export default class TableMiners extends Component {
                     {
                         this.state.pages.map((page: any, i) =>
                             <div className="pagenumber"
+                                key={i}
                                 style={this.state.actualPage === i + 1 ? { backgroundColor: "#33A7FF", color: 'white' } : {}}
                                 id={(i + 1).toString()}
                                 onClick={e => this.setPage(e)}>
