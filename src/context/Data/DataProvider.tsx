@@ -111,15 +111,16 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
                             })
                         }
                     }
-                    const rawLargeIssues = await this.props.github.githubOcto.issues.listForRepo({
+                    const rawLargeIssuesAll = await this.props.github.githubOcto.issues.listForRepo({
                         owner: config.onboardingLargeOwner,
                         repo: config.onboardingLargeClientRepo,
                         assignee: '*',
                         state: 'open',
                         labels: 'bot:readyToSign'
                     })
+                    const rawLargeIssues = rawLargeIssuesAll.data.filter((item: any) => !item.labels.find((l: any) => l.name === "status:needsDiligence"))
                     const largeissues: any[] = []
-                    for (const rawLargeIssue of rawLargeIssues.data) {
+                    for (const rawLargeIssue of rawLargeIssues) {
                         const data = largeutils.parseIssue(rawLargeIssue.body)
                         if (data.correct) {
                             try {
