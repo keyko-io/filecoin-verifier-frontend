@@ -605,36 +605,6 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
                     body: commentContent,
                 })
                 
-                if (labels.find((item:any)=> item === "state:StartSignDatacap")) {
-                    await this.props.github.githubOcto.issues.removeAllLabels({
-                        owner: config.onboardingLargeOwner,
-                        repo: config.onboardingLargeClientRepo,
-                        issue_number: requestNumber,
-                    })
-                    await this.props.github.githubOcto.issues.addLabels({
-                        owner: config.onboardingLargeOwner,
-                        repo: config.onboardingLargeClientRepo,
-                        issue_number: requestNumber,
-                        labels: ['state:Granted'],
-                    })
-                    //METRICS
-                    const params: MetricsApiParams = {
-                        name,
-                        clientAddress: address,
-                        msigAddress,
-                        amount: formattedDc,
-                        messageCid: messageID
-                    }
-                    callMetricsApi(requestNumber, EVENT_TYPE.DC_ALLOCATION, params, config.metrics_api_environment)
-                    return
-                }
-
-                await this.props.github.githubOcto.issues.addLabels({
-                    owner: config.onboardingLargeOwner,
-                    repo: config.onboardingLargeClientRepo,
-                    issue_number: requestNumber,
-                    labels: ['state:StartSignDatacap'],
-                })
             },
             assignToIssue: async (issue_number: any, assignees: any) => {
                 let isAssigned = false
