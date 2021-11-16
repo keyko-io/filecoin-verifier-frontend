@@ -9,10 +9,11 @@ export function addressFilter(input: string) {
     return `${input.substr(0, 5)}...${input.substr(-5, 5)}`
 }
 
-export function anyToBytes(inputDatacap: any) {
-    const ext = inputDatacap.replace(/[0-9.]/g, '')
-    const datacap = inputDatacap.replace(/[^0-9.]/g, '')
-    const bytes = byteConverter.convert(datacap, ext, 'B')
+export function anyToBytes(inputDatacap: string) {
+    const formatDc = inputDatacap.replace(/[\s]/g, "").replace(/[t]/g, "T").replace(/[b]/g, "B").replace(/[p]/g, "P").replace(/[I]/g, "i").replace(/\s*/g, "")
+    const ext = formatDc.replace(/[0-9.]/g, '')
+    const datacap = formatDc.replace(/[^0-9.]/g, '')
+    const bytes = byteConverter.convert(parseInt(datacap), ext, 'B')
     return bytes
 }
 
