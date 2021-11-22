@@ -139,7 +139,8 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
                                 const comment = comments[comments.length - 1]
                                 const pendingLargeTxs = await this.props.wallet.api.pendingTransactions(comment.notaryAddress)
                                 const txs = pendingLargeTxs.filter((pending: any) => pending.parsed.params.address === comment.clientAddress)
-                                if (comment && comment.multisigMessage && comment.correct) {
+                               const approvals = rawLargeIssue.labels.find((label:any)=> label.name === "state:StartSignDatacap") ? 1 : 0
+                               if (comment && comment.multisigMessage && comment.correct) {
                                     let largeRequest: any = {
                                         issue_number: rawLargeIssue.number,
                                         issue_Url: rawLargeIssue.html_url,
@@ -149,7 +150,7 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
                                         url: rawLargeIssue.html_url,
                                         number: rawLargeIssue.number,
                                         mine: rawLargeIssue.assignees.find((a: any) => a.login === user.data.login) !== undefined,
-                                        approvals: txs.length > 0 ? txs[0].signers.length : 0,
+                                        approvals,
                                         tx: txs.length > 0 ? txs[0] : null,
                                         labels: rawLargeIssue.labels.map((item: any) => item.name),
                                         data
@@ -244,6 +245,7 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
                     const issues: any[] = []
                     let rawIssues: any[] = []
                     // Get list of issues with label “Approve” (proposed=false) or “StartSignOnchain” (proposed=true).
+                    // TODO look if using AND in labels work
                     const SignOnChain = await this.props.github.githubOctoGeneric.octokit.issues.listForRepo({
                         owner: config.lotusNodes[this.props.wallet.networkIndex].notaryOwner,
                         repo: config.lotusNodes[this.props.wallet.networkIndex].notaryRepo,
