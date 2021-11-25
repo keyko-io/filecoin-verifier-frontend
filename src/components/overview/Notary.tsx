@@ -250,34 +250,33 @@ export default class Notary extends Component<NotaryProps, NotaryStates> {
                 let errorMessage = ''
                 try {
                     const datacap = anyToBytes(request.datacap)
-                    sentryData.datacap = request.datacap
-                    console.log('datacap being approved:', request.datacap)
-
-
-
                     let address = request.address
+
+                    sentryData.datacap = request.datacap
+                    sentryData.address = address
+                    sentryData.approvals = request.approvals
+
+                    this.context.wallet.dispatchNotification(`datacap being approved: ${request.datacap} \nclient address: ${address}`)
 
                     if (address.length < 12) {
                         address = await this.context.wallet.api.actorKey(address)
+                        sentryData.actorKey = address
+                    }
+                    
+                    let messageID
+                    const signer = this.context.wallet.activeAccount ? this.context.wallet.activeAccount : ""
+                    if (request.approvals) {
+                        messageID = await this.context.wallet.api.approvePending(this.context.wallet.multisigID, request.tx, this.context.wallet.walletIndex)
+                        this.setState({ approvedDcRequests: [...this.state.approvedDcRequests, request.number] })
+                    } else {
+                        messageID = await this.context.wallet.api.multisigVerifyClient(this.context.wallet.multisigID, address, BigInt(Math.floor(datacap)), this.context.wallet.walletIndex)
+                        console.log(request)
+                        request.approvals = true
                     }
 
-                    console.log('address:', address)
-                    sentryData.address = address
-
-                    let messageID
-
-                    const approvals = request.approvals
-                    const signer = this.context.wallet.activeAccount ? this.context.wallet.activeAccount : ""
-                    sentryData.approvals = approvals
-
-                    !approvals ?
-                        messageID = await this.context.wallet.api.multisigVerifyClient(this.context.wallet.multisigID, address, BigInt(Math.floor(datacap)), this.context.wallet.walletIndex)
-                        :
-                        messageID = await this.context.wallet.api.approvePending(this.context.wallet.multisigID, request.tx, this.context.wallet.walletIndex)
-
-                    if(!messageID){
+                    if (!messageID) {
                         errorMessage += `#### the transaction was unsuccessful - retry later.`
-                        await this.context.updateGithubVerifiedLarge(request.number, null, address, datacap, approvals, signer, this.context.wallet.multisigID, request.data.name, errorMessage, [])
+                        await this.context.updateGithubVerifiedLarge(request.number, null, address, datacap, request.approvals, signer, this.context.wallet.multisigID, request.data.name, errorMessage, [])
                         this.context.wallet.dispatchNotification(errorMessage)
                         throw Error(errorMessage)
                     }
@@ -285,12 +284,9 @@ export default class Notary extends Component<NotaryProps, NotaryStates> {
                     sentryData.messageID = messageID
                     sentryData.signer = signer
 
-                    await this.context.updateGithubVerifiedLarge(request.number, messageID, address, datacap, approvals, signer, this.context.wallet.multisigID, request.data.name, '', request.labels)
+                    await this.context.updateGithubVerifiedLarge(request.number, messageID, address, datacap, request.approvals, signer, this.context.wallet.multisigID, request.data.name, '', request.labels)
                     this.context.wallet.dispatchNotification('Transaction successful! Verify Client Message sent with ID: ' + messageID)
 
-                    if (approvals) {
-                        this.setState({ approvedDcRequests: [...this.state.approvedDcRequests, request.number] })
-                    }
                     this.setState({ approveLoading: false })
                 } catch (e) {
                     this.context.wallet.dispatchNotification('Verification failed: ' + e.message)
@@ -502,7 +498,7 @@ export default class Notary extends Component<NotaryProps, NotaryStates> {
                                                 <td>{clientReq?.address}</td>
                                                 <td>{clientReq?.multisig}</td>
                                                 <td>{clientReq?.datacap}</td>
-                                                <td>{clientReq?.approvals ? clientReq?.approvals : 0}</td>
+                                                <td>{clientReq?.approvals ? 1 : 0}</td>
                                                 <td><a target="_blank" rel="noopener noreferrer" href={clientReq?.url}>#{clientReq?.number}</a></td>
                                             </tr>
                                         ) : null}
