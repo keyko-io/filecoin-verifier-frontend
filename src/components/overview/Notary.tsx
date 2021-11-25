@@ -34,7 +34,7 @@ type NotaryStates = {
     orderByPublic: string,
     refPublic: any,
     approveLoading: boolean,
-    approvedDcRequests:any[]
+    approvedDcRequests: any[]
 }
 
 type NotaryProps = {
@@ -83,7 +83,7 @@ export default class Notary extends Component<NotaryProps, NotaryStates> {
         refPublic: {} as any,
         regLargePublic: {} as any,
         approveLoading: false,
-        approvedDcRequests:[] as any[]
+        approvedDcRequests: [] as any[]
     }
 
     componentDidMount() {
@@ -185,7 +185,7 @@ export default class Notary extends Component<NotaryProps, NotaryStates> {
                 let sentryData: any = {}
                 let errorMessage = ''
                 try {
-                    sentryData.request = {...request}
+                    sentryData.request = { ...request }
                     const datacap = anyToBytes(request.data.datacap)
                     console.log('datacap', datacap)
                     address = request.data.address
@@ -199,6 +199,7 @@ export default class Notary extends Component<NotaryProps, NotaryStates> {
                     }
 
                     const signer = this.context.wallet.activeAccount ? this.context.wallet.activeAccount : ""
+
                     const txReceipt = await this.context.wallet.api.getReceipt(messageID)
                     if (txReceipt.ExitCode !== 0) {
                         errorMessage += `#### There was an error processing the message \n>${messageID}, retry later.`
@@ -244,58 +245,56 @@ export default class Notary extends Component<NotaryProps, NotaryStates> {
         for (const request of this.context.largeClientRequests) {
             if (this.state.selectedLargeClientRequests.includes(request.number)) {
                 let sentryData: any = {}
-                sentryData.request = {...request}
+                sentryData.request = { ...request }
                 sentryData.requestNumber = request.number
                 let errorMessage = ''
                 try {
                     const datacap = anyToBytes(request.datacap)
-                    console.log('datacap', datacap)
-                    sentryData.datacap = datacap.toString()
+                    sentryData.datacap = request.datacap
+                    console.log('datacap being approved:', request.datacap)
 
 
-                   
+
                     let address = request.address
 
                     if (address.length < 12) {
                         address = await this.context.wallet.api.actorKey(address)
                     }
 
-                    console.log('address', address)
+                    console.log('address:', address)
                     sentryData.address = address
 
                     let messageID
 
-                    // const approvals = request.approvals[0] && request.approvals[0].tx ? request.approvals[0].tx.signers.length : 0
-                    const approvals : boolean = request.approvals ? true : false
+                    const approvals = request.approvals
+                    const signer = this.context.wallet.activeAccount ? this.context.wallet.activeAccount : ""
                     sentryData.approvals = approvals
 
-                    !approvals  ?
+                    !approvals ?
                         messageID = await this.context.wallet.api.multisigVerifyClient(this.context.wallet.multisigID, address, BigInt(Math.floor(datacap)), this.context.wallet.walletIndex)
                         :
                         messageID = await this.context.wallet.api.approvePending(this.context.wallet.multisigID, request.tx, this.context.wallet.walletIndex)
 
-                    sentryData.messageID = messageID
-                    const signer = this.context.wallet.activeAccount ? this.context.wallet.activeAccount : ""
-                    sentryData.signer = signer
-
-                    const txReceipt = await this.context.wallet.api.getReceipt(messageID)
-                    if (txReceipt.ExitCode !== 0) {
-                        errorMessage += `#### There was an error processing the message \n>${messageID}, retry later.`
-                        await this.context.updateGithubVerifiedLarge(request.number, messageID, address, datacap, approvals, signer, this.context.wallet.multisigID, request.data.name, errorMessage, [])
-                        this.context.wallet.dispatchNotification('Error processing the message: ' + messageID)
+                    if(!messageID){
+                        errorMessage += `#### the transaction was unsuccessful - retry later.`
+                        await this.context.updateGithubVerifiedLarge(request.number, null, address, datacap, approvals, signer, this.context.wallet.multisigID, request.data.name, errorMessage, [])
+                        this.context.wallet.dispatchNotification(errorMessage)
                         throw Error(errorMessage)
                     }
+
+                    sentryData.messageID = messageID
+                    sentryData.signer = signer
+
                     await this.context.updateGithubVerifiedLarge(request.number, messageID, address, datacap, approvals, signer, this.context.wallet.multisigID, request.data.name, '', request.labels)
-                    this.context.wallet.dispatchNotification('Verify Client Message sent with ID: ' + messageID)
+                    this.context.wallet.dispatchNotification('Transaction successful! Verify Client Message sent with ID: ' + messageID)
 
-                    if (approvals){
-                        this.setState({approvedDcRequests: [...this.state.approvedDcRequests,request.number ]})
+                    if (approvals) {
+                        this.setState({ approvedDcRequests: [...this.state.approvedDcRequests, request.number] })
                     }
-
                     this.setState({ approveLoading: false })
                 } catch (e) {
                     this.context.wallet.dispatchNotification('Verification failed: ' + e.message)
-                    console.log(e.stack)
+                    // console.log(e.stack)
                     this.setState({ approveLoading: false })
                     sentryData = {
                         ...sentryData,
@@ -491,7 +490,7 @@ export default class Notary extends Component<NotaryProps, NotaryStates> {
                                         .filter((_: any, i: any) => this.state.regLargePublic?.checkIndex(i))
                                         .filter((clientReq: any, i: any) => !this.state.approvedDcRequests?.includes(clientReq?.number))
                                         .map((clientReq: any, index: any) =>
-                                           <tr key={index}
+                                            <tr key={index}
                                                 className={this.context.wallet.multisigID !== clientReq?.multisig ? "disabledRow" : ""}
                                                 onClick={() => this.context.wallet.multisigID !== clientReq?.multisig ?
                                                     this.context.wallet.dispatchNotification(CANT_SIGN_MESSAGE) : {}}>
