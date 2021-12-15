@@ -165,6 +165,7 @@ export default class RootKeyHolder extends Component<RootKeyHolderProps, RootKey
                 var label = ''
                 let filfox = ''
                 let errorMessage = ''
+                let warningMessage = ''
                 let messageID = ''
                 let sentryData: any = {}
                 try {
@@ -185,6 +186,7 @@ export default class RootKeyHolder extends Component<RootKeyHolderProps, RootKey
                                 await this.context.wallet.api.approveVerifier(tx.verifier, BigInt(tx.datacap), tx.signer, tx.id, this.context.wallet.walletIndex);
 
                             const txReceipt = await this.context.wallet.api.getReceipt(messageID)
+                            if(!txReceipt) warningMessage += `#### @${assignee} The bot couldn't find the Receipt. \nPlease, manually check the message to see that exitcode equals 0.\n>${messageID}`
                             if (txReceipt.ExitCode !== 0) errorMessage += `#### @${assignee} There was an error processing the message >${messageID}`
                             messageIds.push(messageID)
                             this.context.wallet.dispatchNotification('Accepting Message sent with ID: ' + messageID)
@@ -217,6 +219,7 @@ export default class RootKeyHolder extends Component<RootKeyHolderProps, RootKey
                                     await this.context.wallet.api.proposeVerifier(address, BigInt(datacap), this.context.wallet.walletIndex)
                                 console.log("messageID: " + messageID)
                                 const txReceipt = await this.context.wallet.api.getReceipt(messageID)
+                                if(!txReceipt) warningMessage += `#### @${assignee} The bot couldn't find the Receipt. \nPlease, manually check the message to see that exitcode equals 0.\n>${messageID}`
                                 if (txReceipt.ExitCode !== 0) errorMessage += `#### @${assignee} There was an error processing the message\n>${messageID}`
                                 messageIds.push(messageID)
                                 this.context.wallet.dispatchNotification('Accepting Message sent with ID: ' + messageID)
@@ -245,6 +248,14 @@ export default class RootKeyHolder extends Component<RootKeyHolderProps, RootKey
                             repo: config.lotusNodes[this.context.wallet.networkIndex].notaryRepo,
                             issue_number: request.issue_number,
                             body: commentContent,
+                        })
+                    }
+                    if(warningMessage != ''){
+                        await this.context.github.githubOctoGeneric.octokit.issues.createComment({
+                            owner: config.lotusNodes[this.context.wallet.networkIndex].notaryOwner,
+                            repo: config.lotusNodes[this.context.wallet.networkIndex].notaryRepo,
+                            issue_number: request.issue_number,
+                            body: warningMessage,
                         })
                     }
                     if (label != '') {
