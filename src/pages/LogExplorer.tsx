@@ -4,7 +4,8 @@ import { ButtonPrimary, Input, select } from "slate-react-system";
 import Welcome from '../components/Welcome'
 import Header from '../components/Header';
 import testLogs from '../data/test-logs.json'
-import { Select, MenuItem, TextField } from '@material-ui/core';
+import { Select, MenuItem, TextField, Button } from '@material-ui/core';
+// import LoadingButton from '@mui/lab/LoadingButton';
 import { Data } from '../context/Data/Index'
 
 
@@ -12,54 +13,95 @@ class LogExplorer extends Component<{}> {
   public static contextType = Data
 
   state = {
-    issue_number: 94,
-    maxLogsNumber: 5,
+    issue_number: "",
+    srchButtonDisabled: false,
+    maxLogsNumber: 10,
     searchText: "",
-    date: ""
+    date: "",
+    logs: []
   }
 
   columns = [
     { key: "date", name: "Date", width: "98px" },
-    { key: "message", name: "message" },
     { key: "type", name: "Type" },
+    { key: "repo", name: "Repo" },
+    { key: "actionKeyword", name: "Action" },
+    { key: "message", name: "Message" },
     { key: "issue_number", name: "Issue Number" },
   ]
 
 
-  async componentDidMount(){
-    console.log("loggggggg", await this.fetchLogs())
+
+
+  async componentDidMount() {
   }
 
-  fetchLogs = async () => {
-    return await fetch("https://cbqluey8wa.execute-api.us-east-1.amazonaws.com/dev",
-    {
-      method: 'POST', // *GET, POST, PUT, DELETE, etc.
-      // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
-      body: JSON.stringify({
-        "type": "GET_LOGS",
-        "searchType": "issue_number",
-        "operation": "=",
-        "search": "359"
-      }) // body data type must match "Content-Type" header
-    })
-      
-  };
+  fetchLogs = async (issue_number: any) => {
+    try {
+      const res = (await fetch("https://cbqluey8wa.execute-api.us-east-1.amazonaws.com/dev",
+        {
+          method: 'POST',
+          body: JSON.stringify({
+            "type": "GET_LOGS",
+            "searchType": "issue_number",
+            "operation": "=",
+            "search": issue_number
+          })
+        })).json()
+      return res
+    } catch (error) {
+      console.log(error)
+    }
+  }
 
 
-  resetState(){
+  resetState() {
     this.setState({
-      issue_number: 94,
-      maxLogsNumber: 5,
+      issue_number: "",
+      maxLogsNumber: 10,
       searchText: "",
       date: ""
     })
   }
 
-  selectIssueNumber(e: any) {
-    this.resetState()
-    this.setState({ 
-      issue_number: e.target.value,
-     })
+  ableDisableSrchButton() {
+    if (!this.state.srchButtonDisabled) this.setState({ srchButtonDisabled: true })
+    if (this.state.srchButtonDisabled) this.setState({ srchButtonDisabled: false })
+  }
+
+  inputIssueNumber(e: any) {
+    this.setState({ issue_number: e.target.value })
+
+  }
+
+  async selectIssueNumber() {
+    try {
+      this.ableDisableSrchButton() // disable
+      const res = await this.fetchLogs(this.state.issue_number)
+      this.setState({ logs: this.formatItems(res.items) })
+      console.log("loggggggs", this.state.logs)
+      this.ableDisableSrchButton() // enable
+    } catch (error) {
+      this.ableDisableSrchButton()
+      console.log(error)
+    }
+  }
+
+  formatItems(items: any[]) {
+
+    const newItemsArray = []
+    for (let item of items) {
+      let obj: any = {}
+      for (const [key, value] of Object.entries(item)) {
+        for (const [keyx, valuex] of Object.entries(value as string)) {
+          obj[key] = valuex
+        }
+      }
+      newItemsArray.push(obj)
+    }
+    return newItemsArray;
+
+
   }
 
   loadMoreLogs() {
@@ -70,12 +112,13 @@ class LogExplorer extends Component<{}> {
     this.setState({
       searchText: e.target.value
     })
+    console.log(this.state.searchText)
   }
 
   setDate(e: any) {
-    console.log(e.target.value)
-    this.setState({ date: e.target.value })
-    console.log(this.state.date)
+    console.log("data", e.target.value)
+    this.setState({ date: e.target.value }, () => console.log(this.state.date))
+
   }
 
   render() {
@@ -92,26 +135,12 @@ class LogExplorer extends Component<{}> {
               <div className="tabletitle">
                 <div className="title">Select issue number to show corresponding logs</div>
                 <div className="searchMakeReuestForm doublebutton"></div>
-                <Select
-                  labelId="demo-simple-select-label"
-                  autoWidth
-                  value={this.state.issue_number}
-                  onClick={(e) => {
-                    this.selectIssueNumber(e)
-                  }}
-                >
-                  {
-                    testLogs.map((item) => item.issue_number)
-                      .filter((item, i, arr) => arr.indexOf(item) === i)
-                      .map((numb: any, i: any) => <MenuItem key={i} value={numb}>Issue #{numb}</MenuItem>)
-                  }
-                </Select>
-                <TextField id="filled-basic" 
-                label="search" 
-                variant="filled" 
-                size="small" 
-                value={this.state.searchText}
-                onChange={(e) => this.searchText(e)} />
+                <TextField id="filled-basic"
+                  label="search"
+                  variant="filled"
+                  size="small"
+                  value={this.state.searchText}
+                  onChange={(e) => this.searchText(e)} />
                 <TextField
                   id="date"
                   label="select date"
@@ -123,6 +152,20 @@ class LogExplorer extends Component<{}> {
                   }}
                   onChange={(e) => this.setDate(e)}
                 />
+                <TextField id="issue-number-id"
+                  label="Search Issue Number"
+                  variant="filled"
+                  size="small"
+                  onChange={(e) => this.inputIssueNumber(e)}
+                />
+                <Button
+                  disabled={this.state.issue_number == "" ?  true : this.state.srchButtonDisabled}
+                  size="small"
+                  onClick={() => this.selectIssueNumber()}
+                  variant="contained"
+                  color="primary"
+                >Search Logs
+                </Button>
               </div>
             </div>
 
@@ -131,30 +174,39 @@ class LogExplorer extends Component<{}> {
                 <table>
                   <thead style={{ textAlign: "center" }}>
                     <tr>
-                    {
-                      this.columns.map((column: any, i: any) =>
-                        <td key={i}>{column.name} </td>
-                      )}
+                      {
+                        this.columns.map((column: any, i: any) =>
+                          <td key={i}>{column.name} </td>
+                        )}
                     </tr>
                   </thead>
                   <tbody>
                     {
-                      testLogs
-                        .filter((item: any, i: any) => item.issue_number === this.state.issue_number)
-                        .filter((item: any, i: any) => item.message.includes(this.state.searchText))
-                        .filter((item: any, i: any) => this.state.date ? item.dateTimestamp == this.state.date : true)
+                      this.state.logs
+                        .filter((item: any, i: any) => item.message.match(new RegExp(this.state.searchText, "gi" )) || item.repo.match(new RegExp(this.state.searchText, "gi" ))  )
+                        .filter((item: any, i: any) => this.state.date ? new Date(item.dateTimestamp).toLocaleDateString('fr-CA', { year: 'numeric', month: '2-digit', day: '2-digit' }) == this.state.date : true)
                         .slice(0, this.state.maxLogsNumber)
                         .map((item: any, i: any) =>
                           <tr key={i} style={{ textAlign: "center" }}>
-                            <td >{item.dateTimestamp} </td>
+                            <td >{new Date(item.dateTimestamp).toLocaleDateString()} {new Date(item.dateTimestamp).toLocaleTimeString()} </td>
+                            <td >{item.type} </td>
+                            <td >{item.repo} </td>
+                            <td >{item.actionKeyword} </td>
                             <td >{item.message} </td>
                             <td >{item.type} </td>
                             <td >{item.issue_number} </td>
                           </tr>
                         )}
                     <tr style={{ textAlign: "center" }}>
-                      <td colSpan={4}>
-                        <ButtonPrimary onClick={() => this.loadMoreLogs()}>Load More logs</ButtonPrimary>
+                      <td colSpan={7}>
+                        <Button
+                          disabled={this.state.srchButtonDisabled}
+                          size="small"
+                          onClick={() => this.loadMoreLogs()}
+                          variant="outlined"
+                          color="primary"
+                        >Load more logs
+                        </Button>
                       </td>
                     </tr>
                   </tbody>
