@@ -24,7 +24,7 @@ class LogExplorer extends Component<{}> {
   columns = [
     { key: "date", name: "Date", width: "98px" },
     { key: "type", name: "Type" },
-    { key: "repo", name: "Repo" },
+    { key: "repo", name: "Phase" },
     { key: "actionKeyword", name: "Action" },
     { key: "message", name: "Message" },
     { key: "issue_number", name: "Issue Number" },
@@ -133,7 +133,7 @@ class LogExplorer extends Component<{}> {
           <div className="wrapperverifiers">
             <div className="tableselects">
               <div className="tabletitle">
-                <div className="title">Select issue number to show corresponding logs</div>
+                <div className="title">Select issue number to show corresponding logs - type 0 to see general logs</div>
                 <div className="searchMakeReuestForm doublebutton"></div>
                 <TextField id="filled-basic"
                   label="search"
@@ -193,7 +193,6 @@ class LogExplorer extends Component<{}> {
                             <td >{item.repo} </td>
                             <td >{item.actionKeyword} </td>
                             <td >{item.message} </td>
-                            <td >{item.type} </td>
                             <td >{item.issue_number} </td>
                           </tr>
                         )}
