@@ -4,7 +4,6 @@ import Welcome from '../components/Welcome'
 import Header from '../components/Header';
 import testLogs from '../data/test-logs.json'
 import { TextField, Button } from '@material-ui/core';
-// import LoadingButton from '@mui/lab/LoadingButton';
 import { Data } from '../context/Data/Index'
 
 
@@ -17,11 +16,12 @@ class LogExplorer extends Component<{}> {
     maxLogsNumber: 10,
     searchText: "",
     date: "",
-    logs: []
+    logs: [],
+    sortBy:"dateTimestamp"
   }
 
   columns = [
-    { key: "date", name: "Date", width: "98px" },
+    { key: "dateTimestamp", name: "Date", width: "98px" },
     { key: "type", name: "Type" },
     { key: "repo", name: "Phase" },
     { key: "actionKeyword", name: "Action" },
@@ -78,7 +78,6 @@ class LogExplorer extends Component<{}> {
       this.ableDisableSrchButton() // disable
       const res = await this.fetchLogs(this.state.issue_number)
       this.setState({ logs: this.formatItems(res.items) })
-      console.log("loggggggs", this.state.logs)
       this.ableDisableSrchButton() // enable
     } catch (error) {
       this.ableDisableSrchButton()
@@ -87,7 +86,6 @@ class LogExplorer extends Component<{}> {
   }
 
   formatItems(items: any[]) {
-
     const newItemsArray = []
     for (let item of items) {
       let obj: any = {}
@@ -98,9 +96,7 @@ class LogExplorer extends Component<{}> {
       }
       newItemsArray.push(obj)
     }
-    return newItemsArray;
-
-
+    return newItemsArray.sort((a:any,b:any) =>  new Date(b[this.state.sortBy]).valueOf() - new Date(a[this.state.sortBy]).valueOf())
   }
 
   loadMoreLogs() {
