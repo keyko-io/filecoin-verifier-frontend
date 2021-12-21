@@ -1,10 +1,9 @@
 import React, { Component, useState } from 'react';
 // @ts-ignore
-import { ButtonPrimary, Input, select } from "slate-react-system";
 import Welcome from '../components/Welcome'
 import Header from '../components/Header';
 import testLogs from '../data/test-logs.json'
-import { Select, MenuItem, TextField, Button } from '@material-ui/core';
+import { TextField, Button } from '@material-ui/core';
 // import LoadingButton from '@mui/lab/LoadingButton';
 import { Data } from '../context/Data/Index'
 
@@ -169,8 +168,8 @@ class LogExplorer extends Component<{}> {
               </div>
             </div>
 
-            <div className="verifiers verifierview">
-              <div className="tableverifiers verifierview">
+            <div className="verifiers">
+              <div className="tableverifiers">
                 <table>
                   <thead style={{ textAlign: "center" }}>
                     <tr>
