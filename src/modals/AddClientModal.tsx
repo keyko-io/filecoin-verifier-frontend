@@ -67,7 +67,7 @@ class AddClientModal extends Component<ModalProps, States> {
             }
            
             if (this.props.newDatacap) {
-                this.context.updateGithubVerified(this.state.issueNumber, messageID, this.state.address, dataCapIssue)
+                this.context.updateGithubVerified(this.state.issueNumber, messageID, this.state.address, dataCapIssue, this.context.wallet.activeAccount,'')
             }
 
             this.setState({
