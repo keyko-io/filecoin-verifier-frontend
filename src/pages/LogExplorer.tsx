@@ -35,25 +35,6 @@ class LogExplorer extends Component<{}> {
   async componentDidMount() {
   }
 
-  fetchLogs = async (issue_number: any) => {
-    try {
-      const res = (await fetch("https://cbqluey8wa.execute-api.us-east-1.amazonaws.com/dev",
-        {
-          method: 'POST',
-          body: JSON.stringify({
-            "type": "GET_LOGS",
-            "searchType": "issue_number",
-            "operation": "=",
-            "search": issue_number
-          })
-        })).json()
-      return res
-    } catch (error) {
-      console.log(error)
-    }
-  }
-
-
   resetState() {
     this.setState({
       issue_number: "",
@@ -76,7 +57,7 @@ class LogExplorer extends Component<{}> {
   async selectIssueNumber() {
     try {
       this.ableDisableSrchButton() // disable
-      const res = await this.fetchLogs(this.state.issue_number)
+      const res = await this.context.fetchLogs(this.state.issue_number)
       this.setState({ logs: this.formatItems(res.items) })
       this.ableDisableSrchButton() // enable
     } catch (error) {

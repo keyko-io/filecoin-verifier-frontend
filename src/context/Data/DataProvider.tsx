@@ -49,6 +49,7 @@ interface DataProviderStates {
     refreshGithubData: any
     searchUserIssues: any,
     logToSentry: any,
+    fetchLogs: any,
     approvedNotariesLoading: boolean,
     ldnRequestsLoading: boolean
 }
@@ -63,6 +64,23 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
     constructor(props: DataProviderProps) {
         super(props);
         this.state = {
+            fetchLogs: async (issue_number: any) => {
+                try {
+                    const res = (await fetch("https://cbqluey8wa.execute-api.us-east-1.amazonaws.com/dev",
+                      {
+                        method: 'POST',
+                        body: JSON.stringify({
+                          "type": "GET_LOGS",
+                          "searchType": "issue_number",
+                          "operation": "=",
+                          "search": issue_number
+                        })
+                      })).json()
+                    return res
+                  } catch (error) {
+                    console.log(error)
+                  }
+            },
             logToSentry: (category: string, message: string, level: "info" | "error", data: any) => {
                 let breadCrumb = {
                     category,
