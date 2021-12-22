@@ -95,7 +95,6 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
                                 "search": issue_number
                             })
                         })).json()
-                    console.log("response log", res)
                     return res
                 } catch (error) {
                     console.log(error)
