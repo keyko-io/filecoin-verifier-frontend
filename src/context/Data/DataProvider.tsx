@@ -65,9 +65,9 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
     constructor(props: DataProviderProps) {
         super(props);
         this.state = {
-            postLogs: async (message: string, type: string, actionKeyword: string, issueNumber: string) => {
+            postLogs: async (message: string, type: string, actionKeyword: string, issueNumber: number) => {
                 try {
-                    const logArray = [{ message, type, actionKeyword, repo: "app", issueNumber }]
+                    const logArray = [{ message, type, actionKeyword, repo: "Fil+app", issueNumber:issueNumber.toString() }]
                     const res = (await fetch("https://cbqluey8wa.execute-api.us-east-1.amazonaws.com/dev",
                         {
                             method: 'POST',

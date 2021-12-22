@@ -177,7 +177,7 @@ export default class RootKeyHolder extends Component<RootKeyHolderProps, RootKey
                     if (!assignee) {
                         throw new Error("You should assign the issue to someone")
                     }
-                    await this.context.postLogs(`multisig ${request.addresses[0]} - starting to sign it!`,"DEBUG", "", request.issue_number)
+                    await this.context.postLogs(`multisig ${request.addresses[0]} - starting to approve it!`,"DEBUG", "", request.issue_number)
                     if (request.proposed === true) {
                         await this.context.postLogs(`multisig ${request.addresses[0]} - the address is proposed. going to confirm!`,"DEBUG", "", request.issue_number)
                         // for each tx
@@ -299,7 +299,7 @@ export default class RootKeyHolder extends Component<RootKeyHolderProps, RootKey
                             messageCid: messageIds[0] ? messageIds[0] : ""
                         }
                         callMetricsApi(request.issue_number, EVENT_TYPE.MULTISIG_APPROVED, params, config.metrics_api_environment)
-                        
+                        await this.context.postLogs(`multisig ${request.addresses[0]} approved by RKH ${this.context.wallet.activeAccount}!`,"INFO", "msig_approved", request.issue_number)
 
                     }
                 } catch (e) {
@@ -312,11 +312,8 @@ export default class RootKeyHolder extends Component<RootKeyHolderProps, RootKey
                         error: e,
                     }
                     this.context.logToSentry("handleSubmitApproveSign", `handleSubmitApproveSign error -issue n ${request.issue_number}`, "error", errData)
-                    await this.context.postLogs(e.message,"ERROR", "", request.issue_number)
-                } finally {
-                    await this.context.postLogs(`multisig ${request.addresses[0]} approved by RKH ${this.context.wallet.activeAccount}!`,"INFO", "msig_approved", request.issue_number)
-                    this.context.logToSentry("handleSubmitApproveSign", `handleSubmitApproveSign info -issue n ${request.issue_number}`, "info", sentryData)
-                }
+                    await this.context.postLogs(`Error approving the multisig: ${e.message}`,"ERROR", "", request.issue_number)
+                } 
             }
         }
         this.setState({ approveLoading: false })
