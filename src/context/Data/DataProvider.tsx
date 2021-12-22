@@ -85,6 +85,7 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
                 try {
                     const res = (await fetch("https://cbqluey8wa.execute-api.us-east-1.amazonaws.com/dev",
                         {
+                            headers: {"x-api-key": config.loggerApiKey},
                             method: 'POST',
                             body: JSON.stringify({
                                 "type": "GET_LOGS",
@@ -93,6 +94,7 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
                                 "search": issue_number
                             })
                         })).json()
+                        console.log("response log", res)
                     return res
                 } catch (error) {
                     console.log(error)

@@ -17,6 +17,7 @@ export const config = {
     approvalsThreshold: process.env.REACT_APP_APPROVALS_THRESHOLD || '1',
     largeClientRequest: 5497558000000000000000000,
     metrics_api_environment: process.env.REACT_APP_METRICS_API_ENVIRONMENT || "test",
+    loggerApiKey: process.env.REACT_APP_X_API_KEY || "fake-api-key-change-with-a-real-one",
     lotusNodes: [{
         name: 'Mainnet',
         code: 461,
