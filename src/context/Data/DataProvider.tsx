@@ -50,6 +50,7 @@ interface DataProviderStates {
     searchUserIssues: any,
     logToSentry: any,
     fetchLogs: any,
+    postLogs: any,
     approvedNotariesLoading: boolean,
     ldnRequestsLoading: boolean
 }
@@ -64,22 +65,38 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
     constructor(props: DataProviderProps) {
         super(props);
         this.state = {
+            postLogs: async (message: string, type: string, actionKeyword: string, issueNumber: string) => {
+                try {
+                    const logArray = [{ message, type, actionKeyword, repo: "app", issueNumber }]
+                    const res = (await fetch("https://cbqluey8wa.execute-api.us-east-1.amazonaws.com/dev",
+                        {
+                            method: 'POST',
+                            body: JSON.stringify({
+                                "type": "POST_CUSTOM_LOGS",
+                                "logArray": logArray,
+                            })
+                        })).json()
+                    return res
+                } catch (error) {
+                    console.log(error)
+                }
+            },
             fetchLogs: async (issue_number: any) => {
                 try {
                     const res = (await fetch("https://cbqluey8wa.execute-api.us-east-1.amazonaws.com/dev",
-                      {
-                        method: 'POST',
-                        body: JSON.stringify({
-                          "type": "GET_LOGS",
-                          "searchType": "issue_number",
-                          "operation": "=",
-                          "search": issue_number
-                        })
-                      })).json()
+                        {
+                            method: 'POST',
+                            body: JSON.stringify({
+                                "type": "GET_LOGS",
+                                "searchType": "issue_number",
+                                "operation": "=",
+                                "search": issue_number
+                            })
+                        })).json()
                     return res
-                  } catch (error) {
+                } catch (error) {
                     console.log(error)
-                  }
+                }
             },
             logToSentry: (category: string, message: string, level: "info" | "error", data: any) => {
                 let breadCrumb = {
@@ -157,8 +174,8 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
                                 const comment = comments[comments.length - 1]
                                 const pendingLargeTxs = await this.props.wallet.api.pendingTransactions(comment.notaryAddress)
                                 const txs = pendingLargeTxs.filter((pending: any) => pending.parsed.params.address === comment.clientAddress)
-                               const approvals = rawLargeIssue.labels.find((label:any)=> label.name === "state:StartSignDatacap") ? 1 : 0
-                               if (comment && comment.multisigMessage && comment.correct) {
+                                const approvals = rawLargeIssue.labels.find((label: any) => label.name === "state:StartSignDatacap") ? 1 : 0
+                                if (comment && comment.multisigMessage && comment.correct) {
                                     let largeRequest: any = {
                                         issue_number: rawLargeIssue.number,
                                         issue_Url: rawLargeIssue.html_url,
@@ -624,7 +641,7 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
                     issue_number: requestNumber,
                     body: commentContent,
                 })
-                
+
             },
             assignToIssue: async (issue_number: any, assignees: any) => {
                 let isAssigned = false
