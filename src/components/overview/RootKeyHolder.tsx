@@ -177,7 +177,9 @@ export default class RootKeyHolder extends Component<RootKeyHolderProps, RootKey
                     if (!assignee) {
                         throw new Error("You should assign the issue to someone")
                     }
+                    await this.context.postLogs(`multisig ${request.addresses[0]} - starting to sign it!`,"DEBUG", "", request.issue_number)
                     if (request.proposed === true) {
+                        await this.context.postLogs(`multisig ${request.addresses[0]} - the address is proposed. going to confirm!`,"DEBUG", "", request.issue_number)
                         // for each tx
                         for (const tx of request.txs) {
                             messageID = tx.datacap === 0 ?
@@ -196,6 +198,7 @@ export default class RootKeyHolder extends Component<RootKeyHolderProps, RootKey
                         commentContent = `## The request has been signed by a new Root Key Holder\n#### Message sent to Filecoin Network\n>${messageIds.join()}\n${errorMessage}\n${filfox}`
                         label = errorMessage === '' ? 'status:AddedOnchain' : 'status:Error'
                     } else {
+                        await this.context.postLogs(`multisig ${request.addresses[0]} - going to propose the address.`,"DEBUG", "", request.issue_number)
                         let filfox = ''
                         let errorMessage = ''
                         for (let i = 0; i < request.datacaps.length; i++) {
@@ -239,6 +242,7 @@ export default class RootKeyHolder extends Component<RootKeyHolderProps, RootKey
                         rkhSigner: this.context.wallet.activeAccount
                     }
                     if (messageIds.length === 0) {
+                        await this.context.postLogs(`Message ID not returned from node call`,"ERROR", "", request.issue_number)
                         this.context.logToSentry("handleSubmitApproveSign", `handleSubmitApproveSign missing messageID -issue n ${request.issue_number}`, "error", sentryData)
                     }
 
@@ -295,10 +299,12 @@ export default class RootKeyHolder extends Component<RootKeyHolderProps, RootKey
                             messageCid: messageIds[0] ? messageIds[0] : ""
                         }
                         callMetricsApi(request.issue_number, EVENT_TYPE.MULTISIG_APPROVED, params, config.metrics_api_environment)
+                        
 
                     }
                 } catch (e) {
                     this.context.wallet.dispatchNotification('Failed: ' + e.message)
+                    
                     this.setState({ approveLoading: false })
                     console.log('failed', e.stack)
                     const errData = {
@@ -306,7 +312,9 @@ export default class RootKeyHolder extends Component<RootKeyHolderProps, RootKey
                         error: e,
                     }
                     this.context.logToSentry("handleSubmitApproveSign", `handleSubmitApproveSign error -issue n ${request.issue_number}`, "error", errData)
+                    await this.context.postLogs(e.message,"ERROR", "", request.issue_number)
                 } finally {
+                    await this.context.postLogs(`multisig ${request.addresses[0]} approved by RKH ${this.context.wallet.activeAccount}!`,"INFO", "msig_approved", request.issue_number)
                     this.context.logToSentry("handleSubmitApproveSign", `handleSubmitApproveSign info -issue n ${request.issue_number}`, "info", sentryData)
                 }
             }
