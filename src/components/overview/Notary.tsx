@@ -265,13 +265,16 @@ export default class Notary extends Component<NotaryProps, NotaryStates> {
                     
                     let messageID
                     const signer = this.context.wallet.activeAccount ? this.context.wallet.activeAccount : ""
+                    await this.context.postLogs(`starting to sign datacap request. approvals: ${request.approvals} -signer: ${signer}`,"DEBUG", "", request.issue_number)
                     if (request.approvals) {
                         messageID = await this.context.wallet.api.approvePending(this.context.wallet.multisigID, request.tx, this.context.wallet.walletIndex)
                         this.setState({ approvedDcRequests: [...this.state.approvedDcRequests, request.number] })
+                        await this.context.postLogs(`Datacap GRANTED: ${messageID} - signer: ${signer}`,"INFO", "datacap_granted", request.issue_number)
                     } else {
                         messageID = await this.context.wallet.api.multisigVerifyClient(this.context.wallet.multisigID, address, BigInt(Math.floor(datacap)), this.context.wallet.walletIndex)
                         console.log(request)
                         request.approvals = true
+                        await this.context.postLogs(`Datacap PROPOSED: ${messageID} - signer: ${signer}`,"INFO", "datacap_proposed", request.issue_number)
                     }
 
                     if (!messageID) {
@@ -286,10 +289,12 @@ export default class Notary extends Component<NotaryProps, NotaryStates> {
 
                     await this.context.updateGithubVerifiedLarge(request.number, messageID, address, datacap, request.approvals, signer, this.context.wallet.multisigID, request.data.name, '', request.labels)
                     this.context.wallet.dispatchNotification('Transaction successful! Verify Client Message sent with ID: ' + messageID)
+                    await this.context.postLogs(`Transaction successful! Verify Client Message sent with ID: ${messageID}`,"DEBUG", "", request.issue_number)
 
                     this.setState({ approveLoading: false })
                 } catch (e) {
                     this.context.wallet.dispatchNotification('Verification failed: ' + e.message)
+                    await this.context.postLogs(`The transaction to sign the datacap failed: ${e.message}`,"ERROR", "", request.issue_number)
                     // console.log(e.stack)
                     this.setState({ approveLoading: false })
                     sentryData = {
@@ -297,9 +302,7 @@ export default class Notary extends Component<NotaryProps, NotaryStates> {
                         error: e
                     }
                     this.context.logToSentry(`verifyLargeClients issue n. ${request.number}`, `verifyLargeClients error - issue n. ${request.number}, error:${e.message}`, "error", sentryData)
-                } finally {
-                    this.context.logToSentry(`verifyLargeClients issue n. ${request.number}`, `verifyLargeClients issue n. ${request.number}`, "info", sentryData)
-                }
+                } 
             }
         }
 
