@@ -18,6 +18,7 @@ import { config } from './config'
 import Blockies from 'react-blockies'
 import history from './context/History'
 import LogAsNotaryModal from './modals/LogAsNotaryModal'
+import { Button } from '@material-ui/core';
 
 
 library.add(fab, far, fas)
@@ -143,6 +144,12 @@ class App extends Component<{}, States> {
     this.context.search(this.state.search)
   }
 
+  goToLogs = () => {
+    history.push({
+        pathname: "/logs"
+    })
+}
+
   render() {
     return (
       <div className="App">
@@ -169,6 +176,14 @@ class App extends Component<{}, States> {
               />
             </form>
             <FontAwesomeIcon icon={["fas", "search"]} />
+          </div>
+          <div className="refresh">
+          <Button
+                  size="small"
+                  onClick={() => this.goToLogs()}
+                  variant="text"
+                >LOGS
+                </Button>
           </div>
           <div className="refresh" onClick={() => this.refresh()}>
             <FontAwesomeIcon icon={["fas", "redo"]} flip="vertical" transform={{ rotate: 135 }} />
