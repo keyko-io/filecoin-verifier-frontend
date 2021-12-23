@@ -5,7 +5,10 @@ import Header from '../components/Header';
 import testLogs from '../data/test-logs.json'
 import { TextField, Button } from '@material-ui/core';
 import { Data } from '../context/Data/Index'
+import {config} from '../config'
 
+const NOTARY_PREFIX_URL = `https://github.com/${config.onboardingOwner}/${config.onboardingNotaryOwner}/issues/`
+const LDN_PREFIX_URL = `https://github.com/${config.onboardingOwner}/${config.onboardingLargeClientRepo}/issues/`
 
 class LogExplorer extends Component<{}> {
   public static contextType = Data
@@ -17,7 +20,7 @@ class LogExplorer extends Component<{}> {
     searchText: "",
     date: "",
     logs: [],
-    sortBy:"dateTimestamp"
+    sortBy: "dateTimestamp"
   }
 
   columns = [
@@ -77,7 +80,7 @@ class LogExplorer extends Component<{}> {
       }
       newItemsArray.push(obj)
     }
-    return newItemsArray.sort((a:any,b:any) =>  new Date(b[this.state.sortBy]).valueOf() - new Date(a[this.state.sortBy]).valueOf())
+    return newItemsArray.sort((a: any, b: any) => new Date(b[this.state.sortBy]).valueOf() - new Date(a[this.state.sortBy]).valueOf())
   }
 
   loadMoreLogs() {
@@ -135,7 +138,7 @@ class LogExplorer extends Component<{}> {
                   onChange={(e) => this.inputIssueNumber(e)}
                 />
                 <Button
-                  disabled={this.state.issue_number == "" ?  true : this.state.srchButtonDisabled}
+                  disabled={this.state.issue_number == "" ? true : this.state.srchButtonDisabled}
                   size="small"
                   onClick={() => this.selectIssueNumber()}
                   variant="contained"
@@ -159,7 +162,7 @@ class LogExplorer extends Component<{}> {
                   <tbody>
                     {
                       this.state.logs
-                        .filter((item: any, i: any) => item.message.match(new RegExp(this.state.searchText, "gi" )) || item.repo.match(new RegExp(this.state.searchText, "gi" ))  )
+                        .filter((item: any, i: any) => item.message.match(new RegExp(this.state.searchText, "gi")) || item.repo.match(new RegExp(this.state.searchText, "gi")))
                         .filter((item: any, i: any) => this.state.date ? new Date(item.dateTimestamp).toLocaleDateString('fr-CA', { year: 'numeric', month: '2-digit', day: '2-digit' }) == this.state.date : true)
                         .slice(0, this.state.maxLogsNumber)
                         .map((item: any, i: any) =>
@@ -169,7 +172,11 @@ class LogExplorer extends Component<{}> {
                             <td >{item.repo} </td>
                             <td >{item.actionKeyword} </td>
                             <td >{item.message} </td>
-                            <td >{item.issue_number} </td>
+                            {
+                              item.repo === "RKH-SIGN" ? 
+                              <td ><a target="_blank" rel="noopener noreferrer" href={NOTARY_PREFIX_URL.concat(item.issue_number)}>#{item.issue_number}</a> </td>:
+                              <td ><a target="_blank" rel="noopener noreferrer" href={LDN_PREFIX_URL.concat(item.issue_number)}>#{item.issue_number}</a> </td>
+                            }
                           </tr>
                         )}
                     <tr style={{ textAlign: "center" }}>
