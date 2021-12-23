@@ -14,9 +14,13 @@
     "@fortawesome/react-fontawesome": "^0.1.11",
     "@keyko-io/filecoin-verifier-tools": "./deps/filecoin-verifier-tools",
     "@ledgerhq/hw-transport-webusb": "^5.23.0",
+    "@material-ui/core": "^4.12.3",
+    "@mui/lab": "^5.0.0-alpha.59",
     "@octokit/auth-app": "^2.10.5",
     "@octokit/rest": "^18.0.6",
     "@openworklabs/filecoin-wallet-provider": "^1.0.0-beta.2",
+    "@sentry/react": "^6.10.0",
+    "@sentry/tracing": "^6.10.0",
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.5.0",
     "@testing-library/user-event": "^7.2.1",
@@ -46,9 +50,7 @@
     "sass-loader": "^9.0.2",
     "slate-react-system": "file:./tmp/slate-react-system-0.1.0.tgz",
     "typescript": "^3.7.5",
-    "uuid": "^8.3.2",
-    "@sentry/react": "^6.10.0",
-    "@sentry/tracing": "^6.10.0"
+    "uuid": "^8.3.2"
   },
   "scripts": {
     "start": "react-scripts start",

@@ -17,6 +17,7 @@ import Onboarding from './pages/Onboarding';
 import Landing from './pages/Landing';
 import history from './context/History';
 import Verifiers from './pages/Verifiers';
+import LogExplorer from './pages/LogExplorer';
 import './fonts/SuisseIntl-Regular.woff'
 import Miners from './pages/Miners';
 import Title from './components/Title';
@@ -64,6 +65,7 @@ ReactDOM.render(
                         <Route path={'/verifiers'} component={Verifiers} ></Route>
                         <Route path={'/miners'} component={Miners} ></Route>
                         <Route path={'/client'} component={ClientDetails} ></Route>
+                        <Route path={'/logs'} component={LogExplorer} ></Route>
                       </Switch>
                     </Router>
                     <GlobalNotification style={{ bottom: 0, right: 0 }} />
