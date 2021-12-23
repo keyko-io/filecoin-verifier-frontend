@@ -65,11 +65,12 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
     constructor(props: DataProviderProps) {
         super(props);
         this.state = {
-            postLogs: async (message: string, type: string, actionKeyword: string, issueNumber: number) => {
+            postLogs: async (message: string, type: string, actionKeyword: string, issueNumber: number, repo: string) => {
                 try {
-                    const logArray = [{ message, type, actionKeyword, repo: "Fil+app", issueNumber:issueNumber.toString() }]
+                    const logArray = [{ message, type, actionKeyword, repo, issueNumber: issueNumber.toString() }]
                     const res = (await fetch("https://cbqluey8wa.execute-api.us-east-1.amazonaws.com/dev",
                         {
+                            headers: { "x-api-key": config.loggerApiKey },
                             method: 'POST',
                             body: JSON.stringify({
                                 "type": "POST_CUSTOM_LOGS",
@@ -85,6 +86,7 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
                 try {
                     const res = (await fetch("https://cbqluey8wa.execute-api.us-east-1.amazonaws.com/dev",
                         {
+                            headers: { "x-api-key": config.loggerApiKey },
                             method: 'POST',
                             body: JSON.stringify({
                                 "type": "GET_LOGS",

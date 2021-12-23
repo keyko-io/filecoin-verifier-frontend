@@ -5,6 +5,7 @@ export const config = {
     onboardingOwner: process.env.REACT_APP_ONBOARDING_REPO_OWNER || 'keyko-io',
     onboardingLargeClientRepo: process.env.REACT_APP_ONBOARDING_LARGE_REPO || 'filecoin-large-clients-onboarding',
     onboardingLargeOwner: process.env.REACT_APP_ONBOARDING_LARGE_REPO_OWNER || 'keyko-io',
+    onboardingNotaryOwner: process.env.REACT_APP_ONBOARDING_NOTARY_REPO_OWNER || 'filecoin-notaries-onboarding',
     githubApp: process.env.REACT_APP_GITHUB_APP || 'Iv1.10e7aaed4654db3c',
     oauthUri: process.env.REACT_APP_OAUTH_URI || 'https://plus.fil.org/oauth/',
     networks: process.env.REACT_APP_NETWORKS || 'Mainnet,Nerpanet',
@@ -17,6 +18,7 @@ export const config = {
     approvalsThreshold: process.env.REACT_APP_APPROVALS_THRESHOLD || '1',
     largeClientRequest: 5497558000000000000000000,
     metrics_api_environment: process.env.REACT_APP_METRICS_API_ENVIRONMENT || "test",
+    loggerApiKey: process.env.REACT_APP_X_API_KEY || "fake-api-key-change-with-a-real-one",
     lotusNodes: [{
         name: 'Mainnet',
         code: 461,
