@@ -117,14 +117,15 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
                         return
                     }
                     const user = await this.props.github.githubOcto.users.getAuthenticated();
-                    const rawIssues = await this.props.github.githubOcto.issues.listForRepo({
-                        owner: config.onboardingOwner,
-                        repo: config.onboardingClientRepo,
-                        assignee: '*',
-                        state: 'open',
-                        per_page: 100,
-                        labels: 'state:Verifying'
-                    })
+                    const rawIssues = await this.props.github.githubOcto.paginate(this.props.github.githubOcto.issues.listForRepo,
+                        {
+                            owner: config.onboardingOwner,
+                            repo: config.onboardingClientRepo,
+                            assignee: '*',
+                            state: 'open',
+                            labels: 'state:Verifying'
+                        })
+                        
                     const issues: any[] = []
                     let pendingLarge: any[] = []
                     if (this.props.wallet.multisigID) {
@@ -137,7 +138,7 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
                             }
                         }))
                     }
-                    for (const rawIssue of rawIssues.data) {
+                    for (const rawIssue of rawIssues) {
                         const data = utils.parseIssue(rawIssue.body)
                         if (data.correct && rawIssue.assignees.find((a: any) => a.login === user.data.login) !== undefined) {
                             issues.push({
@@ -148,14 +149,16 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
                             })
                         }
                     }
-                    const rawLargeIssuesAll = await this.props.github.githubOcto.issues.listForRepo({
-                        owner: config.onboardingLargeOwner,
-                        repo: config.onboardingLargeClientRepo,
-                        assignee: '*',
-                        state: 'open',
-                        labels: 'bot:readyToSign'
-                    })
-                    const rawLargeIssues = rawLargeIssuesAll.data.filter((item: any) => !item.labels.find((l: any) => l.name === "status:needsDiligence"))
+                    const rawLargeIssuesAll = await this.props.github.githubOcto.paginate(this.props.github.githubOcto.issues.listForRepo,
+                        {
+                            owner: config.onboardingLargeOwner,
+                            repo: config.onboardingLargeClientRepo,
+                            assignee: '*',
+                            state: 'open',
+                            labels: 'bot:readyToSign'
+                        })
+                        
+                    const rawLargeIssues = rawLargeIssuesAll.filter((item: any) => !item.labels.find((l: any) => l.name === "status:needsDiligence"))
                     const largeissues: any[] = []
                     for (const rawLargeIssue of rawLargeIssues) {
                         const data = largeutils.parseIssue(rawLargeIssue.body)
@@ -241,13 +244,15 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
                     this.setState({ clientRequests: [], largeClientRequests: [] })
                     return
                 }
-                const rawIssues = await this.props.github.githubOcto.issues.listForRepo({
-                    owner: config.onboardingOwner,
-                    repo: config.onboardingClientRepo,
-                    state: 'open'
-                })
+                const rawIssues = await this.props.github.githubOcto.paginate(this.props.github.githubOcto.issues.listForRepo,
+                    {
+                        owner: config.onboardingOwner,
+                        repo: config.onboardingClientRepo,
+                        state: 'open'
+                    })
+                    
                 const issues: any[] = []
-                for (const rawIssue of rawIssues.data) {
+                for (const rawIssue of rawIssues) {
                     try {
                         const rawComments = await this.props.github.githubOcto.issues.listComments({
                             owner: config.onboardingOwner,
@@ -283,20 +288,23 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
                     let rawIssues: any[] = []
                     // Get list of issues with label “Approve” (proposed=false) or “StartSignOnchain” (proposed=true).
                     // TODO look if using AND in labels work
-                    const SignOnChain = await this.props.github.githubOctoGeneric.octokit.issues.listForRepo({
-                        owner: config.lotusNodes[this.props.wallet.networkIndex].notaryOwner,
-                        repo: config.lotusNodes[this.props.wallet.networkIndex].notaryRepo,
-                        state: 'open',
-                        labels: ['status:StartSignOnchain']
-                    })
-                    rawIssues = rawIssues.concat(SignOnChain.data)
-                    const dataApproved = await this.props.github.githubOctoGeneric.octokit.issues.listForRepo({
-                        owner: config.lotusNodes[this.props.wallet.networkIndex].notaryOwner,
-                        repo: config.lotusNodes[this.props.wallet.networkIndex].notaryRepo,
-                        state: 'open',
-                        labels: ['status:Approved']
-                    })
-                    rawIssues = rawIssues.concat(dataApproved.data)
+                    const SignOnChain = await this.props.github.githubOctoGeneric.octokit.paginate(this.props.github.githubOctoGeneric.octokit.issues.listForRepo,
+                        {
+                            owner: config.lotusNodes[this.props.wallet.networkIndex].notaryOwner,
+                            repo: config.lotusNodes[this.props.wallet.networkIndex].notaryRepo,
+                            state: 'open',
+                            labels: ['status:StartSignOnchain']
+                        })
+                    rawIssues = rawIssues.concat(SignOnChain)
+                    const dataApproved = await this.props.github.githubOctoGeneric.octokit.paginate(this.props.github.githubOctoGeneric.octokit.issues.listForRepo,
+                        {
+                            owner: config.lotusNodes[this.props.wallet.networkIndex].notaryOwner,
+                            repo: config.lotusNodes[this.props.wallet.networkIndex].notaryRepo,
+                            state: 'open',
+                            labels: ['status:Approved']
+                        })
+                        
+                    rawIssues = rawIssues.concat(dataApproved)
                     // Get list of pending Transactions
                     let pendingTxs = await this.props.wallet.api.pendingRootTransactions()
 
@@ -330,10 +338,6 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
                         }))
                     }
                     const promRes = promArr.length > 0 ? await Promise.all(promArr) : []
-
-                    // console.log("res promise get verifierAndPendingRequests", promRes)
-
-
 
 
                     // For each issue
@@ -398,13 +402,15 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
                 if (this.props.github.githubOctoGeneric.logged === false) {
                     await this.props.github.githubOctoGenericLogin()
                 }
-                const rawIssues = await this.props.github.githubOctoGeneric.octokit.issues.listForRepo({
-                    owner: config.lotusNodes[this.props.wallet.networkIndex].notaryOwner,
-                    repo: config.lotusNodes[this.props.wallet.networkIndex].notaryRepo,
-                    state: 'open'
-                })
+                const rawIssues = await this.props.github.githubOctoGeneric.octokit.paginate(this.props.github.githubOctoGeneric.octokit.issues.listForRepo,
+                    {
+                        owner: config.lotusNodes[this.props.wallet.networkIndex].notaryOwner,
+                        repo: config.lotusNodes[this.props.wallet.networkIndex].notaryRepo,
+                        state: 'open'
+                    })
+                    
                 const issues: any[] = []
-                for (const rawIssue of rawIssues.data) {
+                for (const rawIssue of rawIssues) {
                     try {
                         const rawComments = await this.props.github.githubOctoGeneric.octokit.issues.listComments({
                             owner: config.lotusNodes[this.props.wallet.networkIndex].notaryOwner,
@@ -709,14 +715,16 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
                     this.setState({ clientsGithub: [] })
                     return
                 }
-                const rawIssues = await this.props.github.githubOcto.issues.listForRepo({
-                    owner: config.onboardingOwner,
-                    repo: config.onboardingClientRepo,
-                    state: 'closed',
-                    labels: 'state:Granted'
-                })
+                const rawIssues = await this.props.github.githubOcto.paginate(this.props.github.githubOcto.issues.listForRepo,
+                    {
+                        owner: config.onboardingOwner,
+                        repo: config.onboardingClientRepo,
+                        state: 'closed',
+                        labels: 'state:Granted'
+                    })
+                    
                 const issues: any = {}
-                for (const rawIssue of rawIssues.data) {
+                for (const rawIssue of rawIssues) {
                     const data = utils.parseIssue(rawIssue.body)
                     try {
                         const address = await this.props.wallet.api.actorKey(data.address)
