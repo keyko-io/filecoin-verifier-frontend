@@ -414,7 +414,6 @@ export default class Notary extends Component<NotaryProps, NotaryStates> {
                         retValue = arrSignable.concat(arrUnSignable)
                         resolve(retValue)
                     } catch (error) {
-                        console.log(error)
                     }
                 })))
 
