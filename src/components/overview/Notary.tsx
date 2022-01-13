@@ -34,7 +34,9 @@ type NotaryStates = {
     orderByPublic: string,
     refPublic: any,
     approveLoading: boolean,
-    approvedDcRequests: any[]
+    approvedDcRequests: any[],
+    largeRequestList: any[],
+    listIsChecked: boolean
 }
 
 type NotaryProps = {
@@ -83,7 +85,9 @@ export default class Notary extends Component<NotaryProps, NotaryStates> {
         refPublic: {} as any,
         regLargePublic: {} as any,
         approveLoading: false,
-        approvedDcRequests: [] as any[]
+        approvedDcRequests: [] as any[],
+        largeRequestList: [] as any[],
+        listIsChecked: false
     }
 
     componentDidMount() {
@@ -242,7 +246,8 @@ export default class Notary extends Component<NotaryProps, NotaryStates> {
     verifyLargeClients = async () => {
         this.setState({ approveLoading: true })
         dispatchCustomEvent({ name: "delete-modal", detail: {} })
-        for (const request of this.context.largeClientRequests) {
+        let thisStateLargeRequestList = this.state.largeRequestList
+        for (const request of thisStateLargeRequestList) {
             if (this.state.selectedLargeClientRequests.includes(request.number)) {
                 let sentryData: any = {}
                 sentryData.request = { ...request }
@@ -263,19 +268,19 @@ export default class Notary extends Component<NotaryProps, NotaryStates> {
                         address = await this.context.wallet.api.actorKey(address)
                         sentryData.actorKey = address
                     }
-                    
+
                     let messageID
                     const signer = this.context.wallet.activeAccount ? this.context.wallet.activeAccount : ""
-                    await this.context.postLogs(`starting to sign datacap request. approvals: ${request.approvals} -signer: ${signer}`,"DEBUG", "", request.issue_number,PHASE)
+                    await this.context.postLogs(`starting to sign datacap request. approvals: ${request.approvals} -signer: ${signer}`, "DEBUG", "", request.issue_number, PHASE)
                     if (request.approvals) {
-                        messageID = await this.context.wallet.api.approvePending(this.context.wallet.multisigID, request.tx, this.context.wallet.walletIndex)
+                        messageID = await this.context.wallet.api.approvePending(request.multisig, request.tx, this.context.wallet.walletIndex)
                         this.setState({ approvedDcRequests: [...this.state.approvedDcRequests, request.number] })
-                        await this.context.postLogs(`Datacap GRANTED: ${messageID} - signer: ${signer}`,"INFO", "datacap_granted", request.issue_number,PHASE)
+                        await this.context.postLogs(`Datacap GRANTED: ${messageID} - signer: ${signer}`, "INFO", "datacap_granted", request.issue_number, PHASE)
                     } else {
-                        messageID = await this.context.wallet.api.multisigVerifyClient(this.context.wallet.multisigID, address, BigInt(Math.floor(datacap)), this.context.wallet.walletIndex)
+                        messageID = await this.context.wallet.api.multisigVerifyClient(request.multisig, address, BigInt(Math.floor(datacap)), this.context.wallet.walletIndex)
                         console.log(request)
                         request.approvals = true
-                        await this.context.postLogs(`Datacap PROPOSED: ${messageID} - signer: ${signer}`,"INFO", "datacap_proposed", request.issue_number,PHASE)
+                        await this.context.postLogs(`Datacap PROPOSED: ${messageID} - signer: ${signer}`, "INFO", "datacap_proposed", request.issue_number, PHASE)
                     }
 
                     if (!messageID) {
@@ -290,12 +295,15 @@ export default class Notary extends Component<NotaryProps, NotaryStates> {
 
                     await this.context.updateGithubVerifiedLarge(request.number, messageID, address, datacap, request.approvals, signer, this.context.wallet.multisigID, request.data.name, '', request.labels)
                     this.context.wallet.dispatchNotification('Transaction successful! Verify Client Message sent with ID: ' + messageID)
-                    await this.context.postLogs(`Transaction successful! Verify Client Message sent with ID: ${messageID}`,"DEBUG", "", request.issue_number,PHASE)
+                    await this.context.postLogs(`Transaction successful! Verify Client Message sent with ID: ${messageID}`, "DEBUG", "", request.issue_number, PHASE)
 
-                    this.setState({ approveLoading: false })
+                    this.setState({
+                        approveLoading: false,
+                        largeRequestList: thisStateLargeRequestList
+                    })
                 } catch (e) {
                     this.context.wallet.dispatchNotification('Verification failed: ' + e.message)
-                    await this.context.postLogs(`The transaction to sign the datacap failed: ${e.message}`,"ERROR", "", request.issue_number,PHASE)
+                    await this.context.postLogs(`The transaction to sign the datacap failed: ${e.message}`, "ERROR", "", request.issue_number, PHASE)
                     // console.log(e.stack)
                     this.setState({ approveLoading: false })
                     sentryData = {
@@ -303,7 +311,7 @@ export default class Notary extends Component<NotaryProps, NotaryStates> {
                         error: e
                     }
                     this.context.logToSentry(`verifyLargeClients issue n. ${request.number}`, `verifyLargeClients error - issue n. ${request.number}, error:${e.message}`, "error", sentryData)
-                } 
+                }
             }
         }
 
@@ -381,16 +389,47 @@ export default class Notary extends Component<NotaryProps, NotaryStates> {
 
     }
 
-    sortBeginning(msig: boolean) {
-        if (!msig) {
-            return this.context.largeClientRequests
+    async sortBeginning() {
+        try {
+
+            const signer = this.context.wallet.activeAccount ? await this.context.wallet.api.actorAddress(this.context.wallet.activeAccount) : null
+            if (!signer) this.setState({ largeRequestList: this.context.largeClientRequests })
+
+            const arrSignable: any[] = []
+            const arrUnSignable: any[] = []
+            let retValue: any[] = []
+
+            await Promise.all(this.context.largeClientRequests.map((clientReq: any) =>
+                new Promise<any>(async (resolve, reject) => {
+                    try {
+                        const multisigInfo = await this.context.wallet.api.multisigInfo(clientReq?.multisig)
+                        if (multisigInfo.signers.includes(signer)) {
+                            clientReq.signable = true
+                            arrSignable.push(clientReq)
+                        }
+                        else {
+                            clientReq.signable = false
+                            arrUnSignable.push(clientReq)
+                        }
+                        retValue = arrSignable.concat(arrUnSignable)
+                        resolve(retValue)
+                    } catch (error) {
+                    }
+                })))
+
+            this.setState({
+                largeRequestList: retValue,
+                listIsChecked: true
+            })
+
+        } catch (error) {
+            console.log(error)
+            this.setState({ largeRequestList: this.context.largeClientRequests })
         }
-        const arrSignable = this.context.largeClientRequests.filter((clientReq: any) => this.context.wallet.multisigID === clientReq?.multisig)
-        if (!arrSignable || arrSignable.length === 0) {
-            return this.context.largeClientRequests
-        }
-        const arrUnSignable = this.context.largeClientRequests.filter((clientReq: any) => this.context.wallet.multisigID !== clientReq?.multisig)
-        return arrSignable.concat(arrUnSignable)
+    }
+
+    async componentDidUpdate() {
+        if (!this.context.ldnRequestsLoading && !this.state.listIsChecked) await this.sortBeginning()
     }
 
 
@@ -485,18 +524,18 @@ export default class Notary extends Component<NotaryProps, NotaryStates> {
                             </thead>
                             <tbody>
                                 {this.state.regLargePublic && this.state.regLargePublic.checkIndex && this.context.largeClientRequests[0] !== undefined ?
-                                    this.sortBeginning(this.context.wallet.multisig)
+                                    this.state.largeRequestList
                                         .filter((element: any) => tableElementFilter(this.props.searchString, element?.data) === true)
                                         .filter((_: any, i: any) => this.state.regLargePublic?.checkIndex(i))
                                         .filter((clientReq: any, i: any) => !this.state.approvedDcRequests?.includes(clientReq?.number))
                                         .map((clientReq: any, index: any) =>
                                             <tr key={index}
-                                                className={this.context.wallet.multisigID !== clientReq?.multisig ? "disabledRow" : ""}
-                                                onClick={() => this.context.wallet.multisigID !== clientReq?.multisig ?
-                                                    this.context.wallet.dispatchNotification(CANT_SIGN_MESSAGE) : {}}>
-                                                {this.context.wallet.multisigID === clientReq?.multisig &&
+                                                className={clientReq.signable ? "" : "disabledRow"}
+                                                onClick={() => clientReq.signable ?
+                                                    {} : this.context.wallet.dispatchNotification(CANT_SIGN_MESSAGE)}>
+                                                {clientReq.signable &&
                                                     <td><input type="checkbox" onChange={() => this.selectLargeClientRow(clientReq?.number)} checked={this.state.selectedLargeClientRequests.includes(clientReq?.number)} /></td>}
-                                                {this.context.wallet.multisigID !== clientReq?.multisig &&
+                                                {!clientReq.signable &&
                                                     <td><input type="checkbox" disabled title={CANT_SIGN_MESSAGE} /></td>}
                                                 <td><FontAwesomeIcon icon={["fas", "info-circle"]} id={index} onClick={(e) => this.showClientDetail(e)} /> {clientReq?.data?.name} </td>
                                                 <td>{clientReq?.address}</td>

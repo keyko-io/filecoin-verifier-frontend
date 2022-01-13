@@ -125,7 +125,7 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
                             state: 'open',
                             labels: 'state:Verifying'
                         })
-                        
+
                     const issues: any[] = []
                     let pendingLarge: any[] = []
                     if (this.props.wallet.multisigID) {
@@ -157,51 +157,59 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
                             state: 'open',
                             labels: 'bot:readyToSign'
                         })
-                        
-                    const rawLargeIssues = rawLargeIssuesAll.filter((item: any) => !item.labels.find((l: any) => l.name === "status:needsDiligence"))
-                    const largeissues: any[] = []
-                    for (const rawLargeIssue of rawLargeIssues) {
-                        const data = largeutils.parseIssue(rawLargeIssue.body)
-                        if (data.correct) {
-                            try {
-                                const rawLargeClientComments = await this.props.github.githubOcto.issues.listComments({
-                                    owner: config.onboardingLargeOwner,
-                                    repo: config.onboardingLargeClientRepo,
-                                    issue_number: rawLargeIssue.number,
-                                    per_page: 100
-                                })
-                                const comments = rawLargeClientComments.data.filter((comment: any) => {
-                                    const commentParsed = largeutils.parseReleaseRequest(comment.body)
-                                    return commentParsed.multisigMessage && commentParsed.correct && comment.performed_via_github_app == null
-                                }
-                                ).map((comment: any) => largeutils.parseReleaseRequest(comment.body))
 
-                                const comment = comments[comments.length - 1]
-                                const pendingLargeTxs = await this.props.wallet.api.pendingTransactions(comment.notaryAddress)
-                                const txs = pendingLargeTxs.filter((pending: any) => pending.parsed.params.address === comment.clientAddress)
-                                const approvals = rawLargeIssue.labels.find((label: any) => label.name === "state:StartSignDatacap") ? 1 : 0
-                                if (comment && comment.multisigMessage && comment.correct) {
-                                    let largeRequest: any = {
-                                        issue_number: rawLargeIssue.number,
-                                        issue_Url: rawLargeIssue.html_url,
-                                        address: comment.clientAddress.trim(),
-                                        multisig: comment.notaryAddress,
-                                        datacap: comment.allocationDatacap,
-                                        url: rawLargeIssue.html_url,
-                                        number: rawLargeIssue.number,
-                                        mine: rawLargeIssue.assignees.find((a: any) => a.login === user.data.login) !== undefined,
-                                        approvals,
-                                        tx: txs.length > 0 ? txs[0] : null,
-                                        labels: rawLargeIssue.labels.map((item: any) => item.name),
-                                        data
+                    const rawLargeIssues = rawLargeIssuesAll.filter((item: any) => !item.labels.find((l: any) => l.name === "status:needsDiligence"))
+                    let largeissues: any[] = []
+
+                    await Promise.all(
+                        rawLargeIssues.map((rawLargeIssue: any) =>
+                            new Promise<any>(async (resolve, reject) => {
+                                try {
+                                const data = largeutils.parseIssue(rawLargeIssue.body)
+                                if (data.correct) {
+                                        const rawLargeClientComments = await this.props.github.githubOcto.paginate(this.props.github.githubOcto.issues.listComments,
+                                            {
+                                                owner: config.onboardingLargeOwner,
+                                                repo: config.onboardingLargeClientRepo,
+                                                issue_number: rawLargeIssue.number,
+                                            })
+
+                                        const comments = rawLargeClientComments.filter((comment: any) => {
+                                            const commentParsed = largeutils.parseReleaseRequest(comment.body)
+                                            return commentParsed.multisigMessage && commentParsed.correct && comment.performed_via_github_app == null
+                                        }).map((comment: any) => largeutils.parseReleaseRequest(comment.body))
+
+                                        const comment = comments[comments.length - 1]
+                                        const pendingLargeTxs = await this.props.wallet.api.pendingTransactions(comment.notaryAddress)
+                                        const txs = pendingLargeTxs.filter((pending: any) => pending.parsed.params.address === comment.clientAddress)
+                                        const approvals = rawLargeIssue.labels.find((label: any) => label.name === "state:StartSignDatacap") ? 1 : 0
+                                        if (comment && comment.multisigMessage && comment.correct) {
+                                            let largeRequest: any = {
+                                                issue_number: rawLargeIssue.number,
+                                                issue_Url: rawLargeIssue.html_url,
+                                                address: comment.clientAddress.trim(),
+                                                multisig: comment.notaryAddress,
+                                                datacap: comment.allocationDatacap,
+                                                url: rawLargeIssue.html_url,
+                                                number: rawLargeIssue.number,
+                                                mine: rawLargeIssue.assignees.find((a: any) => a.login === user.data.login) !== undefined,
+                                                approvals,
+                                                tx: txs.length > 0 ? txs[0] : null,
+                                                labels: rawLargeIssue.labels.map((item: any) => item.name),
+                                                data
+                                            }
+                                            largeissues.push(largeRequest)
+                                        }
                                     }
-                                    largeissues.push(largeRequest)
+                                    resolve(largeissues)
+                                    
+                                } catch (e) {
+                                    // console.log('error', e)
+                                    reject(e)
                                 }
-                            } catch (e) {
-                                // console.log('error', e)
-                            }
-                        }
-                    }
+                            })
+                        ))
+
                     this.setState({
                         clientRequests: issues, largeClientRequests: largeissues, ldnRequestsLoading: false
                     })
@@ -250,7 +258,7 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
                         repo: config.onboardingClientRepo,
                         state: 'open'
                     })
-                    
+
                 const issues: any[] = []
                 for (const rawIssue of rawIssues) {
                     try {
@@ -303,7 +311,7 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
                             state: 'open',
                             labels: ['status:Approved']
                         })
-                        
+
                     rawIssues = rawIssues.concat(dataApproved)
                     // Get list of pending Transactions
                     let pendingTxs = await this.props.wallet.api.pendingRootTransactions()
@@ -408,7 +416,7 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
                         repo: config.lotusNodes[this.props.wallet.networkIndex].notaryRepo,
                         state: 'open'
                     })
-                    
+
                 const issues: any[] = []
                 for (const rawIssue of rawIssues) {
                     try {
@@ -722,7 +730,7 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
                         state: 'closed',
                         labels: 'state:Granted'
                     })
-                    
+
                 const issues: any = {}
                 for (const rawIssue of rawIssues) {
                     const data = utils.parseIssue(rawIssue.body)
