@@ -104,7 +104,7 @@ class LogInModal extends Component<ModalProps, ModalStates> {
                             </div>
                         </div>
                         <div className="buttons">
-                            {!config.networks.includes('Mainnet') ?
+                            {!config.networks.includes('Mainnet') ? 
                             <div className="button left">
                                 <ButtonPrimary onClick={this.loadBurnerWallet}>
                                     <img src={Logo} alt={'Logo'} />
@@ -136,7 +136,9 @@ class LogInModal extends Component<ModalProps, ModalStates> {
                         </div>
                         <div className="tabs">
                             <div className={this.state.multisig ? "tab" : "tab selected"} onClick={()=>this.loadPrivate()}>Individual</div>
+                            {!config.networks.includes('Mainnet') &&
                             <div className={this.state.multisig ? "tab selected" : "tab"}  onClick={()=>this.loadMultisig()}>Organization</div>
+                            }
                         </div>
                         <div className="buttons">
                             {!config.networks.includes('Mainnet') ?
