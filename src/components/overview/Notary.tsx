@@ -67,6 +67,7 @@ export default class Notary extends Component<NotaryProps, NotaryStates> {
         { id: "multisig", value: "multisig" },
         { id: "datacap", value: "Datacap" },
         { id: "approvals", value: "Approvals" },
+        { id: "proposer", value: "Proposer" },
         { id: "issue_number", value: "Audit Trail" }
     ]
 
@@ -403,7 +404,11 @@ export default class Notary extends Component<NotaryProps, NotaryStates> {
                 new Promise<any>(async (resolve, reject) => {
                     try {
                         const multisigInfo = await this.context.wallet.api.multisigInfo(clientReq?.multisig)
-                        if (multisigInfo.signers.includes(signer)) {
+
+                        const msigIncludeSigner = multisigInfo.signers.includes(signer)
+                        const msigNotIncludeProposer = !multisigInfo.signers.includes(clientReq?.proposer.signerAddress)
+
+                        if (msigIncludeSigner && msigNotIncludeProposer) {
                             clientReq.signable = true
                             arrSignable.push(clientReq)
                         }
@@ -542,6 +547,7 @@ export default class Notary extends Component<NotaryProps, NotaryStates> {
                                                 <td>{clientReq?.multisig}</td>
                                                 <td>{clientReq?.datacap}</td>
                                                 <td>{clientReq?.approvals ? 1 : 0}</td>
+                                                <td>{clientReq?.proposer.signerGitHandle}</td>
                                                 <td><a target="_blank" rel="noopener noreferrer" href={clientReq?.url}>#{clientReq?.number}</a></td>
                                             </tr>
                                         ) : null}

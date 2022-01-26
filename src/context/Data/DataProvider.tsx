@@ -13,6 +13,8 @@ const utils = require('@keyko-io/filecoin-verifier-tools/utils/issue-parser')
 const largeutils = require('@keyko-io/filecoin-verifier-tools/utils/large-issue-parser')
 const parser = require('@keyko-io/filecoin-verifier-tools/utils/notary-issue-parser')
 const { callMetricsApi } = require('@keyko-io/filecoin-verifier-tools/metrics/metrics')
+const verifierRegistry = require('../../data/verifiers-registry.json')
+
 
 interface DataProviderStates {
     loadClientRequests: any
@@ -165,8 +167,8 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
                         rawLargeIssues.map((rawLargeIssue: any) =>
                             new Promise<any>(async (resolve, reject) => {
                                 try {
-                                const data = largeutils.parseIssue(rawLargeIssue.body)
-                                if (data.correct) {
+                                    const data = largeutils.parseIssue(rawLargeIssue.body)
+                                    if (data.correct) {
                                         const rawLargeClientComments = await this.props.github.githubOcto.paginate(this.props.github.githubOcto.issues.listComments,
                                             {
                                                 owner: config.onboardingLargeOwner,
@@ -181,8 +183,16 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
 
                                         const comment = comments[comments.length - 1]
                                         const pendingLargeTxs = await this.props.wallet.api.pendingTransactions(comment.notaryAddress)
+                                        
                                         const txs = pendingLargeTxs.filter((pending: any) => pending.parsed.params.address === comment.clientAddress)
                                         const approvals = rawLargeIssue.labels.find((label: any) => label.name === "state:StartSignDatacap") ? 1 : 0
+                                        let signerGitHandle = ""
+                                        let signeraddress = ""
+                                        if (approvals){
+                                            signeraddress = txs[0].signers[0].length > 0 ? await this.props.wallet.api.actorKey(txs[0].signers[0]) : "none"
+                                            signerGitHandle= verifierRegistry.notaries.find((notary:any) => notary.ldn_config.signing_address === signeraddress)?.github_user[0] || "none"
+                                        } 
+
                                         if (comment && comment.multisigMessage && comment.correct) {
                                             let largeRequest: any = {
                                                 issue_number: rawLargeIssue.number,
@@ -195,6 +205,7 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
                                                 mine: rawLargeIssue.assignees.find((a: any) => a.login === user.data.login) !== undefined,
                                                 approvals,
                                                 tx: txs.length > 0 ? txs[0] : null,
+                                                proposer: {signeraddress,signerGitHandle},
                                                 labels: rawLargeIssue.labels.map((item: any) => item.name),
                                                 data
                                             }
@@ -202,7 +213,7 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
                                         }
                                     }
                                     resolve(largeissues)
-                                    
+
                                 } catch (e) {
                                     // console.log('error', e)
                                     reject(e)
