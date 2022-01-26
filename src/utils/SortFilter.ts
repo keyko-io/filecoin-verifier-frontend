@@ -141,7 +141,6 @@ const sortLargeTable = (arrayToSort: any[], orderBy: string, sortOrder: number) 
                 sortOrder * -1 : 0;
         }
         if (orderBy === "proposer") {
-            console.log(a)
             return a.proposer.signerGitHandle < b.proposer.signerGitHandle ?
             sortOrder :
             a.proposer.signerGitHandle > b.proposer.signerGitHandle ?
