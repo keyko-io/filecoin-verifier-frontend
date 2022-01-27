@@ -187,14 +187,17 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
                                         const approvals = rawLargeIssue.labels.find((label: any) => label.name === "state:StartSignDatacap") ? 1 : 0
                                         let signerGitHandle = ""
                                         let signeraddress = ""
+                                        let msigNotIncludeProposer = false
                                         if (approvals) {
                                             signeraddress = txs[0].signers[0].length > 0 ? await this.props.wallet.api.actorKey(txs[0].signers[0]) : "none"
                                             signerGitHandle = verifierRegistry.notaries.find((notary: any) => notary.ldn_config.signing_address === signeraddress)?.github_user[0] || "none"
+                                            msigNotIncludeProposer = await this.props.wallet.api.actorKey(signeraddress) !== this.props.wallet.activeAccount
                                         }
                                         const multisigInfo = await this.props.wallet.api.multisigInfo(comment.notaryAddress)
 
                                         const msigIncludeSigner = multisigInfo.signers.includes(this.props.wallet.activeAccount)
-                                        const msigNotIncludeProposer = await this.props.wallet.api.actorKey(signeraddress) !== this.props.wallet.activeAccount
+                                         
+                                        const signable = approvals ? msigIncludeSigner && msigNotIncludeProposer : msigIncludeSigner
                                         
                                         if (comment && comment.multisigMessage && comment.correct) {
                                             let largeRequest: any = {
@@ -211,7 +214,7 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
                                                 proposer: { signeraddress, signerGitHandle },
                                                 labels: rawLargeIssue.labels.map((item: any) => item.name),
                                                 data,
-                                                signable: msigIncludeSigner && msigNotIncludeProposer ? true : false
+                                                signable
                                             }
                                             largeissues.push(largeRequest)
                                         }
