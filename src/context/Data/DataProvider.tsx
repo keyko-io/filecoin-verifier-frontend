@@ -54,6 +54,7 @@ interface DataProviderStates {
     postLogs: any,
     approvedNotariesLoading: boolean,
     ldnRequestsLoading: boolean
+    updateContextState:any
 }
 
 interface DataProviderProps {
@@ -66,6 +67,18 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
     constructor(props: DataProviderProps) {
         super(props);
         this.state = {
+            updateContextState : (elementToUpdate: any, type:string) => {
+                switch (type) {
+                    case "largeClientRequests":
+                        this.setState({ largeClientRequests: elementToUpdate })
+                        break;
+                
+                    default:
+                        break;
+                }
+                this.setState({ clientRequests: [], largeClientRequests: [], ldnRequestsLoading: false })
+
+            },
             postLogs: async (message: string, type: string, actionKeyword: string, issueNumber: number, repo: string) => {
                 try {
                     const logArray = [{ message, type, actionKeyword, repo, issueNumber: issueNumber.toString() }]
@@ -188,7 +201,7 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
                                         let signerGitHandle = ""
                                         let signeraddress = ""
                                         let msigNotIncludeProposer = false
-                                        if (approvals) {
+                                        if (approvals && txs.length > 0) {
                                             signeraddress = txs[0].signers[0].length > 0 ? await this.props.wallet.api.actorKey(txs[0].signers[0]) : "none"
                                             signerGitHandle = verifierRegistry.notaries.find((notary: any) => notary.ldn_config.signing_address === signeraddress)?.github_user[0] || "none"
                                             msigNotIncludeProposer = await this.props.wallet.api.actorKey(signeraddress) !== this.props.wallet.activeAccount
