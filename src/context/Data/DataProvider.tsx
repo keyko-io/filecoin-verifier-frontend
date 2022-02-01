@@ -54,7 +54,7 @@ interface DataProviderStates {
     postLogs: any,
     approvedNotariesLoading: boolean,
     ldnRequestsLoading: boolean
-    updateContextState:any
+    updateContextState: any
 }
 
 interface DataProviderProps {
@@ -67,12 +67,12 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
     constructor(props: DataProviderProps) {
         super(props);
         this.state = {
-            updateContextState : (elementToUpdate: any, type:string) => {
+            updateContextState: (elementToUpdate: any, type: string) => {
                 switch (type) {
                     case "largeClientRequests":
                         this.setState({ largeClientRequests: elementToUpdate })
                         break;
-                
+
                     default:
                         break;
                 }
@@ -143,6 +143,7 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
                     const issues: any[] = []
                     let pendingLarge: any[] = []
                     if (this.props.wallet.multisigID) {
+
                         const pendingLargeTxs = await this.props.wallet.api.pendingTransactions(this.props.wallet.multisigID)
                         pendingLarge = await Promise.all(pendingLargeTxs.map(async (tx: any) => {
                             const address = await this.props.wallet.api.actorKey(tx.parsed.params.address)
@@ -209,9 +210,9 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
                                         const multisigInfo = await this.props.wallet.api.multisigInfo(comment.notaryAddress)
 
                                         const msigIncludeSigner = multisigInfo.signers.includes(this.props.wallet.activeAccount)
-                                         
+
                                         const signable = approvals ? msigIncludeSigner && msigNotIncludeProposer : msigIncludeSigner
-                                        
+
                                         if (comment && comment.multisigMessage && comment.correct) {
                                             let largeRequest: any = {
                                                 issue_number: rawLargeIssue.number,
