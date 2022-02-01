@@ -247,7 +247,7 @@ export default class Notary extends Component<NotaryProps, NotaryStates> {
     verifyLargeClients = async () => {
         this.setState({ approveLoading: true })
         dispatchCustomEvent({ name: "delete-modal", detail: {} })
-        let thisStateLargeRequestList = this.state.largeRequestList
+        let thisStateLargeRequestList = this.context.largeClientRequests
         for (const request of thisStateLargeRequestList) {
             if (this.state.selectedLargeClientRequests.includes(request.number)) {
                 let sentryData: any = {}
@@ -298,10 +298,10 @@ export default class Notary extends Component<NotaryProps, NotaryStates> {
                     this.context.wallet.dispatchNotification('Transaction successful! Verify Client Message sent with ID: ' + messageID)
                     await this.context.postLogs(`Transaction successful! Verify Client Message sent with ID: ${messageID}`, "DEBUG", "", request.issue_number, PHASE)
 
-                    this.setState({
-                        approveLoading: false,
-                        largeRequestList: thisStateLargeRequestList
-                    })
+                    this.setState({ approveLoading: false })
+                    //UPDATE THE CONTEXT
+                    this.context.updateContextState(thisStateLargeRequestList, "largeClientRequests")
+
                 } catch (e) {
                     this.context.wallet.dispatchNotification('Verification failed: ' + e.message)
                     await this.context.postLogs(`The transaction to sign the datacap failed: ${e.message}`, "ERROR", "", request.issue_number, PHASE)
@@ -437,7 +437,7 @@ export default class Notary extends Component<NotaryProps, NotaryStates> {
                             </thead>
                             <tbody>
                                 {this.state.refPublic && this.state.refPublic.checkIndex ?
-                                   this.context.clientRequests.filter((element: any) => tableElementFilter(this.props.searchString, element.data) === true)
+                                    this.context.clientRequests.filter((element: any) => tableElementFilter(this.props.searchString, element.data) === true)
                                         .filter((_: any, i: any) => this.state.refPublic?.checkIndex(i))
                                         .map((clientReq: any, index: any) =>
                                             <tr key={index} >
@@ -483,7 +483,7 @@ export default class Notary extends Component<NotaryProps, NotaryStates> {
                             </thead>
                             <tbody>
                                 {this.state.regLargePublic && this.state.regLargePublic.checkIndex && this.context.largeClientRequests[0] !== undefined ?
-                                   this.context.largeClientRequests
+                                    this.context.largeClientRequests
                                         .filter((element: any) => tableElementFilter(this.props.searchString, element?.data) === true)
                                         .filter((_: any, i: any) => this.state.regLargePublic?.checkIndex(i))
                                         .filter((clientReq: any, i: any) => !this.state.approvedDcRequests?.includes(clientReq?.number))
@@ -560,7 +560,7 @@ export default class Notary extends Component<NotaryProps, NotaryStates> {
                                         .map((transaction: any, index: any) =>
                                             <tr key={index}>
                                                 <td>{transaction.verified}</td>
-                                                <td>{transaction.key ||  <BeatLoader size={5} color={"rgb(24,160,237)"} />}</td>
+                                                <td>{transaction.key || <BeatLoader size={5} color={"rgb(24,160,237)"} />}</td>
                                                 <td>{bytesToiB(transaction.datacap)}</td>
                                             </tr>
                                         ) : null}
