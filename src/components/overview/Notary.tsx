@@ -67,7 +67,6 @@ export default class Notary extends Component<NotaryProps, NotaryStates> {
         { id: "multisig", value: "multisig" },
         { id: "datacap", value: "Datacap" },
         { id: "approvals", value: "Approvals" },
-        { id: "proposer", value: "Proposer" },
         { id: "issue_number", value: "Audit Trail" }
     ]
 
@@ -247,7 +246,7 @@ export default class Notary extends Component<NotaryProps, NotaryStates> {
     verifyLargeClients = async () => {
         this.setState({ approveLoading: true })
         dispatchCustomEvent({ name: "delete-modal", detail: {} })
-        let thisStateLargeRequestList = this.context.largeClientRequests
+        let thisStateLargeRequestList = this.state.largeRequestList
         for (const request of thisStateLargeRequestList) {
             if (this.state.selectedLargeClientRequests.includes(request.number)) {
                 let sentryData: any = {}
@@ -298,10 +297,10 @@ export default class Notary extends Component<NotaryProps, NotaryStates> {
                     this.context.wallet.dispatchNotification('Transaction successful! Verify Client Message sent with ID: ' + messageID)
                     await this.context.postLogs(`Transaction successful! Verify Client Message sent with ID: ${messageID}`, "DEBUG", "", request.issue_number, PHASE)
 
-                    this.setState({ approveLoading: false })
-                    //UPDATE THE CONTEXT
-                    this.context.updateContextState(thisStateLargeRequestList, "largeClientRequests")
-
+                    this.setState({
+                        approveLoading: false,
+                        largeRequestList: thisStateLargeRequestList
+                    })
                 } catch (e) {
                     this.context.wallet.dispatchNotification('Verification failed: ' + e.message)
                     await this.context.postLogs(`The transaction to sign the datacap failed: ${e.message}`, "ERROR", "", request.issue_number, PHASE)
@@ -390,6 +389,48 @@ export default class Notary extends Component<NotaryProps, NotaryStates> {
 
     }
 
+    async sortBeginning() {
+        try {
+
+            const signer = this.context.wallet.activeAccount ? await this.context.wallet.api.actorAddress(this.context.wallet.activeAccount) : null
+            if (!signer) this.setState({ largeRequestList: this.context.largeClientRequests })
+
+            const arrSignable: any[] = []
+            const arrUnSignable: any[] = []
+            let retValue: any[] = []
+
+            await Promise.all(this.context.largeClientRequests.map((clientReq: any) =>
+                new Promise<any>(async (resolve, reject) => {
+                    try {
+                        const multisigInfo = await this.context.wallet.api.multisigInfo(clientReq?.multisig)
+                        if (multisigInfo.signers.includes(signer)) {
+                            clientReq.signable = true
+                            arrSignable.push(clientReq)
+                        }
+                        else {
+                            clientReq.signable = false
+                            arrUnSignable.push(clientReq)
+                        }
+                        retValue = arrSignable.concat(arrUnSignable)
+                        resolve(retValue)
+                    } catch (error) {
+                    }
+                })))
+
+            this.setState({
+                largeRequestList: retValue,
+                listIsChecked: true
+            })
+
+        } catch (error) {
+            console.log(error)
+            this.setState({ largeRequestList: this.context.largeClientRequests })
+        }
+    }
+
+    async componentDidUpdate() {
+        if (!this.context.ldnRequestsLoading && !this.state.listIsChecked) await this.sortBeginning()
+    }
 
 
     public render() {
@@ -483,7 +524,7 @@ export default class Notary extends Component<NotaryProps, NotaryStates> {
                             </thead>
                             <tbody>
                                 {this.state.regLargePublic && this.state.regLargePublic.checkIndex && this.context.largeClientRequests[0] !== undefined ?
-                                    this.context.largeClientRequests
+                                    this.state.largeRequestList
                                         .filter((element: any) => tableElementFilter(this.props.searchString, element?.data) === true)
                                         .filter((_: any, i: any) => this.state.regLargePublic?.checkIndex(i))
                                         .filter((clientReq: any, i: any) => !this.state.approvedDcRequests?.includes(clientReq?.number))
@@ -501,7 +542,6 @@ export default class Notary extends Component<NotaryProps, NotaryStates> {
                                                 <td>{clientReq?.multisig}</td>
                                                 <td>{clientReq?.datacap}</td>
                                                 <td>{clientReq?.approvals ? 1 : 0}</td>
-                                                <td>{clientReq?.proposer.signerGitHandle}</td>
                                                 <td><a target="_blank" rel="noopener noreferrer" href={clientReq?.url}>#{clientReq?.number}</a></td>
                                             </tr>
                                         ) : null}
@@ -560,7 +600,7 @@ export default class Notary extends Component<NotaryProps, NotaryStates> {
                                         .map((transaction: any, index: any) =>
                                             <tr key={index}>
                                                 <td>{transaction.verified}</td>
-                                                <td>{transaction.key || <BeatLoader size={5} color={"rgb(24,160,237)"} />}</td>
+                                                <td>{transaction.key}</td>
                                                 <td>{bytesToiB(transaction.datacap)}</td>
                                             </tr>
                                         ) : null}
