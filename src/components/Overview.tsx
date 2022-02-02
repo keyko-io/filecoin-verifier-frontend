@@ -25,7 +25,7 @@ export default class Overview extends Component<{}, OverviewStates> {
     }
 
     componentDidMount() {
-       
+
         this.context.github.checkToken()
         this.loadData()
         this.interval = setInterval(() => { this.loadData() }, 5 * 60 * 1000);
@@ -36,19 +36,12 @@ export default class Overview extends Component<{}, OverviewStates> {
         clearInterval(this.interval)
     }
 
-    loadData = async () => {
-        this.context.refreshGithubData()
-        this.context.loadVerified().then(() =>
 
-            this.setState({
-                approvedNotariesLoading: false
-            }))
-        this.context.loadClients().then(() => this.setState({
-            dcGrantedLoading: false
-        }))
-        this.context.loadVerifierAndPendingRequests().then(() => this.setState({
-            pendingNotariesLoading: false
-        }))
+    loadData = async () => {
+        await this.context.refreshGithubData()
+        await this.context.loadClients()
+        await this.context.loadVerified()
+        await this.context.loadVerifierAndPendingRequests()
     }
 
     public render() {
@@ -63,7 +56,7 @@ export default class Overview extends Component<{}, OverviewStates> {
                         <div className="textinfodata">
                             <div className="textinfodatablock">
                                 <div className="data">{
-                                    this.state.dcGrantedLoading ?
+                                    !this.context.clientsAmount ?
                                         <div>
                                             <span className="zeroOpaque">0B</span>
                                             <BeatLoader size={15} color={"rgb(24,160,237)"} />
@@ -74,7 +67,7 @@ export default class Overview extends Component<{}, OverviewStates> {
                             </div>
                             <div className="textinfodatablock">
                                 <div className="data">{
-                                    this.state.pendingNotariesLoading ?
+                                    this.context.verifierAndPendingRequests.length == 0?
                                         <div>
                                             <span className="zeroOpaque">0</span>
                                             <BeatLoader size={15} color={"rgb(24,160,237)"} />
@@ -85,7 +78,7 @@ export default class Overview extends Component<{}, OverviewStates> {
                             </div>
                             <div className="textinfodatablock">
                                 <div className="data">{
-                                    this.state.approvedNotariesLoading || this.context.verified.length === 0 ?
+                                    this.context.approvedNotariesLoading  ?
                                         <div>
                                             <span className="zeroOpaque">0</span>
                                             <BeatLoader size={15} color={"rgb(24,160,237)"} />
