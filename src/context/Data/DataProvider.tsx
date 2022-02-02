@@ -183,6 +183,22 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
                                         const pendingLargeTxs = await this.props.wallet.api.pendingTransactions(comment.notaryAddress)
                                         const txs = pendingLargeTxs.filter((pending: any) => pending.parsed.params.address === comment.clientAddress)
                                         const approvals = rawLargeIssue.labels.find((label: any) => label.name === "state:StartSignDatacap") ? 1 : 0
+                                        let signerGitHandle = ""
+                                        let signerAddress : any = ""
+                                        let approverIsNotProposer = false
+
+                                        if (approvals && txs.length > 0) {
+                                            signerAddress = txs[0].signers[0].length > 0 ? await this.props.wallet.api.actorKey(txs[0].signers[0]) : null
+                                            signerGitHandle = verifierRegistry.notaries.find((notary: any) => notary.ldn_config.signing_address === signerAddress)?.github_user[0] || "none"
+                                            approverIsNotProposer = signerAddress ? signerAddress !== this.props.wallet.activeAccount : false
+                                        }
+                                        
+                                        const multisigInfo = await this.props.wallet.api.multisigInfo(comment.notaryAddress)
+                                        const account = this.props.wallet.accountsActive[this.props.wallet.activeAccount]
+                                        const msigIncludeSigner = multisigInfo.signers.includes(account)
+
+                                        const signable = approvals ? msigIncludeSigner && approverIsNotProposer : msigIncludeSigner
+
                                         if (comment && comment.multisigMessage && comment.correct) {
                                             let largeRequest: any = {
                                                 issue_number: rawLargeIssue.number,
