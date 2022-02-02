@@ -25,7 +25,6 @@ export const Data = React.createContext({
     logToSentry:(category: string, message:string,level:"info"|"error",data: Map<string, any>) => {},
     approvedNotariesLoading: true,
     ldnRequestsLoading: true,
-    updateContextState: (elementToUpdate: any, type:string) => {},
     // passed by props
     github: {} as any,
     wallet: {} as any

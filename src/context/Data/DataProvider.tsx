@@ -8,12 +8,11 @@ import { tableSort, tableSortLargeRequest, tableSortPublicRequest } from '../../
 import { v4 as uuidv4 } from 'uuid';
 import { anyToBytes, bytesToiB } from "../../utils/Filters"
 import * as Sentry from "@sentry/react";
+import { EVENT_TYPE, MetricsApiParams } from "../../utils/Metrics"
 const utils = require('@keyko-io/filecoin-verifier-tools/utils/issue-parser')
 const largeutils = require('@keyko-io/filecoin-verifier-tools/utils/large-issue-parser')
 const parser = require('@keyko-io/filecoin-verifier-tools/utils/notary-issue-parser')
 const { callMetricsApi } = require('@keyko-io/filecoin-verifier-tools/metrics/metrics')
-const verifierRegistry = require('../../data/verifiers-registry.json')
-
 
 interface DataProviderStates {
     loadClientRequests: any
@@ -54,7 +53,6 @@ interface DataProviderStates {
     postLogs: any,
     approvedNotariesLoading: boolean,
     ldnRequestsLoading: boolean
-    updateContextState: any
 }
 
 interface DataProviderProps {
@@ -67,18 +65,6 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
     constructor(props: DataProviderProps) {
         super(props);
         this.state = {
-            updateContextState: (elementToUpdate: any, type: string) => {
-                switch (type) {
-                    case "largeClientRequests":
-                        this.setState({ largeClientRequests: elementToUpdate })
-                        break;
-
-                    default:
-                        break;
-                }
-                this.setState({ clientRequests: [], largeClientRequests: [], ldnRequestsLoading: false })
-
-            },
             postLogs: async (message: string, type: string, actionKeyword: string, issueNumber: number, repo: string) => {
                 try {
                     const logArray = [{ message, type, actionKeyword, repo, issueNumber: issueNumber.toString() }]
@@ -143,7 +129,6 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
                     const issues: any[] = []
                     let pendingLarge: any[] = []
                     if (this.props.wallet.multisigID) {
-
                         const pendingLargeTxs = await this.props.wallet.api.pendingTransactions(this.props.wallet.multisigID)
                         pendingLarge = await Promise.all(pendingLargeTxs.map(async (tx: any) => {
                             const address = await this.props.wallet.api.actorKey(tx.parsed.params.address)
@@ -180,8 +165,8 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
                         rawLargeIssues.map((rawLargeIssue: any) =>
                             new Promise<any>(async (resolve, reject) => {
                                 try {
-                                    const data = largeutils.parseIssue(rawLargeIssue.body)
-                                    if (data.correct) {
+                                const data = largeutils.parseIssue(rawLargeIssue.body)
+                                if (data.correct) {
                                         const rawLargeClientComments = await this.props.github.githubOcto.paginate(this.props.github.githubOcto.issues.listComments,
                                             {
                                                 owner: config.onboardingLargeOwner,
@@ -196,24 +181,8 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
 
                                         const comment = comments[comments.length - 1]
                                         const pendingLargeTxs = await this.props.wallet.api.pendingTransactions(comment.notaryAddress)
-
                                         const txs = pendingLargeTxs.filter((pending: any) => pending.parsed.params.address === comment.clientAddress)
                                         const approvals = rawLargeIssue.labels.find((label: any) => label.name === "state:StartSignDatacap") ? 1 : 0
-                                        let signerGitHandle = ""
-                                        let signerAddress : any = ""
-                                        let approverIsNotProposer = false
-
-                                        if (approvals && txs.length > 0) {
-                                            signerAddress = txs[0].signers[0].length > 0 ? await this.props.wallet.api.actorKey(txs[0].signers[0]) : null
-                                            signerGitHandle = verifierRegistry.notaries.find((notary: any) => notary.ldn_config.signing_address === signerAddress)?.github_user[0] || "none"
-                                            approverIsNotProposer = signerAddress ? signerAddress !== this.props.wallet.activeAccount : false
-                                        }
-                                        const multisigInfo = await this.props.wallet.api.multisigInfo(comment.notaryAddress)
-                                        const account = this.props.wallet.accountsActive[this.props.wallet.activeAccount]
-                                        const msigIncludeSigner = multisigInfo.signers.includes(account)
-
-                                        const signable = approvals ? msigIncludeSigner && approverIsNotProposer : msigIncludeSigner
-
                                         if (comment && comment.multisigMessage && comment.correct) {
                                             let largeRequest: any = {
                                                 issue_number: rawLargeIssue.number,
@@ -226,16 +195,14 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
                                                 mine: rawLargeIssue.assignees.find((a: any) => a.login === user.data.login) !== undefined,
                                                 approvals,
                                                 tx: txs.length > 0 ? txs[0] : null,
-                                                proposer: { signeraddress: signerAddress, signerGitHandle },
                                                 labels: rawLargeIssue.labels.map((item: any) => item.name),
-                                                data,
-                                                signable
+                                                data
                                             }
                                             largeissues.push(largeRequest)
                                         }
                                     }
                                     resolve(largeissues)
-
+                                    
                                 } catch (e) {
                                     // console.log('error', e)
                                     reject(e)
@@ -494,7 +461,7 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
 
                     let verified: any = []
 
-                    await Promise.all(approvedVerifiers
+                    const promArr = approvedVerifiers
                         .map((verifiedAddress: any) =>
                             new Promise<any>(async (resolve, reject) => {
                                 try {
@@ -512,10 +479,12 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
                                 } catch (error) {
                                     reject(error)
                                 }
-                            })))
+                            }))
 
 
                     this.setState({ verified })
+                    const promRes = await Promise.all(promArr)
+                    // console.log("loadVerified promise result", promRes)
 
 
                 } catch (error) {
@@ -526,15 +495,23 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
             loadClients: async () => {
                 try {
                     const clients = await this.props.wallet.api.listVerifiedClients()
-                    let clientsAmount = clients.reduce((tot: any, el: any,) => new BigNumber(tot).plus(new BigNumber(el.datacap)), 0).toString()
-                    this.setState({ clients, clientsAmount })
+                    let clientsamount = new BigNumber(0)
+                    let promArr: Promise<void>[] = []
 
 
-                    await Promise.all(clients.map(async (txs: any) => {
-                        txs['key'] = await this.props.wallet.api.actorKey(txs.verified)
-                    }))
+                    for (let txs of clients) {
+                        promArr.push(new Promise<any>(async (resolve) => {
+                            const amountBN = new BigNumber(txs.datacap)
+                            clientsamount = amountBN.plus(clientsamount)
+                            txs['key'] = await this.props.wallet.api.actorKey(txs.verified)
+                            resolve(txs)
+                        }))
+                    }
 
-                    this.setState({ clients })
+                    const promRes = await Promise.all(promArr)
+                    // console.log("loadClients promise result", promRes)
+
+                    this.setState({ clients, clientsAmount: clientsamount.toString() })
                 } catch (error) {
                     console.error("error in resolving promises", error)
                 }
