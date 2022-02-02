@@ -208,6 +208,7 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
                                             signerGitHandle = verifierRegistry.notaries.find((notary: any) => notary.ldn_config.signing_address === signerAddress)?.github_user[0] || "none"
                                             approverIsNotProposer = signerAddress ? signerAddress !== this.props.wallet.activeAccount : false
                                         }
+                                        
                                         const multisigInfo = await this.props.wallet.api.multisigInfo(comment.notaryAddress)
                                         const account = this.props.wallet.accountsActive[this.props.wallet.activeAccount]
                                         const msigIncludeSigner = multisigInfo.signers.includes(account)
