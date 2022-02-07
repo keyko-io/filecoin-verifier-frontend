@@ -93,6 +93,7 @@ class Pagination extends Component<PaginationProps> {
 
     render() {
         return (
+           this.state.pages.length > 0 &&
             <div className="pagination">
                 <div className="pagenumber paginator" onClick={e => this.movePage(-1)}>{this.state.actualPage !== 1 && "<"}</div>
                 {
