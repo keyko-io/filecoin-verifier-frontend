@@ -273,15 +273,18 @@ export default class Notary extends Component<NotaryProps, NotaryStates> {
                     let messageID
                     const signer = this.context.wallet.activeAccount ? this.context.wallet.activeAccount : ""
                     await this.context.postLogs(`starting to sign datacap request. approvals: ${request.approvals} -signer: ${signer}`, "DEBUG", "", request.issue_number, PHASE)
+                    let action = ''
                     if (request.approvals) {
                         messageID = await this.context.wallet.api.approvePending(request.multisig, request.tx, this.context.wallet.walletIndex)
                         this.setState({ approvedDcRequests: [...this.state.approvedDcRequests, request.number] })
                         await this.context.postLogs(`Datacap GRANTED: ${messageID} - signer: ${signer}`, "INFO", "datacap_granted", request.issue_number, PHASE)
+                        action = "Approved"
                     } else {
                         messageID = await this.context.wallet.api.multisigVerifyClient(request.multisig, address, BigInt(Math.floor(datacap)), this.context.wallet.walletIndex)
                         console.log(request)
                         request.approvals = true
                         await this.context.postLogs(`Datacap PROPOSED: ${messageID} - signer: ${signer}`, "INFO", "datacap_proposed", request.issue_number, PHASE)
+                        action = "Proposed"
                     }
 
                     if (!messageID) {
@@ -294,7 +297,7 @@ export default class Notary extends Component<NotaryProps, NotaryStates> {
                     sentryData.messageID = messageID
                     sentryData.signer = signer
 
-                    await this.context.updateGithubVerifiedLarge(request.number, messageID, address, datacap, request.approvals, signer, this.context.wallet.multisigID, request.data.name, '', request.labels)
+                    await this.context.updateGithubVerifiedLarge(request.number, messageID, address, datacap, request.approvals, signer, this.context.wallet.multisigID, request.data.name, '', request.labels, action)
                     this.context.wallet.dispatchNotification('Transaction successful! Verify Client Message sent with ID: ' + messageID)
                     await this.context.postLogs(`Transaction successful! Verify Client Message sent with ID: ${messageID}`, "DEBUG", "", request.issue_number, PHASE)
 

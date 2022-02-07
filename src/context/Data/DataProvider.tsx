@@ -213,7 +213,8 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
                                         const account = this.props.wallet.accountsActive[this.props.wallet.activeAccount]
                                         const msigIncludeSigner = multisigInfo.signers.includes(account)
 
-                                        const signable = approvals ? msigIncludeSigner && approverIsNotProposer : msigIncludeSigner
+                                        let signable = approvals ? msigIncludeSigner && approverIsNotProposer : msigIncludeSigner
+                                       if(config.networks.includes('Localhost')) signable = true
 
                                         if (comment && comment.multisigMessage && comment.correct) {
                                             let largeRequest: any = {
@@ -648,9 +649,9 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
                     state: 'closed',
                 })
             },
-            updateGithubVerifiedLarge: async (requestNumber: any, messageID: string, address: string, datacap: any, approvals: boolean, signer: string, msigAddress: string, name: string, errorMessage: string, labels: string[]) => {
+            updateGithubVerifiedLarge: async (requestNumber: any, messageID: string, address: string, datacap: any, approvals: boolean, signer: string, msigAddress: string, name: string, errorMessage: string, labels: string[], action?:string) => {
                 const formattedDc = bytesToiB(datacap)
-                let commentContent = errorMessage !== '' ? errorMessage : `## Request Approved\nYour Datacap Allocation Request has been approved by the Notary\n#### Message sent to Filecoin Network\n>${messageID} \n#### Address \n> ${address}\n#### Datacap Allocated\n> ${formattedDc}\n#### Signer Address\n> ${signer}\n#### You can check the status of the message here: https://filfox.info/en/message/${messageID}`
+                let commentContent = errorMessage !== '' ? errorMessage : `## Request ${action}\nYour Datacap Allocation Request has been ${action?.toLowerCase()} by the Notary\n#### Message sent to Filecoin Network\n>${messageID} \n#### Address \n> ${address}\n#### Datacap Allocated\n> ${formattedDc}\n#### Signer Address\n> ${signer}\n#### You can check the status of the message here: https://filfox.info/en/message/${messageID}`
 
                 //if error, post error comment and error label
                 if (errorMessage !== '') {
