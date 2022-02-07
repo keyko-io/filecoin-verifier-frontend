@@ -213,7 +213,8 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
                                         const account = this.props.wallet.accountsActive[this.props.wallet.activeAccount]
                                         const msigIncludeSigner = multisigInfo.signers.includes(account)
 
-                                        const signable = approvals ? msigIncludeSigner && approverIsNotProposer : msigIncludeSigner
+                                        let signable = approvals ? msigIncludeSigner && approverIsNotProposer : msigIncludeSigner
+                                       if(config.networks.includes('Localhost')) signable = true
 
                                         if (comment && comment.multisigMessage && comment.correct) {
                                             let largeRequest: any = {
