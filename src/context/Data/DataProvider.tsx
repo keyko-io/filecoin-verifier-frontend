@@ -598,7 +598,7 @@ export default class DataProvider extends React.Component<DataProviderProps, Dat
                 this.setState({ clientRequests: arraySorted })
                 return { orderBy, sortOrder }
             },
-            updateGithubVerified: async (requestNumber: any, messageID: string, address: string, datacap: any, signer: string, errorMessage: string) => {
+            updateGithubVerified: async (requestNumber: any, messageID: string, address: string, datacap: number, signer: string, errorMessage: string) => {
                 const formattedDc = bytesToiB(datacap)
                 let commentContent = errorMessage !== '' ? errorMessage : `## Request Approved\nYour Datacap Allocation Request has been approved by the Notary\n#### Message sent to Filecoin Network\n>${messageID} \n#### Address \n> ${address}\n#### Datacap Allocated\n> ${formattedDc}\n#### Signer Address\n> ${signer}\n#### You can check the status of the message here: https://filfox.info/en/message/${messageID}`
 
