@@ -191,7 +191,7 @@ export default class Notary extends Component<NotaryProps, NotaryStates> {
                 let errorMessage = ''
                 try {
                     sentryData.request = { ...request }
-                    const datacap = anyToBytes(request.data.datacap)
+                    const datacap: number = anyToBytes(request.data.datacap)
                     console.log('datacap', datacap)
                     address = request.data.address
                     if (address.length < 12) {
@@ -208,12 +208,12 @@ export default class Notary extends Component<NotaryProps, NotaryStates> {
                     const txReceipt = await this.context.wallet.api.getReceipt(messageID)
                     if (txReceipt.ExitCode !== 0) {
                         errorMessage += `#### There was an error processing the message \n>${messageID}, retry later.`
-                        this.context.updateGithubVerified(request.number, messageID, address, request.data.datacap, signer, errorMessage)
+                        this.context.updateGithubVerified(request.number, messageID, address, datacap, signer, errorMessage)
                         this.context.wallet.dispatchNotification('Error processing the message: ' + messageID)
                         throw Error(errorMessage)
                     }
                     // github update
-                    this.context.updateGithubVerified(request.number, messageID, address, request.data.datacap, signer, '')
+                    this.context.updateGithubVerified(request.number, messageID, address, datacap, signer, '')
 
                     // send notifications
                     this.context.wallet.dispatchNotification('Verify Client Message sent with ID: ' + messageID)
