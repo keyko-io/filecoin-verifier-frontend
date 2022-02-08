@@ -14,7 +14,7 @@ export const Data = React.createContext({
     switchview: async () => {},
     verified: [] as any,
     loadVerified: async () => {},
-    updateGithubVerified: async (requestNumber: any, messageID: string, address: string, datacap: any) => {},
+    updateGithubVerified: async (requestNumber: any, messageID: string, address: string, datacap: number, signer: string, errorMessage: string) => {},
     createRequest: async (data: any) => {},
     selectedNotaryRequests: [] as any,
     selectNotaryRequest: any,
