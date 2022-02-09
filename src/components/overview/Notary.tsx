@@ -182,6 +182,7 @@ export default class Notary extends Component<NotaryProps, NotaryStates> {
 
     verifyClients = async () => {
         dispatchCustomEvent({ name: "delete-modal", detail: {} })
+        this.setState({ approveLoading: true })
         for (const request of this.context.clientRequests) {
             if (this.state.selectedClientRequests.includes(request.number)) {
                 let messageID = ""
@@ -212,6 +213,7 @@ export default class Notary extends Component<NotaryProps, NotaryStates> {
                         this.context.wallet.dispatchNotification('Error processing the message: ' + messageID)
                         throw Error(errorMessage)
                     }
+                    this.setState({ approveLoading: false })
                     // github update
                     this.context.updateGithubVerified(request.number, messageID, address, datacap, signer, '')
 
@@ -229,6 +231,7 @@ export default class Notary extends Component<NotaryProps, NotaryStates> {
                         walletIndex: this.context.wallet.walletIndex
                     }
                 } catch (e) {
+                    this.setState({ approveLoading: false })
                     sentryData = {
                         ...sentryData,
                         error: e
@@ -414,7 +417,7 @@ export default class Notary extends Component<NotaryProps, NotaryStates> {
                     }
                     <div className="tabssadd">
                         {this.state.tabs !== "3" ? <ButtonPrimary onClick={() => this.requestDatacap()}>Approve Private Request</ButtonPrimary> : null}
-                        {this.state.tabs === "1" || this.state.tabs === "3" ? <>
+                        {this.state.tabs === "1" || this.state.tabs === "2" || this.state.tabs === "3" ? <>
                             {
                                 this.state.approveLoading ?
                                     <BeatLoader size={15} color={"rgb(24,160,237)"} /> :
