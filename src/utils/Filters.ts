@@ -23,9 +23,9 @@ export function bytesToiB(inputBytes: number) {
     //this is bc it cannot convert 1099511627776000 to 1PiB and it convert to 9 YiB
     if (autoscale.dataFormat === "YiB") {
         autoscale = byteConverter.autoScale(inputBytes-32, 'B', { preferByte: true, preferBinary: true } as any)
-        return `${autoscale.value.toFixed(1)}${autoscale.dataFormat}`
+        return `${Number(autoscale.value).toFixed(2)}${autoscale.dataFormat}`
     }
-    return `${autoscale.value.toFixed(2)}${autoscale.dataFormat}`
+    return `${Number(autoscale.value).toFixed(2)}${autoscale.dataFormat}`
     // return `${Number.isInteger(autoscale.value) ? autoscale.value : autoscale.value.toFixed(1)}${autoscale.dataFormat}`
 }
 

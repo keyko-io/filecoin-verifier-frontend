@@ -12,7 +12,7 @@ export const config = {
     domain: process.env.REACT_APP_DOMAIN || "https://plus.fil.org/",
     githubGenericToken: process.env.REACT_APP_GITHUB_GENERIC_TOKEN,
     minersUrl: 'https://raw.githubusercontent.com/filecoin-project/filecoin-plus-client-onboarding/main/miners.md',
-    defaultAssign: ['philippbanhardt'],
+    defaultAssign: ['fabriziogianni7'],
     willRedirect: process.env.REACT_APP_REDIRECTION || false,
     validateAddress: process.env.REACT_APP_VALIDATE_ADDRESS || true,
     approvalsThreshold: process.env.REACT_APP_APPROVALS_THRESHOLD || '1',
@@ -28,7 +28,7 @@ export const config = {
         notaryOwner: 'filecoin-project',
         rkhMultisig: 'f080',
         rkhtreshold: 2,
-        largeClientRequestAssign: ['philippbanhardt'],
+        largeClientRequestAssign: ['fabriziogianni7'],
     }, {
         name: 'Nerpanet',
         code: 1,
