@@ -985,7 +985,133 @@
       }
     }
   }
+
+  .form {
+    min-height: 100%;
+    display: flex;
+    align-content: center;
+    justify-content: flex-start;
+    align-items: center;
+  }
+  
 }
+
+.formContainer {
+  background-image: url('/bg_image.png');
+  display: flex;
+  align-content: center;
+  justify-content: space-around;
+  align-items: center;
+
+  .welcome0{
+    display: flex;
+    flex-direction: column;
+    font-size: xx-large;
+  }
+  .welcome1{
+    display: flex;
+    flex-direction: column;
+    font-size: xx-large;
+    max-width: 35%;
+
+  }
+  .welcome2{
+    display: flex;
+    flex-direction: column;
+    font-size: xx-large;
+    max-width: 30%
+  }
+  .welcome3{
+    font-size: xx-large;
+    display: flex;
+    flex-direction: column;
+    font-size: xx-large;
+    max-width: 30%;
+    // padding-bottom: 60%;
+  }
+  .welcome4{
+    font-size: xx-large;
+    // position:fixed;
+    // padding-bottom: 50%;
+  }
+
+  .content {
+    min-height: 100%;
+    padding: 10% 0 10% 0;
+
+    .titleIssueBox{
+      font-size: large;
+      text-align: center;
+    }
+    
+    .issueBoxContainer{
+      overflow: auto;
+      // text-align: center;
+      max-height: 350px;
+      .issueBox{
+        width: 400px;
+        height: 100px;
+        padding: 10px;
+        margin:10px;
+        cursor: pointer;
+        border: 1px solid #0091ff;
+        border-radius: 5px;
+  
+        
+      }
+    }
+
+    .inputholder{
+      display: flex;
+      align-items: flex-end;
+
+      .dropdown-input {
+        color:blue
+      }
+    }
+
+    .otherInfoContainer{
+
+      width: 800px;
+      display:flex;
+      flex-direction: column;
+      align-items: center;
+
+      .otherInfoHeader{
+        text-align: center;
+        font-variant-caps: all-small-caps;
+        padding-right: 5%;
+        // display: flex;
+        // flex-direction: row;
+      }
+
+      .otherInfoButtonContainer{
+        display: flex;
+        justify-content: flex-end;
+        margin: 5%
+      }
+      
+      .otherInfoLabel{
+        font-variant-caps: all-petite-caps;
+        font-size: x-large;
+        padding:1%
+      }
+
+      .otherInfoDiv{
+        display: flex;
+        flex-direction: column;
+        width: 60%;
+        margin: 5%;
+
+        textarea{
+          height: 70px;
+          }
+      }
+    }
+    
+  }
+}
+
 
 @media only screen and (max-width: 850px) {
   .buttonsholder {
@@ -1852,9 +1978,10 @@
   background-color: #ccc;
 }
 .verificationoptions{
-  width: 570px;
-  height: 380px;
+  // width: 570px;
+  // height: 380px;
   font-family: "suisseintl";
+  padding: 10px;
 
   .buttoncard{
     height: 150px;

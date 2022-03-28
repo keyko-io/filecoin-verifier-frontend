@@ -42,6 +42,7 @@
     "react-blockies": "^1.4.1",
     "react-cookie": "^4.0.3",
     "react-dom": "^16.13.1",
+    "react-dropdown": "^1.9.2",
     "react-fontawesome": "^1.7.1",
     "react-login-github": "^1.0.6",
     "react-router-dom": "^5.2.0",
