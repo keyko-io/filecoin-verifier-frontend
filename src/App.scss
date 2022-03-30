@@ -1000,7 +1000,7 @@
   background-image: url('/bg_image.png');
   display: flex;
   align-content: center;
-  justify-content: space-around;
+  justify-content: space-evenly;
   align-items: center;
 
   .welcome0{
@@ -1036,8 +1036,9 @@
   }
 
   .content {
-    min-height: 100%;
+    // min-height: 100%;
     padding: 10% 0 10% 0;
+    width: 50%;
 
     .titleIssueBox{
       font-size: large;
@@ -1085,11 +1086,7 @@
         // flex-direction: row;
       }
 
-      .otherInfoButtonContainer{
-        display: flex;
-        justify-content: flex-end;
-        margin: 5%
-      }
+     
       
       .otherInfoLabel{
         font-variant-caps: all-petite-caps;
@@ -1107,6 +1104,17 @@
           height: 70px;
           }
       }
+    }
+    .otherInfoButtonContainer{
+      display: flex;
+      justify-content: flex-end;
+      padding-top: 5%;
+      margin-top:5%
+    
+    }
+
+    .select-slot{
+      display: flex;
     }
     
   }
