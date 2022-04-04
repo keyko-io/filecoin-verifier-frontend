@@ -995,7 +995,69 @@
   }
   
 }
+.viewFourContainer{
+  background-image: url('/bg_image.png');
+  display: flex;
+  align-items: center;
+  flex-direction: column;
 
+  .welcome4{
+    font-size: xx-large;
+    padding-top: 5%;
+    width: 60%;
+  }
+
+  .content {
+    padding: 5% 0 10% 0;
+    width: 100%;
+
+
+    .otherInfoContainer{
+
+      display:flex;
+      flex-direction: column;
+      align-items: center;
+
+      .otherInfoHeader{
+        text-align: center;
+        font-variant-caps: all-small-caps;
+        padding-right: 5%;
+      }
+
+     
+      
+      .otherInfoLabel{
+        font-variant-caps: all-petite-caps;
+        font-size: x-large;
+        padding:1%
+      }
+
+      .otherInfoDiv{
+        display: flex;
+        flex-direction: column;
+        width: 60%;
+        margin: 1%;
+
+        textarea{
+          height: 70px;
+          }
+      }
+    }
+    .otherInfoButtonContainer{
+      display: flex;
+      justify-content: flex-end;
+      margin-top:5%
+    
+    }
+
+    .select-slot{
+      display: flex;
+    }
+    
+  }
+
+  
+}
 .formContainer {
   background-image: url('/bg_image.png');
   display: flex;
@@ -1027,27 +1089,19 @@
     flex-direction: column;
     font-size: xx-large;
     max-width: 30%;
-    // padding-bottom: 60%;
-  }
-  .welcome4{
-    font-size: xx-large;
-    // position:fixed;
-    // padding-bottom: 50%;
   }
 
+
   .content {
-    // min-height: 100%;
     padding: 10% 0 10% 0;
     width: 50%;
 
     .titleIssueBox{
       font-size: large;
-      text-align: center;
     }
     
     .issueBoxContainer{
       overflow: auto;
-      // text-align: center;
       max-height: 350px;
       .issueBox{
         width: 400px;
@@ -1071,47 +1125,6 @@
       }
     }
 
-    .otherInfoContainer{
-
-      width: 800px;
-      display:flex;
-      flex-direction: column;
-      align-items: center;
-
-      .otherInfoHeader{
-        text-align: center;
-        font-variant-caps: all-small-caps;
-        padding-right: 5%;
-        // display: flex;
-        // flex-direction: row;
-      }
-
-     
-      
-      .otherInfoLabel{
-        font-variant-caps: all-petite-caps;
-        font-size: x-large;
-        padding:1%
-      }
-
-      .otherInfoDiv{
-        display: flex;
-        flex-direction: column;
-        width: 60%;
-        margin: 5%;
-
-        textarea{
-          height: 70px;
-          }
-      }
-    }
-    .otherInfoButtonContainer{
-      display: flex;
-      justify-content: flex-end;
-      padding-top: 5%;
-      margin-top:5%
-    
-    }
 
     .select-slot{
       display: flex;
