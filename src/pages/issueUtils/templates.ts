@@ -16,10 +16,10 @@ To apply for DataCap to onboard your dataset to Filecoin, please fill out the fo
 ## Core Information
 - Organization Name: ${coreInfo.name}
 - Website / Social Media: ${coreInfo.website} 
+- Region: ${coreInfo.region}
 - Total amount of DataCap being requested (between 500 TiB and 5 PiB): ${coreInfo.datacapRequested}
 - Weekly allocation of DataCap requested (usually between 1-100TiB): ${coreInfo.dataCapWeeklyAllocation}
 - On-chain address for first allocation: ${coreInfo.address}
-- Region: ${coreInfo.region}
 
 _Please respond to the questions below by replacing the text saying "Please answer here". Include as much detail as you can in your answer._
 
