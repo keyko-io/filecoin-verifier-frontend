@@ -6,6 +6,7 @@ import Header from '../components/Header';
 import TableMiners from '../components/TableMiners';
 import { Data } from '../context/Data/Index'
 
+
 class Miners extends Component<{}> {
 
   public static contextType = Data

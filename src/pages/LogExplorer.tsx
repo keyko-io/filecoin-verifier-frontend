@@ -1,11 +1,11 @@
-import React, { Component, useState } from 'react';
+import React, { Component } from 'react';
 // @ts-ignore
 import Welcome from '../components/Welcome'
 import Header from '../components/Header';
-import testLogs from '../data/test-logs.json'
 import { TextField, Button } from '@material-ui/core';
 import { Data } from '../context/Data/Index'
 import {config} from '../config'
+
 
 const NOTARY_PREFIX_URL = `https://github.com/${config.onboardingOwner}/${config.onboardingNotaryOwner}/issues/`
 const LDN_PREFIX_URL = `https://github.com/${config.onboardingOwner}/${config.onboardingLargeClientRepo}/issues/`
