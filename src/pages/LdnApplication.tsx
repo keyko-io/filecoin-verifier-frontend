@@ -8,7 +8,7 @@ import { Data } from '../context/Data/Index';
 import { config } from '../config';
 import Header from '../components/Header';
 import { createParentComment, updateTemplate } from './issueUtils/templates';
-import { coreInfo, otherInfo, guidelines, regionOptions, labelsIssueCreation, steps } from './issueUtils/constants';
+import { coreInfo, otherInfo, guidelines, regionOptions, labelsIssueCreation, steps, URL_README } from './issueUtils/constants';
 
 
 const utils = require('@keyko-io/filecoin-verifier-tools/utils/large-issue-parser')
@@ -315,7 +315,7 @@ class LdnApplication extends Component<{}> {
   }
 
   goToIssue() {
-    alert('TODO')
+    console.log('goToIssue--> TODO')
   }
 
   render() {
@@ -341,7 +341,7 @@ class LdnApplication extends Component<{}> {
             </div>
           }
           <span style={{ paddingTop: '10px' }}></span>
-          <div className="guideText">Find more details <a target='_blank' href='https://github.com/filecoin-project/filecoin-plus-large-datasets/blob/main/README.md' >here</a></div>
+          <div className="guideText">Find more details <a target='_blank' href={URL_README} >here</a></div>
           {this.state.view === 4 && <div className="guideText">
             <small>Step {this.state.stepViewFour + 2} of 4</small><br></br>
             <small>If you don't have time now, you can complete the application form later.</small>

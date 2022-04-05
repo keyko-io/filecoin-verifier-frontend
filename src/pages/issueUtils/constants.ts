@@ -1,3 +1,4 @@
+import { config } from "../../config"
 export const coreInfo = [
     { name: 'title', description: 'Github Issue Title', value: '', error: false, errorMessage: 'Field is Required', type: 'string' },
     { name: 'name', description: 'Organization Name', value: '', error: false, errorMessage: 'Field is Required', type: 'string' },
@@ -56,3 +57,5 @@ export const coreInfo = [
   }
   
   export const steps = ['Main Info', 'Project Details',  'Use-Case Details', 'DataCap Allocation Plan']
+
+  export const URL_README = `https://github.com/${config.onboardingOwner}/${config.onboardingLargeClientRepo}/blob/main/README.md`
