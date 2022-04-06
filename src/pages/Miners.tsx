@@ -43,7 +43,7 @@ class Miners extends Component<{}> {
         <div className="container">
           <Welcome
             title="Welcome to the Filecoin Plus Registry"
-            description="A public request is all about Dash launched a hot deterministic wallet! Stellar is a burned exchange during lots of wash trade, so someone slept on the trusted fish. It proves many difficulty behind some cold wallet! Since IOTA counted few hot gas..."
+            description="Filecoin Plus is a layer of social trust on top of the Filecoin Network to help incentivize the storage of real data."
           />
           <div className="wrapperverifiers">
             <div className="tableselects">
