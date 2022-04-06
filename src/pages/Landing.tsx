@@ -103,7 +103,7 @@ class Landing extends Component<{}, States> {
             })}
           </div>
           <LearnMoreOptions />
-        </div>
+        </div>   
       </div>
     );
   }

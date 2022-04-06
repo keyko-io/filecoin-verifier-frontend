@@ -70,7 +70,7 @@ class Verifiers extends Component<{}> {
               </div>
             </div>
           </div>
-        </div>
+        </div> 
       </div>
     );
   }
