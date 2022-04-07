@@ -2,36 +2,34 @@ import React, { useState } from 'react'
 import DataTable from "react-data-table-component";
 import Header from '../components/Header';
 import Welcome from '../components/Welcome';
-import { data } from './mockData/fakeData';
+import { data , Verifier} from './mockData/fakeData';
 import MakeRequestModal from '../modals/MakeRequestModal';
 import WarnModal from '../modals/WarnModal';
 // @ts-ignore
 import { dispatchCustomEvent } from "slate-react-system";
 
-
-
- const columns = [
+ const columns: any = [
   {
     name: "Notary Name",
-    selector: (row : any) => row.name,
+    selector: (row : Verifier) => row.name,
     sortable: true,
   },
   {
     name: "Use Case",
-    selector: (row : any) => row.use_case,
+    selector: (row: Verifier) => row.use_case,
     sortable: true, 
-    cell: (row : any)=> <span>{row.use_case.join(", ")}</span>
+    cell: (row : Verifier)=> <span>{row.use_case.join(", ")}</span>
   },
   {
     name: "Location",
-    selector: (row : any) => row.location,
+    selector: (row: Verifier) => row.location,
     sortable: true,
   },
   {
     name: "Contacts",
-    selector: (row : any) => [row.fil_slack_id, row.github_user],
+    selector: (row : Verifier) => [row.fil_slack_id, row.github_user],
     sortable: false, 
-    cell: (row : any)=> (
+    cell: (row : Verifier)=> (
       <div style={{ display : "flex" , flexDirection: "column" }}>
        <span >Slack : {row.fil_slack_id}</span>
        <span>Github : {row.github_user}</span>
@@ -74,7 +72,9 @@ const Verifiers2 = () => {
           (row: any) =>
             row.name.toLowerCase().indexOf(query.toLowerCase()) > -1 ||
             row.use_case.toString().toLowerCase().indexOf(query.toLowerCase()) > -1 ||
-            row.location.toLowerCase().indexOf(query.toLowerCase()) > -1 
+            row.location.toLowerCase().indexOf(query.toLowerCase()) > -1 ||
+            row.github_user.toString().toLowerCase().indexOf(query.toLowerCase()) > -1 || 
+            row.fil_slack_id.toLowerCase().indexOf(query.toLowerCase()) > -1
        )
   }
 

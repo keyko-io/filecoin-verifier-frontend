@@ -1,4 +1,21 @@
-export const data = [
+export interface Verifier {
+        id: number;
+        name: string;
+        use_case: string[];
+        location: string;
+        website: string;
+        email: string;
+        fil_slack_id: string;
+        github_user: string[];
+        ldn_config: {
+            active_signer: string;
+            signing_address: string;
+        }
+        docs_url? : string;
+        info? : string;
+}
+
+export const data : Verifier[] = [
     {
         "id": 2,
         "name": "Filecoin Foundation",
