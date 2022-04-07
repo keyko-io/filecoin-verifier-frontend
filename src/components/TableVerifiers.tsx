@@ -86,6 +86,9 @@ export default class TableVerifiers extends Component<TableVerifiersProps> {
     contactVerifier = async () => {
         if (this.state.selectedVerifier !== null) {
             let verifier: any = this.state.verifiers[this.state.selectedVerifier]
+  
+           
+
             dispatchCustomEvent({
                 name: "create-modal", detail: {
                     id: Math.random().toString(36).replace(/[^a-z]+/g, '').substr(0, 5),
@@ -94,6 +97,7 @@ export default class TableVerifiers extends Component<TableVerifiersProps> {
             })
             return
         }
+        
         dispatchCustomEvent({
             name: "create-modal", detail: {
                 id: Math.random().toString(36).replace(/[^a-z]+/g, '').substr(0, 5),

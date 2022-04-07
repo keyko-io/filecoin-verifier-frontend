@@ -1355,7 +1355,7 @@
   .headerback {
     cursor: pointer;
     float: left;
-    margin: 25px 20px;
+    margin: 15px 20px;
     font-family: "suisseintl";
     font-style: normal;
     font-weight: 600;
@@ -2316,3 +2316,15 @@
   color: rgb(97, 96, 96);
   opacity: 0.9
 }
+
+
+div[role=columnheader] div {
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.sc-bjUoiL.kWAsOx {
+   padding: 25px 0;
+}
+
+

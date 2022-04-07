@@ -41,6 +41,7 @@
     "react": "^16.13.1",
     "react-blockies": "^1.4.1",
     "react-cookie": "^4.0.3",
+    "react-data-table-component": "^7.4.7",
     "react-dom": "^16.13.1",
     "react-dropdown": "^1.9.2",
     "react-fontawesome": "^1.7.1",
@@ -50,6 +51,7 @@
     "react-spinners": "^0.11.0",
     "sass-loader": "^9.0.2",
     "slate-react-system": "file:./tmp/slate-react-system-0.1.0.tgz",
+    "styled-components": "^5.3.5",
     "typescript": "^3.7.5",
     "uuid": "^8.3.2"
   },

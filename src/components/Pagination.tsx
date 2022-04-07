@@ -21,7 +21,6 @@ class Pagination extends Component<PaginationProps> {
         actualPage: 1,
         pages: [], //total pages 
         finalIndex: 6
-
     }
 
     componentDidMount() {

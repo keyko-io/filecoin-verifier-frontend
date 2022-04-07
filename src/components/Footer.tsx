@@ -26,6 +26,9 @@ const Footer = () => {
     case "/ldn-application":
       footerTop = "unset"  
       break
+    case "/verifiers2":
+      footerTop = "100px"
+      break  
     default:
       footerTop = "1070px"
     break;

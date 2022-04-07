@@ -1,20 +1,17 @@
-import React, { Component } from 'react';
+import React from 'react';
 
 type WelcomeProps = {
     title: string,
     description: string,
 }
 
-class Welcome extends Component<WelcomeProps> {
-
-    render() {
-        return (
-            <div className="welcome">
-                <div className="title">{this.props.title}</div>
-                <div className="description">{this.props.description}</div>
-            </div>
-        )
-    }
+const Welcome = ({title, description} : WelcomeProps) => {
+  return (
+    <div className="welcome">
+    <div className="title">{title}</div>
+    <div className="description">{description}</div>
+</div>
+  )
 }
 
-export default Welcome;
+export default Welcome

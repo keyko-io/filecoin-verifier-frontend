@@ -27,6 +27,8 @@ import * as Sentry from "@sentry/react";
 import { Integrations } from "@sentry/tracing";
 import Footer from './components/Footer';
 import LdnApplication from './pages/LdnApplication';
+import Verifiers2 from './pages/Verifiers2';
+
 
 
 // redirect to domain if user access fleek url
@@ -66,6 +68,7 @@ ReactDOM.render(
                         <Route path={'/wallet'} component={Preonboarding} ></Route>
                         <Route path={'/landing'} component={Landing} ></Route>
                         <Route path={'/verifiers'} component={Verifiers} ></Route>
+                        <Route path={'/verifiers2'} component={Verifiers2} ></Route>
                         <Route path={'/ldn-application'} component={LdnApplication} ></Route>
                         <Route path={'/miners'} component={Miners} ></Route>
                         <Route path={'/client'} component={ClientDetails} ></Route>
