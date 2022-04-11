@@ -28,6 +28,7 @@
     "@types/node": "^12.12.51",
     "@types/react": "^16.9.43",
     "@types/react-dom": "^16.9.8",
+    "@types/styled-components": "^5.1.25",
     "@types/uuid": "^8.3.0",
     "@wtfcode/byte-converter": "^1.7.11",
     "@zondax/filecoin-signing-tools": "0.7.1",

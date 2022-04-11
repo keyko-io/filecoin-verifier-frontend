@@ -103,16 +103,33 @@ export default class TableMiners extends Component {
     loadData = async () => {
         try {
             const response = await fetch(config.minersUrl)
+            
+            
+
             const text = await response.text()
 
+            
+
             const html = parserMarkdown.render(text)
+   
+            
+
             const json = parse(html);
+
+            
 
             const minersIds = json[2].children[3].children.filter((ele: any) => ele.type === "element").map((m: any, i: number = 0) => m.children[5].children[0].content)
 
+            
+
             const res = await fetch(`https://api.filrep.io/api/v1/miners`)
             const apiData = await res.json()
+
+           
+
             const filteredApiData = apiData.miners.filter((item: any) => minersIds.includes(item.address))
+          
+         
 
             const miners = json[2].children[3].children
                 .filter((ele: any) => ele.type === "element")
@@ -157,15 +174,16 @@ export default class TableMiners extends Component {
                 loadingApiData: false
             })
             const queryParams = new URLSearchParams(window.location.search);
+   
+             
+
             const search = queryParams.get('search');
             if (search !== null) {
                 this.filter(search)
             }
         } catch (error) {
-
+            console.log(error)
         }
-
-
     }
 
     order = async (e: any) => {

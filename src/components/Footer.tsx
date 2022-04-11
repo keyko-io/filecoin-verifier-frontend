@@ -29,6 +29,9 @@ const Footer = () => {
     case "/verifiers2":
       footerTop = "100px"
       break  
+    case "/miners2":
+      footerTop = "100px"
+      break  
     default:
       footerTop = "1070px"
     break;

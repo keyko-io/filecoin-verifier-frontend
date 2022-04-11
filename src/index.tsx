@@ -2,7 +2,6 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.scss';
 import { config } from './config';
-import App from './App';
 import WalletProvider from './context/Wallet/WalletProvider'
 import GithubProvider from './context/Github/GithubProvider'
 import DataProvider from './context/Data/DataProvider'
@@ -12,23 +11,14 @@ import { Router, Route, Switch } from 'react-router-dom'
 // @ts-ignore
 import { GlobalNotification, GlobalModal } from "slate-react-system";
 import * as serviceWorker from './serviceWorker';
-import Preonboarding from './pages/Preonboarding';
-import Onboarding from './pages/Onboarding';
-import Landing from './pages/Landing';
 import history from './context/History';
-import Verifiers from './pages/Verifiers';
-import LogExplorer from './pages/LogExplorer';
 import './fonts/SuisseIntl-Regular.woff'
-import Miners from './pages/Miners';
 import Title from './components/Title';
-import ClientDetails from './pages/ClientDetails'
 import { CookiesProvider } from 'react-cookie';
 import * as Sentry from "@sentry/react";
 import { Integrations } from "@sentry/tracing";
 import Footer from './components/Footer';
-import LdnApplication from './pages/LdnApplication';
-import Verifiers2 from './pages/Verifiers2';
-
+import {routes}  from './routes';
 
 
 // redirect to domain if user access fleek url
@@ -63,16 +53,10 @@ ReactDOM.render(
                   <DataProvider wallet={wallet} github={github}>
                     <Router history={history}>
                       <Switch>
-                        <Route exact path={'/'} component={Onboarding} ></Route>
-                        <Route path={'/app'} component={App} ></Route>
-                        <Route path={'/wallet'} component={Preonboarding} ></Route>
-                        <Route path={'/landing'} component={Landing} ></Route>
-                        <Route path={'/verifiers'} component={Verifiers} ></Route>
-                        <Route path={'/verifiers2'} component={Verifiers2} ></Route>
-                        <Route path={'/ldn-application'} component={LdnApplication} ></Route>
-                        <Route path={'/miners'} component={Miners} ></Route>
-                        <Route path={'/client'} component={ClientDetails} ></Route>
-                        <Route path={'/logs'} component={LogExplorer} ></Route>                        
+                      {routes.map((route, index ) => (
+                      <Route key={index} exact={route.path === "/" ? true : false} path={route.path}>
+                         {route.component}
+                       </Route>))}                  
                       </Switch>  
                       <Footer />
                     </Router>
