@@ -8,6 +8,7 @@ import TableSearchInput from './tableUtils/TableSearchInput';
 import TableRightCornerContainer from './tableUtils/TableRightCornerContainer';
 import { loadData } from './tableUtils/loadMiners';
 import { columns } from './tableUtils/minersColumns';
+import CircularProgress from '@mui/material/CircularProgress';
 
   
 const Miners2 = () => {
@@ -49,6 +50,7 @@ const Miners2 = () => {
           progressPending={loading}
           defaultSortFieldId={7}
           defaultSortAsc={false}
+          progressComponent={<CircularProgress style={{marginTop : "100px"}}/>}
         />
         </TableContainer>  
     </div>
