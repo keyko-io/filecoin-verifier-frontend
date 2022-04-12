@@ -28,6 +28,8 @@ import Verifiers2 from './pages/Verifiers2';
 import Miners2 from './pages/Miners2';
 
 
+
+
 // redirect to domain if user access fleek url
 if (window.location.host.includes('fleek') && config.willRedirect) {
   window.location.href = config.domain;
@@ -45,7 +47,9 @@ Sentry.init({
 
 
 
+
 ReactDOM.render(
+  
 
   <React.StrictMode>
     <CookiesProvider>
@@ -68,7 +72,7 @@ ReactDOM.render(
                         <Route path={'/client'} component={ClientDetails} ></Route>
                         <Route path={'/logs'} component={LogExplorer} ></Route>                        
                       </Switch>  
-                     {} <Footer />
+                     <Footer />  
                     </Router>
                 
                     <GlobalNotification style={{ bottom: 0, right: 0 }} />

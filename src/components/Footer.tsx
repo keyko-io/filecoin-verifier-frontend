@@ -39,6 +39,7 @@ const Footer = () => {
   }
   
   return (
+    
     <div className="footer" style={{ top : footerTop }}>
        <div className='logo'>      
        

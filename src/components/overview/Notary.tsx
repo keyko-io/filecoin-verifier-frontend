@@ -16,6 +16,7 @@ import { tableElementFilter } from '../../utils/SortFilter';
 import Pagination from '../Pagination';
 import history from '../../context/History';
 import { BeatLoader } from "react-spinners";
+import DataTable from 'react-data-table-component';
 
 
 
@@ -548,39 +549,32 @@ export default class Notary extends Component<NotaryProps, NotaryStates> {
                     </div>
                     : null}
                 {this.state.tabs === "2" ?
-                    <div>
-                        <table>
-                            <thead>
-                                <tr>
-                                    {this.verifiedClientsColums.map((column: any) => <td
-                                        id={column.id} onClick={this.orderVerified}>
-                                        {column.value}
-                                        <FontAwesomeIcon icon={["fas", "sort"]} />
-                                    </td>)}
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {this.state.refVerified && this.state.refVerified.checkIndex ?
-                                    this.props.clients.filter((element) => tableElementFilter(this.props.searchString, element) === true)
-                                        .filter((_, i: any) => this.state.refVerified?.checkIndex(i))
-                                        .map((transaction: any, index: any) =>
-                                            <tr key={index}>
-                                                <td>{transaction.verified}</td>
-                                                <td>{transaction.key || <BeatLoader size={5} color={"rgb(24,160,237)"} />}</td>
-                                                <td>{bytesToiB(transaction.datacap)}</td>
-                                            </tr>
-                                        ) : null}
-                            </tbody>
-                        </table>
-                        {this.props.clients.length === 0 ? <div className="nodata">No verified clients yet</div> : null}
-                        <Pagination
-                            elements={this.props.clients}
-                            maxElements={10}
-                            ref={this.onRefVerifiedChange}
-                            refresh={() => this.setState({})}
-                            search={this.props.searchString}
-                        />
-                    </div>
+                     <DataTable 
+                     columns={[
+                      {
+                        name: "ID",
+                        selector: (row : any) => row.verified,
+                        sortable: true,
+                      },
+                      {
+                        name: "Address",
+                        selector: (row: any) => row.key,
+                        sortable: true, 
+                        cell: (row : any)=> <span>{row.key || <BeatLoader size={5} color={"rgb(24,160,237)"} />}</span>
+                      },
+                      {
+                        name: "Datacap",
+                        selector: (row: any) => row.datacap,
+                        sortable: true,
+                        cell: (row : any)=> <span>{ bytesToiB(row.datacap)}</span>
+                      },
+                     
+                    ]}
+                     data={this.props.clients}
+                     pagination 
+                     paginationRowsPerPageOptions={[7]}
+                     paginationPerPage={7}  
+                   />
                     : null}
             </div>
         )

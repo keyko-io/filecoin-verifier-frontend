@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, {  useState } from 'react'
 import DataTable from "react-data-table-component";
 import Header from '../components/Header';
 import Welcome from '../components/Welcome';
@@ -12,6 +12,7 @@ import { dispatchCustomEvent } from "slate-react-system";
 import TableSearchInput from './tableUtils/TableSearchInput';
 import TableRightCornerContainer from './tableUtils/TableRightCornerContainer';
 import { columns } from './tableUtils/verifiersColumns';
+import lodash from 'lodash'
 
 
 const Verifiers2 = () => {
@@ -67,7 +68,7 @@ const Verifiers2 = () => {
            selectableRowsHighlight={true}
            selectableRowsSingle={true}
            columns={columns}
-           data={searchAllColumnsFromTable({ rows : data , query})}
+           data={searchAllColumnsFromTable({ rows : lodash.shuffle(data) , query})}
            pagination 
            paginationRowsPerPageOptions={[7]}
            paginationPerPage={7}  

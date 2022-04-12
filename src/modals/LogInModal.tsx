@@ -104,7 +104,7 @@ class LogInModal extends Component<ModalProps, ModalStates> {
                             </div>
                         </div>
                         <div className="buttons">
-                            {!config.networks.includes('Mainnet') ? 
+                            {!config.networks.includes('xxxx') ? 
                             <div className="button left">
                                 <ButtonPrimary onClick={this.loadBurnerWallet}>
                                     <img src={Logo} alt={'Logo'} />
