@@ -16,10 +16,8 @@ import Preonboarding from './pages/Preonboarding';
 import Onboarding from './pages/Onboarding';
 import Landing from './pages/Landing';
 import history from './context/History';
-import Verifiers from './pages/Verifiers';
 import LogExplorer from './pages/LogExplorer';
 import './fonts/SuisseIntl-Regular.woff'
-import Miners from './pages/Miners';
 import ClientDetails from './pages/ClientDetails'
 import { CookiesProvider } from 'react-cookie';
 import * as Sentry from "@sentry/react";
@@ -47,7 +45,6 @@ Sentry.init({
 
 
 
-
 ReactDOM.render(
 
   <React.StrictMode>
@@ -71,7 +68,7 @@ ReactDOM.render(
                         <Route path={'/client'} component={ClientDetails} ></Route>
                         <Route path={'/logs'} component={LogExplorer} ></Route>                        
                       </Switch>  
-                      <Footer />
+                     {} <Footer />
                     </Router>
                 
                     <GlobalNotification style={{ bottom: 0, right: 0 }} />

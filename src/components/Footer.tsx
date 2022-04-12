@@ -1,9 +1,10 @@
 import React from 'react'
 import logo from "../svg/filecoin-logo.svg"
 import {
- 
   useLocation
 } from "react-router-dom";
+
+
 
 
 
@@ -26,10 +27,10 @@ const Footer = () => {
     case "/ldn-application":
       footerTop = "unset"  
       break
-    case "/verifiers2":
+    case "/verifiers":
       footerTop = "100px"
       break  
-    case "/miners2":
+    case "/miners":
       footerTop = "100px"
       break  
     default:
