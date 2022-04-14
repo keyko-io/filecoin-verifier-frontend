@@ -1,21 +1,17 @@
-import React from 'react'
-import styled from "styled-components"
+import React from "react";
+import styled from "styled-components";
 
+const TableContainer = ({ children }: any) => {
+  return <TableBox>{children}</TableBox>;
+};
 
-const TableContainer = ({children} : any) => {
-  return (
-    <TableBox>{children}</TableBox>
-  )
-}
-
-export default TableContainer
-
+export default TableContainer;
 
 const TableBox = styled.div`
- min-height: 520px;
- position: relative;
- width: 90%;
- margin: 0 auto;
- border: 1px solid #0091ff;
- margin-top: 220px;
-`
+  min-height: 520px;
+  position: relative;
+  width: 90%;
+  margin: 0 auto;
+  border: 1px solid #0091ff;
+  margin-top: 220px;
+`;
