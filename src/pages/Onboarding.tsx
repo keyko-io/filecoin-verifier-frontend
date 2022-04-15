@@ -1,57 +1,54 @@
-import React, { Component } from 'react';
+import React, { Component } from "react";
 // @ts-ignore
-import RootKey from '../svg/rkh-verifiers.svg';
-import Cients from '../svg/client-miners.svg';
-import Option from '../components/Option'
-import history from '../context/History'
-import Welcome from '../components/Welcome'
-import Header from '../components/Header';
-import LearnMore from '../components/LearnMore';
+import RootKey from "../svg/rkh-verifiers.svg";
+import Cients from "../svg/client-miners.svg";
+import Option from "../components/Option";
+import history from "../context/History";
+import Welcome from "../components/Welcome";
+import Header from "../components/Header";
+import LearnMore from "../components/LearnMore";
 
-
-type States = {
-}
+type States = {};
 
 type OptionType = {
-  title: string,
-  desc: string,
-  imgSrc: string
-}
+  title: string;
+  desc: string;
+  imgSrc: string;
+};
 
-type OptionsType = OptionType[]
+type OptionsType = OptionType[];
 
 const options: OptionsType = [
   {
     title: "For Root Key Holders and Notaries",
     desc: "Manage and process in-bound DataCap allocation requests.",
-    imgSrc: RootKey.toString()
-  }, {
+    imgSrc: RootKey.toString(),
+  },
+  {
     title: "For Clients",
     desc: "Find a Notary in your geography or specialized in your use case to get DataCap!",
-    imgSrc: Cients.toString()
-  }]
+    imgSrc: Cients.toString(),
+  },
+];
 
 class Onboarding extends Component<{}, States> {
-
   constructor(props: {}) {
     super(props);
-    this.state = {
-    }
+    this.state = {};
   }
 
   changeActive = (e: any) => {
+    console.log(typeof e.currentTarget.id);
 
-    e.currentTarget.id === '0' ?
-      history.push({
-        pathname: "/wallet",
-        state: { selected: 0 }
-      })
-      :
-      history.push({
-        pathname: "/landing",
-      })
-
-  }
+    e.currentTarget.id === "0"
+      ? history.push({
+          pathname: "/wallet",
+          state: { selected: 0 },
+        })
+      : history.push({
+          pathname: "/landing",
+        });
+  };
 
   render() {
     return (
@@ -64,21 +61,22 @@ class Onboarding extends Component<{}, States> {
           />
           <div className="options twooptions">
             {options.map((option: OptionType, index: number) => {
-              return <Option
-                key={index}
-                id={index}
-                title={option.title}
-                desc={option.desc}
-                imgSrc={option.imgSrc}
-                onClick={this.changeActive.bind(this)}
-                buttonName="Proceed"
-              />
+              return (
+                <Option
+                  key={index}
+                  id={index}
+                  title={option.title}
+                  desc={option.desc}
+                  imgSrc={option.imgSrc}
+                  onClick={this.changeActive.bind(this)}
+                  buttonName="Proceed"
+                />
+              );
             })}
           </div>
-          <LearnMore />  
+          <LearnMore />
         </div>
       </div>
-      
     );
   }
 }
