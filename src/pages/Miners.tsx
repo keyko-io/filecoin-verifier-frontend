@@ -1,73 +1,60 @@
-import React, { Component } from 'react';
-// @ts-ignore
-import { Input } from "slate-react-system";
+import React, { useEffect, useState } from 'react'
+import DataTable from 'react-data-table-component'
+import Header from '../components/Header'
 import Welcome from '../components/Welcome'
-import Header from '../components/Header';
-import TableMiners from '../components/TableMiners';
-import { Data } from '../context/Data/Index'
+import { searchAllColumnsFromTable } from './tableUtils/searchAllColumnsFromTable';
+import TableContainer from './tableUtils/TableContainer';
+import TableSearchInput from './tableUtils/TableSearchInput';
+import TableRightCornerContainer from './tableUtils/TableRightCornerContainer';
+import { loadData } from './tableUtils/loadMiners';
+import { columns } from './tableUtils/minersColumns';
+import CircularProgress from '@mui/material/CircularProgress';
+
+  
+const Miners2 = () => {
+     const [query, setQuery] = useState<string>("")
+     const [miners, setMiners] = useState<any>([])
+     const [loading, setLoading] = useState<boolean>(true)
 
 
-class Miners extends Component<{}> {
+ useEffect(() => {
+    const getData = async () => {
+      const data = await loadData()
+      setMiners(data)
+      setLoading(false)
+    }
+    getData()
+ }, [])
 
-  public static contextType = Data
-
-  child: any
-
-  state = {
-    search: "",
-  }
-
-  constructor(props: {}) {
-    super(props);
-    this.child = React.createRef();
-  }
-
-
-  makeRequest = () => {
-    this.child.current.contactVerifier();
-  }
-
-  navigate = () => {
-    window.open('https://github.com/filecoin-project/notary-governance', '_blank')
-  }
-
-  handleChange = (e: any) => {
-    this.setState({ [e.target.name]: e.target.value } as any, () => console.log(this.state))
-    this.child.current.filter(e.target.value);
-  }
-
-  render() {
-    return (
-      <div className="landing">
-        <Header />
-        <div className="container">
+  return (
+    <div>
+        <Header/>
+        <div className='container'>
           <Welcome
             title="Welcome to the Filecoin Plus Registry"
             description="Filecoin Plus is a layer of social trust on top of the Filecoin Network to help incentivize the storage of real data."
           />
-          <div className="wrapperverifiers">
-            <div className="tableselects">
-            {/* <div className="tableselects" style={this.context.github.githubLogged === false ? { zIndex: -1 } : {}}> */}
-            <div className="tabletitle">
-                <div className="title">Search for a Storage Provider</div>
-                <div className="formname">
-                  <form>
-                    <Input
-                      name="search"
-                      value={this.state.search}
-                      placeholder="Search"
-                      onChange={this.handleChange}
-                    />
-                  </form>
-                </div>
-              </div>
-            </div>
-            <TableMiners ref={this.child} />
-          </div>
         </div>
-      </div>
-    );
-  }
+        
+        <TableContainer>   
+          <TableRightCornerContainer>
+             <TableSearchInput query={query} setQuery={setQuery} />
+          </TableRightCornerContainer>
+        <DataTable 
+          title="Search for a Storage Provider"
+          columns={columns}
+          data={searchAllColumnsFromTable({ rows: miners , query})}
+          pagination 
+          paginationRowsPerPageOptions={[7]}
+          paginationPerPage={7}  
+          progressPending={loading}
+          defaultSortFieldId={7}
+          defaultSortAsc={false}
+          progressComponent={<CircularProgress style={{marginTop : "100px"}}/>}
+        />
+        </TableContainer>  
+    </div>
+  )
 }
 
-export default Miners;
+export default Miners2
