@@ -14,7 +14,7 @@ import TableRightCornerContainer from "./tableUtils/TableRightCornerContainer";
 import { columns } from "./tableUtils/verifiersColumns";
 import lodash from "lodash";
 
-const Verifiers2 = () => {
+const Verifiers = () => {
   const [selectedData, setSelectedData] = useState<any>(null);
   const [query, setQuery] = useState<string>("");
 
@@ -122,4 +122,4 @@ const Verifiers2 = () => {
   );
 };
 
-export default Verifiers2;
+export default Verifiers;
