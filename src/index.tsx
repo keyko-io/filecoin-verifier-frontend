@@ -18,6 +18,7 @@ import Landing from './pages/Landing';
 import history from './context/History';
 import Verifiers from './pages/Verifiers';
 import LogExplorer from './pages/LogExplorer';
+import SecretTestPage from './pages/SecretTestPage';
 import './fonts/SuisseIntl-Regular.woff'
 import Miners from './pages/Miners';
 import Title from './components/Title';
@@ -70,6 +71,7 @@ ReactDOM.render(
                         <Route path={'/miners'} component={Miners} ></Route>
                         <Route path={'/client'} component={ClientDetails} ></Route>
                         <Route path={'/logs'} component={LogExplorer} ></Route>                        
+                        <Route path={'/secret-send-msg-retrieve-test-01a928'} component={SecretTestPage} ></Route>                        
                       </Switch>  
                       <Footer />
                     </Router>
