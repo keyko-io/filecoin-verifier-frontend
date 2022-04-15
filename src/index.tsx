@@ -1,14 +1,14 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import './index.scss';
-import { config } from './config';
-import App from './App';
-import WalletProvider from './context/Wallet/WalletProvider'
-import GithubProvider from './context/Github/GithubProvider'
-import DataProvider from './context/Data/DataProvider'
-import { Wallet } from './context/Wallet/Index'
-import { Github } from './context/Github/Index'
-import { Router, Route, Switch } from 'react-router-dom'
+import React from "react";
+import ReactDOM from "react-dom";
+import "./index.scss";
+import { config } from "./config";
+import App from "./App";
+import WalletProvider from "./context/Wallet/WalletProvider";
+import GithubProvider from "./context/Github/GithubProvider";
+import DataProvider from "./context/Data/DataProvider";
+import { Wallet } from "./context/Wallet/Index";
+import { Github } from "./context/Github/Index";
+import { Router, Route, Switch } from "react-router-dom";
 // @ts-ignore
 import { GlobalNotification, GlobalModal } from "slate-react-system";
 import * as serviceWorker from './serviceWorker';
@@ -16,22 +16,20 @@ import Preonboarding from './pages/Preonboarding';
 import Onboarding from './pages/Onboarding';
 import Landing from './pages/Landing';
 import history from './context/History';
-import Verifiers from './pages/Verifiers';
 import LogExplorer from './pages/LogExplorer';
 import SecretTestPage from './pages/SecretTestPage';
 import './fonts/SuisseIntl-Regular.woff'
-import Miners from './pages/Miners';
-import Title from './components/Title';
 import ClientDetails from './pages/ClientDetails'
 import { CookiesProvider } from 'react-cookie';
 import * as Sentry from "@sentry/react";
 import { Integrations } from "@sentry/tracing";
-import Footer from './components/Footer';
-import LdnApplication from './pages/LdnApplication';
-
+import Footer from "./components/Footer";
+import LdnApplication from "./pages/LdnApplication";
+import Verifiers from "./pages/Verifiers";
+import Miners from "./pages/Miners";
 
 // redirect to domain if user access fleek url
-if (window.location.host.includes('fleek') && config.willRedirect) {
+if (window.location.host.includes("fleek") && config.willRedirect) {
   window.location.href = config.domain;
 }
 
@@ -45,20 +43,15 @@ Sentry.init({
   tracesSampleRate: 1.0,
 });
 
-
-
-
 ReactDOM.render(
-
   <React.StrictMode>
-    <Title />
     <CookiesProvider>
       <WalletProvider>
         <GithubProvider>
           <Wallet.Consumer>
-            {wallet => (
+            {(wallet) => (
               <Github.Consumer>
-                {github => (
+                {(github) => (
                   <DataProvider wallet={wallet} github={github}>
                     <Router history={history}>
                       <Switch>
@@ -75,7 +68,6 @@ ReactDOM.render(
                       </Switch>  
                       <Footer />
                     </Router>
-                
                     <GlobalNotification style={{ bottom: 0, right: 0 }} />
                     <GlobalModal style={{ maxWidth: "none" }} />
                   </DataProvider>
@@ -87,7 +79,7 @@ ReactDOM.render(
       </WalletProvider>
     </CookiesProvider>
   </React.StrictMode>,
-  document.getElementById('root')
+  document.getElementById("root")
 );
 
 // If you want your app to work offline and load faster, you can change

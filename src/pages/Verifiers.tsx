@@ -1,79 +1,131 @@
-import React, { Component } from 'react';
+import React, { useEffect, useState } from "react";
+import DataTable from "react-data-table-component";
+import Header from "../components/Header";
+import Welcome from "../components/Welcome";
+import { data } from "./VerifiersData/index";
+import MakeRequestModal from "../modals/MakeRequestModal";
+import { searchAllColumnsFromTable } from "./tableUtils/searchAllColumnsFromTable";
+import TableContainer from "./tableUtils/TableContainer";
+import WarnModal from "../modals/WarnModal";
 // @ts-ignore
-import { ButtonPrimary, Input } from "slate-react-system";
-import Welcome from '../components/Welcome'
-import TableVerifiers from '../components/TableVerifiers';
-import Header from '../components/Header';
+import { dispatchCustomEvent } from "slate-react-system";
+import TableSearchInput from "./tableUtils/TableSearchInput";
+import TableRightCornerContainer from "./tableUtils/TableRightCornerContainer";
+import { columns } from "./tableUtils/verifiersColumns";
+import lodash from "lodash";
 
+const Verifiers = () => {
+  const [selectedData, setSelectedData] = useState<any>(null);
+  const [query, setQuery] = useState<string>("");
+  const [shuffleData, setShuffleData] = useState(data);
 
-class Verifiers extends Component<{}> {
+  useEffect(() => {
+    setShuffleData(lodash.shuffle(shuffleData));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
-  child: any
+  const contactVerifier = async () => {
+    if (selectedData) {
+      let verifier: any = selectedData;
 
-  state = {
-    search: "",
-  }
+      dispatchCustomEvent({
+        name: "create-modal",
+        detail: {
+          id: Math.random()
+            .toString(36)
+            .replace(/[^a-z]+/g, "")
+            .substr(0, 5),
+          modal: <MakeRequestModal verifier={verifier} />,
+        },
+      });
+      return;
+    }
 
-  constructor(props: {}) {
-    super(props);
-    this.child = React.createRef();
-  }
+    dispatchCustomEvent({
+      name: "create-modal",
+      detail: {
+        id: Math.random()
+          .toString(36)
+          .replace(/[^a-z]+/g, "")
+          .substr(0, 5),
+        modal: <WarnModal message={"Please select one verifier"} />,
+      },
+    });
+  };
 
-
-  makeRequest = () => {
-    this.child.current.contactVerifier();
-  }
-
-  handleChange = (e: any) => {
-    this.setState({ [e.target.name]: e.target.value } as any)
-    this.child.current.filter(e.target.value);
-  }
-
-  navigate = () => {
-    window.open('https://github.com/filecoin-project/filecoin-plus-client-onboarding', '_blank')
-  }
-
-  render() {
-    return (
-      <div className="landing">
-        <Header />
-        <div className="container">
-          <Welcome
-            title="Welcome to the Filecoin Plus Registry"
-            description="Filecoin Plus is a layer of social trust on top of the Filecoin Network to help incentivize the storage of real data."
-          />
-          <div className="wrapperverifiers">
-            <div className="tableselects">
-              <div className="tabletitle">
-                <div className="title">Select Notary, Send Request</div>
-                <div className="searchMakeReuestForm doublebutton">
-                  <ButtonPrimary onClick={() => this.makeRequest()}> Make Request </ButtonPrimary>
-                  <ButtonPrimary onClick={() => this.navigate()}>Learn More</ButtonPrimary>
-                  <form>
-                    <Input
-                      name="search"
-                      value={this.state.search}
-                      placeholder="Search"
-                      onChange={this.handleChange}
-                    />
-                  </form>
-                </div>
-              </div>
-            </div>
-            <TableVerifiers ref={this.child} search={this.state.search} />
-            <div className="started buttonsverifiers">
-              <div className="doublebutton">
-                <ButtonPrimary onClick={() => this.makeRequest()}>
-                  Make Request
-                </ButtonPrimary>
-                <ButtonPrimary onClick={() => this.navigate()}>Learn More</ButtonPrimary>
-              </div>
-            </div>
-          </div>
-        </div> 
+  return (
+    <div>
+      <Header />
+      <div className="container">
+        <Welcome
+          title="Welcome to the Filecoin Plus Registry"
+          description="Filecoin Plus is a layer of social trust on top of the Filecoin Network to help incentivize the storage of real data."
+        />
       </div>
-    );
-  }
-}
+
+      <TableContainer>
+        <TableRightCornerContainer>
+          <button
+            onClick={() => contactVerifier()}
+            style={{
+              fontSize: "14px",
+              cursor: "pointer",
+              marginRight: "15px",
+              color: "#fff",
+              backgroundColor: "#0091ff",
+              border: "none",
+              boxShadow: "rgb(0 0 0 / 35%) 0px 1px 4px",
+              padding: "12px 10px",
+              borderRadius: "4px",
+              fontWeight: "bold",
+            }}
+          >
+            Make Request
+          </button>
+          <a
+            href="https://github.com/filecoin-project/filecoin-plus-client-onboarding"
+            rel="noopener noreferrer"
+            target="_blank"
+            style={{
+              textDecoration: "none",
+              fontSize: "14px",
+              cursor: "pointer",
+              marginRight: "15px",
+              color: "#0091ff",
+              backgroundColor: "#fff",
+              border: "none",
+              boxShadow: "rgb(0 0 0 / 35%) 0px 1px 4px",
+              padding: "12px 10px",
+              borderRadius: "4px",
+              fontWeight: "bold",
+            }}
+          >
+            Learn more
+          </a>
+          <TableSearchInput query={query} setQuery={setQuery} />
+        </TableRightCornerContainer>
+        <DataTable
+          title="Select Notary, Send Request"
+          selectableRows
+          selectableRowsNoSelectAll={true}
+          noContextMenu={true}
+          selectableRowsHighlight={true}
+          selectableRowsSingle={true}
+          columns={columns}
+          data={searchAllColumnsFromTable({
+            rows: shuffleData,
+            query,
+          })}
+          pagination
+          paginationRowsPerPageOptions={[7]}
+          paginationPerPage={7}
+          onSelectedRowsChange={({ selectedRows }) =>
+            setSelectedData(selectedRows[0])
+          }
+        />
+      </TableContainer>
+    </div>
+  );
+};
 
 export default Verifiers;
