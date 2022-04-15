@@ -10,51 +10,51 @@ import { loadData } from './tableUtils/loadMiners';
 import { columns } from './tableUtils/minersColumns';
 import CircularProgress from '@mui/material/CircularProgress';
 
-  
-const Miners2 = () => {
-     const [query, setQuery] = useState<string>("")
-     const [miners, setMiners] = useState<any>([])
-     const [loading, setLoading] = useState<boolean>(true)
+
+const Miners = () => {
+  const [query, setQuery] = useState<string>("")
+  const [miners, setMiners] = useState<any>([])
+  const [loading, setLoading] = useState<boolean>(true)
 
 
- useEffect(() => {
+  useEffect(() => {
     const getData = async () => {
       const data = await loadData()
       setMiners(data)
       setLoading(false)
     }
     getData()
- }, [])
+  }, [])
 
   return (
     <div>
-        <Header/>
-        <div className='container'>
-          <Welcome
-            title="Welcome to the Filecoin Plus Registry"
-            description="Filecoin Plus is a layer of social trust on top of the Filecoin Network to help incentivize the storage of real data."
-          />
-        </div>
-        
-        <TableContainer>   
-          <TableRightCornerContainer>
-             <TableSearchInput query={query} setQuery={setQuery} />
-          </TableRightCornerContainer>
-        <DataTable 
+      <Header />
+      <div className='container'>
+        <Welcome
+          title="Welcome to the Filecoin Plus Registry"
+          description="Filecoin Plus is a layer of social trust on top of the Filecoin Network to help incentivize the storage of real data."
+        />
+      </div>
+
+      <TableContainer>
+        <TableRightCornerContainer>
+          <TableSearchInput query={query} setQuery={setQuery} />
+        </TableRightCornerContainer>
+        <DataTable
           title="Search for a Storage Provider"
           columns={columns}
-          data={searchAllColumnsFromTable({ rows: miners , query})}
-          pagination 
+          data={searchAllColumnsFromTable({ rows: miners, query })}
+          pagination
           paginationRowsPerPageOptions={[7]}
-          paginationPerPage={7}  
+          paginationPerPage={7}
           progressPending={loading}
           defaultSortFieldId={7}
           defaultSortAsc={false}
-          progressComponent={<CircularProgress style={{marginTop : "100px"}}/>}
+          progressComponent={<CircularProgress style={{ marginTop: "100px" }} />}
         />
-        </TableContainer>  
+      </TableContainer>
     </div>
   )
 }
 
-export default Miners2
+export default Miners

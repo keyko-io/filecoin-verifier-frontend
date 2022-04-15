@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import DataTable from "react-data-table-component";
 import Header from "../components/Header";
 import Welcome from "../components/Welcome";
@@ -17,6 +17,12 @@ import lodash from "lodash";
 const Verifiers = () => {
   const [selectedData, setSelectedData] = useState<any>(null);
   const [query, setQuery] = useState<string>("");
+  const [shuffleData, setShuffleData] = useState(data);
+
+  useEffect(() => {
+    setShuffleData(lodash.shuffle(shuffleData));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const contactVerifier = async () => {
     if (selectedData) {
@@ -107,7 +113,7 @@ const Verifiers = () => {
           selectableRowsSingle={true}
           columns={columns}
           data={searchAllColumnsFromTable({
-            rows: lodash.shuffle(data),
+            rows: shuffleData,
             query,
           })}
           pagination
