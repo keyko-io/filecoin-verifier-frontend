@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react'
 import DataTable from 'react-data-table-component'
-import Header from '../components/Header'
 import Welcome from '../components/Welcome'
 import { searchAllColumnsFromTable } from './tableUtils/searchAllColumnsFromTable';
 import TableContainer from './tableUtils/TableContainer';
@@ -28,14 +27,10 @@ const Miners = () => {
 
   return (
     <div>
-      <Header />
-      <div className='container'>
-        <Welcome
-          title="Welcome to the Filecoin Plus Registry"
-          description="Filecoin Plus is a layer of social trust on top of the Filecoin Network to help incentivize the storage of real data."
-        />
-      </div>
-
+      <Welcome
+        title="Welcome to the Filecoin Plus Registry"
+        description="Filecoin Plus is a layer of social trust on top of the Filecoin Network to help incentivize the storage of real data."
+      />
       <TableContainer>
         <TableRightCornerContainer>
           <TableSearchInput query={query} setQuery={setQuery} />

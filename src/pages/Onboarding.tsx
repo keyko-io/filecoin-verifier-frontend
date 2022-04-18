@@ -5,7 +5,6 @@ import Cients from "../svg/client-miners.svg";
 import Option from "../components/Option";
 import history from "../context/History";
 import Welcome from "../components/Welcome";
-import Header from "../components/Header";
 import LearnMore from "../components/LearnMore";
 
 type States = {};
@@ -42,18 +41,17 @@ class Onboarding extends Component<{}, States> {
 
     e.currentTarget.id === "0"
       ? history.push({
-          pathname: "/wallet",
-          state: { selected: 0 },
-        })
+        pathname: "/wallet",
+        state: { selected: 0 },
+      })
       : history.push({
-          pathname: "/landing",
-        });
+        pathname: "/landing",
+      });
   };
 
   render() {
     return (
       <div className="onboarding">
-        <Header />
         <div className="container">
           <Welcome
             title="Welcome to the Filecoin Plus Registry"

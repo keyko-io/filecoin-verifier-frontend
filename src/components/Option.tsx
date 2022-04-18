@@ -22,7 +22,7 @@ class Option extends Component<OptionProps> {
     render() {
         return (
             <div id={this.props.id.toString()} className="option" onClick={(e) => this.props.onClick(e)}
-                style={{ background: this.props.active ? '#EEF3FF' : 'inherit' }}>
+                style={{ background: this.props.active ? '#EEF3FF' : 'inherit', borderRight: this.props.id === 1 ? "none" : "" }}>
                 <div><img src={this.props.imgSrc} alt={this.props.title} /></div>
                 {this.props.head ?
                     <div className="optionhead">{this.props.head}</div>

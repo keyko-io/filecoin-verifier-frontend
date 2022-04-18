@@ -1,12 +1,11 @@
 import React, { Component } from 'react';
 import 'react-dropdown/style.css';
-import { TextField, Select, MenuItem, InputLabel, Button, Breadcrumbs, Link, Typography } from '@material-ui/core';
+import { TextField, Select, MenuItem, InputLabel, Button, Breadcrumbs, Link } from '@material-ui/core';
 
 // @ts-ignore
 import LoginGithub from 'react-login-github';
 import { Data } from '../context/Data/Index';
 import { config } from '../config';
-import Header from '../components/Header';
 import { createParentComment, updateTemplate } from './issueUtils/templates';
 import { coreInfo, otherInfo, guidelines, regionOptions, labelsIssueCreation, steps, URL_README } from './issueUtils/constants';
 
@@ -20,9 +19,7 @@ const utils = require('@keyko-io/filecoin-verifier-tools/utils/large-issue-parse
 //view 2: (not implemented) reconnect a previous issue to keep the allocation flow going
 class LdnApplication extends Component<{}> {
   public static contextType = Data
-  constructor(props: any) {
-    super(props);
-  }
+
 
   state = {
     coreInfo: [...coreInfo],
@@ -321,7 +318,6 @@ class LdnApplication extends Component<{}> {
   render() {
     return (
       <div className={this.state.view === 4 ? "viewFourContainer" : "formContainer"} style={{ minHeight: '100%' }}>
-        <Header />
         {/* <div className="guideline-container"> */}
         <div className={guidelines[this.state.view].className}>
           <div className="guideText">{guidelines[this.state.view].title}</div>
@@ -331,7 +327,7 @@ class LdnApplication extends Component<{}> {
           {
             this.state.view === 5 &&
             <div className="guideText">
-              <a target='_blank' href={guidelines[this.state.view].link}> repo</a>
+              <a target='_blank' rel="noopener noreferrer" href={guidelines[this.state.view].link}> repo</a>
             </div>
           }
           {
@@ -341,7 +337,7 @@ class LdnApplication extends Component<{}> {
             </div>
           }
           <span style={{ paddingTop: '10px' }}></span>
-          <div className="guideText">Find more details <a target='_blank' href={URL_README} >here</a></div>
+          <div className="guideText">Find more details <a target='_blank' rel="noopener noreferrer" href={URL_README} >here</a></div>
           {this.state.view === 4 && <div className="guideText">
             <small>Step {this.state.stepViewFour + 2} of 4</small><br></br>
             <small>If you don't have time now, you can complete the application form later.</small>
@@ -523,7 +519,7 @@ class LdnApplication extends Component<{}> {
                       <span style={{ marginRight: '10px' }}></span>
                       <Button variant="contained" color="primary" onClick={() => this.updateIssueAndContinue()}>Next</Button>
                     </div> :
-                    this.state.stepViewFour == 2 ?
+                    this.state.stepViewFour === 2 ?
                       <div className='otherInfoButtonContainer'>
                         <Button variant="contained" color="primary" onClick={() => this.prevStep()}>Back</Button>
                         <span style={{ marginRight: '10px' }}></span>

@@ -22,10 +22,11 @@ import ClientDetails from "./pages/ClientDetails";
 import { CookiesProvider } from "react-cookie";
 import * as Sentry from "@sentry/react";
 import { Integrations } from "@sentry/tracing";
-import Footer from "./components/Footer";
+import Layout from "../src/Layout/layout";
 import LdnApplication from "./pages/LdnApplication";
 import Verifiers from "./pages/Verifiers";
 import Miners from "./pages/Miners";
+
 
 // redirect to domain if user access fleek url
 if (window.location.host.includes("fleek") && config.willRedirect) {
@@ -53,30 +54,31 @@ ReactDOM.render(
                 {(github) => (
                   <DataProvider wallet={wallet} github={github}>
                     <Router history={history}>
-                      <Switch>
-                        <Route exact path={"/"} component={Onboarding}></Route>
-                        <Route path={"/app"} component={App}></Route>
-                        <Route
-                          path={"/wallet"}
-                          component={Preonboarding}
-                        ></Route>
-                        <Route path={"/landing"} component={Landing}></Route>
-                        <Route
-                          path={"/verifiers"}
-                          component={Verifiers}
-                        ></Route>
-                        <Route
-                          path={"/ldn-application"}
-                          component={LdnApplication}
-                        ></Route>
-                        <Route path={"/miners"} component={Miners}></Route>
-                        <Route
-                          path={"/client"}
-                          component={ClientDetails}
-                        ></Route>
-                        <Route path={"/logs"} component={LogExplorer}></Route>
-                      </Switch>
-                      <Footer />
+                      <Layout>
+                        <Switch>
+                          <Route exact path={"/"} component={Onboarding}></Route>
+                          <Route path={"/app"} component={App}></Route>
+                          <Route
+                            path={"/wallet"}
+                            component={Preonboarding}
+                          ></Route>
+                          <Route path={"/landing"} component={Landing}></Route>
+                          <Route
+                            path={"/verifiers"}
+                            component={Verifiers}
+                          ></Route>
+                          <Route
+                            path={"/ldn-application"}
+                            component={LdnApplication}
+                          ></Route>
+                          <Route path={"/miners"} component={Miners}></Route>
+                          <Route
+                            path={"/client"}
+                            component={ClientDetails}
+                          ></Route>
+                          <Route path={"/logs"} component={LogExplorer}></Route>
+                        </Switch>
+                      </Layout >
                     </Router>
                     <GlobalNotification style={{ bottom: 0, right: 0 }} />
                     <GlobalModal style={{ maxWidth: "none" }} />

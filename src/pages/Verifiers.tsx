@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import DataTable from "react-data-table-component";
-import Header from "../components/Header";
 import Welcome from "../components/Welcome";
 import { data } from "./VerifiersData/index";
 import MakeRequestModal from "../modals/MakeRequestModal";
@@ -55,7 +54,6 @@ const Verifiers = () => {
 
   return (
     <div>
-      <Header />
       <div className="container">
         <Welcome
           title="Welcome to the Filecoin Plus Registry"

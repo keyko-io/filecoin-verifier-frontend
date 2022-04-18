@@ -13,5 +13,6 @@ const TableBox = styled.div`
   width: 90%;
   margin: 0 auto;
   border: 1px solid #0091ff;
-  margin-top: 220px;
+  transform: translateY(-30px);
+  margin-bottom: 50px;
 `;
