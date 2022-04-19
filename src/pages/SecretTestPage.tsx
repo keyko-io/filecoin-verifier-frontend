@@ -23,14 +23,14 @@ const SecretTestPage = () => {
   const [messageSentCid, setMessageSentCid] = useState('')
   const [isMessageVerified, setIsMessageVerified] = useState(false)
   const [messagesList, setMessagesList] = useState([])
-  const [error, setError] = useState('')
+  const [error, setError] = useState(false)
 
 
 
 
   const loadLedgerWallet = async () => {
     try {
-      const logged = await context.wallet.loadWallet('Ledger', {
+      const logged = await context.wallet.loadWallet('Burner', {
         multisig: false,
         multisigAddress: ''
       })
@@ -39,7 +39,7 @@ const SecretTestPage = () => {
       if (logged) setLogged(logged)
 
     } catch (error) {
-      setError(error)
+      setError(true)
       console.log(error)
     }
 
@@ -55,7 +55,7 @@ const SecretTestPage = () => {
       }
 
     } catch (error) {
-      setError(error)
+      setError(true)
       console.log(error)
     }
   }
@@ -73,7 +73,7 @@ const SecretTestPage = () => {
       return listMessagesFromToAddress.success
 
     } catch (error) {
-      setError(error)
+      setError(true)
       console.log(error)
 
     }
