@@ -123,7 +123,7 @@ const SecretTestPage = () => {
       }
       {error &&
         <>
-          <Typography>Error: {error} </Typography>
+          <Typography>Error, see console to see what's happening </Typography>
 
         </>
       }
