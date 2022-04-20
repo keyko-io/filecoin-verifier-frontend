@@ -49,6 +49,7 @@ class LdnApplication extends Component<{}> {
 
   async fetchIssuesAndSelectView() {
     // fetch issues to get addresses
+
     const issues = (await this.context.github.githubOcto.issues.list(
       {
         filter: 'created',
@@ -323,7 +324,7 @@ class LdnApplication extends Component<{}> {
       <div className={this.state.view === 4 ? "viewFourContainer" : "formContainer"} style={{ minHeight: '100%' }}>
         <Header />
         {/* <div className="guideline-container"> */}
-        <div className={guidelines[this.state.view].className}>
+        <div style={{ maxWidth: this.state.view === 5 ? "30%" : "" }} className={guidelines[this.state.view].className}>
           <div className="guideText">{guidelines[this.state.view].title}</div>
           <span style={{ paddingTop: '10px' }}></span>
           <div className="guideText">{guidelines[this.state.view].description}</div>
@@ -344,7 +345,7 @@ class LdnApplication extends Component<{}> {
           <div className="guideText">Find more details <a target='_blank' href={URL_README} >here</a></div>
           {this.state.view === 4 && <div className="guideText">
             <small>Step {this.state.stepViewFour + 2} of 4</small><br></br>
-            <small>If you don't have time now, you can complete the application form later.</small>
+            <small>These questions can be answered here or by editing the GitHub Issue for your application.</small>
           </div>}
         </div>
         {
@@ -368,9 +369,13 @@ class LdnApplication extends Component<{}> {
                 clientId={config.githubApp}
                 scope="repo"
                 onSuccess={async (response: any) => {
-                  await this.context.github.loginGithub(response.code, true)
-                  this.setState({ loggedUser: this.context.github.loggedUser })
-                  this.fetchIssuesAndSelectView()
+                  try {
+                    await this.context.github.loginGithub(response.code, true)
+                    this.setState({ loggedUser: this.context.github.loggedUser })
+                    this.fetchIssuesAndSelectView()
+                  } catch (error) {
+                    console.log("this is ", error)
+                  }
                 }}
                 onFailure={(response: any) => {
                   console.log('login failure', response)
@@ -409,7 +414,7 @@ class LdnApplication extends Component<{}> {
           <div className="content">
             <form >
               {coreInfo.map((item: any, index: any) =>
-                <div key={index} >
+                <div key={index} style={{ marginBottom: "12px" }} >
                   {
                     item.type === 'number' ?
                       <div className='select-slot'>
@@ -424,7 +429,9 @@ class LdnApplication extends Component<{}> {
                           value={this.state.coreInfo[index].value}
                           type='number'
                           helperText={this.state.coreInfo[index].error ? this.state.coreInfo[index].errorMessage : ''}
-                          onChange={(e: any) => this.handleChange(e)} />
+                          onChange={(e: any) => this.handleChange(e)}
+                        />
+
 
 
                         <Select
@@ -493,7 +500,7 @@ class LdnApplication extends Component<{}> {
             <div className='otherInfoButtonContainer'>
               {!this.state.isNewIssue && <Button variant="contained" color="primary" onClick={() => this.prevStep()}>Back</Button>}
               <span style={{ marginRight: '10px' }}></span>
-              <Button variant="contained" color="primary" onClick={() => this.createUpdateIssue()}>Save Issue and Continue</Button>
+              <Button style={{ float: "right" }} variant="contained" color="primary" onClick={() => this.createUpdateIssue()}>Save Issue and Continue</Button>
             </div>
           </div>
         }
