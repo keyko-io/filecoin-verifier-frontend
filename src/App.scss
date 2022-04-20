@@ -1,5 +1,5 @@
 .App {
-  height: 100%;
+  
 
   h1 {
     padding-bottom: 20px;
@@ -329,6 +329,7 @@
     margin: auto;
     min-height: 100%;
     margin-top: 20px;
+    margin-bottom: 100px;
 
     .tabsholder {
       margin-bottom: 20px;
@@ -655,6 +656,7 @@
   display: flex;
   justify-content: center;
   margin-top: 10px;
+  min-height: 300px;
 
   button {
     height: 40px;
