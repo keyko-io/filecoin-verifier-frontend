@@ -30,7 +30,7 @@ const SecretTestPage = () => {
 
   const loadLedgerWallet = async () => {
     try {
-      const logged = await context.wallet.loadWallet('Burner', {
+      const logged = await context.wallet.loadWallet('Ledger', {
         multisig: false,
         multisigAddress: ''
       })
@@ -123,7 +123,7 @@ const SecretTestPage = () => {
       }
       {error &&
         <>
-          <Typography>Error, see console to see what's happening </Typography>
+          <Typography>Error, try again </Typography>
 
         </>
       }
