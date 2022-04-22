@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import 'react-dropdown/style.css';
-import { TextField, Select, MenuItem, InputLabel, Button, Breadcrumbs, Link, Typography } from '@material-ui/core';
+import { TextField, Select, MenuItem, InputLabel, Button, Breadcrumbs, Link } from '@material-ui/core';
 
 // @ts-ignore
 import LoginGithub from 'react-login-github';
@@ -20,9 +20,6 @@ const utils = require('@keyko-io/filecoin-verifier-tools/utils/large-issue-parse
 //view 2: (not implemented) reconnect a previous issue to keep the allocation flow going
 class LdnApplication extends Component<{}> {
   public static contextType = Data
-  constructor(props: any) {
-    super(props);
-  }
 
   state = {
     coreInfo: [...coreInfo],
@@ -231,7 +228,9 @@ class LdnApplication extends Component<{}> {
   }
 
   async createIssueStepOne() {
+
     const coreInfo = this.createObjectForCoreInfoTemplate()
+
     const res = await this.context.github.githubOcto.issues.create({
       owner: config.onboardingOwner,
       repo: config.onboardingLargeClientRepo,
@@ -239,6 +238,7 @@ class LdnApplication extends Component<{}> {
       body: createParentComment(coreInfo),
       labels: [labelsIssueCreation.WIP_ISSUE]
     })
+
 
     alert(`issue created with n ${res.data.number}`)
     this.setState({ issueNumber: res.data.number })
@@ -332,7 +332,8 @@ class LdnApplication extends Component<{}> {
           {
             this.state.view === 5 &&
             <div className="guideText">
-              <a target='_blank' href={guidelines[this.state.view].link}> repo</a>
+
+              <a target='_blank' rel="noopener noreferrer" href={guidelines[this.state.view].link + "/" + this.state.issueNumber}> repo</a>
             </div>
           }
           {
@@ -342,7 +343,7 @@ class LdnApplication extends Component<{}> {
             </div>
           }
           <span style={{ paddingTop: '10px' }}></span>
-          <div className="guideText">Find more details <a target='_blank' href={URL_README} >here</a></div>
+          <div className="guideText">Find more details <a target='_blank' rel="noopener noreferrer" href={URL_README} >here</a></div>
           {this.state.view === 4 && <div className="guideText">
             <small>Step {this.state.stepViewFour + 2} of 4</small><br></br>
             <small>These questions can be answered here or by editing the GitHub Issue for your application.</small>
@@ -353,7 +354,7 @@ class LdnApplication extends Component<{}> {
           <>
             <Breadcrumbs aria-label="breadcrumb" style={{ cursor: 'pointer', paddingTop: '2%' }}>
               {steps.map((item: any, index: any) =>
-                <Link color="inherit" onClick={() => this.setState({ view: item === 'Main Info' ? 3 : 4, stepViewFour: item === 'Main Info' ? 0 : index - 1 })}>
+                <Link key={index} color="inherit" onClick={() => this.setState({ view: item === 'Main Info' ? 3 : 4, stepViewFour: item === 'Main Info' ? 0 : index - 1 })}>
                   {item}
                 </Link>
               )}
@@ -460,7 +461,7 @@ class LdnApplication extends Component<{}> {
                             value={this.state.coreInfo[index].value || 'Select Region'}
                             onChange={(e: any) => this.handleChange(e)}
                           >
-                            {regionOptions.map((item: any) => <MenuItem value={item}>{item}</MenuItem>)}
+                            {regionOptions.map((item: any, index: any) => <MenuItem key={index} value={item}>{item}</MenuItem>)}
                           </Select>
 
                         </>
@@ -530,7 +531,7 @@ class LdnApplication extends Component<{}> {
                       <span style={{ marginRight: '10px' }}></span>
                       <Button variant="contained" color="primary" onClick={() => this.updateIssueAndContinue()}>Next</Button>
                     </div> :
-                    this.state.stepViewFour == 2 ?
+                    this.state.stepViewFour === 2 ?
                       <div className='otherInfoButtonContainer'>
                         <Button variant="contained" color="primary" onClick={() => this.prevStep()}>Back</Button>
                         <span style={{ marginRight: '10px' }}></span>
