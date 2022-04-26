@@ -5,11 +5,11 @@ import Mining from '../svg/mining.png';
 import Option from '../components/Option'
 import Welcome from '../components/Welcome'
 import history from '../context/History'
-import Header from '../components/Header';
-import LearnMoreOptions from '../components/LearnMoreOptions';
+
 // @ts-ignore
 import { dispatchCustomEvent } from "slate-react-system";
 import VerificationOptionsModal from '../modals/VerificationOptionsModal';
+import LearnMore from '../components/LearnMore';
 
 
 type States = {
@@ -80,7 +80,6 @@ class Landing extends Component<{}, States> {
   render() {
     return (
       <div className="landing">
-        <Header />
         <div className="container">
           <Welcome
             title="Welcome to the Filecoin Plus Registry"
@@ -102,8 +101,8 @@ class Landing extends Component<{}, States> {
               />
             })}
           </div>
-          <LearnMoreOptions />
-        </div>   
+          <LearnMore />
+        </div>
       </div>
     );
   }

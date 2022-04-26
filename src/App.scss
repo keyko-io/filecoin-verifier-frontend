@@ -1,5 +1,5 @@
 .App {
-  height: 100%;
+  
 
   h1 {
     padding-bottom: 20px;
@@ -329,6 +329,7 @@
     margin: auto;
     min-height: 100%;
     margin-top: 20px;
+    margin-bottom: 100px;
 
     .tabsholder {
       margin-bottom: 20px;
@@ -655,6 +656,7 @@
   display: flex;
   justify-content: center;
   margin-top: 10px;
+  min-height: 300px;
 
   button {
     height: 40px;
@@ -728,49 +730,7 @@
   }
 }
 
-.container {
-  .welcome {
-    position: absolute;
-    text-align: center;
-    max-width: 100%;
-    height: 200px;
-    top: 50px;
-    left: 0;
-    right: 0;
-    margin-left: auto;
-    margin-right: auto;
-    background: linear-gradient(
-      180deg,
-      #0090ff 0%,
-      #39c1cb 99.99%,
-      rgba(0, 144, 255, 0) 100%
-    );
-
-    .title {
-      margin-top: 62px;
-      font-family: "suisseintl";
-      font-weight: bold;
-      font-size: 24px;
-      line-height: 36px;
-      align-items: center;
-      text-align: center;
-      color: #ffffff;
-    }
-
-    .description {
-      padding-top: 10px;
-      font-family: "suisseintl";
-      font-style: normal;
-      font-weight: normal;
-      font-size: 16px;
-      line-height: 24px;
-      color: #ffffff;
-      max-width: 960px;
-      position: relative;
-      margin: auto;
-    }
-  }
-
+.container {   
   .tabsholder {
     position: absolute;
     margin-left: auto;
@@ -814,7 +774,7 @@
   }
 
   .options {
-    position: absolute;
+    transform: translateY(-30px);
     margin-left: auto;
     margin-right: auto;
     max-width: 1280px;
@@ -822,7 +782,6 @@
     left: 0;
     right: 0;
     background: #fff;
-    top: 220px;
     text-align: center;
     display: flex;
     border-right: 1px solid #0091ff;
@@ -1130,10 +1089,6 @@
     padding-top: 20px;
   }
 
-  .learnmore {
-    top: 855px !important;
-  }
-
   .buttonsholder {
     padding-left: 120px !important;
   }
@@ -1174,7 +1129,6 @@
     margin-left: auto;
     margin-right: auto;
     max-width: 1280px;
-    height: 600px;
     left: 0;
     right: 0;
     background: #fff;
@@ -1300,20 +1254,17 @@
 }
 
 .wrapperverifiers {
-  position: absolute;
   margin-left: auto;
   margin-right: auto;
   max-width: 1280px;
   height: 700px;
   left: 0;
   right: 0;
+  transform: translateY(-30px);
   background: #fff;
-  top: 240px;
-  border-top: 1px solid #0091ff;
-  border-left: 1px solid #0091ff;
-  border-right: 1px solid #0091ff;
-  border-bottom: 1px solid #0091ff;
+  border: 1px solid #0091ff;
   box-sizing: border-box;
+  margin-bottom: 30px;
 }
 
 .header {
@@ -1487,7 +1438,8 @@
 }
 
 .learnmore {
-  position: absolute;
+  align-items: center;
+  justify-content: center;
   margin-left: auto;
   margin-right: auto;
   max-width: 1280px;
@@ -1495,13 +1447,9 @@
   left: 0;
   right: 0;
   background: #fff;
-  top: 815px;
   text-align: center;
   display: flex;
-  border-top: 1px solid #0091ff;
-  border-right: 1px solid #0091ff;
-  border-left: 1px solid #0091ff;
-  border-bottom: 1px solid #0091ff;
+  border: 1px solid #0091ff;
 
   button,
   button:checked,
@@ -1509,21 +1457,13 @@
   button:hover,
   button:visited,
   button:checked {
-    position: absolute;
-    top: 10px;
-    left: 50%;
-    -ms-transform: translate(-50%);
-    transform: translate(-50%);
     height: 20px;
     font-family: "suisseintl";
     font-style: normal;
     font-weight: 600;
     font-size: 14px;
     line-height: 20px;
-    border-right: 1px solid #0091ff;
-    border-top: 1px solid #0091ff;
-    border-left: 1px solid #0091ff;
-    border-bottom: 1px solid #0091ff;
+    border: 1px solid #0091ff;
     width: 180px;
     background: #fff;
     color: #0091ff;
@@ -1534,59 +1474,6 @@
   }
 }
 
-.learnmoreoptions {
-  position: absolute;
-  margin-left: auto;
-  margin-right: auto;
-  max-width: 1280px;
-  height: 60px;
-  left: 0;
-  right: 0;
-  background: #fff;
-  top: 815px;
-  text-align: center;
-  display: flex;
-  border-top: 1px solid #0091ff;
-  border-right: 1px solid #0091ff;
-  border-left: 1px solid #0091ff;
-  border-bottom: 1px solid #0091ff;
-
-  button,
-  button:active,
-  button:hover,
-  button:visited,
-  button:checked {
-    position: absolute;
-    top: 10px;
-    -ms-transform: translate(-50%);
-    transform: translate(-50%);
-    height: 20px;
-    font-family: "suisseintl";
-    font-style: normal;
-    font-weight: 600;
-    font-size: 14px;
-    line-height: 20px;
-    border-right: 1px solid #0091ff;
-    border-top: 1px solid #0091ff;
-    border-left: 1px solid #0091ff;
-    border-bottom: 1px solid #0091ff;
-    width: 180px;
-    background-color: #fff;
-    color: #0091ff;
-  }
-
-  button:not(:hover) {
-    background-color: #fff;
-  }
-
-  .learnleft {
-    padding-left: 40%;
-  }
-
-  .learnright {
-    padding-left: 20%;
-  }
-}
 
 .warnmodal {
   height: 200px;
@@ -1701,7 +1588,6 @@
 }
 
 .footer {
-  position: relative;
   width: 100%;
   height: 220px;
   font-size: 12px;
@@ -2022,10 +1908,7 @@
     margin-left: 15px;
     margin-right: 15px;
     cursor: pointer;
-    border-right: 1px solid #1a1a1a;
-    border-top: 1px solid #1a1a1a;
-    border-left: 1px solid #1a1a1a;
-    border-bottom: 1px solid #1a1a1a;
+    border: 1px solid #1a1a1a; 
   }
 
   .buttoncard:nth-child(3) {
