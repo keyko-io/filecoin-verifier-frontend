@@ -320,7 +320,7 @@ class LdnApplication extends Component<{}> {
 
   render() {
     return (
-      <div className={this.state.view === 4 ? "viewFourContainer" : "formContainer"} style={{ minHeight: '100%' }}>
+      <div className={this.state.view === 4 ? "viewFourContainer" : "formContainer"} >
         {/* <div className="guideline-container"> */}
         <div style={{ maxWidth: this.state.view === 5 ? "30%" : "" }} className={guidelines[this.state.view].className}>
           <div className="guideText">{guidelines[this.state.view].title}</div>
