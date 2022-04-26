@@ -819,12 +819,8 @@ export default class Notary extends Component<NotaryProps, NotaryStates> {
               selectableRowDisabled={(row: any) => !row.signable}
               defaultSortFieldId={1}
               responsive
+              noDataComponent="No large client requests yet"
             />
-
-
-            {this.context.largeClientRequests.length === 0 ? (
-              <div className="nodata">No large client requests yet</div>
-            ) : null}
             <div className="alignright">
               <ButtonSecondary
                 className="buttonsecondary"
