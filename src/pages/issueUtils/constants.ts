@@ -36,7 +36,7 @@ export const guidelines = [
   { view: 3, title: '', description: '', className: 'welcome4' },
   {
     view: 5, title: 'Success!', description: `You have successfully kicked off a large datasets notary DataCap application.
-  You can view and edit your application here.`, className: 'welcome4', link: 'https://github.com/filecoin-project/filecoin-plus-large-datasets/issues'
+  You can view and edit your application here.`, className: 'welcome4', link: `https://github.com/${config.onboardingOwner}/${config.onboardingLargeClientRepo}/issues`
   },
 ]
 

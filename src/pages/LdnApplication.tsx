@@ -332,7 +332,6 @@ class LdnApplication extends Component<{}> {
           {
             this.state.view === 5 &&
             <div className="guideText">
-
               <a target='_blank' rel="noopener noreferrer" href={guidelines[this.state.view].link + "/" + this.state.issueNumber}> repo</a>
             </div>
           }
@@ -391,7 +390,7 @@ class LdnApplication extends Component<{}> {
           this.state.view === 1 &&
           <div className="content">
             <div className='titleIssueBox'>
-              Select an issue to continue editing or <a style={{ cursor: 'pointer', color: '#0091ff' }} onClick={() => this.setState({ view: 3 })}>create a new issue</a>
+              Select an issue to continue editing or <a style={{ cursor: 'pointer', color: '#0091ff' }} onClick={() => this.setState({ view: 3, isNewIssue: true })}>create a new issue</a>
             </div>
             <div className='issueBoxContainer'>
               {
