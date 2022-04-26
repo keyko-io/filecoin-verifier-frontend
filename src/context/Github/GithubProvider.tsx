@@ -59,7 +59,6 @@ export default class WalletProvider extends React.Component<{}, WalletProviderSt
 
             } catch (e) {
                 // this.state.dispatchNotification('Failed to login. Try again later.')
-                console.log(e, "fucking errorrrror!!!sdasdas")
             }
         },
         initGithubOcto: async (token: string) => {

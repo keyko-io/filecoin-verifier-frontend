@@ -7,7 +7,7 @@ export const config = {
     onboardingLargeOwner: process.env.REACT_APP_ONBOARDING_LARGE_REPO_OWNER || 'keyko-io',
     onboardingNotaryOwner: process.env.REACT_APP_ONBOARDING_NOTARY_REPO_OWNER || 'filecoin-notaries-onboarding',
     githubApp: process.env.REACT_APP_GITHUB_APP || 'Iv1.10e7aaed4654db3c',
-    oauthUri: process.env.REACT_APP_OAUTH_URI || 'http://localhost:3000/oauth/',
+    oauthUri: process.env.REACT_APP_OAUTH_URI || 'https://plus.fil.org/oauth/',
     networks: process.env.REACT_APP_NETWORKS || 'Mainnet,Nerpanet',
     domain: process.env.REACT_APP_DOMAIN || "https://plus.fil.org/",
     githubGenericToken: process.env.REACT_APP_GITHUB_GENERIC_TOKEN,
