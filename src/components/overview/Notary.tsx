@@ -4,7 +4,7 @@ import AddClientModal from "../../modals/AddClientModal";
 import AddVerifierModal from "../../modals/AddVerifierModal";
 // @ts-ignore
 // prettier-ignore
-import {ButtonPrimary,dispatchCustomEvent,ButtonSecondary} from "slate-react-system";
+import { ButtonPrimary, dispatchCustomEvent, ButtonSecondary } from "slate-react-system";
 import { bytesToiB, anyToBytes } from "../../utils/Filters";
 import BigNumber from "bignumber.js";
 // @ts-ignore
@@ -18,6 +18,7 @@ import Pagination from "../Pagination";
 import history from "../../context/History";
 import { BeatLoader } from "react-spinners";
 import DataTable from "react-data-table-component";
+import { searchAllColumnsFromTable } from "../../pages/tableUtils/searchAllColumnsFromTable";
 
 type NotaryStates = {
   tabs: string;
@@ -91,7 +92,7 @@ export default class Notary extends Component<NotaryProps, NotaryStates> {
     listIsChecked: false,
   };
 
-  componentDidMount() {}
+  componentDidMount() { }
 
   showVerifiedClients = async () => {
     this.setState({ tabs: "2" });
@@ -184,24 +185,24 @@ export default class Notary extends Component<NotaryProps, NotaryStates> {
               origin === "Notary"
                 ? this.context.clientRequests
                 : origin === "Large"
-                ? this.context.largeClientRequests
-                : []
+                  ? this.context.largeClientRequests
+                  : []
             }
             selectedClientRequests={
               origin === "Notary"
                 ? this.state.selectedClientRequests
                 : origin === "Large"
-                ? this.state.selectedLargeClientRequests
-                : []
+                  ? this.state.selectedLargeClientRequests
+                  : []
             }
             onClick={
               origin === "Notary"
                 ? this.verifyClients.bind(this)
                 : origin === "newDatacap"
-                ? this.verifyNewDatacap.bind(this)
-                : origin === "Large"
-                ? this.verifyLargeClients.bind(this)
-                : this.requestDatacap.bind(this)
+                  ? this.verifyNewDatacap.bind(this)
+                  : origin === "Large"
+                    ? this.verifyLargeClients.bind(this)
+                    : this.requestDatacap.bind(this)
             }
             largeAddress={origin == "Large" ? true : false}
             origin={
@@ -435,7 +436,7 @@ export default class Notary extends Component<NotaryProps, NotaryStates> {
           );
           this.context.wallet.dispatchNotification(
             "Transaction successful! Verify Client Message sent with ID: " +
-              messageID
+            messageID
           );
           await this.context.postLogs(
             `Transaction successful! Verify Client Message sent with ID: ${messageID}`,
@@ -573,6 +574,11 @@ export default class Notary extends Component<NotaryProps, NotaryStates> {
     history.push("/client", { client, user, address, datacap });
   }
 
+
+  DataForLargeRequestTable = () => {
+    return this.context.largeClientRequests.map((item: any) => ({ ...item, data: item.data.name })).map((item: any) => item.tx !== null ? item : { ...item, tx: "", })
+  }
+
   public render() {
     return (
       <div className="main">
@@ -639,8 +645,8 @@ export default class Notary extends Component<NotaryProps, NotaryStates> {
               </ButtonPrimary>
             ) : null}
             {this.state.tabs === "1" ||
-            this.state.tabs === "2" ||
-            this.state.tabs === "3" ? (
+              this.state.tabs === "2" ||
+              this.state.tabs === "3" ? (
               <>
                 {this.state.approveLoading ? (
                   <BeatLoader size={15} color={"rgb(24,160,237)"} />
@@ -684,50 +690,50 @@ export default class Notary extends Component<NotaryProps, NotaryStates> {
               <tbody>
                 {this.state.refPublic && this.state.refPublic.checkIndex
                   ? this.context.clientRequests
-                      .filter(
-                        (element: any) =>
-                          tableElementFilter(
-                            this.props.searchString,
-                            element.data
-                          ) === true
-                      )
-                      .filter((_: any, i: any) =>
-                        this.state.refPublic?.checkIndex(i)
-                      )
-                      .map((clientReq: any, index: any) => (
-                        <tr key={index}>
-                          <td>
-                            <input
-                              type="checkbox"
-                              onChange={() =>
-                                this.selectClientRow(clientReq.number)
-                              }
-                              checked={this.state.selectedClientRequests.includes(
-                                clientReq.number
-                              )}
-                            />
-                          </td>
-                          <td>
-                            <FontAwesomeIcon
-                              icon={["fas", "info-circle"]}
-                              id={index}
-                              onClick={(e) => this.showClientDetail(e)}
-                            />{" "}
-                            {clientReq.data.name}{" "}
-                          </td>
-                          <td>{clientReq.data.address}</td>
-                          <td>{clientReq.data.datacap}</td>
-                          <td>
-                            <a
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              href={clientReq.url}
-                            >
-                              #{clientReq.number}
-                            </a>
-                          </td>
-                        </tr>
-                      ))
+                    .filter(
+                      (element: any) =>
+                        tableElementFilter(
+                          this.props.searchString,
+                          element.data
+                        ) === true
+                    )
+                    .filter((_: any, i: any) =>
+                      this.state.refPublic?.checkIndex(i)
+                    )
+                    .map((clientReq: any, index: any) => (
+                      <tr key={index}>
+                        <td>
+                          <input
+                            type="checkbox"
+                            onChange={() =>
+                              this.selectClientRow(clientReq.number)
+                            }
+                            checked={this.state.selectedClientRequests.includes(
+                              clientReq.number
+                            )}
+                          />
+                        </td>
+                        <td>
+                          <FontAwesomeIcon
+                            icon={["fas", "info-circle"]}
+                            id={index}
+                            onClick={(e) => this.showClientDetail(e)}
+                          />{" "}
+                          {clientReq.data.name}{" "}
+                        </td>
+                        <td>{clientReq.data.address}</td>
+                        <td>{clientReq.data.datacap}</td>
+                        <td>
+                          <a
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            href={clientReq.url}
+                          >
+                            #{clientReq.number}
+                          </a>
+                        </td>
+                      </tr>
+                    ))
                   : null}
               </tbody>
             </table>
@@ -756,110 +762,65 @@ export default class Notary extends Component<NotaryProps, NotaryStates> {
         ) : null}
         {this.state.tabs === "3" && this.context.github.githubLogged ? (
           <div>
-            <table>
-              <thead>
-                <tr>
-                  <td></td>
-                  {this.largeRequestColums.map((column: any) => (
-                    <td id={column.id} onClick={this.orderLarge}>
-                      {column.value}
-                      <FontAwesomeIcon icon={["fas", "sort"]} />
-                    </td>
-                  ))}
-                </tr>
-              </thead>
-              <tbody>
-                {this.state.regLargePublic &&
-                this.state.regLargePublic.checkIndex &&
-                this.context.largeClientRequests[0] !== undefined
-                  ? this.context.largeClientRequests
-                      .filter(
-                        (element: any) =>
-                          tableElementFilter(
-                            this.props.searchString,
-                            element?.data
-                          ) === true
-                      )
-                      .filter((_: any, i: any) =>
-                        this.state.regLargePublic?.checkIndex(i)
-                      )
-                      .filter(
-                        (clientReq: any, i: any) =>
-                          !this.state.approvedDcRequests?.includes(
-                            clientReq?.number
-                          )
-                      )
-                      .map((clientReq: any, index: any) => (
-                        <tr
-                          key={index}
-                          className={clientReq.signable ? "" : "disabledRow"}
-                          onClick={() =>
-                            clientReq.signable
-                              ? {}
-                              : this.context.wallet.dispatchNotification(
-                                  CANT_SIGN_MESSAGE
-                                )
-                          }
-                        >
-                          {clientReq.signable && (
-                            <td>
-                              <input
-                                type="checkbox"
-                                onChange={() =>
-                                  this.selectLargeClientRow(clientReq?.number)
-                                }
-                                checked={this.state.selectedLargeClientRequests.includes(
-                                  clientReq?.number
-                                )}
-                              />
-                            </td>
-                          )}
-                          {!clientReq.signable && (
-                            <td>
-                              <input
-                                type="checkbox"
-                                disabled
-                                title={CANT_SIGN_MESSAGE}
-                              />
-                            </td>
-                          )}
-                          <td>
-                            <FontAwesomeIcon
-                              icon={["fas", "info-circle"]}
-                              id={index}
-                              onClick={(e) => this.showClientDetail(e)}
-                            />{" "}
-                            {clientReq?.data?.name}{" "}
-                          </td>
-                          <td>{clientReq?.address}</td>
-                          <td>{clientReq?.multisig}</td>
-                          <td>{clientReq?.datacap}</td>
-                          <td>{clientReq?.approvals ? 1 : 0}</td>
-                          <td>{clientReq?.proposer.signerGitHandle}</td>
-                          <td>
-                            <a
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              href={clientReq?.url}
-                            >
-                              #{clientReq?.number}
-                            </a>
-                          </td>
-                        </tr>
-                      ))
-                  : null}
-              </tbody>
-            </table>
-            <Pagination
-              elements={this.context.largeClientRequests}
-              maxElements={10}
-              ref={this.onRefLargePublicChange}
-              refresh={() => this.setState({})}
-              search={this.props.searchString}
+            <DataTable
+              columns={[
+                {
+                  name: "Client",
+                  selector: (row: any) => row.data,
+                  sortable: true,
+                },
+                {
+                  name: "Address",
+                  selector: (row: any) => row.address,
+                  sortable: true,
+                },
+                {
+                  name: "multisig",
+                  selector: (row: any) => row.multisig,
+                  sortable: true,
+                  grow: 0.6
+                },
+                {
+                  name: "Datacap",
+                  selector: (row: any) => row.datacap,
+                  sortable: true,
+                  grow: 0.6
+                },
+                {
+                  name: "Proposer",
+                  selector: (row: any) => row.proposer.signerGitHandle,
+                  sortable: true,
+                  cell: (row: any) => <span >{row.proposer.signerGitHandle || "-"}</span>,
+                  grow: 0.5,
+                },
+                {
+                  name: "Approvals",
+                  selector: (row: any) => row.approvals,
+                  sortable: true,
+                  grow: 0.5,
+                },
+                {
+                  name: "Audit Trail",
+                  selector: (row: any) => row.issue_number,
+                  sortable: true,
+                  grow: 0.6,
+                  cell: (row: any) => <a
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    href={row.url}>#{row.issue_number}</a>,
+                },
+              ]}
+              data={searchAllColumnsFromTable({ rows: this.DataForLargeRequestTable(), query: this.props.searchString })}
+              pagination
+              paginationRowsPerPageOptions={[7]}
+              paginationPerPage={7}
+              selectableRows
+              selectableRowsNoSelectAll={true}
+              selectableRowDisabled={(row: any) => !row.signable}
+              defaultSortFieldId={1}
+              responsive
+              noDataComponent="No large client requests yet"
             />
-            {this.context.largeClientRequests.length === 0 ? (
-              <div className="nodata">No large client requests yet</div>
-            ) : null}
             <div className="alignright">
               <ButtonSecondary
                 className="buttonsecondary"
