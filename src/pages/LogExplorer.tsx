@@ -1,10 +1,9 @@
 import React, { Component } from 'react';
 // @ts-ignore
 import Welcome from '../components/Welcome'
-import Header from '../components/Header';
 import { TextField, Button } from '@material-ui/core';
 import { Data } from '../context/Data/Index'
-import {config} from '../config'
+import { config } from '../config'
 
 
 const NOTARY_PREFIX_URL = `https://github.com/${config.onboardingOwner}/${config.onboardingNotaryOwner}/issues/`
@@ -103,7 +102,6 @@ class LogExplorer extends Component<{}> {
   render() {
     return (
       <div className="landing">
-        <Header />
         <div className="container">
           <Welcome
             title="Welcome to the Filecoin Log Explorer"
@@ -138,7 +136,7 @@ class LogExplorer extends Component<{}> {
                   onChange={(e) => this.inputIssueNumber(e)}
                 />
                 <Button
-                  disabled={this.state.issue_number == "" ? true : this.state.srchButtonDisabled}
+                  disabled={this.state.issue_number === "" ? true : this.state.srchButtonDisabled}
                   size="small"
                   onClick={() => this.selectIssueNumber()}
                   variant="contained"
@@ -163,7 +161,7 @@ class LogExplorer extends Component<{}> {
                     {
                       this.state.logs
                         .filter((item: any, i: any) => item.message.match(new RegExp(this.state.searchText, "gi")) || item.repo.match(new RegExp(this.state.searchText, "gi")))
-                        .filter((item: any, i: any) => this.state.date ? new Date(item.dateTimestamp).toLocaleDateString('fr-CA', { year: 'numeric', month: '2-digit', day: '2-digit' }) == this.state.date : true)
+                        .filter((item: any, i: any) => this.state.date ? new Date(item.dateTimestamp).toLocaleDateString('fr-CA', { year: 'numeric', month: '2-digit', day: '2-digit' }) === this.state.date : true)
                         .slice(0, this.state.maxLogsNumber)
                         .map((item: any, i: any) =>
                           <tr key={i} style={{ textAlign: "center" }}>
@@ -173,9 +171,9 @@ class LogExplorer extends Component<{}> {
                             <td >{item.actionKeyword} </td>
                             <td >{item.message} </td>
                             {
-                              item.repo === "RKH-SIGN" ? 
-                              <td ><a target="_blank" rel="noopener noreferrer" href={NOTARY_PREFIX_URL.concat(item.issue_number)}>#{item.issue_number}</a> </td>:
-                              <td ><a target="_blank" rel="noopener noreferrer" href={LDN_PREFIX_URL.concat(item.issue_number)}>#{item.issue_number}</a> </td>
+                              item.repo === "RKH-SIGN" ?
+                                <td ><a target="_blank" rel="noopener noreferrer" href={NOTARY_PREFIX_URL.concat(item.issue_number)}>#{item.issue_number}</a> </td> :
+                                <td ><a target="_blank" rel="noopener noreferrer" href={LDN_PREFIX_URL.concat(item.issue_number)}>#{item.issue_number}</a> </td>
                             }
                           </tr>
                         )}

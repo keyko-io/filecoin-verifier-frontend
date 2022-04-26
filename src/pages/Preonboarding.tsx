@@ -6,7 +6,6 @@ import Verifiers from '../svg/verifier-wallet.svg';
 import Welcome from '../components/Welcome'
 import { Location } from 'history';
 import { Data } from '../context/Data/Index'
-import Header from '../components/Header';
 import LearnMore from '../components/LearnMore';
 import Option from '../components/Option'
 import LogInModal from '../modals/LogInModal'
@@ -67,7 +66,6 @@ class Preonboarding extends Component<{}, PreonboardingStates, LocationState> {
   render() {
     return (
       <div className="onboarding">
-        <Header />
         <div className="container">
           <Welcome
             title="Welcome to the Filecoin Plus Registry"

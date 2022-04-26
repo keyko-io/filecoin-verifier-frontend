@@ -6,7 +6,6 @@ import { TextField, Select, MenuItem, InputLabel, Button, Breadcrumbs, Link } fr
 import LoginGithub from 'react-login-github';
 import { Data } from '../context/Data/Index';
 import { config } from '../config';
-import Header from '../components/Header';
 import { createParentComment, updateTemplate } from './issueUtils/templates';
 import { coreInfo, otherInfo, guidelines, regionOptions, labelsIssueCreation, steps, URL_README } from './issueUtils/constants';
 
@@ -322,7 +321,6 @@ class LdnApplication extends Component<{}> {
   render() {
     return (
       <div className={this.state.view === 4 ? "viewFourContainer" : "formContainer"} style={{ minHeight: '100%' }}>
-        <Header />
         {/* <div className="guideline-container"> */}
         <div style={{ maxWidth: this.state.view === 5 ? "30%" : "" }} className={guidelines[this.state.view].className}>
           <div className="guideText">{guidelines[this.state.view].title}</div>
