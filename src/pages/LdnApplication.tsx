@@ -20,7 +20,6 @@ const utils = require('@keyko-io/filecoin-verifier-tools/utils/large-issue-parse
 class LdnApplication extends Component<{}> {
   public static contextType = Data
 
-
   state = {
     coreInfo: [...coreInfo],
     otherInfo: [...otherInfo],
@@ -46,6 +45,7 @@ class LdnApplication extends Component<{}> {
 
   async fetchIssuesAndSelectView() {
     // fetch issues to get addresses
+
     const issues = (await this.context.github.githubOcto.issues.list(
       {
         filter: 'created',
@@ -227,7 +227,9 @@ class LdnApplication extends Component<{}> {
   }
 
   async createIssueStepOne() {
+
     const coreInfo = this.createObjectForCoreInfoTemplate()
+
     const res = await this.context.github.githubOcto.issues.create({
       owner: config.onboardingOwner,
       repo: config.onboardingLargeClientRepo,
@@ -235,6 +237,7 @@ class LdnApplication extends Component<{}> {
       body: createParentComment(coreInfo),
       labels: [labelsIssueCreation.WIP_ISSUE]
     })
+
 
     alert(`issue created with n ${res.data.number}`)
     this.setState({ issueNumber: res.data.number })
@@ -317,9 +320,9 @@ class LdnApplication extends Component<{}> {
 
   render() {
     return (
-      <div className={this.state.view === 4 ? "viewFourContainer" : "formContainer"} style={{ minHeight: '100%' }}>
+      <div className={this.state.view === 4 ? "viewFourContainer" : "formContainer"} >
         {/* <div className="guideline-container"> */}
-        <div className={guidelines[this.state.view].className}>
+        <div style={{ maxWidth: this.state.view === 5 ? "30%" : "" }} className={guidelines[this.state.view].className}>
           <div className="guideText">{guidelines[this.state.view].title}</div>
           <span style={{ paddingTop: '10px' }}></span>
           <div className="guideText">{guidelines[this.state.view].description}</div>
@@ -327,7 +330,7 @@ class LdnApplication extends Component<{}> {
           {
             this.state.view === 5 &&
             <div className="guideText">
-              <a target='_blank' rel="noopener noreferrer" href={guidelines[this.state.view].link}> repo</a>
+              <a target='_blank' rel="noopener noreferrer" href={guidelines[this.state.view].link + "/" + this.state.issueNumber}> repo</a>
             </div>
           }
           {
@@ -340,7 +343,7 @@ class LdnApplication extends Component<{}> {
           <div className="guideText">Find more details <a target='_blank' rel="noopener noreferrer" href={URL_README} >here</a></div>
           {this.state.view === 4 && <div className="guideText">
             <small>Step {this.state.stepViewFour + 2} of 4</small><br></br>
-            <small>If you don't have time now, you can complete the application form later.</small>
+            <small>These questions can be answered here or by editing the GitHub Issue for your application.</small>
           </div>}
         </div>
         {
@@ -348,7 +351,7 @@ class LdnApplication extends Component<{}> {
           <>
             <Breadcrumbs aria-label="breadcrumb" style={{ cursor: 'pointer', paddingTop: '2%' }}>
               {steps.map((item: any, index: any) =>
-                <Link color="inherit" onClick={() => this.setState({ view: item === 'Main Info' ? 3 : 4, stepViewFour: item === 'Main Info' ? 0 : index - 1 })}>
+                <Link key={index} color="inherit" onClick={() => this.setState({ view: item === 'Main Info' ? 3 : 4, stepViewFour: item === 'Main Info' ? 0 : index - 1 })}>
                   {item}
                 </Link>
               )}
@@ -364,9 +367,13 @@ class LdnApplication extends Component<{}> {
                 clientId={config.githubApp}
                 scope="repo"
                 onSuccess={async (response: any) => {
-                  await this.context.github.loginGithub(response.code, true)
-                  this.setState({ loggedUser: this.context.github.loggedUser })
-                  this.fetchIssuesAndSelectView()
+                  try {
+                    await this.context.github.loginGithub(response.code, true)
+                    this.setState({ loggedUser: this.context.github.loggedUser })
+                    this.fetchIssuesAndSelectView()
+                  } catch (error) {
+                    console.log("this is ", error)
+                  }
                 }}
                 onFailure={(response: any) => {
                   console.log('login failure', response)
@@ -381,7 +388,7 @@ class LdnApplication extends Component<{}> {
           this.state.view === 1 &&
           <div className="content">
             <div className='titleIssueBox'>
-              Select an issue to continue editing or <a style={{ cursor: 'pointer', color: '#0091ff' }} onClick={() => this.setState({ view: 3 })}>create a new issue</a>
+              Select an issue to continue editing or <a style={{ cursor: 'pointer', color: '#0091ff' }} onClick={() => this.setState({ view: 3, isNewIssue: true })}>create a new issue</a>
             </div>
             <div className='issueBoxContainer'>
               {
@@ -405,7 +412,7 @@ class LdnApplication extends Component<{}> {
           <div className="content">
             <form >
               {coreInfo.map((item: any, index: any) =>
-                <div key={index} >
+                <div key={index} style={{ marginBottom: "12px" }} >
                   {
                     item.type === 'number' ?
                       <div className='select-slot'>
@@ -420,7 +427,9 @@ class LdnApplication extends Component<{}> {
                           value={this.state.coreInfo[index].value}
                           type='number'
                           helperText={this.state.coreInfo[index].error ? this.state.coreInfo[index].errorMessage : ''}
-                          onChange={(e: any) => this.handleChange(e)} />
+                          onChange={(e: any) => this.handleChange(e)}
+                        />
+
 
 
                         <Select
@@ -449,7 +458,7 @@ class LdnApplication extends Component<{}> {
                             value={this.state.coreInfo[index].value || 'Select Region'}
                             onChange={(e: any) => this.handleChange(e)}
                           >
-                            {regionOptions.map((item: any) => <MenuItem value={item}>{item}</MenuItem>)}
+                            {regionOptions.map((item: any, index: any) => <MenuItem key={index} value={item}>{item}</MenuItem>)}
                           </Select>
 
                         </>
@@ -489,7 +498,7 @@ class LdnApplication extends Component<{}> {
             <div className='otherInfoButtonContainer'>
               {!this.state.isNewIssue && <Button variant="contained" color="primary" onClick={() => this.prevStep()}>Back</Button>}
               <span style={{ marginRight: '10px' }}></span>
-              <Button variant="contained" color="primary" onClick={() => this.createUpdateIssue()}>Save Issue and Continue</Button>
+              <Button style={{ float: "right" }} variant="contained" color="primary" onClick={() => this.createUpdateIssue()}>Save Issue and Continue</Button>
             </div>
           </div>
         }
