@@ -60,6 +60,8 @@ interface DataProviderStates {
   approvedNotariesLoading: boolean;
   ldnRequestsLoading: boolean;
   updateContextState: any;
+  isAddressVerified: boolean;
+  updateIsVerifiedAddress: any;
 }
 
 interface DataProviderProps {
@@ -293,8 +295,8 @@ export default class DataProvider extends React.Component<
                         signerAddress =
                           txs[0].signers[0].length > 0
                             ? await this.props.wallet.api.actorKey(
-                                txs[0].signers[0]
-                              )
+                              txs[0].signers[0]
+                            )
                             : null;
                         signerGitHandle =
                           verifierRegistry.notaries.find(
@@ -313,7 +315,7 @@ export default class DataProvider extends React.Component<
                         );
                       const account =
                         this.props.wallet.accountsActive[
-                          this.props.wallet.activeAccount
+                        this.props.wallet.activeAccount
                         ];
                       const msigIncludeSigner =
                         multisigInfo.signers.includes(account);
@@ -434,7 +436,7 @@ export default class DataProvider extends React.Component<
                 "[bot]"
               ) === false &&
               rawComments.data[rawComments.data.length - 1].user.login !==
-                rawIssue.assignee.login
+              rawIssue.assignee.login
             ) {
               issues.push({
                 number: rawIssue.number,
@@ -517,8 +519,8 @@ export default class DataProvider extends React.Component<
                     pendingTxs[txs].parsed.name === "removeVerifier"
                       ? "Revoke"
                       : pendingTxs[txs]?.parsed?.params?.cap?.toString() === "0"
-                      ? "Revoke"
-                      : "Add",
+                        ? "Revoke"
+                        : "Add",
                   verifier:
                     pendingTxs[txs].parsed.name === "removeVerifier"
                       ? pendingTxs[txs].parsed.params
@@ -569,16 +571,16 @@ export default class DataProvider extends React.Component<
                 const txs =
                   verifierAndPendingRequests.length > 0
                     ? verifierAndPendingRequests.filter(
-                        (item: any) =>
-                          item.verifierAddress === addresses[0] &&
-                          commentDc == item.datacap
-                      )
+                      (item: any) =>
+                        item.verifierAddress === addresses[0] &&
+                        commentDc == item.datacap
+                    )
                     : [];
                 const proposedBy =
                   verifierAndPendingRequests.length > 0
                     ? verifierAndPendingRequests.find(
-                        (item: any) => item.verifierAddress === addresses[0]
-                      )?.signerAddress
+                      (item: any) => item.verifierAddress === addresses[0]
+                    )?.signerAddress
                     : "";
                 let issue: any = {
                   id: uuidv4(),
@@ -662,7 +664,7 @@ export default class DataProvider extends React.Component<
                 "[bot]"
               ) === false &&
               rawComments.data[rawComments.data.length - 1].user.login !==
-                rawIssue.assignee.login
+              rawIssue.assignee.login
             ) {
               issues.push({
                 number: rawIssue.number,
@@ -948,7 +950,7 @@ export default class DataProvider extends React.Component<
                 assignees: [assigne],
               });
             if (assigned.data.assignees.length > 0) isAssigned = true;
-          } catch (error) {}
+          } catch (error) { }
         }
 
         if (!isAssigned) {
@@ -1040,6 +1042,10 @@ export default class DataProvider extends React.Component<
         this.state.loadVerifierAndPendingRequests();
         this.state.loadNotificationVerifierRequests();
       },
+      isAddressVerified: false,
+      updateIsVerifiedAddress: async (val: boolean) => {
+        this.setState({ isAddressVerified: val })
+      }
     };
   }
 

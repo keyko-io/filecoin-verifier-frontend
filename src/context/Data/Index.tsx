@@ -26,6 +26,9 @@ export const Data = React.createContext({
     approvedNotariesLoading: true,
     ldnRequestsLoading: true,
     updateContextState: (elementToUpdate: any, type:string) => {},
+    isAddressVerified: false,
+    updateIsVerifiedAddress: async (val:boolean)=>{},
+
     // passed by props
     github: {} as any,
     wallet: {} as any
