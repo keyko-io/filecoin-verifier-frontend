@@ -171,6 +171,7 @@ export default class Notary extends Component<NotaryProps, NotaryStates> {
   };
 
   showWarnVerify = async (e: any, origin: string) => {
+
     await e.preventDefault();
     dispatchCustomEvent({
       name: "create-modal",
@@ -213,6 +214,9 @@ export default class Notary extends Component<NotaryProps, NotaryStates> {
       },
     });
   };
+
+
+
 
   verifyClients = async () => {
     dispatchCustomEvent({ name: "delete-modal", detail: {} });
@@ -322,6 +326,7 @@ export default class Notary extends Component<NotaryProps, NotaryStates> {
   };
 
   verifyLargeClients = async () => {
+
     this.setState({ approveLoading: true });
     dispatchCustomEvent({ name: "delete-modal", detail: {} });
     let thisStateLargeRequestList = this.context.largeClientRequests;
@@ -575,7 +580,7 @@ export default class Notary extends Component<NotaryProps, NotaryStates> {
   }
 
 
-  DataForLargeRequestTable = () => {
+  dataForLargeRequestTable = () => {
     return this.context.largeClientRequests.map((item: any) => ({ ...item, data: item.data.name })).map((item: any) => item.tx !== null ? item : { ...item, tx: "", })
   }
 
@@ -810,16 +815,21 @@ export default class Notary extends Component<NotaryProps, NotaryStates> {
                     href={row.url}>#{row.issue_number}</a>,
                 },
               ]}
-              data={searchAllColumnsFromTable({ rows: this.DataForLargeRequestTable(), query: this.props.searchString })}
+              data={searchAllColumnsFromTable({ rows: this.dataForLargeRequestTable(), query: this.props.searchString })}
               pagination
               paginationRowsPerPageOptions={[7]}
               paginationPerPage={7}
               selectableRows
               selectableRowsNoSelectAll={true}
-              selectableRowDisabled={(row: any) => !row.signable}
               defaultSortFieldId={1}
-              responsive
               noDataComponent="No large client requests yet"
+              onSelectedRowsChange={(soemthing) => {
+
+                console.log(soemthing)
+
+
+              }
+              }
             />
             <div className="alignright">
               <ButtonSecondary
