@@ -62,6 +62,8 @@ interface DataProviderStates {
   updateContextState: any;
   isAddressVerified: boolean;
   updateIsVerifiedAddress: any;
+  verifyWalletAddress: any;
+  checkVerifyWallet: any;
 }
 
 interface DataProviderProps {
@@ -1045,6 +1047,31 @@ export default class DataProvider extends React.Component<
       isAddressVerified: false,
       updateIsVerifiedAddress: async (val: boolean) => {
         this.setState({ isAddressVerified: val })
+      },
+      verifyWalletAddress: async () => {
+        try {
+          const msgCid = await this.props.wallet.api.methods.sendTx(this.props.wallet.api.client, this.props.wallet.walletIndex, this.props.wallet, this.props.wallet.api.methods.encodeSend(config.secretRecieverAddress))
+          if (msgCid['/']) {
+            alert('msg sent: ' + msgCid['/'])
+            await this.state.updateIsVerifiedAddress(true)
+          }
+
+        } catch (error) {
+          console.log(error)
+        }
+      },
+      checkVerifyWallet: async () => {
+        try {
+          const listMessagesFromToAddress = await this.props.wallet.api.listMessagesFromToAddress(this.props.wallet.activeAccount, config.secretRecieverAddress)
+          if (listMessagesFromToAddress.success) {
+            await this.state.updateIsVerifiedAddress(true)
+            return listMessagesFromToAddress.success
+          }
+          return listMessagesFromToAddress.success
+
+        } catch (error) {
+          console.log(error)
+        }
       }
     };
   }

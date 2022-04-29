@@ -28,6 +28,8 @@ export const Data = React.createContext({
     updateContextState: (elementToUpdate: any, type:string) => {},
     isAddressVerified: false,
     updateIsVerifiedAddress: async (val:boolean)=>{},
+    verifyWalletAddress: async ()=>{},
+    checkVerifyWallet: async ()=>{},
 
     // passed by props
     github: {} as any,

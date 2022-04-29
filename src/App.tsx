@@ -55,7 +55,7 @@ class App extends Component<{}, States> {
         pathname: "/"
       })
     }
-   await this.checkVerifyWallet()
+   await this.context.checkVerifyWallet()
   }
 
   onClick = () => {
@@ -92,7 +92,7 @@ class App extends Component<{}, States> {
     // this.setState({ isCurrentAddressVerified: false })
     await this.context.updateIsVerifiedAddress(false)
     await this.context.wallet.selectAccount(index)
-    if(!await this.checkVerifyWallet()){
+    if(!await this.context.checkVerifyWallet()){
       alert('please, open the wallet on the top right of the page and send a verification message')
     }
   }
@@ -159,57 +159,6 @@ class App extends Component<{}, States> {
     })
   }
 
-  verifyWalletAddress = async () => {
-    try {
-      
-      const msgCid = await this.context.wallet.api.methods.sendTx(this.context.wallet.api.client, this.context.wallet.walletIndex, this.context.wallet, this.context.wallet.api.methods.encodeSend(config.secretRecieverAddress))
-      // console.log("sent:", msgCid)
-      if (msgCid['/']) {
-        // alert('msg sent: ' + msgCid['/'])
-        // const verif = await this.checkVerifyWallet()
-        // console.log('verify wallet returns:', verif)
-        await this.context.updateIsVerifiedAddress(true)
-        // this.setState({ isCurrentAddressVerified: true })
-        // setIsMessageSent(true)
-        // setMessageSentCid(msgCid['/'])
-      }
-
-    } catch (error) {
-      console.log(error)
-      // setError(true)
-    }
-  }
-
-  checkVerifyWallet = async () => {
-    try {
-      //from, to
-      console.log('checkVerifyWallet to', this.context.wallet.activeAccount)
-      console.log('checkVerifyWallet from', config.secretRecieverAddress)
-      const listMessagesFromToAddress = await this.context.wallet.api.listMessagesFromToAddress(this.context.wallet.activeAccount, config.secretRecieverAddress)
-      console.log('listMessagesFromToAddress:', listMessagesFromToAddress)
-      if (listMessagesFromToAddress.success) {
-
-        console.log(listMessagesFromToAddress)
-        // this.setState({ isCurrentAddressVerified: true })
-        console.log('setting  this.context.isAddressVerified=true for', this.context.wallet.activeAccount)
-        await this.context.updateIsVerifiedAddress(true)
-
-
-        console.log(' this.context.isAddressVerified', this.context.isAddressVerified)
-        // alert('Notary verified! from, to -->'+this.context.wallet.activeAccount+' '+ config.secretRecieverAddress)
-        return listMessagesFromToAddress.success
-        // setMessagesList(listMessagesFromToAddress.messages)
-        // setIsMessageVerified(listMessagesFromToAddress.success)
-      }
-      // alert('Please, open the wallet to send a verification message.')
-      return listMessagesFromToAddress.success
-
-    } catch (error) {
-      // setError(true)
-      console.log(error)
-
-    }
-  }
 
 
 
@@ -328,14 +277,14 @@ class App extends Component<{}, States> {
                       </div>
                       <div className="accountdata">
                         <span className="accountaddress" onClick={() => this.switchAccount(index)} >{addressFilter(account)}</span>
-                        {/* <span className="copyaddress" onClick={() => this.verifyWalletAddress()}>Verify</span> */}
-                        {(this.context.wallet.activeAccount === account && this.context.isAddressVerified) ?
+                        <span className="copyaddress" onClick={() => this.context.verifyWalletAddress()}>Verify</span>
+                        {/* {(this.context.wallet.activeAccount === account && this.context.isAddressVerified) ?
                           <></> :
                           (this.context.wallet.activeAccount === account && !this.context.isAddressVerified) ?
-                            <span className="copyaddress" onClick={() => this.verifyWalletAddress()}>Verify</span> :
+                            <span className="copyaddress" onClick={() => this.context.verifyWalletAddress()}>Verify</span> :
                             this.context.wallet.activeAccount !== account ?
                             <></> : <></>
-                        }
+                        } */}
                         <span className="copyaddress" onClick={() => this.copyAddress(account)}><SVG.CopyAndPaste height='15px' /></span>
                       </div>
                     </div>
