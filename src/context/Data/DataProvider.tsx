@@ -64,6 +64,8 @@ interface DataProviderStates {
   updateIsVerifiedAddress: any;
   verifyWalletAddress: any;
   checkVerifyWallet: any;
+  selectedLargeClientRequests:any;
+  setSelectedLargeClientRequests:any;
 }
 
 interface DataProviderProps {
@@ -1072,6 +1074,10 @@ export default class DataProvider extends React.Component<
         } catch (error) {
           console.log(error)
         }
+      },
+      selectedLargeClientRequests: [],
+      setSelectedLargeClientRequests: (rowNumbers: any[]) =>{
+        this.setState({selectedLargeClientRequests:rowNumbers})
       }
     };
   }

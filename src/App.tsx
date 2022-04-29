@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, memo } from 'react';
 import Overview from './components/Overview'
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -325,5 +325,5 @@ class App extends Component<{}, States> {
   }
 }
 
-export default App;
+export default memo(App);
 

@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, memo } from 'react';
 import { Data } from '../context/Data/Index';
 import { bytesToiB } from "../utils/Filters"
 // @ts-ignore
@@ -13,7 +13,7 @@ type OverviewStates = {
     approvedNotariesLoading: boolean
 }
 
-export default class Overview extends Component<{}, OverviewStates> {
+ class Overview extends Component<{}, OverviewStates> {
     public static contextType = Data
     interval: any
 
@@ -94,11 +94,15 @@ export default class Overview extends Component<{}, OverviewStates> {
                     <RootKeyHolder searchString={this.context.searchString} />
                     :
                     <Notary
-                        clients={this.context.clients}
-                        searchString={this.context.searchString}
+                    notaryProps={{
+                        clients:this.context.clients,
+                        searchString:this.context.searchString
+                    }}
                     />
                 }
             </div>
         )
     }
 }
+
+export default memo(Overview)
