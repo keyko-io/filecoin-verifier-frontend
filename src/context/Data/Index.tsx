@@ -4,6 +4,7 @@ import React from 'react'
 export const Data = React.createContext({
     loadClientRequests: async () => {},
     clientRequests: [] as any,
+    largeClientRequests: [] as any,
     loadNotificationClientRequests: async () => {},
     notificationClientRequests: [] as any,
     loadNotificationVerifierRequests: any,
@@ -21,11 +22,39 @@ export const Data = React.createContext({
     clientsGithub: any,
     loadClientsGithub: any,
     search: any,
-    refreshGithubData: any,
+    refreshGithubData: async () => {},
     logToSentry:(category: string, message:string,level:"info"|"error",data: Map<string, any>) => {},
     approvedNotariesLoading: true,
     ldnRequestsLoading: true,
     updateContextState: (elementToUpdate: any, type:string) => {},
+    postLogs:  async (
+        message: string,
+        type: string,
+        actionKeyword: string,
+        issueNumber: number,
+        repo: string
+      ) => {},
+      updateGithubVerifiedLarge: async (
+        requestNumber: any,
+        messageID: any,
+        address: string,
+        datacap: any,
+        approvals: boolean,
+        signer: string,
+        msigAddress: string,
+        name: string,
+        errorMessage: string,
+        labels: string[],
+        action?: string
+      ) => {},
+      sortPublicRequests: async (
+        e: any,
+        previousOrderBy: string,
+        previousOrder: number
+      ) => {},
+      selectedLargeClientRequests: [],
+      setSelectedLargeClientRequests: (rowNumbers: any[]) =>{},
+      searchString:'',
     // passed by props
     github: {} as any,
     wallet: {} as any
