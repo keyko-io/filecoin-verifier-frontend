@@ -60,6 +60,8 @@ interface DataProviderStates {
   approvedNotariesLoading: boolean;
   ldnRequestsLoading: boolean;
   updateContextState: any;
+  selectedLargeClientRequests:any;
+  setSelectedLargeClientRequests:any;
 }
 
 interface DataProviderProps {
@@ -1040,6 +1042,10 @@ export default class DataProvider extends React.Component<
         this.state.loadVerifierAndPendingRequests();
         this.state.loadNotificationVerifierRequests();
       },
+      selectedLargeClientRequests: [],
+      setSelectedLargeClientRequests: (rowNumbers: any[]) =>{
+        this.setState({selectedLargeClientRequests:rowNumbers})
+      }
     };
   }
 
