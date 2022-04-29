@@ -331,6 +331,7 @@ export default class Notary extends Component<NotaryProps, NotaryStates> {
     dispatchCustomEvent({ name: "delete-modal", detail: {} });
     let thisStateLargeRequestList = this.context.largeClientRequests;
     for (const request of thisStateLargeRequestList) {
+      debugger
       if (this.state.selectedLargeClientRequests.includes(request.number)) {
         let sentryData: any = {};
         sentryData.request = { ...request };
@@ -815,21 +816,16 @@ export default class Notary extends Component<NotaryProps, NotaryStates> {
                     href={row.url}>#{row.issue_number}</a>,
                 },
               ]}
-              data={searchAllColumnsFromTable({ rows: this.dataForLargeRequestTable(), query: this.props.searchString })}
+              selectableRows
+              selectableRowsNoSelectAll={true}
               pagination
               paginationRowsPerPageOptions={[7]}
               paginationPerPage={7}
-              selectableRows
-              selectableRowsNoSelectAll={true}
               defaultSortFieldId={1}
               noDataComponent="No large client requests yet"
-              onSelectedRowsChange={(soemthing) => {
-
-                console.log(soemthing)
-
-
-              }
-              }
+              onSelectedRowsChange={({ selectedRows }) => console.log(selectedRows)}
+              noContextMenu={true}
+              data={searchAllColumnsFromTable({ rows: this.dataForLargeRequestTable(), query: this.props.searchString })}
             />
             <div className="alignright">
               <ButtonSecondary
