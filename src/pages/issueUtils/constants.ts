@@ -42,10 +42,7 @@ export const guidelines = [
 
 export const regionOptions = [
   'Africa',
-  'Asia (excl. Japan)',
-  'Asia (excl. GCN)',
   'Asia (excl. Greater China)',
-  'Asia, Japan',
   'Europe',
   'Greater China Region',
   'North America',
