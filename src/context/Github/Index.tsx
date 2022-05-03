@@ -8,5 +8,7 @@ export const Github = React.createContext({
     logoutGithub: async () => { },
     githubOctoGenericLogin: async () => { },
     githubOctoGeneric: {},
-    loggedUser:''
+    loggedUser:'',
+    fetchGithubIssues: async (owner?:any,repo?:any, state?:any, labels?:any)=> {},
+    fetchGithubComments: async (owner?:any,repo?:any, issueNumber?:any)=> {}
 })

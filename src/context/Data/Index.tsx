@@ -30,7 +30,7 @@ export const Data = React.createContext({
     isAddressVerified: false,
     updateIsVerifiedAddress: async (val:boolean)=>{},
     verifyWalletAddress: async ()=>{},
-    checkVerifyWallet: async ()=>{},
+    checkVerifyWallet: async () =>  {},
 
     postLogs:  async (
         message: string,

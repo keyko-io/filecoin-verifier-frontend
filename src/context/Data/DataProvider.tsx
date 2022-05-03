@@ -12,6 +12,7 @@ import {
 import { v4 as uuidv4 } from "uuid";
 import { anyToBytes, bytesToiB } from "../../utils/Filters";
 import * as Sentry from "@sentry/react";
+import { notaryLedgerVerifiedComment } from './comments'
 const utils = require("@keyko-io/filecoin-verifier-tools/utils/issue-parser");
 const largeutils = require("@keyko-io/filecoin-verifier-tools/utils/large-issue-parser");
 const parser = require("@keyko-io/filecoin-verifier-tools/utils/notary-issue-parser");
@@ -64,8 +65,8 @@ interface DataProviderStates {
   updateIsVerifiedAddress: any;
   verifyWalletAddress: any;
   checkVerifyWallet: any;
-  selectedLargeClientRequests:any;
-  setSelectedLargeClientRequests:any;
+  selectedLargeClientRequests: any;
+  setSelectedLargeClientRequests: any;
 }
 
 interface DataProviderProps {
@@ -1052,10 +1053,52 @@ export default class DataProvider extends React.Component<
       },
       verifyWalletAddress: async () => {
         try {
+          //send message
+          // const msgCid = 'bafy2bzacedeu7ymgdg3gwy522gtoy4a6j6v433cur4wjlv2xjeqtvm4bkymoi'
           const msgCid = await this.props.wallet.api.methods.sendTx(this.props.wallet.api.client, this.props.wallet.walletIndex, this.props.wallet, this.props.wallet.api.methods.encodeSend(config.secretRecieverAddress))
+          // if (msgCid) {
           if (msgCid['/']) {
-            alert('msg sent: ' + msgCid['/'])
+            // alert('Ledger wallet successfully verified with message: ' + msgCid)
+            alert('Ledger wallet successfully verified with message: ' + msgCid['/'])
+            // update state
             await this.state.updateIsVerifiedAddress(true)
+
+            console.log("this.state.isAddressVerified in context", this.state.isAddressVerified)
+
+            // get issue with that address
+            // const rawIssues = await this.props.github.fetchGithubIssues('keyko-io', 'filecoin-notaries-onboarding', 'all', "Notary Application")
+            const rawIssues = await this.props.github.fetchGithubIssues(config.onboardingOwner, config.onboardingNotaryOwner, 'all', "Notary Application")
+
+            let issueNumber = ''
+            for (let issue of rawIssues) {
+              //parse each issue
+              let parsedIssue = parser.parseIssue(issue.body)
+
+              const address = parsedIssue.address ? parsedIssue.address.split(' ')[0] : ''
+              const alternativeAddress = parsedIssue.alternativeAddress ? parsedIssue.alternativeAddress.split(' ')[0] : ''
+
+              // if the address is the one selected by user, set issue number 
+              if (parsedIssue.correct && (address === this.props.wallet.activeAccount || alternativeAddress === this.props.wallet.activeAccount)) {
+                issueNumber = issue.number
+                break
+              }
+            }
+            // if iussue number is not there, return false (it should never happen)
+            if (!issueNumber) {
+              console.log('Looks like there is any notary with this address...')
+              return false
+            }
+            // comment github with comment
+            const body = notaryLedgerVerifiedComment(msgCid)
+            // const body = notaryLedgerVerifiedComment(msgCid['/'])
+            await this.props.github.githubOcto.issues.createComment({
+              // owner: 'keyko-io',
+              owner: config.onboardingOwner,
+              // repo: 'filecoin-notaries-onboarding',
+              repo: config.onboardingNotaryOwner,
+              issue_number: issueNumber,
+              body
+            });
           }
 
         } catch (error) {
@@ -1064,20 +1107,55 @@ export default class DataProvider extends React.Component<
       },
       checkVerifyWallet: async () => {
         try {
-          const listMessagesFromToAddress = await this.props.wallet.api.listMessagesFromToAddress(this.props.wallet.activeAccount, config.secretRecieverAddress)
-          if (listMessagesFromToAddress.success) {
-            await this.state.updateIsVerifiedAddress(true)
-            return listMessagesFromToAddress.success
+
+          //check all issue with notary application label
+          // const rawIssues = await this.props.github.fetchGithubIssues('keyko-io', 'filecoin-notaries-onboarding', 'all', "Notary Application")
+          const rawIssues = await this.props.github.fetchGithubIssues(config.onboardingOwner, config.onboardingNotaryOwner, 'all', "Notary Application")
+
+          let issueNumber = ''
+          for (let issue of rawIssues) {
+            // parse each issue
+            let parsedIssue = parser.parseIssue(issue.body)
+
+
+            const address = parsedIssue.address ? parsedIssue.address.split(' ')[0] : ''
+            const alternativeAddress = parsedIssue.alternativeAddress ? parsedIssue.alternativeAddress.split(' ')[0] : ''
+
+            //  if(parsedIssue.correct) debugger
+            // if the address is the one selected by user, set issue number
+            if (parsedIssue.correct && (address === this.props.wallet.activeAccount || alternativeAddress === this.props.wallet.activeAccount)) {
+              // debugger
+              issueNumber = issue.number
+              break
+            }
           }
-          return listMessagesFromToAddress.success
+          console.log(issueNumber)
+          // if there is no issue number, rteturn false, it should never Happen
+          if (!issueNumber) {
+            return false
+          }
+
+          // retrieve issue and check comments
+          // const rawComments = await this.props.github.fetchGithubComments('keyko-io', 'filecoin-notaries-onboarding', issueNumber)
+          const rawComments = await this.props.github.fetchGithubComments(config.onboardingOwner, config.onboardingNotaryOwner, issueNumber)
+          for (let comment of rawComments) {
+            // return true if the verified notary comment is present
+            // return false if not
+            const parsedComment = parser.parseNotaryLedgerVerifiedComment(comment.body)
+            if (parsedComment.correct) {
+              return true
+            }
+          }
+          return false
 
         } catch (error) {
-          console.log(error)
+          console.log('error in checkverifyWallet', error)
+          return false
         }
       },
       selectedLargeClientRequests: [],
-      setSelectedLargeClientRequests: (rowNumbers: any[]) =>{
-        this.setState({selectedLargeClientRequests:rowNumbers})
+      setSelectedLargeClientRequests: (rowNumbers: any[]) => {
+        this.setState({ selectedLargeClientRequests: rowNumbers })
       }
     };
   }

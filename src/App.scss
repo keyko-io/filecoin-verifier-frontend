@@ -1498,9 +1498,12 @@
 .warnmodalledger {
   height: 220px;
   width: 650px;
-  display: inline-block;
+  display: flex;
   text-align: center;
   font-family: "suisseintl";
+  justify-content: center;
+    align-items: center;
+    flex-direction: column;
 
   .message {
     position: absolute;
@@ -1535,7 +1538,6 @@
   }
 
   table {
-    position: absolute;
     top: 65px;
     margin: auto;
     font-family: "suisseintl";
@@ -1561,19 +1563,17 @@
       width: 50%;
       padding-bottom: 8px;
       padding-top: 5px;
+      word-wrap: break-word
     }
   }
 
   .ledgermessage {
-    position: absolute;
-    bottom: 75px;
-    left: 0;
-    right: 0;
-    margin: auto;
+   display: flex;
+   justify-content: center;
+   flex-direction: column;
   }
 
   button {
-    position: absolute;
     bottom: 20px;
     left: 0;
     right: 0;

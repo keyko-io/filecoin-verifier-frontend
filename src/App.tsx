@@ -55,7 +55,6 @@ class App extends Component<{}, States> {
         pathname: "/"
       })
     }
-   await this.context.checkVerifyWallet()
   }
 
   onClick = () => {
@@ -92,9 +91,6 @@ class App extends Component<{}, States> {
     // this.setState({ isCurrentAddressVerified: false })
     await this.context.updateIsVerifiedAddress(false)
     await this.context.wallet.selectAccount(index)
-    if(!await this.context.checkVerifyWallet()){
-      alert('please, open the wallet on the top right of the page and send a verification message')
-    }
   }
 
   switchRoot = () => {
