@@ -131,7 +131,7 @@ class LdnApplication extends Component<{}> {
   }
 
 
-  validateDatacap(coreInfo: any, name: any, value: any, elementToUpdateIndex: any) {
+  validateDatacapAndAddress(coreInfo: any, name: any, value: any, elementToUpdateIndex: any) {
     let hasError = false
 
     if (value === 'PiB' && Number(coreInfo[elementToUpdateIndex].value) > 5) {
@@ -152,9 +152,9 @@ class LdnApplication extends Component<{}> {
       coreInfo[elementToUpdateIndex].errorMessage = 'You can ask max 999 TiB'
     }
 
-    if (coreInfo[elementToUpdateIndex].name === "address" && coreInfo[elementToUpdateIndex].value === "wow") {
+    if (coreInfo[elementToUpdateIndex].name === "address" && (coreInfo[elementToUpdateIndex].value.substring(0,2) !== "f1" && coreInfo[elementToUpdateIndex].value.substring(0,2) !== "f3")) {
       hasError = true
-      coreInfo[elementToUpdateIndex].errorMessage = coreInfo[elementToUpdateIndex].value
+      coreInfo[elementToUpdateIndex].errorMessage = 'address has to start with f1 or f3'
     }
 
     return hasError
@@ -165,7 +165,7 @@ class LdnApplication extends Component<{}> {
     let hasError = false
     const elementToUpdateIndex: any = coreInfo.findIndex((info: any) => info.name === name)
     if (isMeasure || coreInfo[elementToUpdateIndex].type === 'number' || coreInfo[elementToUpdateIndex].name === "address")
-      hasError = this.validateDatacap(coreInfo, name, value, elementToUpdateIndex)
+      hasError = this.validateDatacapAndAddress(coreInfo, name, value, elementToUpdateIndex)
     if (isMeasure) {
       coreInfo[elementToUpdateIndex].measure = value
       coreInfo[elementToUpdateIndex].error = hasError
