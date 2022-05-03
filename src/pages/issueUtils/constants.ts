@@ -6,7 +6,7 @@ export const coreInfo = [
   { name: 'website', description: 'Website / Social Media', value: '', error: false, errorMessage: 'Field is Required', type: 'string' },
   { name: 'datacapRequested', description: 'Total amount of DataCap being requested (between 500 TiB and 5 PiB)', value: '', measure: '', type: 'number', error: false, errorMessage: 'Needs a numerical value' },
   { name: 'dataCapWeeklyAllocation', description: 'Weekly allocation of DataCap requested (usually between 1-100TiB)', value: '', measure: '', type: 'number', error: false, errorMessage: 'Needs a numerical value' },
-  { name: 'address', description: 'On-chain address for first allocation', value: '', error: false, errorMessage: 'Field is Required', type: 'string' },
+  { name: 'address', description: 'On-chain address for first allocation - it has to start with \'f1\' or \'f3\'', value: '', error: false, errorMessage: 'Field is Required', type: 'string' },
 ]
 
 export const otherInfo = [
@@ -42,12 +42,9 @@ export const guidelines = [
 
 export const regionOptions = [
   'Africa',
-  'Asia excl. Japan',
-  'Asia excl. GCN',
-  'Asia excl. Greater China',
-  'Asia, Japan',
+  'Asia (excl. Greater China)',
   'Europe',
-  'Greater China',
+  'Greater China Region',
   'North America',
   'Oceania',
   'South America',

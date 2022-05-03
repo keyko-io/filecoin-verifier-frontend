@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import 'react-dropdown/style.css';
-import { TextField, Select, MenuItem, InputLabel, Button, Breadcrumbs, Link } from '@material-ui/core';
+import { TextField, Select, MenuItem, InputLabel, Button, Breadcrumbs, Link, FormControl } from '@material-ui/core';
 
 // @ts-ignore
 import LoginGithub from 'react-login-github';
@@ -128,14 +128,14 @@ class LdnApplication extends Component<{}> {
         otherInfo
       })
     }
-
-
   }
 
 
-  validateDatacap(coreInfo: any, name: any, value: any, elementToUpdateIndex: any) {
+  validateDatacapAndAddress(coreInfo: any, name: any, value: any, elementToUpdateIndex: any) {
     let hasError = false
+
     if (value === 'PiB' && Number(coreInfo[elementToUpdateIndex].value) > 5) {
+
       hasError = true
       coreInfo[elementToUpdateIndex].errorMessage = 'You can ask max 5 PiB'
     }
@@ -145,11 +145,16 @@ class LdnApplication extends Component<{}> {
     }
     if (coreInfo[elementToUpdateIndex].measure === 'PiB' && Number(value) > 5) {
       hasError = true
-      coreInfo[elementToUpdateIndex].errorMessage = 'You can ask max 5 PiB'
+      coreInfo[elementToUpdateIndex].errorMessage = 'You can ask max 5 PiB '
     }
     if (coreInfo[elementToUpdateIndex].measure === 'TiB' && value.length > 3) {
       hasError = true
       coreInfo[elementToUpdateIndex].errorMessage = 'You can ask max 999 TiB'
+    }
+
+    if (coreInfo[elementToUpdateIndex].name === "address" && (coreInfo[elementToUpdateIndex].value.substring(0,2) !== "f1" && coreInfo[elementToUpdateIndex].value.substring(0,2) !== "f3")) {
+      hasError = true
+      coreInfo[elementToUpdateIndex].errorMessage = 'address has to start with f1 or f3'
     }
 
     return hasError
@@ -159,8 +164,8 @@ class LdnApplication extends Component<{}> {
     let coreInfo = this.state.coreInfo
     let hasError = false
     const elementToUpdateIndex: any = coreInfo.findIndex((info: any) => info.name === name)
-    if (isMeasure || coreInfo[elementToUpdateIndex].type === 'number')
-      hasError = this.validateDatacap(coreInfo, name, value, elementToUpdateIndex)
+    if (isMeasure || coreInfo[elementToUpdateIndex].type === 'number' || coreInfo[elementToUpdateIndex].name === "address")
+      hasError = this.validateDatacapAndAddress(coreInfo, name, value, elementToUpdateIndex)
     if (isMeasure) {
       coreInfo[elementToUpdateIndex].measure = value
       coreInfo[elementToUpdateIndex].error = hasError
@@ -206,6 +211,7 @@ class LdnApplication extends Component<{}> {
     this.setState({ coreInfo })
     return hasError
   }
+
   async createUpdateIssue() {
     if (this.validateIssue()) {
       alert('application contain errors...')
@@ -431,8 +437,8 @@ class LdnApplication extends Component<{}> {
                         />
 
 
-
                         <Select
+                          style={{ minWidth: "70px", background: "rgba(0, 0, 0, 0.09)", borderLeft: "1.5px solid black", borderTopRightRadius: "4px" }}
                           labelId={item.name + 'dc-label'}
                           error={this.state.coreInfo[index].error}
                           id={item.name}
@@ -440,9 +446,10 @@ class LdnApplication extends Component<{}> {
                           value={this.state.coreInfo[index].measure}
                           onChange={(e: any) => { this.setDatacapMeasure(e) }}
                         >
-                          <MenuItem value={'TiB'}>TiB</MenuItem>
-                          <MenuItem value={'PiB'}>PiB</MenuItem>
+                          <MenuItem value={'TiB'}>TiB </MenuItem>
+                          <MenuItem value={'PiB'}>PiB </MenuItem>
                         </Select>
+
                       </div> :
                       item.name === 'region' ?
                         <>
