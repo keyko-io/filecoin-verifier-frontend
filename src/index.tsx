@@ -11,22 +11,24 @@ import { Github } from "./context/Github/Index";
 import { Router, Route, Switch } from "react-router-dom";
 // @ts-ignore
 import { GlobalNotification, GlobalModal } from "slate-react-system";
-import * as serviceWorker from "./serviceWorker";
-import Preonboarding from "./pages/Preonboarding";
-import Onboarding from "./pages/Onboarding";
-import Landing from "./pages/Landing";
-import history from "./context/History";
-import LogExplorer from "./pages/LogExplorer";
 import "./fonts/SuisseIntl-Regular.woff";
-import ClientDetails from "./pages/ClientDetails";
-import { CookiesProvider } from "react-cookie";
-import * as Sentry from "@sentry/react";
-import { Integrations } from "@sentry/tracing";
 import Layout from "../src/Layout/layout";
 import LdnApplication from "./pages/LdnApplication";
+
+import * as serviceWorker from './serviceWorker';
+import Preonboarding from './pages/Preonboarding';
+import Onboarding from './pages/Onboarding';
+import Landing from './pages/Landing';
+import history from './context/History';
+import LogExplorer from './pages/LogExplorer';
+import SecretTestPage from './pages/SecretTestPage';
+import './fonts/SuisseIntl-Regular.woff'
+import ClientDetails from './pages/ClientDetails'
+import { CookiesProvider } from 'react-cookie';
+import * as Sentry from "@sentry/react";
+import { Integrations } from "@sentry/tracing";
 import Verifiers from "./pages/Verifiers";
 import Miners from "./pages/Miners";
-
 
 // redirect to domain if user access fleek url
 if (window.location.host.includes("fleek") && config.willRedirect) {
