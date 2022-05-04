@@ -27,7 +27,8 @@ type States = {
   networkSelect: boolean
   accountSelect: boolean
   notificationsOpen: boolean
-  search: string
+  search: string,
+  // isCurrentAddressVerified: boolean
 }
 
 
@@ -41,7 +42,8 @@ class App extends Component<{}, States> {
       networkSelect: false,
       accountSelect: false,
       notificationsOpen: false,
-      search: ''
+      search: '',
+      // isCurrentAddressVerified: false
     }
     this.child = React.createRef();
   }
@@ -85,7 +87,7 @@ class App extends Component<{}, States> {
   }
 
   switchAccount = async (index: number) => {
-    this.context.wallet.selectAccount(index)
+    await this.context.wallet.selectAccount(index)
   }
 
   switchRoot = () => {
@@ -149,6 +151,11 @@ class App extends Component<{}, States> {
       pathname: "/logs"
     })
   }
+
+
+
+
+
 
   render() {
     return (

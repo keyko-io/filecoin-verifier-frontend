@@ -13,6 +13,8 @@ interface WalletProviderStates {
     githubOctoGenericLogin: any
     githubOctoGeneric: any
     loggedUser: any
+    fetchGithubIssues: any
+    fetchGithubComments:any
 }
 
 export default class WalletProvider extends React.Component<{}, WalletProviderStates> {
@@ -94,7 +96,30 @@ export default class WalletProvider extends React.Component<{}, WalletProviderSt
                 });
                 this.setState({ githubOctoGeneric: { logged: true, octokit } })
             }
-        }
+        },
+        fetchGithubIssues: async (owner: any, repo: any, state: any, labels: any) => {
+            const rawIssues = await this.state.githubOcto.paginate(
+                this.state.githubOcto.issues.listForRepo,
+                {
+                    owner,
+                    repo,
+                    state,
+                    labels
+                }
+            );
+            return rawIssues
+        },
+        fetchGithubComments: async (owner: any, repo: any, issueNumber: any) => {
+            const rawComments = await this.state.githubOcto.paginate(
+                this.state.githubOcto.issues.listComments,
+                {
+                    owner,
+                    repo,
+                    issue_number: issueNumber
+                }
+            );
+            return rawComments
+        },
     }
 
     loadGithub() {

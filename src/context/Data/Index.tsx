@@ -27,6 +27,11 @@ export const Data = React.createContext({
     approvedNotariesLoading: true,
     ldnRequestsLoading: true,
     updateContextState: (elementToUpdate: any, type:string) => {},
+    isAddressVerified: false,
+    updateIsVerifiedAddress: async (val:boolean)=>{},
+    verifyWalletAddress: async ()=>{},
+    checkVerifyWallet: async () =>  {},
+
     postLogs:  async (
         message: string,
         type: string,

@@ -21,6 +21,7 @@ import { BeatLoader } from "react-spinners";
 import DataTable from "react-data-table-component";
 import { useContext } from "react";
 import { searchAllColumnsFromTable } from "../../pages/tableUtils/searchAllColumnsFromTable";
+import WarnModalNotaryVerified from "../../modals/WarnModalNotaryVeried";
 
 
 
@@ -152,9 +153,7 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
     }
   };
 
-  const showWarnVerify = async (e: any, origin: string) => {
-
-    await e.preventDefault();
+  const showWarnVerify = async ( origin: string) => {
     dispatchCustomEvent({
       name: "create-modal",
       detail: {
@@ -198,6 +197,38 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
     });
   };
 
+  const checkNotaryIsVerifiedAndShowWarnVerify = async (e: any, origin: string) => {
+    const isVerified: any = await context.checkVerifyWallet()
+    if (!isVerified) {
+
+      await e.preventDefault();
+      dispatchCustomEvent({
+        name: "create-modal",
+        detail: {
+          id: Math.random()
+            .toString(36)
+            .replace(/[^a-z]+/g, "")
+            .substr(0, 5),
+          modal: (
+            <WarnModalNotaryVerified
+              onClick={async () => await context.verifyWalletAddress()
+              }
+            />
+          ),
+        },
+      });
+      return
+    }
+
+    showWarnVerify(origin)
+
+  }
+
+  useEffect(()=> {
+    if(context.isAddressVerified){
+      showWarnVerify('Large')
+    }
+  },[context.isAddressVerified])
 
 
 
@@ -589,7 +620,7 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
               ) : (
                 <ButtonPrimary
                   onClick={(e: any) =>
-                    showWarnVerify(
+                    checkNotaryIsVerifiedAndShowWarnVerify(
                       e,
                       tabs === "3" ? "Large" : "Notary"
                     )
