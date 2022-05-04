@@ -71,7 +71,7 @@ class WarnModalVerify extends Component<ModalProps, ModalState> {
         return (
             <div className="warnmodalledger" style={
                 { height: 220 + 30 * this.state.requestToShow.length }}>
-                <div className="message">
+                <div >
                     {this.state.message}
                 </div>
                 <table>
@@ -90,8 +90,9 @@ class WarnModalVerify extends Component<ModalProps, ModalState> {
                         )}
                     </tbody>
                 </table>
-                <div className="ledgermessage">Please check your Ledger to sign and send the message.</div>
-                <ButtonPrimary onClick={this.props.onClick}>Accept</ButtonPrimary>
+                <div className="ledgermessage">Please check your Ledger to sign and send the message.
+                   <div> <ButtonPrimary onClick={this.props.onClick}>Accept</ButtonPrimary></div>
+                </div>
             </div>
         )
     }

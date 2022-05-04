@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 // @ts-ignore
 import WelcomeClient from '../components/WelcomeClient'
-import Header from '../components/Header';
 import { Data } from '../context/Data/Index'
 import TableClientDetails from '../components/TableClientDetails';
 import history from '../context/History'
@@ -45,7 +44,6 @@ class ClientDetails extends Component<{}, ClientDetailsStates> {
   render() {
     return (
       <div className="landing">
-        <Header />
         <div className="container">
           <WelcomeClient client={this.state.name} user={this.state.user} address={this.state.address} datacap={this.state.datacap} />
           <div className="wrapperverifiers wrapperclients">

@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, memo } from 'react';
 import Overview from './components/Overview'
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -27,7 +27,8 @@ type States = {
   networkSelect: boolean
   accountSelect: boolean
   notificationsOpen: boolean
-  search: string
+  search: string,
+  // isCurrentAddressVerified: boolean
 }
 
 
@@ -41,7 +42,8 @@ class App extends Component<{}, States> {
       networkSelect: false,
       accountSelect: false,
       notificationsOpen: false,
-      search: ''
+      search: '',
+      // isCurrentAddressVerified: false
     }
     this.child = React.createRef();
   }
@@ -56,9 +58,9 @@ class App extends Component<{}, States> {
 
   onClick = () => {
     history.push({
-        pathname: "/"
+      pathname: "/"
     })
-}
+  }
 
 
   openNetworkSelect = (e: any) => {
@@ -85,7 +87,7 @@ class App extends Component<{}, States> {
   }
 
   switchAccount = async (index: number) => {
-    this.context.wallet.selectAccount(index)
+    await this.context.wallet.selectAccount(index)
   }
 
   switchRoot = () => {
@@ -104,7 +106,7 @@ class App extends Component<{}, States> {
   }
 
 
-   openLoginModalNotary= async () => {
+  openLoginModalNotary = async () => {
     dispatchCustomEvent({
       name: "create-modal", detail: {
         id: Math.random().toString(36).replace(/[^a-z]+/g, '').substr(0, 5),
@@ -129,8 +131,8 @@ class App extends Component<{}, States> {
       }
     }
     return '0'
-  } 
-  
+  }
+
   updateSearch = () => {
     this.context.search(this.state.search)
   }
@@ -146,9 +148,14 @@ class App extends Component<{}, States> {
 
   goToLogs = () => {
     history.push({
-        pathname: "/logs"
+      pathname: "/logs"
     })
-}
+  }
+
+
+
+
+
 
   render() {
     return (
@@ -178,12 +185,12 @@ class App extends Component<{}, States> {
             <FontAwesomeIcon icon={["fas", "search"]} />
           </div>
           <div className="refresh">
-          <Button
-                  size="small"
-                  onClick={() => this.goToLogs()}
-                  variant="text"
-                >LOGS
-                </Button>
+            <Button
+              size="small"
+              onClick={() => this.goToLogs()}
+              variant="text"
+            >LOGS
+            </Button>
           </div>
           <div className="refresh" onClick={() => this.refresh()}>
             <FontAwesomeIcon icon={["fas", "redo"]} flip="vertical" transform={{ rotate: 135 }} />
@@ -244,7 +251,7 @@ class App extends Component<{}, States> {
                             : null}
                         </div>
                         <div className="accountdata">
-                          <span className="accountaddress">{this.context.wallet.multisigAddress.length > 20 ? addressFilter(this.context.wallet.multisigAddress): this.context.wallet.multisigAddress}</span>
+                          <span className="accountaddress">{this.context.wallet.multisigAddress.length > 20 ? addressFilter(this.context.wallet.multisigAddress) : this.context.wallet.multisigAddress}</span>
                           <span className="copyaddress"><SVG.CopyAndPaste height='15px' /></span>
                         </div>
                       </div>
@@ -269,17 +276,17 @@ class App extends Component<{}, States> {
                   </div>
                 })}
                 {this.context.wallet.wallet !== 'ledger' ?
-                <div>
-                  <div className="importseedphrase" onClick={() => { this.openWallet() }}>Import seedphrase</div>
-                  <div className="importseedphrase" onClick={() => { this.openLoginModalNotary() }}>Change multisig</div>
+                  <div>
+                    <div className="importseedphrase" onClick={() => { this.openWallet() }}>Import seedphrase</div>
+                    <div className="importseedphrase" onClick={() => { this.openLoginModalNotary() }}>Change multisig</div>
 
-                </div>
+                  </div>
                   : null
                 }
               </div>
               : null}
             <div className="headertitles">{this.context.viewroot ? 'Rootkey Holder ID' : 'Approved Notary ID'}</div>
-            <div>{addressFilter(this.context.wallet.activeAccount)}, {this.context.wallet.multisig && this.context.viewroot === false ? this.context.wallet.multisigAddress.length > 20 ? addressFilter(this.context.wallet.multisigAddress): this.context.wallet.multisigAddress : null}</div>
+            <div>{addressFilter(this.context.wallet.activeAccount)}, {this.context.wallet.multisig && this.context.viewroot === false ? this.context.wallet.multisigAddress.length > 20 ? addressFilter(this.context.wallet.multisigAddress) : this.context.wallet.multisigAddress : null}</div>
           </div>
           <div className="wallet">
             <div className="WalletMenu">
@@ -294,7 +301,7 @@ class App extends Component<{}, States> {
             </div>
           </div>
         </div>
-        { this.context.wallet.isLoading === true || this.context.wallet.isLogged === false ?
+        {this.context.wallet.isLoading === true || this.context.wallet.isLogged === false ?
           <div className="walletpicker"><LoaderSpinner /></div>
           : <Overview ref={this.child} />
         }
@@ -303,5 +310,5 @@ class App extends Component<{}, States> {
   }
 }
 
-export default App;
+export default memo(App);
 

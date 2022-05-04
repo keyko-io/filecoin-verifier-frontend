@@ -12,6 +12,9 @@ interface WalletProviderStates {
     logoutGithub: any
     githubOctoGenericLogin: any
     githubOctoGeneric: any
+    loggedUser: any
+    fetchGithubIssues: any
+    fetchGithubComments:any
 }
 
 export default class WalletProvider extends React.Component<{}, WalletProviderStates> {
@@ -31,6 +34,7 @@ export default class WalletProvider extends React.Component<{}, WalletProviderSt
     }
 
     state = {
+        loggedUser: '',
         githubLogged: false,
         githubOcto: {} as any,
         githubOctoGeneric: { logged: false } as any,
@@ -52,6 +56,9 @@ export default class WalletProvider extends React.Component<{}, WalletProviderSt
                 localStorage.setItem('tokenExpiration', expiration.toString())
                 localStorage.setItem('githubToken', authjson.data.access_token)
                 this.state.initGithubOcto(authjson.data.access_token)
+                const loggedUser = (await this.state.githubOcto.users.getAuthenticated()).data.login
+                this.setState({ loggedUser })
+
             } catch (e) {
                 // this.state.dispatchNotification('Failed to login. Try again later.')
             }
@@ -89,7 +96,30 @@ export default class WalletProvider extends React.Component<{}, WalletProviderSt
                 });
                 this.setState({ githubOctoGeneric: { logged: true, octokit } })
             }
-        }
+        },
+        fetchGithubIssues: async (owner: any, repo: any, state: any, labels: any) => {
+            const rawIssues = await this.state.githubOcto.paginate(
+                this.state.githubOcto.issues.listForRepo,
+                {
+                    owner,
+                    repo,
+                    state,
+                    labels
+                }
+            );
+            return rawIssues
+        },
+        fetchGithubComments: async (owner: any, repo: any, issueNumber: any) => {
+            const rawComments = await this.state.githubOcto.paginate(
+                this.state.githubOcto.issues.listComments,
+                {
+                    owner,
+                    repo,
+                    issue_number: issueNumber
+                }
+            );
+            return rawComments
+        },
     }
 
     loadGithub() {

@@ -14,6 +14,11 @@ class VerificationOptionsModal extends Component<{}> {
                 pathname: "/verifiers"
             })
         }
+        else if (e.currentTarget.id === 'ldn') {
+            history.push({
+                pathname: "/ldn-application"
+            })
+        }
         dispatchCustomEvent({ name: "delete-modal", detail: {} })
     }
 
@@ -32,6 +37,12 @@ class VerificationOptionsModal extends Component<{}> {
                         <div className="title">General Verification</div>
                     </div>
                     <div className="description">Request a larger DataCap allocation from a Notary in your region!</div>
+                </div>
+                <div className="buttoncard" id={"ldn"} onClick={(e) => this.onClick(e)}>
+                    <div className="intro">
+                        <div className="title">Large Dataset Application</div>
+                    </div>
+                    <div className="description">Open an application for datasets greater than 100TiB of DataCap</div>
                 </div>
             </div>
         )

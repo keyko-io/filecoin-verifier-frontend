@@ -221,8 +221,8 @@ footer, header, hgroup, menu, nav, section {
   display: block;
 }
 html, body {
-  margin: 0;
-  padding: 0;
+  margin: 0 !important;
+  padding: 0 !important;
   height: 100%;
   background: $system_foreground;
   color: $system_black;
@@ -240,6 +240,8 @@ html, body {
 }
 #root{
   height: 100%;
+  display: flex;
+  flex-direction: column;
 }
 /* prettier-ignore */
 .language-javascript {
