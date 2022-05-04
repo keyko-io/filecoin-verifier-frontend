@@ -19,7 +19,6 @@ import Blockies from 'react-blockies'
 import history from './context/History'
 import LogAsNotaryModal from './modals/LogAsNotaryModal'
 import { Button } from '@material-ui/core';
-import { ThreeSixtyTwoTone } from '@mui/icons-material';
 
 
 library.add(fab, far, fas)
@@ -49,7 +48,7 @@ class App extends Component<{}, States> {
     this.child = React.createRef();
   }
 
-  async componentDidMount() {
+  componentDidMount() {
     if (this.context.wallet.isLogged === false) {
       history.push({
         pathname: "/"
@@ -88,8 +87,6 @@ class App extends Component<{}, States> {
   }
 
   switchAccount = async (index: number) => {
-    // this.setState({ isCurrentAddressVerified: false })
-    await this.context.updateIsVerifiedAddress(false)
     await this.context.wallet.selectAccount(index)
   }
 
@@ -273,14 +270,6 @@ class App extends Component<{}, States> {
                       </div>
                       <div className="accountdata">
                         <span className="accountaddress" onClick={() => this.switchAccount(index)} >{addressFilter(account)}</span>
-                        <span className="copyaddress" onClick={() => this.context.verifyWalletAddress()}>Verify</span>
-                        {/* {(this.context.wallet.activeAccount === account && this.context.isAddressVerified) ?
-                          <></> :
-                          (this.context.wallet.activeAccount === account && !this.context.isAddressVerified) ?
-                            <span className="copyaddress" onClick={() => this.context.verifyWalletAddress()}>Verify</span> :
-                            this.context.wallet.activeAccount !== account ?
-                            <></> : <></>
-                        } */}
                         <span className="copyaddress" onClick={() => this.copyAddress(account)}><SVG.CopyAndPaste height='15px' /></span>
                       </div>
                     </div>
