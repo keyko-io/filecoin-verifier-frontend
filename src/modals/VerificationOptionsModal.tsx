@@ -42,7 +42,7 @@ class VerificationOptionsModal extends Component<{}> {
                     <div className="intro">
                         <div className="title">Large Dataset Application</div>
                     </div>
-                    <div className="description">Open an application for datasets greater than 50TiB of DataCap</div>
+                    <div className="description">Open an application for datasets greater than 100TiB of DataCap</div>
                 </div>
             </div>
         )
