@@ -1075,7 +1075,7 @@ export default class DataProvider extends React.Component<
               let address = parser.parseNotaryAddress(issue.body).split(' ')[0] 
 
               // if the address is the one selected by user, set issue number 
-              if (address === this.props.wallet.activeAccount) {
+              if (address && address === this.props.wallet.activeAccount) {
                 issueNumber = issue.number
                 break
               }
