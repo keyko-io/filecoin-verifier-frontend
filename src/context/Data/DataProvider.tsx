@@ -1112,21 +1112,14 @@ export default class DataProvider extends React.Component<
           let issueNumber = ''
           for (let issue of rawIssues) {
             // parse each issue
-            let parsedIssue = parser.parseIssue(issue.body)
+            let address = parser.parseNotaryAddress(issue.body).split(' ')[0] 
 
-
-            const address = parsedIssue.address ? parsedIssue.address.split(' ')[0] : ''
-            const alternativeAddress = parsedIssue.alternativeAddress ? parsedIssue.alternativeAddress.split(' ')[0] : ''
-
-            //  if(parsedIssue.correct) debugger
-            // if the address is the one selected by user, set issue number
-            if (parsedIssue.correct && (address === this.props.wallet.activeAccount || alternativeAddress === this.props.wallet.activeAccount)) {
-              // debugger
+            // if the address is the one selected by user, set issue number 
+            if (address && address === this.props.wallet.activeAccount) {
               issueNumber = issue.number
               break
             }
           }
-          console.log(issueNumber)
           // if there is no issue number, rteturn false, it should never Happen
           if (!issueNumber) {
             return false
