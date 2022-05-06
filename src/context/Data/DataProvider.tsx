@@ -1072,7 +1072,7 @@ export default class DataProvider extends React.Component<
             let issueNumber = ''
             for (let issue of rawIssues) {
               //parse each issue
-              let parsedNotaryAddress = parser.parseNotaryAddress(issue.body).split(' ')[0]
+              let parsedNotaryAddress = parser.parseNotaryAddress(issue.body)
               let address = parsedNotaryAddress ? parsedNotaryAddress.split(' ')[0] : ''
 
               // if the address is the one selected by user, set issue number 
@@ -1113,7 +1113,7 @@ export default class DataProvider extends React.Component<
           let issueNumber = ''
           for (let issue of rawIssues) {
             // parse each issue
-            let parsedNotaryAddress = parser.parseNotaryAddress(issue.body).split(' ')[0]
+            let parsedNotaryAddress = parser.parseNotaryAddress(issue.body)
             let address = parsedNotaryAddress ? parsedNotaryAddress.split(' ')[0] : ''
 
             // if the address is the one selected by user, set issue number 
