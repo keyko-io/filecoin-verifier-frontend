@@ -1087,8 +1087,8 @@ export default class DataProvider extends React.Component<
               return false
             }
             // comment github with comment
-            const body = notaryLedgerVerifiedComment(msgCid)
-            // const body = notaryLedgerVerifiedComment(msgCid['/'])
+            // const body = notaryLedgerVerifiedComment(msgCid)
+            const body = notaryLedgerVerifiedComment(msgCid['/'])
             await this.props.github.githubOcto.issues.createComment({
               // owner: 'keyko-io',
               owner: config.onboardingOwner,
