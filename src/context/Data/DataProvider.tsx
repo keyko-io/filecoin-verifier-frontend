@@ -62,11 +62,13 @@ interface DataProviderStates {
   ldnRequestsLoading: boolean;
   updateContextState: any;
   isAddressVerified: boolean;
+  isVerifyWalletLoading: boolean;
   updateIsVerifiedAddress: any;
   verifyWalletAddress: any;
   checkVerifyWallet: any;
   selectedLargeClientRequests: any;
   setSelectedLargeClientRequests: any;
+  setIsVerifyWalletLoading: any;
 }
 
 interface DataProviderProps {
@@ -1048,19 +1050,25 @@ export default class DataProvider extends React.Component<
         this.state.loadNotificationVerifierRequests();
       },
       isAddressVerified: false,
+      isVerifyWalletLoading: false,
       updateIsVerifiedAddress: async (val: boolean) => {
         this.setState({ isAddressVerified: val })
       },
       verifyWalletAddress: async () => {
         try {
+          this.state.setIsVerifyWalletLoading(true)
+
           //send message
           // const msgCid = 'bafy2bzacedeu7ymgdg3gwy522gtoy4a6j6v433cur4wjlv2xjeqtvm4bkymoi'
           const msgCid = await this.props.wallet.api.methods.sendTx(this.props.wallet.api.client, this.props.wallet.walletIndex, this.props.wallet, this.props.wallet.api.methods.encodeSend(config.secretRecieverAddress))
           // if (msgCid) {
           if (msgCid['/']) {
+
             // alert('Ledger wallet successfully verified with message: ' + msgCid)
+            this.state.setIsVerifyWalletLoading(false)
             alert('Ledger wallet successfully verified with message: ' + msgCid['/'])
             // update state
+
             await this.state.updateIsVerifiedAddress(true)
 
             console.log("this.state.isAddressVerified in context", this.state.isAddressVerified)
@@ -1100,6 +1108,7 @@ export default class DataProvider extends React.Component<
           }
 
         } catch (error) {
+          this.setState({ isVerifyWalletLoading: false })
           console.log(error)
         }
       },
@@ -1148,6 +1157,9 @@ export default class DataProvider extends React.Component<
       selectedLargeClientRequests: [],
       setSelectedLargeClientRequests: (rowNumbers: any[]) => {
         this.setState({ selectedLargeClientRequests: rowNumbers })
+      },
+      setIsVerifyWalletLoading: (value: boolean) => {
+        this.setState({ isVerifyWalletLoading: value })
       }
     };
   }
