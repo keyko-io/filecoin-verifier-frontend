@@ -1126,14 +1126,13 @@
 
 .verifiers {
   .tableverifiers {
-    position: absolute;
+    margin-top: 50px;
     margin-left: auto;
     margin-right: auto;
     max-width: 1280px;
     left: 0;
     right: 0;
     background: #fff;
-    top: 100px;
     text-align: center;
     display: flex;
     box-sizing: border-box;
@@ -1154,7 +1153,6 @@
     }
 
     table {
-      position: absolute;
       margin-left: auto;
       margin-right: auto;
       width: 100%;
@@ -1258,7 +1256,7 @@
   margin-left: auto;
   margin-right: auto;
   max-width: 1280px;
-  height: 700px;
+  min-height: 825px;
   left: 0;
   right: 0;
   transform: translateY(-30px);
@@ -1406,12 +1404,10 @@
 }
 
 .tableselects {
-  position: absolute;
-  top: 30px;
+  transform: translateY(30px);
   margin-left: auto;
   margin-right: auto;
   max-width: 1280px;
-  height: 400px;
   left: 0;
   right: 0;
   background: #ffffff;
@@ -1427,7 +1423,6 @@
     display: flex;
 
     .title {
-      padding-top: 12px;
       float: left;
       width: 50%;
     }
@@ -2194,4 +2189,24 @@ div.sc-ezWOiH.jMMJgk {
 
 div.ifOHjV {
   display: unset;
+}
+
+
+
+//this css styles is used for /logsroute to make them look like form/button/textfield Group
+.inputRounded-1 div{
+  border-top-right-radius: 0;
+  border-bottom-left-radius: 4px;
+}
+
+.inputRounded-1 .MuiFilledInput-underline:before {
+  border-bottom: 0;
+}
+
+.inputRounded-2 .MuiFilledInput-underline:before {
+  border-bottom: 0;
+}
+
+.inputRounded-2 div{
+  border-radius: 0;
 }
