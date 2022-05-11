@@ -172,6 +172,7 @@ export default class DataProvider extends React.Component<
         Sentry.captureMessage(breadCrumb.message);
       },
       loadClientRequests: async () => {
+
         try {
           if (this.props.github.githubLogged === false) {
             this.setState({
