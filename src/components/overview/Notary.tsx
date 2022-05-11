@@ -343,7 +343,6 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
   };
 
   const verifyLargeClients = async () => {
-    debugger
     setApproveLoading(true)
     dispatchCustomEvent({ name: "delete-modal", detail: {} });
     let thisStateLargeRequestList = context.largeClientRequests;
