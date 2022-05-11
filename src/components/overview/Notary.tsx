@@ -22,6 +22,7 @@ import DataTable from "react-data-table-component";
 import { useContext } from "react";
 import { searchAllColumnsFromTable } from "../../pages/tableUtils/searchAllColumnsFromTable";
 import WarnModalNotaryVerified from "../../modals/WarnModalNotaryVeried";
+import { CircularProgress } from "@material-ui/core";
 
 
 
@@ -77,6 +78,7 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
   const [largeRequestList, setLargeRequestList] = useState([])
   const [listIsChecked, setListIsChecked] = useState([])
   const [dataForLargeRequestTable, setDataForLargeRequestTable] = useState([])
+  const [largeRequestListLoading, setLargeRequestListLoading] = useState(false)
 
 
   const showVerifiedClients = async () => {
@@ -153,7 +155,8 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
     }
   };
 
-  const showWarnVerify = async ( origin: string) => {
+  const showWarnVerify = async (origin: string) => {
+
     dispatchCustomEvent({
       name: "create-modal",
       detail: {
@@ -224,11 +227,11 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
 
   }
 
-  useEffect(()=> {
-    if(context.isAddressVerified){
+  useEffect(() => {
+    if (context.isAddressVerified) {
       showWarnVerify('Large')
     }
-  },[context.isAddressVerified])
+  }, [context.isAddressVerified])
 
 
 
@@ -493,6 +496,9 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
         }
       }
     }
+    setLargeRequestListLoading(true)
+    await context.loadClientRequests()
+    setLargeRequestListLoading(false)
   };
 
 
@@ -728,76 +734,79 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
         </div>
       ) : null}
       {tabs === "3" && context.github.githubLogged ? (
-        <div>
-          <DataTable
-            columns={[
-              {
-                name: "Client",
-                selector: (row: any) => row.data,
-                sortable: true,
-              },
-              {
-                name: "Address",
-                selector: (row: any) => row.address,
-                sortable: true,
-              },
-              {
-                name: "multisig",
-                selector: (row: any) => row.multisig,
-                sortable: true,
-                grow: 0.6
-              },
-              {
-                name: "Datacap",
-                selector: (row: any) => row.datacap,
-                sortable: true,
-                grow: 0.6
-              },
-              {
-                name: "Proposer",
-                selector: (row: any) => row.proposer.signerGitHandle,
-                sortable: true,
-                cell: (row: any) => <span >{row.proposer.signerGitHandle || "-"}</span>,
-                grow: 0.5,
-              },
-              {
-                name: "Approvals",
-                selector: (row: any) => row.approvals,
-                sortable: true,
-                grow: 0.5,
-              },
-              {
-                name: "Audit Trail",
-                selector: (row: any) => row.issue_number,
-                sortable: true,
-                grow: 0.6,
-                cell: (row: any) => <a
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  href={row.url}>#{row.issue_number}</a>,
-              },
-            ]}
-            selectableRowDisabled={(row) => !row.signable}
-            selectableRowsHighlight
-            selectableRows
-            selectableRowsNoSelectAll={true}
-            pagination
-            paginationRowsPerPageOptions={[7]}
-            paginationPerPage={7}
-            defaultSortFieldId={1}
-            noDataComponent="No large client requests yet"
-            onSelectedRowsChange={({ selectedRows }) => {
-              const rowNumbers = selectedRows.map((row: any) => row.issue_number)
-              setSelectedLargeClientRequests(rowNumbers)
-            }}
-            onRowClicked={(row) => {
-              if (!row.signable) {
-                context.wallet.dispatchNotification(CANT_SIGN_MESSAGE)
-              }
-            }}
-            noContextMenu={true}
-            data={searchAllColumnsFromTable({ rows: dataForLargeRequestTable, query: props.notaryProps.searchString })}
-          />
+        <div style={{ minHeight: "400px" }}>
+          {largeRequestListLoading ? <CircularProgress
+            style={{ margin: "100px 50%", color: "rgb(0, 144, 255)" }}
+          /> :
+            <DataTable
+              columns={[
+                {
+                  name: "Client",
+                  selector: (row: any) => row.data,
+                  sortable: true,
+                },
+                {
+                  name: "Address",
+                  selector: (row: any) => row.address,
+                  sortable: true,
+                },
+                {
+                  name: "multisig",
+                  selector: (row: any) => row.multisig,
+                  sortable: true,
+                  grow: 0.6
+                },
+                {
+                  name: "Datacap",
+                  selector: (row: any) => row.datacap,
+                  sortable: true,
+                  grow: 0.6
+                },
+                {
+                  name: "Proposer",
+                  selector: (row: any) => row.proposer.signerGitHandle,
+                  sortable: true,
+                  cell: (row: any) => <span >{row.proposer.signerGitHandle || "-"}</span>,
+                  grow: 0.5,
+                },
+                {
+                  name: "Approvals",
+                  selector: (row: any) => row.approvals,
+                  sortable: true,
+                  grow: 0.5,
+                },
+                {
+                  name: "Audit Trail",
+                  selector: (row: any) => row.issue_number,
+                  sortable: true,
+                  grow: 0.6,
+                  cell: (row: any) => <a
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    href={row.url}>#{row.issue_number}</a>,
+                },
+              ]}
+              selectableRowDisabled={(row) => !row.signable}
+              selectableRowsHighlight
+              selectableRows
+              selectableRowsNoSelectAll={true}
+              pagination
+              paginationRowsPerPageOptions={[7]}
+              paginationPerPage={7}
+              defaultSortFieldId={1}
+              noDataComponent="No large client requests yet"
+              onSelectedRowsChange={({ selectedRows }) => {
+                const rowNumbers = selectedRows.map((row: any) => row.issue_number)
+                setSelectedLargeClientRequests(rowNumbers)
+              }}
+              onRowClicked={(row) => {
+                if (!row.signable) {
+                  context.wallet.dispatchNotification(CANT_SIGN_MESSAGE)
+                }
+              }}
+              noContextMenu={true}
+              data={searchAllColumnsFromTable({ rows: dataForLargeRequestTable, query: props.notaryProps.searchString })}
+            />}
           <div className="alignright">
             <ButtonSecondary
               className="buttonsecondary"
