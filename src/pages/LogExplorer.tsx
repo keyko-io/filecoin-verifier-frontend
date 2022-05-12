@@ -1,9 +1,11 @@
 import React, { Component } from 'react';
 // @ts-ignore
 import Welcome from '../components/Welcome'
-import { TextField, Button } from '@material-ui/core';
+import { TextField, Button, CircularProgress } from '@material-ui/core';
 import { Data } from '../context/Data/Index'
 import { config } from '../config'
+import SearchIcon from '@mui/icons-material/Search';
+
 
 
 const NOTARY_PREFIX_URL = `https://github.com/${config.onboardingOwner}/${config.onboardingNotaryOwner}/issues/`
@@ -19,7 +21,8 @@ class LogExplorer extends Component<{}> {
     searchText: "",
     date: "",
     logs: [],
-    sortBy: "dateTimestamp"
+    sortBy: "dateTimestamp",
+    isLogsLoading: false,
   }
 
   columns = [
@@ -42,7 +45,7 @@ class LogExplorer extends Component<{}> {
       issue_number: "",
       maxLogsNumber: 10,
       searchText: "",
-      date: ""
+      date: "",
     })
   }
 
@@ -57,13 +60,16 @@ class LogExplorer extends Component<{}> {
   }
 
   async selectIssueNumber() {
+    this.setState({ ...this.state, isLogsLoading: true, logs: [], maxLogsNumber: 10 })
     try {
       this.ableDisableSrchButton() // disable
       const res = await this.context.fetchLogs(this.state.issue_number)
       this.setState({ logs: this.formatItems(res.items) })
       this.ableDisableSrchButton() // enable
+      this.setState({ isLogsLoading: false })
     } catch (error) {
       this.ableDisableSrchButton()
+      this.setState({ isLogsLoading: false })
       console.log(error)
     }
   }
@@ -110,39 +116,49 @@ class LogExplorer extends Component<{}> {
           <div className="wrapperverifiers">
             <div className="tableselects">
               <div className="tabletitle">
-                <div className="title">Select issue number to show corresponding logs - type 0 to see general logs</div>
+                <div className="title">Select issue number to show corresponding logs <br /> <span style={{ fontWeight: "normal", fontSize: "14px" }}> - type 0 to see general logs</span> </div>
                 <div className="searchMakeReuestForm doublebutton"></div>
-                <TextField id="filled-basic"
-                  label="search"
+                <TextField
+                  className="inputRounded-1"
+                  id="filled-basic"
+                  label="Search Detail"
                   variant="filled"
                   size="small"
                   value={this.state.searchText}
                   onChange={(e) => this.searchText(e)} />
-                <TextField
-                  id="date"
-                  label="select date"
-                  type="date"
-                  value={this.state.date}
-                  size="medium"
-                  InputLabelProps={{
-                    shrink: true,
-                  }}
-                  onChange={(e) => this.setDate(e)}
-                />
+                <div style={{ padding: "0 6px" }}>
+                  <TextField
+                    id="date"
+                    label="select date"
+                    type="date"
+                    value={this.state.date}
+                    size="medium"
+                    InputLabelProps={{
+                      shrink: true,
+                    }}
+                    onChange={(e) => this.setDate(e)}
+                  />
+                </div>
                 <TextField id="issue-number-id"
                   label="Search Issue Number"
                   variant="filled"
                   size="small"
                   onChange={(e) => this.inputIssueNumber(e)}
+                  className="inputRounded-2"
                 />
                 <Button
                   disabled={this.state.issue_number === "" ? true : this.state.srchButtonDisabled}
                   size="small"
+                  endIcon={!this.state.isLogsLoading && <SearchIcon />}
                   onClick={() => this.selectIssueNumber()}
                   variant="contained"
                   color="primary"
-                >Search Logs
+                  style={{
+                    backgroundColor: this.state.isLogsLoading ? "#3f51b5" : "", borderLeft: this.state.issue_number === "" ? "1px solid #111212" : "", borderTopLeftRadius: "0", borderBottomLeftRadius: "0", height: "45.63px", width: "155px", fontWeight: "bold", boxSizing: "border-box"
+                  }}
+                > {this.state.isLogsLoading ? <CircularProgress style={{ color: "white", height: "18px", width: " 18px" }} /> : "Search Logs"}
                 </Button>
+
               </div>
             </div>
 
@@ -179,14 +195,16 @@ class LogExplorer extends Component<{}> {
                         )}
                     <tr style={{ textAlign: "center" }}>
                       <td colSpan={7}>
-                        <Button
-                          disabled={this.state.srchButtonDisabled}
-                          size="small"
-                          onClick={() => this.loadMoreLogs()}
-                          variant="outlined"
-                          color="primary"
-                        >Load more logs
-                        </Button>
+                        {this.state.isLogsLoading ? <div>Loading...</div> :
+                          <Button
+                            disabled={this.state.srchButtonDisabled}
+                            size="small"
+                            onClick={() => this.loadMoreLogs()}
+                            variant="outlined"
+                            color="primary"
+                          >Load more logs
+                          </Button>
+                        }
                       </td>
                     </tr>
                   </tbody>
