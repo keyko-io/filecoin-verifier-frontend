@@ -156,7 +156,6 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
   };
 
   const showWarnVerify = async (origin: string) => {
-
     dispatchCustomEvent({
       name: "create-modal",
       detail: {
@@ -228,8 +227,10 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
   }
 
   useEffect(() => {
+     const selectedTab = tabs === '1' ? 'Notary' : 'Large'
+
     if (context.isAddressVerified) {
-      showWarnVerify('Large')
+      showWarnVerify(selectedTab)
     }
   }, [context.isAddressVerified])
 
