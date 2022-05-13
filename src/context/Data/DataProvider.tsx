@@ -25,12 +25,8 @@ interface DataProviderStates {
   loadClientRequests: any;
   clientRequests: any[];
   largeClientRequests: any[];
-  loadNotificationClientRequests: any;
-  notificationClientRequests: any[];
   loadVerifierAndPendingRequests: any;
   verifierAndPendingRequests: any[];
-  loadNotificationVerifierRequests: any;
-  notificationVerifierRequests: any[];
   viewroot: boolean;
   switchview: any;
   verified: any[];
@@ -415,51 +411,6 @@ export default class DataProvider extends React.Component<
       largeClientRequests: [],
       approvedNotariesLoading: true,
       ldnRequestsLoading: true,
-      loadNotificationClientRequests: async () => {
-        if (this.props.github.githubLogged === false) {
-          this.setState({ clientRequests: [], largeClientRequests: [] });
-          return;
-        }
-        const rawIssues = await this.props.github.githubOcto.paginate(
-          this.props.github.githubOcto.issues.listForRepo,
-          {
-            owner: config.onboardingOwner,
-            repo: config.onboardingClientRepo,
-            state: "open",
-          }
-        );
-
-        const issues: any[] = [];
-        for (const rawIssue of rawIssues) {
-          try {
-            const rawComments =
-              await this.props.github.githubOcto.issues.listComments({
-                owner: config.onboardingOwner,
-                repo: config.onboardingClientRepo,
-                issue_number: rawIssue.number,
-              });
-            if (
-              rawComments.data.length > 0 &&
-              rawComments.data[rawComments.data.length - 1].user.login.endsWith(
-                "[bot]"
-              ) === false &&
-              rawComments.data[rawComments.data.length - 1].user.login !==
-              rawIssue.assignee.login
-            ) {
-              issues.push({
-                number: rawIssue.number,
-                url: rawIssue.html_url,
-              });
-            }
-          } catch (e) {
-            // console.log(e)
-          }
-        }
-        this.setState({
-          notificationClientRequests: issues,
-        });
-      },
-      notificationClientRequests: [],
       loadVerifierAndPendingRequests: async () => {
         try {
           if (this.props.github.githubOctoGeneric.logged === false) {
@@ -636,58 +587,6 @@ export default class DataProvider extends React.Component<
         }
       },
       verifierAndPendingRequests: [],
-      loadNotificationVerifierRequests: async () => {
-        if (this.props.github.githubOctoGeneric.logged === false) {
-          await this.props.github.githubOctoGenericLogin();
-        }
-        const rawIssues =
-          await this.props.github.githubOctoGeneric.octokit.paginate(
-            this.props.github.githubOctoGeneric.octokit.issues.listForRepo,
-            {
-              owner:
-                config.lotusNodes[this.props.wallet.networkIndex].notaryOwner,
-              repo: config.lotusNodes[this.props.wallet.networkIndex]
-                .notaryRepo,
-              state: "open",
-            }
-          );
-
-        const issues: any[] = [];
-        for (const rawIssue of rawIssues) {
-          try {
-            const rawComments =
-              await this.props.github.githubOctoGeneric.octokit.issues.listComments(
-                {
-                  owner:
-                    config.lotusNodes[this.props.wallet.networkIndex]
-                      .notaryOwner,
-                  repo: config.lotusNodes[this.props.wallet.networkIndex]
-                    .notaryRepo,
-                  issue_number: rawIssue.number,
-                }
-              );
-            if (
-              rawComments.data.length > 0 &&
-              rawComments.data[rawComments.data.length - 1].user.login.endsWith(
-                "[bot]"
-              ) === false &&
-              rawComments.data[rawComments.data.length - 1].user.login !==
-              rawIssue.assignee.login
-            ) {
-              issues.push({
-                number: rawIssue.number,
-                url: rawIssue.html_url,
-              });
-            }
-          } catch (e) {
-            // console.log(e)
-          }
-        }
-        this.setState({
-          notificationVerifierRequests: issues,
-        });
-      },
-      notificationVerifierRequests: [],
       viewroot: false,
       switchview: async () => {
         if (this.state.viewroot) {
@@ -1045,10 +944,8 @@ export default class DataProvider extends React.Component<
       },
       refreshGithubData: async () => {
         this.state.loadClientRequests();
-        this.state.loadNotificationClientRequests();
         this.state.loadClientsGithub();
         this.state.loadVerifierAndPendingRequests();
-        this.state.loadNotificationVerifierRequests();
       },
       isAddressVerified: false,
       isVerifyWalletLoading: false,
