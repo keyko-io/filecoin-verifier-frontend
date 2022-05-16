@@ -1,5 +1,8 @@
 import React from 'react';
 import styled from "styled-components"
+import { useLocation } from 'react-router-dom';
+import { bannerState } from '../recoil-atoms/banner-atom';
+import { useRecoilValue } from 'recoil';
 
 type WelcomeProps = {
   title: string,
@@ -7,8 +10,11 @@ type WelcomeProps = {
 }
 
 const Welcome = ({ title, description }: WelcomeProps) => {
+  let { pathname } = useLocation();
+  const banner = useRecoilValue(bannerState);
+
   return (
-    <WelcomeBox className="welcome">
+    <WelcomeBox className="welcome" style={{ marginTop: pathname === "/" && banner ? "0" : "50px" }}>
       <div className="title">{title}</div>
       <div className="description">{description}</div>
     </WelcomeBox>
