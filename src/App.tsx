@@ -195,36 +195,7 @@ class App extends Component<{}, States> {
           <div className="refresh" onClick={() => this.refresh()}>
             <FontAwesomeIcon icon={["fas", "redo"]} flip="vertical" transform={{ rotate: 135 }} />
           </div>
-          {this.context.viewroot === true ?
-            <div className="notification" onClick={this.openNotifications}><FontAwesomeIcon icon={["far", "bell"]} />
-              {this.state.notificationsOpen ?
-                <div className="notificationholder">
-                  {this.context.notificationVerifierRequests.map((entry: any, index: number) => {
-                    return <div key={index} className="notificationentry">
-                      <div onClick={() => window.open(entry.url, "_blank")}>
-                        Issue: {entry.number}
-                      </div>
-                    </div>
-                  })}
-                </div>
-                : null}
-            </div>
-            : null}
-          {this.context.viewroot === false ?
-            <div className="notification" onClick={this.openNotifications}><FontAwesomeIcon icon={["far", "bell"]} />
-              {this.state.notificationsOpen ?
-                <div className="notificationholder">
-                  {this.context.notificationClientRequests.map((entry: any, index: number) => {
-                    return <div key={index} className="notificationentry">
-                      <div onClick={() => window.open(entry.url, "_blank")}>
-                        Issue: {entry.number}
-                      </div>
-                    </div>
-                  })}
-                </div>
-                : null}
-            </div>
-            : null}
+
           <div className="accountholder" onClick={this.openAccountSelect}>
             {this.state.accountSelect ?
               <div className="accountselectholder">
