@@ -227,7 +227,7 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
   }
 
   useEffect(() => {
-     const selectedTab = tabs === '1' ? 'Notary' : 'Large'
+    const selectedTab = tabs === '1' ? 'Notary' : 'Large'
 
     if (context.isAddressVerified) {
       showWarnVerify(selectedTab)
@@ -774,6 +774,11 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
                   name: "Approvals",
                   selector: (row: any) => row.approvals,
                   sortable: true,
+                  grow: 0.5,
+                },
+                {
+                  name: "TxId",
+                  selector: (row: any) => row.tx.id || "-",
                   grow: 0.5,
                 },
                 {
