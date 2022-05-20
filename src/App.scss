@@ -1026,6 +1026,7 @@
     .issueBoxContainer {
       overflow: auto;
       max-height: 350px;
+
       .issueBox {
         width: 400px;
         height: 100px;
@@ -1034,6 +1035,12 @@
         cursor: pointer;
         border: 1px solid #0091ff;
         border-radius: 5px;
+        margin-left: 0;
+
+         p {
+           margin-top: 14px;
+           margin-left: 10px;
+         }
       }
     }
 

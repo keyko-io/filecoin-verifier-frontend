@@ -34,6 +34,7 @@ class LdnApplication extends Component<{}> {
     isIssueComplete: false
 
   }
+
   async componentDidMount() {
     await this.context.github.checkToken()
     if (!this.context.github.githubLogged) {
@@ -42,6 +43,7 @@ class LdnApplication extends Component<{}> {
     }
     await this.fetchIssuesAndSelectView()
   }
+
 
   async fetchIssuesAndSelectView() {
     // fetch issues to get addresses
@@ -52,6 +54,7 @@ class LdnApplication extends Component<{}> {
         labels: [labelsIssueCreation.WIP_ISSUE]
       }
     )).data
+
 
     let addressList = []
     for (let issue of issues) {
@@ -68,7 +71,7 @@ class LdnApplication extends Component<{}> {
   continueEditingPreviousIssue(issue: any) {
 
     const parsedIssue = utils.parseIssue(issue.body)
-    console.log(parsedIssue)
+    //console.log(parsedIssue)
     this.setState({ view: 3, issue: issue, isNewIssue: false })
     for (let [k, v] of Object.entries(parsedIssue)) {
       const value = v as string
@@ -81,7 +84,7 @@ class LdnApplication extends Component<{}> {
         this.setDatacapMeasure(null, k, measure)
       }
       else if (k !== 'correct' && k && v) {
-        console.log(k, v)
+        //console.log(k, v)
         this.updateCoreInfoContent(k, v as string)
       }
     }
@@ -98,10 +101,12 @@ class LdnApplication extends Component<{}> {
       const value = parsedOtherInfoIssue[info.name]
       info.value = value
     }
+
     this.setState({ otherInfo })
   }
 
   handleChange(event: any) {
+
     if (event.target.name === 'region') {
       this.updateCoreInfoContent(event.target.name, event.target.value)
       return
@@ -124,6 +129,7 @@ class LdnApplication extends Component<{}> {
     const elementToUpdateIndex: any = otherInfo.findIndex((info: any) => info.name === name)
     if (otherInfo[elementToUpdateIndex]) {
       otherInfo[elementToUpdateIndex].value = value
+
       this.setState({
         otherInfo
       })
@@ -134,29 +140,31 @@ class LdnApplication extends Component<{}> {
   validateDatacapAndAddress(coreInfo: any, name: any, value: any, elementToUpdateIndex: any) {
     let hasError = false
 
-    if (value === 'PiB' && Number(coreInfo[elementToUpdateIndex].value) > 5) {
+    if (coreInfo[elementToUpdateIndex].value !== "") {
+      if (value === 'PiB' && Number(coreInfo[elementToUpdateIndex].value) > 5) {
 
-      hasError = true
-      coreInfo[elementToUpdateIndex].errorMessage = 'You can ask max 5 PiB'
-    }
-    if (value === 'TiB' && coreInfo[elementToUpdateIndex].value.length > 3) {
-      hasError = true
-      coreInfo[elementToUpdateIndex].errorMessage = 'You can ask max 999 TiB'
-    }
-    if (coreInfo[elementToUpdateIndex].measure === 'PiB' && Number(value) > 5) {
-      hasError = true
-      coreInfo[elementToUpdateIndex].errorMessage = 'You can ask max 5 PiB '
-    }
-    if (coreInfo[elementToUpdateIndex].measure === 'TiB' && value.length > 3) {
-      hasError = true
-      coreInfo[elementToUpdateIndex].errorMessage = 'You can ask max 999 TiB'
-    }
+        hasError = true
+        coreInfo[elementToUpdateIndex].errorMessage = 'You can ask max 5 PiB'
+      }
+      if (value === 'TiB' && coreInfo[elementToUpdateIndex].value.length > 3) {
+        hasError = true
+        coreInfo[elementToUpdateIndex].errorMessage = 'You can ask max 999 TiB'
+      }
+      if (coreInfo[elementToUpdateIndex].measure === 'PiB' && Number(value) > 5) {
+        hasError = true
+        coreInfo[elementToUpdateIndex].errorMessage = 'You can ask max 5 PiB '
+      }
+      if (coreInfo[elementToUpdateIndex].measure === 'TiB' && value.length > 3) {
+        hasError = true
+        coreInfo[elementToUpdateIndex].errorMessage = 'You can ask max 999 TiB'
+      }
 
-    if (coreInfo[elementToUpdateIndex].name === "address" && (coreInfo[elementToUpdateIndex].value.substring(0,2) !== "f1" && coreInfo[elementToUpdateIndex].value.substring(0,2) !== "f3")) {
-      hasError = true
-      coreInfo[elementToUpdateIndex].errorMessage = 'address has to start with f1 or f3'
-    }
+      if (coreInfo[elementToUpdateIndex].name === "address" && (coreInfo[elementToUpdateIndex].value.substring(0, 2) !== "f1" && coreInfo[elementToUpdateIndex].value.substring(0, 2) !== "f3")) {
+        hasError = true
+        coreInfo[elementToUpdateIndex].errorMessage = 'address has to start with f1 or f3'
+      }
 
+    }
     return hasError
   }
 
@@ -164,15 +172,18 @@ class LdnApplication extends Component<{}> {
     let coreInfo = this.state.coreInfo
     let hasError = false
     const elementToUpdateIndex: any = coreInfo.findIndex((info: any) => info.name === name)
-    if (isMeasure || coreInfo[elementToUpdateIndex].type === 'number' || coreInfo[elementToUpdateIndex].name === "address")
-      hasError = this.validateDatacapAndAddress(coreInfo, name, value, elementToUpdateIndex)
-    if (isMeasure) {
-      coreInfo[elementToUpdateIndex].measure = value
-      coreInfo[elementToUpdateIndex].error = hasError
-    } else {
-      coreInfo[elementToUpdateIndex].value = value
-      coreInfo[elementToUpdateIndex].error = hasError
+    if (coreInfo[elementToUpdateIndex]) {
+      if (isMeasure || coreInfo[elementToUpdateIndex].type === 'number' || coreInfo[elementToUpdateIndex].name === "address")
+        hasError = this.validateDatacapAndAddress(coreInfo, name, value, elementToUpdateIndex)
+      if (isMeasure) {
+        coreInfo[elementToUpdateIndex].measure = value
+        coreInfo[elementToUpdateIndex].error = hasError
+      } else {
+        coreInfo[elementToUpdateIndex].value = value
+        coreInfo[elementToUpdateIndex].error = hasError
+      }
     }
+
     this.setState({
       coreInfo
     })
@@ -324,6 +335,10 @@ class LdnApplication extends Component<{}> {
     console.log('goToIssue--> TODO')
   }
 
+  draftOrSubmit() {
+    console.log(otherInfo)
+  }
+
   render() {
     return (
       <div className={this.state.view === 4 ? "viewFourContainer" : "formContainer"} >
@@ -404,8 +419,8 @@ class LdnApplication extends Component<{}> {
                     className={'issueBox'}
                     onClick={() => this.continueEditingPreviousIssue(issue)}
                   >
-                    {issue.number}  <br />
-                    {issue.title}
+                    <p>#{issue.number}</p>
+                    <p>{issue.title}</p>
                   </div>
                 )
               }
@@ -539,7 +554,7 @@ class LdnApplication extends Component<{}> {
                       <div className='otherInfoButtonContainer'>
                         <Button variant="contained" color="primary" onClick={() => this.prevStep()}>Back</Button>
                         <span style={{ marginRight: '10px' }}></span>
-                        <Button variant="contained" color="primary" onClick={() => this.updateIssueAndContinue()}>Submit Issue</Button>
+                        <Button variant="contained" color="primary" onClick={() => this.updateIssueAndContinue()}>{otherInfo.some(item => item.value === "") ? "Save Draft" : "Submit Issue"}</Button>
                       </div> :
                       <div className='otherInfoButtonContainer'>
                         <span style={{ marginRight: '10px' }}>The issue is successfully submitted!</span>
