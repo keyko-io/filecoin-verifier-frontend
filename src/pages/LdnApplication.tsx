@@ -331,13 +331,6 @@ class LdnApplication extends Component<{}> {
     return retObj
   }
 
-  goToIssue() {
-    console.log('goToIssue--> TODO')
-  }
-
-  draftOrSubmit() {
-    console.log(otherInfo)
-  }
 
   render() {
     return (
