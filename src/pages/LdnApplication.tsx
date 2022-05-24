@@ -543,16 +543,13 @@ class LdnApplication extends Component<{}> {
                       <span style={{ marginRight: '10px' }}></span>
                       <Button variant="contained" color="primary" onClick={() => this.updateIssueAndContinue()}>Next</Button>
                     </div> :
-                    this.state.stepViewFour === 2 ?
-                      <div className='otherInfoButtonContainer'>
-                        <Button variant="contained" color="primary" onClick={() => this.prevStep()}>Back</Button>
-                        <span style={{ marginRight: '10px' }}></span>
-                        <Button variant="contained" color="primary" onClick={() => this.updateIssueAndContinue()}>{otherInfo.some(item => item.value === "") ? "Save Draft" : "Submit Issue"}</Button>
-                      </div> :
-                      <div className='otherInfoButtonContainer'>
-                        <span style={{ marginRight: '10px' }}>The issue is successfully submitted!</span>
-                        <Button variant="contained" color="primary" onClick={() => this.goToIssue()}>Go to issue</Button>
-                      </div>
+                    this.state.stepViewFour === 2 &&
+                    <div className='otherInfoButtonContainer'>
+                      <Button variant="contained" color="primary" onClick={() => this.prevStep()}>Back</Button>
+                      <span style={{ marginRight: '10px' }}></span>
+                      <Button variant="contained" color="primary" onClick={() => this.updateIssueAndContinue()}>{otherInfo.some(item => item.value === "") ? "Save Draft" : "Submit Issue"}</Button>
+
+                    </div>
               }
             </div>
           </div>
