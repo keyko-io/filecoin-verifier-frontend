@@ -797,8 +797,8 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
               selectableRows
               selectableRowsNoSelectAll={true}
               pagination
-              paginationRowsPerPageOptions={[7]}
-              paginationPerPage={7}
+              paginationRowsPerPageOptions={[10, 20, 30]}
+              paginationPerPage={10}
               defaultSortFieldId={1}
               noDataComponent="No large client requests yet"
               onSelectedRowsChange={({ selectedRows }) => {
@@ -872,8 +872,8 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
           ]}
           data={props.notaryProps.clients}
           pagination
-          paginationRowsPerPageOptions={[7]}
-          paginationPerPage={7}
+          paginationRowsPerPageOptions={[10, 20, 30]}
+          paginationPerPage={10}
         />
       ) : null}
     </div>
