@@ -2151,18 +2151,6 @@ div[role="columnheader"] div {
   padding: 25px 0;
 }
 
-div.sc-ezWOiH.jMMJgk {
-  button {
-    background-color: unset;
-  }
-}
-
-
-div.ifOHjV {
-  display: unset;
-}
-
-
 
 //this css styles is used for /logsroute to make them look like form/button/textfield Group
 .inputRounded-1 div{
@@ -2180,4 +2168,18 @@ div.ifOHjV {
 
 .inputRounded-2 div{
   border-radius: 0;
+}
+
+
+//This styles added for table , to fix overflow problem happening on the large request table...
+
+div.sc-ezWOiH.jMMJgk {
+  button {
+    background-color: inherit !important;
+  }
+}
+
+
+div.ifOHjV {
+  display: flex !important;
 }

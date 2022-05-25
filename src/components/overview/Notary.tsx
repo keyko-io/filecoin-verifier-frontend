@@ -735,7 +735,7 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
         </div>
       ) : null}
       {tabs === "3" && context.github.githubLogged ? (
-        <div style={{ minHeight: "400px" }}>
+        <div style={{ minHeight: "500px" }}>
           {largeRequestListLoading ? <CircularProgress
             style={{ margin: "100px 50%", color: "rgb(0, 144, 255)" }}
           /> :
@@ -771,17 +771,6 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
                   grow: 0.5,
                 },
                 {
-                  name: "Approvals",
-                  selector: (row: any) => row.approvals,
-                  sortable: true,
-                  grow: 0.5,
-                },
-                {
-                  name: "TxId",
-                  selector: (row: any) => row.tx.id || "-",
-                  grow: 0.5,
-                },
-                {
                   name: "Audit Trail",
                   selector: (row: any) => row.issue_number,
                   sortable: true,
@@ -790,6 +779,17 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
                     target="_blank"
                     rel="noopener noreferrer"
                     href={row.url}>#{row.issue_number}</a>,
+                },
+                {
+                  name: "TxId",
+                  selector: (row: any) => row.tx.id || "-",
+                  grow: 0.5,
+                },
+                {
+                  name: "Approvals",
+                  selector: (row: any) => row.approvals,
+                  sortable: true,
+                  grow: 0.5,
                 },
               ]}
               selectableRowDisabled={(row) => !row.signable}
