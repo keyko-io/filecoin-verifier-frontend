@@ -234,18 +234,18 @@ export default class RootKeyHolder extends Component<
               messageID =
                 tx.datacap === 0
                   ? await this.context.wallet.api.removeVerifier(
-                    tx.verifier,
-                    tx.signer,
-                    tx.id,
-                    this.context.wallet.walletIndex
-                  )
+                      tx.verifier,
+                      tx.signer,
+                      tx.id,
+                      this.context.wallet.walletIndex
+                    )
                   : await this.context.wallet.api.approveVerifier(
-                    tx.verifier,
-                    BigInt(tx.datacap),
-                    tx.signer,
-                    tx.id,
-                    this.context.wallet.walletIndex
-                  );
+                      tx.verifier,
+                      BigInt(tx.datacap),
+                      tx.signer,
+                      tx.id,
+                      this.context.wallet.walletIndex
+                    );
 
               const txReceipt = await this.context.wallet.api.getReceipt(
                 messageID
@@ -286,7 +286,7 @@ export default class RootKeyHolder extends Component<
                   address = await this.context.wallet.api.actorAddress(address);
                   console.log(
                     "getting t0/f0 ID. Result of  actorAddress method: " +
-                    address
+                      address
                   );
                 }
 
@@ -295,14 +295,14 @@ export default class RootKeyHolder extends Component<
                 messageID =
                   datacap === 0
                     ? await this.context.wallet.api.proposeRemoveVerifier(
-                      address,
-                      this.context.wallet.walletIndex
-                    )
+                        address,
+                        this.context.wallet.walletIndex
+                      )
                     : await this.context.wallet.api.proposeVerifier(
-                      address,
-                      BigInt(datacap),
-                      this.context.wallet.walletIndex
-                    );
+                        address,
+                        BigInt(datacap),
+                        this.context.wallet.walletIndex
+                      );
                 console.log("messageID: " + messageID);
                 const txReceipt = await this.context.wallet.api.getReceipt(
                   messageID
@@ -322,7 +322,7 @@ export default class RootKeyHolder extends Component<
             label =
               errorMessage === ""
                 ? config.lotusNodes[this.context.wallet.networkIndex]
-                  .rkhtreshold > 1
+                    .rkhtreshold > 1
                   ? "status:StartSignOnchain"
                   : "status:AddedOnchain"
                 : "status:Error";
@@ -396,7 +396,7 @@ export default class RootKeyHolder extends Component<
                 repo: config.lotusNodes[this.context.wallet.networkIndex]
                   .notaryRepo,
                 issue_number: request.issue_number,
-                labels: [label],
+                labels: [label, "Notary Application"],
               }
             );
           }
@@ -546,6 +546,7 @@ export default class RootKeyHolder extends Component<
         </div>
         {this.state.tabs === "0" ? (
           this.context.verifierAndPendingRequests.length > 0 ? (
+
             <div style={{ minHeight: "500px" }}>
               <DataTable
                 columns={[
@@ -608,6 +609,7 @@ export default class RootKeyHolder extends Component<
                 }}
               />
             </div>
+
           ) : (
             <CircularProgress
               style={{ margin: "200px 50%", color: "rgb(0, 144, 255)" }}

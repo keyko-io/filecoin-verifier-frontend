@@ -19,6 +19,7 @@ import Blockies from 'react-blockies'
 import history from './context/History'
 import LogAsNotaryModal from './modals/LogAsNotaryModal'
 import { Button } from '@material-ui/core';
+import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 
 
 library.add(fab, far, fas)
@@ -230,22 +231,32 @@ class App extends Component<{}, States> {
                   </React.Fragment>
                   : null}
                 <div className="headertitles">Account addresses</div>
-                {this.context.wallet.accounts.map((account: any, index: number) => {
-                  return <div key={index} className="accountentry" style={{ backgroundColor: index === this.context.wallet.walletIndex ? '#C7C7C7' : 'inherit' }}>
-                    <div>
-                      <div className="datacapdata" onClick={() => this.switchAccount(index)} >
-                        {this.context.viewroot === false ? <span className="datacap">Datacap: {bytesToiB(this.getVerifierAmount(account))}</span> : <span className="datacap"></span>}
-                        {this.context.wallet.accountsActive[account] ?
-                          <img src={Network} alt="network" />
-                          : null}
-                      </div>
-                      <div className="accountdata">
-                        <span className="accountaddress" onClick={() => this.switchAccount(index)} >{addressFilter(account)}</span>
-                        <span className="copyaddress" onClick={() => this.copyAddress(account)}><SVG.CopyAndPaste height='15px' /></span>
+
+                <div style={{ height: "255px", overflow: "scroll", width: "100%", padding: "0px 10px" }}>
+                  {this.context.wallet.accounts.map((account: any, index: number) => {
+                    return <div key={index} className="accountentry" style={{ backgroundColor: index === this.context.wallet.walletIndex ? '#C7C7C7' : 'inherit' }}>
+                      <div>
+                        <div className="datacapdata" onClick={() => this.switchAccount(index)} >
+                          {this.context.viewroot === false ? <span className="datacap">Datacap: {bytesToiB(this.getVerifierAmount(account))}</span> : <span className="datacap"></span>}
+                          {this.context.wallet.accountsActive[account] ?
+                            <img src={Network} alt="network" />
+                            : null}
+                        </div>
+
+                        <div className="accountdata">
+                          <span className="accountaddress" onClick={() => this.switchAccount(index)} >{addressFilter(account)}</span>
+                          <span className="copyaddress" onClick={() => this.copyAddress(account)}><SVG.CopyAndPaste height='15px' /></span>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                })}
+                  })}
+                </div>
+
+                {this.context.wallet.accounts.length > 4 && <div style={{ margin: "10px", display: "flex", justifyContent: "center" }}>
+                  <KeyboardArrowDownIcon />
+                </div>}
+
+
                 {this.context.wallet.wallet !== 'ledger' ?
                   <div>
                     <div className="importseedphrase" onClick={() => { this.openWallet() }}>Import seedphrase</div>
@@ -272,11 +283,12 @@ class App extends Component<{}, States> {
             </div>
           </div>
         </div>
-        {this.context.wallet.isLoading === true || this.context.wallet.isLogged === false ?
-          <div className="walletpicker"><LoaderSpinner /></div>
-          : <Overview ref={this.child} />
+        {
+          this.context.wallet.isLoading === true || this.context.wallet.isLogged === false ?
+            <div className="walletpicker"><LoaderSpinner /></div>
+            : <Overview ref={this.child} />
         }
-      </div>
+      </div >
     );
   }
 }

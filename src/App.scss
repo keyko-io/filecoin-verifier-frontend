@@ -167,7 +167,7 @@
   }
 
   .accountselectholder {
-    width: 250px;
+    width: 265px;
     position: absolute;
     padding: 5px 16px;
     top: 70px;
@@ -182,7 +182,7 @@
     }
 
     .accountentry {
-      padding-top: 10px;
+      padding-top: 6px;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
@@ -207,7 +207,7 @@
     }
 
     .importseedphrase {
-      padding-top: 20px;
+      padding-top: 10px;
       font-weight: bold;
       top: calc(50% - 20px / 2);
       font-family: Inter;
@@ -1026,6 +1026,7 @@
     .issueBoxContainer {
       overflow: auto;
       max-height: 350px;
+
       .issueBox {
         width: 400px;
         height: 100px;
@@ -1034,6 +1035,12 @@
         cursor: pointer;
         border: 1px solid #0091ff;
         border-radius: 5px;
+        margin-left: 0;
+
+         p {
+           margin-top: 14px;
+           margin-left: 10px;
+         }
       }
     }
 
