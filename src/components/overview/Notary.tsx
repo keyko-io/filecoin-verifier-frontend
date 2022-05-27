@@ -735,7 +735,7 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
         </div>
       ) : null}
       {tabs === "3" && context.github.githubLogged ? (
-        <div style={{ minHeight: "400px" }}>
+        <div style={{ minHeight: "500px" }}>
           {largeRequestListLoading ? <CircularProgress
             style={{ margin: "100px 50%", color: "rgb(0, 144, 255)" }}
           /> :
@@ -771,17 +771,6 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
                   grow: 0.5,
                 },
                 {
-                  name: "Approvals",
-                  selector: (row: any) => row.approvals,
-                  sortable: true,
-                  grow: 0.5,
-                },
-                {
-                  name: "TxId",
-                  selector: (row: any) => row.tx.id || "-",
-                  grow: 0.5,
-                },
-                {
                   name: "Audit Trail",
                   selector: (row: any) => row.issue_number,
                   sortable: true,
@@ -791,14 +780,25 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
                     rel="noopener noreferrer"
                     href={row.url}>#{row.issue_number}</a>,
                 },
+                {
+                  name: "TxId",
+                  selector: (row: any) => row.tx.id || "-",
+                  grow: 0.5,
+                },
+                {
+                  name: "Approvals",
+                  selector: (row: any) => row.approvals,
+                  sortable: true,
+                  grow: 0.5,
+                },
               ]}
               selectableRowDisabled={(row) => !row.signable}
               selectableRowsHighlight
               selectableRows
               selectableRowsNoSelectAll={true}
               pagination
-              paginationRowsPerPageOptions={[7]}
-              paginationPerPage={7}
+              paginationRowsPerPageOptions={[10, 20, 30]}
+              paginationPerPage={10}
               defaultSortFieldId={1}
               noDataComponent="No large client requests yet"
               onSelectedRowsChange={({ selectedRows }) => {
@@ -872,8 +872,8 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
           ]}
           data={props.notaryProps.clients}
           pagination
-          paginationRowsPerPageOptions={[7]}
-          paginationPerPage={7}
+          paginationRowsPerPageOptions={[10, 20, 30]}
+          paginationPerPage={10}
         />
       ) : null}
     </div>

@@ -115,8 +115,8 @@ const Verifiers = () => {
             query,
           })}
           pagination
-          paginationRowsPerPageOptions={[7]}
-          paginationPerPage={7}
+          paginationRowsPerPageOptions={[10, 20, 30]}
+          paginationPerPage={10}
           onSelectedRowsChange={({ selectedRows }) =>
             setSelectedData(selectedRows[0])
           }
