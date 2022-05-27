@@ -396,7 +396,7 @@ export default class RootKeyHolder extends Component<
                 repo: config.lotusNodes[this.context.wallet.networkIndex]
                   .notaryRepo,
                 issue_number: request.issue_number,
-                labels: [label],
+                labels: [label, "Notary Application"],
               }
             );
           }
