@@ -8,6 +8,8 @@ import { anyToBytes } from "../utils/Filters"
 // @ts-ignore
 import LoginGithub from 'react-login-github';
 import { BurnerWallet } from '../context/Wallet/BurnerWallet';
+import history from "../context/History"
+
 
 type States = {
     address: string
@@ -69,8 +71,20 @@ class MakeRequestModal extends Component<ModalProps, States> {
     handleSubmit = async (e: any) => {
         e.preventDefault()
 
+        if ((parseInt(this.state.datacap) > 1024 && this.state.datacapExt === "TiB")) {
+
+            dispatchCustomEvent({ name: "delete-modal", detail: {} })
+
+            history.push({
+                pathname: "/ldn-application",
+            })
+
+            return;
+        }
+
+
         if (this.state.gitHubMethod) {
-             this.handleGithubSubmit()
+            this.handleGithubSubmit()
         }
 
         if (this.state.emailMethod) {
@@ -187,6 +201,8 @@ class MakeRequestModal extends Component<ModalProps, States> {
         if (e.target.name === 'emailMethod') {
             this.setState({ gitHubMethod: false })
         }
+
+
         this.setState({ [e.target.name]: e.target.value } as any)
     }
 
@@ -263,7 +279,7 @@ class MakeRequestModal extends Component<ModalProps, States> {
                                     checked={this.state.gitHubMethod}
                                     onChange={this.handleChange}
                                 /> Github - create issue
-                                </div>
+                            </div>
                             {this.props.verifier.private_request === "true" ?
                                 <div className="methodtype">
                                     <input
@@ -278,7 +294,7 @@ class MakeRequestModal extends Component<ModalProps, States> {
                         </div>
                         {this.props.verifier.docs_url ?
                             <div className="docsmessage">Before submitting your request, please make sure to check out the
-                             guidelines and criteria to accept Datacap request for <a href={this.props.verifier.docs_url} target="_blank" rel="noopener noreferrer">{this.props.verifier.name}</a></div>
+                                guidelines and criteria to accept Datacap request for <a href={this.props.verifier.docs_url} target="_blank" rel="noopener noreferrer">{this.props.verifier.name}</a></div>
                             :
                             null}
                     </div>
