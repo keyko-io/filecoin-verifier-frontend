@@ -255,7 +255,7 @@ class MakeRequestModal extends Component<ModalProps, States> {
                                     name="datacapExt"
                                     value={this.state.datacapExt}
                                     onChange={this.handleChange}
-                                    options={config.datacapExtName}
+                                    options={config.datacapExtName.slice(0, 5)}
                                 />
                             </div>
                         </div>
