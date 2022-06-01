@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 // @ts-ignore
 import TiB from '../svg/tib.svg';
 import Mining from '../svg/mining.png';
@@ -12,23 +12,7 @@ import VerificationOptionsModal from '../modals/VerificationOptionsModal';
 import LearnMore from '../components/LearnMore';
 
 
-type States = {
-  optionSelected: boolean[],
-  tabs: string,
-  url: number
-}
-
-type OptionType = {
-  title: string,
-  subtitle: string,
-  desc: string,
-  available?: string,
-  imgSrc: string
-}
-
-type OptionsType = OptionType[]
-
-const options: OptionsType = [
+const options = [
   {
     title: "Get Verified",
     subtitle: "Large vs. Small Storage Request",
@@ -42,24 +26,11 @@ const options: OptionsType = [
     imgSrc: Mining.toString()
   }]
 
-class Landing extends Component<{}, States> {
-
-  child: any
-
-  constructor(props: {}) {
-    super(props);
-    this.state = {
-      optionSelected: [false, false],
-      tabs: '0',
-      url: 0,
-    }
-    this.child = React.createRef();
-  }
-
-  changeActive = (e: any) => {
-    if (e.currentTarget.id === '0') {
-      this.showModal(e)
-    } else if (e.currentTarget.id === '1') {
+const Landing = () => {
+  const changeActive = (index: number) => {
+    if (index === 0) {
+      showModal()
+    } else {
       history.push({
         pathname: "/miners"
       })
@@ -67,8 +38,7 @@ class Landing extends Component<{}, States> {
   }
 
 
-  showModal = (e: any) => {
-    e.preventDefault()
+  const showModal = () => {
     dispatchCustomEvent({
       name: "create-modal", detail: {
         id: Math.random().toString(36).replace(/[^a-z]+/g, '').substr(0, 5),
@@ -77,35 +47,30 @@ class Landing extends Component<{}, States> {
     })
   }
 
-  render() {
-    return (
-      <div className="landing">
-        <div className="container">
-          <Welcome
-            title="Welcome to the Filecoin Plus Registry"
-            description="Filecoin Plus is a layer of social trust on top of the Filecoin Network to help incentivize the storage of real data."
-          />
-          <div className="options twooptions">
-            {options.map((option: OptionType, index: number) => {
-              return <Option
-                key={index}
-                id={index}
-                title={option.title}
-                desc={option.desc}
-                // subtitle={option.subtitle}
-                available={option.available}
-                imgSrc={option.imgSrc}
-                active={this.state.optionSelected[index]}
-                onClick={this.changeActive.bind(this)}
-                buttonName={index === 0 ? "Get DataCap" : "Find a Storage Provider"}
-              />
-            })}
-          </div>
-          <LearnMore />
+  return (
+    <div className="landing">
+      <div className="container">
+        <Welcome
+          title="Welcome to the Filecoin Plus Registry"
+          description="Filecoin Plus is a layer of social trust on top of the Filecoin Network to help incentivize the storage of real data."
+        />
+        <div className="options twooptions">
+          {options.map((option, index) => {
+            return <Option
+              key={index}
+              id={index}
+              title={option.title}
+              desc={option.desc}
+              imgSrc={option.imgSrc}
+              onClick={() => changeActive(index)}
+              buttonName={index === 0 ? "Get DataCap" : "Find a Storage Provider"}
+            />
+          })}
         </div>
+        <LearnMore />
       </div>
-    );
-  }
+    </div>
+  );
 }
 
 export default Landing;
