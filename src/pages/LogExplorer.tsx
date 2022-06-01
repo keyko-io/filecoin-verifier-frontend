@@ -117,7 +117,7 @@ class LogExplorer extends Component<{}> {
             <div className="tableselects">
               <div className="tabletitle">
                 <div className="title">Select issue number to show corresponding logs <br /> <span style={{ fontWeight: "normal", fontSize: "14px" }}> - type 0 to see general logs</span> </div>
-                <div className="searchMakeReuestForm doublebutton"></div>
+
                 <TextField
                   className="inputRounded-1"
                   id="filled-basic"
