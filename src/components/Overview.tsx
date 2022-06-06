@@ -41,7 +41,6 @@ class Overview extends Component<{}, OverviewStates> {
         await this.context.refreshGithubData()
         await this.context.loadClients()
         await this.context.loadVerified()
-        await this.context.loadVerifierAndPendingRequests()
     }
 
     public render() {
