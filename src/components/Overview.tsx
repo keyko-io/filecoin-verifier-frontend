@@ -13,7 +13,7 @@ type OverviewStates = {
     approvedNotariesLoading: boolean
 }
 
- class Overview extends Component<{}, OverviewStates> {
+class Overview extends Component<{}, OverviewStates> {
     public static contextType = Data
     interval: any
 
@@ -67,7 +67,7 @@ type OverviewStates = {
                             </div>
                             <div className="textinfodatablock">
                                 <div className="data">{
-                                    this.context.verifierAndPendingRequests.length == 0?
+                                    this.context.isPendingRequestLoading ?
                                         <div>
                                             <span className="zeroOpaque">0</span>
                                             <BeatLoader size={15} color={"rgb(24,160,237)"} />
@@ -78,7 +78,7 @@ type OverviewStates = {
                             </div>
                             <div className="textinfodatablock">
                                 <div className="data">{
-                                    this.context.approvedNotariesLoading  ?
+                                    this.context.approvedNotariesLoading ?
                                         <div>
                                             <span className="zeroOpaque">0</span>
                                             <BeatLoader size={15} color={"rgb(24,160,237)"} />
@@ -94,10 +94,10 @@ type OverviewStates = {
                     <RootKeyHolder searchString={this.context.searchString} />
                     :
                     <Notary
-                    notaryProps={{
-                        clients:this.context.clients,
-                        searchString:this.context.searchString
-                    }}
+                        notaryProps={{
+                            clients: this.context.clients,
+                            searchString: this.context.searchString
+                        }}
                     />
                 }
             </div>
