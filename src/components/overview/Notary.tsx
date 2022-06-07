@@ -199,27 +199,32 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
     });
   };
 
-  const checkNotaryIsVerifiedAndShowWarnVerify = async (e: any, origin: string) => {
-    const isVerified: any = await context.checkVerifyWallet()
-    if (!isVerified) {
+  // if(config.lotusNodes[this.context.wallet.networkIndex].name !== "Localhost") 
 
-      await e.preventDefault();
-      dispatchCustomEvent({
-        name: "create-modal",
-        detail: {
-          id: Math.random()
-            .toString(36)
-            .replace(/[^a-z]+/g, "")
-            .substr(0, 5),
-          modal: (
-            <WarnModalNotaryVerified
-              onClick={async () => await context.verifyWalletAddress()
-              }
-            />
-          ),
-        },
-      });
-      return
+  const checkNotaryIsVerifiedAndShowWarnVerify = async (e: any, origin: string) => {
+
+    if (config.lotusNodes[context.wallet.networkIndex].name !== "Localhost") {
+      const isVerified: any = await context.checkVerifyWallet()
+      if (!isVerified) {
+
+        await e.preventDefault();
+        dispatchCustomEvent({
+          name: "create-modal",
+          detail: {
+            id: Math.random()
+              .toString(36)
+              .replace(/[^a-z]+/g, "")
+              .substr(0, 5),
+            modal: (
+              <WarnModalNotaryVerified
+                onClick={async () => await context.verifyWalletAddress()
+                }
+              />
+            ),
+          },
+        });
+        return
+      }
     }
 
     showWarnVerify(origin)
