@@ -787,7 +787,7 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
                 },
                 {
                   name: "TxId",
-                  selector: (row: any) => row.tx.id || "-",
+                  selector: (row: any) => row.tx.id,
                   grow: 0.5,
                 },
                 {
