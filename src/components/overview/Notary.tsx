@@ -846,41 +846,40 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
 
       ) : null}
       {tabs === "2" && context.github.githubLogged ? (
-        <>
-          <div>hellooooo</div>
-          <DataTable
-            columns={[
-              {
-                name: "ID",
-                selector: (row: any) => row.verified,
-                sortable: true,
-              },
-              {
-                name: "Address",
-                selector: (row: any) => row.key,
-                sortable: true,
-                grow: 3,
-                cell: (row: any) => (
-                  <span>
-                    {row.key || (
-                      <BeatLoader size={5} color={"rgb(24,160,237)"} />
-                    )}
-                  </span>
-                ),
-              },
-              {
-                name: "Datacap",
-                selector: (row: any) => row.datacap,
-                sortable: true,
-                cell: (row: any) => <span>{bytesToiB(row.datacap)}</span>,
-              },
-            ]}
-            data={props.notaryProps.clients}
-            pagination
-            paginationRowsPerPageOptions={[10, 20, 30]}
-            paginationPerPage={10}
-          />
-        </>
+
+        <DataTable
+          columns={[
+            {
+              name: "ID",
+              selector: (row: any) => row.verified,
+              sortable: true,
+            },
+            {
+              name: "Address",
+              selector: (row: any) => row.key,
+              sortable: true,
+              grow: 3,
+              cell: (row: any) => (
+                <span>
+                  {row.key || (
+                    <BeatLoader size={5} color={"rgb(24,160,237)"} />
+                  )}
+                </span>
+              ),
+            },
+            {
+              name: "Datacap",
+              selector: (row: any) => row.datacap,
+              sortable: true,
+              cell: (row: any) => <span>{bytesToiB(row.datacap)}</span>,
+            },
+          ]}
+          data={props.notaryProps.clients}
+          pagination
+          paginationRowsPerPageOptions={[10, 20, 30]}
+          paginationPerPage={10}
+        />
+
       ) : null}
     </div>
   );
