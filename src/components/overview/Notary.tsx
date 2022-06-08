@@ -831,23 +831,27 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
           </div>
         </div>
       ) : null}
-      {tabs === "1" && !context.github.githubLogged ? (
-        <div id="githublogin">
-          <LoginGithub
-            redirectUri={config.oauthUri}
-            clientId={config.githubApp}
-            scope="repo"
-            onSuccess={async (response: any) => {
-              await context.github.loginGithub(response.code);
-              await context.refreshGithubData();
-            }}
-            onFailure={(response: any) => {
-              console.log("failure", response);
-            }}
-          />
+      {!context.github.githubLogged ? (
+        <div style={{ marginTop: "50px" }}>
+          <div id="githublogin">
+            <LoginGithub
+              redirectUri={config.oauthUri}
+              clientId={config.githubApp}
+              scope="repo"
+              onSuccess={async (response: any) => {
+                await context.github.loginGithub(response.code);
+                await context.refreshGithubData();
+              }}
+              onFailure={(response: any) => {
+                console.log("failure", response);
+              }}
+            />
+          </div>
         </div>
+
       ) : null}
-      {tabs === "2" ? (
+      {tabs === "2" && context.github.githubLogged ? (
+
         <DataTable
           columns={[
             {
@@ -880,6 +884,7 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
           paginationRowsPerPageOptions={[10, 20, 30]}
           paginationPerPage={10}
         />
+
       ) : null}
     </div>
   );
