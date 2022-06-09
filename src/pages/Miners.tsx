@@ -40,8 +40,8 @@ const Miners = () => {
           columns={columns}
           data={searchAllColumnsFromTable({ rows: miners, query })}
           pagination
-          paginationRowsPerPageOptions={[7]}
-          paginationPerPage={7}
+          paginationRowsPerPageOptions={[10, 20, 30]}
+          paginationPerPage={10}
           progressPending={loading}
           defaultSortFieldId={7}
           defaultSortAsc={false}

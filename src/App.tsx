@@ -36,6 +36,7 @@ type States = {
 class App extends Component<{}, States> {
   public static contextType = Data
   child: any
+  modalRef: any
 
   constructor(props: {}) {
     super(props);
@@ -47,14 +48,30 @@ class App extends Component<{}, States> {
       // isCurrentAddressVerified: false
     }
     this.child = React.createRef();
+    this.modalRef = React.createRef();
+  }
+
+
+  closeModal = (e: any) => {
+    if (e.path[1] !== this.modalRef.current) {
+      this.setState({
+        accountSelect: false
+      })
+    }
   }
 
   componentDidMount() {
+    document.body.addEventListener("click", this.closeModal)
+
     if (this.context.wallet.isLogged === false) {
       history.push({
         pathname: "/"
       })
     }
+  }
+
+  componentWillUnmount() {
+    document.body.removeEventListener("click", this.closeModal)
   }
 
   onClick = () => {
@@ -197,7 +214,7 @@ class App extends Component<{}, States> {
             <FontAwesomeIcon icon={["fas", "redo"]} flip="vertical" transform={{ rotate: 135 }} />
           </div>
 
-          <div className="accountholder" onClick={this.openAccountSelect}>
+          <div className="accountholder" onClick={this.openAccountSelect} ref={this.modalRef}>
             {this.state.accountSelect ?
               <div className="accountselectholder">
                 <div className="headertitles">Select Account Type</div>

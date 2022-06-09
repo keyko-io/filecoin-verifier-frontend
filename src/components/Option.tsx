@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 // @ts-ignore
 import { ButtonPrimary } from "slate-react-system";
 
@@ -9,7 +9,6 @@ type OptionProps = {
     subtitle?: string,
     desc: string,
     imgSrc: string,
-    active?: boolean,
     available?: string,
     buttonName?: string
     id: number,
@@ -17,39 +16,34 @@ type OptionProps = {
 }
 
 
-class Option extends Component<OptionProps> {
-
-    render() {
-        return (
-            <div id={this.props.id.toString()} className="option" onClick={(e) => this.props.onClick(e)}
-                style={{ background: this.props.active ? '#EEF3FF' : 'inherit', borderRight: this.props.id === 1 ? "none" : "" }}>
-                <div><img src={this.props.imgSrc} alt={this.props.title} /></div>
-                {this.props.head ?
-                    <div className="optionhead">{this.props.head}</div>
-                    : null
-                }
-                <div className="optiontitle" style={{ marginTop: this.props.head ? '20px' : 'inherit' }}
-                >{this.props.title}</div>
-                {this.props.subtitle ?
-                    <div className="optionsubtitle">{this.props.subtitle}</div>
-                    : null
-                }
-                <div className="optiondesc">{this.props.desc}</div>
-                {this.props.available ?
-                    <div className="optionavailable">{this.props.available}</div>
-                    : null
-                }
-                <div className="buttonoption">
-                    {!this.props.available ?
-                        <ButtonPrimary id={this.props.id.toString()}
-                            onClick={(e: any) => this.props.onClick(e)}>
-                            {this.props.buttonName}
-                        </ButtonPrimary>
-                        : null}
-                </div>
+const Option = (props: OptionProps) => {
+    return (
+        <div id={props.id.toString()} className="option" onClick={(e) => props.onClick(e)}>
+            <div><img src={props.imgSrc} alt={props.title} /></div>
+            {props.head ?
+                <div className="optionhead">{props.head}</div>
+                : null
+            }
+            <div className="optiontitle" style={{ marginTop: props.head ? '20px' : 'inherit' }}
+            >{props.title}</div>
+            {props.subtitle ?
+                <div className="optionsubtitle">{props.subtitle}</div>
+                : null
+            }
+            <div className="optiondesc">{props.desc}</div>
+            {props.available ?
+                <div className="optionavailable">{props.available}</div>
+                : null
+            }
+            <div className="buttonoption">
+                <ButtonPrimary id={props.id.toString()}
+                    onClick={(e: any) => props.onClick(e)}>
+                    {props.buttonName}
+                </ButtonPrimary>
             </div>
-        )
-    }
+        </div>
+    )
+
 }
 
 export default Option;

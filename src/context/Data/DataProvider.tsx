@@ -59,6 +59,7 @@ interface DataProviderStates {
   updateContextState: any;
   isAddressVerified: boolean;
   isVerifyWalletLoading: boolean;
+  isPendingRequestLoading: boolean;
   updateIsVerifiedAddress: any;
   verifyWalletAddress: any;
   checkVerifyWallet: any;
@@ -412,6 +413,7 @@ export default class DataProvider extends React.Component<
       approvedNotariesLoading: true,
       ldnRequestsLoading: true,
       loadVerifierAndPendingRequests: async () => {
+        this.setState({ isPendingRequestLoading: true })
         try {
           if (this.props.github.githubOctoGeneric.logged === false) {
             await this.props.github.githubOctoGenericLogin();
@@ -578,10 +580,12 @@ export default class DataProvider extends React.Component<
           this.setState({
             verifierAndPendingRequests: filteredIssues,
             approvedNotariesLoading: false,
+            isPendingRequestLoading: false
           });
         } catch (error) {
           this.setState({
             approvedNotariesLoading: false,
+            isPendingRequestLoading: false
           });
           console.error("error in verifierAndPendingRequests", error);
         }
@@ -948,6 +952,7 @@ export default class DataProvider extends React.Component<
         this.state.loadVerifierAndPendingRequests();
       },
       isAddressVerified: false,
+      isPendingRequestLoading: false,
       isVerifyWalletLoading: false,
       updateIsVerifiedAddress: async (val: boolean) => {
         this.setState({ isAddressVerified: val })

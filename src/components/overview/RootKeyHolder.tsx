@@ -234,18 +234,18 @@ export default class RootKeyHolder extends Component<
               messageID =
                 tx.datacap === 0
                   ? await this.context.wallet.api.removeVerifier(
-                      tx.verifier,
-                      tx.signer,
-                      tx.id,
-                      this.context.wallet.walletIndex
-                    )
+                    tx.verifier,
+                    tx.signer,
+                    tx.id,
+                    this.context.wallet.walletIndex
+                  )
                   : await this.context.wallet.api.approveVerifier(
-                      tx.verifier,
-                      BigInt(tx.datacap),
-                      tx.signer,
-                      tx.id,
-                      this.context.wallet.walletIndex
-                    );
+                    tx.verifier,
+                    BigInt(tx.datacap),
+                    tx.signer,
+                    tx.id,
+                    this.context.wallet.walletIndex
+                  );
 
               const txReceipt = await this.context.wallet.api.getReceipt(
                 messageID
@@ -286,7 +286,7 @@ export default class RootKeyHolder extends Component<
                   address = await this.context.wallet.api.actorAddress(address);
                   console.log(
                     "getting t0/f0 ID. Result of  actorAddress method: " +
-                      address
+                    address
                   );
                 }
 
@@ -295,14 +295,14 @@ export default class RootKeyHolder extends Component<
                 messageID =
                   datacap === 0
                     ? await this.context.wallet.api.proposeRemoveVerifier(
-                        address,
-                        this.context.wallet.walletIndex
-                      )
+                      address,
+                      this.context.wallet.walletIndex
+                    )
                     : await this.context.wallet.api.proposeVerifier(
-                        address,
-                        BigInt(datacap),
-                        this.context.wallet.walletIndex
-                      );
+                      address,
+                      BigInt(datacap),
+                      this.context.wallet.walletIndex
+                    );
                 console.log("messageID: " + messageID);
                 const txReceipt = await this.context.wallet.api.getReceipt(
                   messageID
@@ -322,7 +322,7 @@ export default class RootKeyHolder extends Component<
             label =
               errorMessage === ""
                 ? config.lotusNodes[this.context.wallet.networkIndex]
-                    .rkhtreshold > 1
+                  .rkhtreshold > 1
                   ? "status:StartSignOnchain"
                   : "status:AddedOnchain"
                 : "status:Error";
@@ -545,66 +545,72 @@ export default class RootKeyHolder extends Component<
           </div>
         </div>
         {this.state.tabs === "0" ? (
-          this.context.verifierAndPendingRequests.length > 0 ? (
-            <DataTable
-              columns={[
-                {
-                  name: "Status",
-                  selector: (row: any) => row.proposed,
-                  sortable: true,
-                  cell: (row: any) => (
-                    <span>{row.proposed ? "Proposed" : "Pending"}</span>
-                  ),
-                },
-                {
-                  name: "Issue",
-                  selector: (row: any) => row.issue_number,
-                  sortable: true,
-                  cell: (row: any) => (
-                    <a
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      href={row.issue_Url}
-                    >
-                      #{row.issue_number}
-                    </a>
-                  ),
-                },
-                {
-                  name: "Address",
-                  selector: (row: any) => row.addresses,
-                  sortable: true,
-                },
-                {
-                  name: "Datacap",
-                  selector: (row: any) => row.datacaps,
-                  sortable: true,
-                },
-                {
-                  name: "Transaction ID",
-                  selector: (row: any) => row.txs,
-                  sortable: true,
-                  cell: (row: any) => <span>{row.id}</span>,
-                  grow: 2,
-                },
-                {
-                  name: "Proposed by",
-                  selector: (row: any) => row.proposedBy,
-                  sortable: true,
-                  grow: 2,
-                },
-              ]}
-              data={this.context.verifierAndPendingRequests}
-              pagination
-              paginationRowsPerPageOptions={[7]}
-              paginationPerPage={7}
-              selectableRows
-              selectableRowsHighlight={true}
-              selectableRowsNoSelectAll={true}
-              onSelectedRowsChange={({ selectedRows }) => {
-                this.context.selectNotaryRequest(selectedRows);
-              }}
-            />
+          !this.context.isPendingRequestLoading ? (
+
+            <div style={{ minHeight: "500px" }}>
+              <DataTable
+                columns={[
+                  {
+                    name: "Status",
+                    selector: (row: any) => row.proposed,
+                    sortable: true,
+                    cell: (row: any) => (
+                      <span>{row.proposed ? "Proposed" : "Pending"}</span>
+                    ),
+                  },
+                  {
+                    name: "Issue",
+                    selector: (row: any) => row.issue_number,
+                    sortable: true,
+                    cell: (row: any) => (
+                      <a
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        href={row.issue_Url}
+                      >
+                        #{row.issue_number}
+                      </a>
+                    ),
+                  },
+                  {
+                    name: "Address",
+                    selector: (row: any) => row.addresses,
+                    sortable: true,
+                  },
+                  {
+                    name: "Datacap",
+                    selector: (row: any) => row.datacaps,
+                    sortable: true,
+                  },
+                  {
+                    name: "Transaction ID",
+                    selector: (row: any) => row.txs,
+                    grow: 2,
+                    cell: (row: any) => (
+                      <span>{row.txs.length === 0 ? "-" : row.txs[0].id}</span>
+                    ),
+                  },
+                  {
+                    name: "Proposed by",
+                    selector: (row: any) => row.proposedBy,
+                    sortable: true,
+                    grow: 2,
+                  },
+                ]}
+                data={this.context.verifierAndPendingRequests}
+                pagination
+                paginationRowsPerPageOptions={[10, 20, 30]}
+                paginationPerPage={10}
+                selectableRows
+                noDataComponent="No pending requests yet"
+                selectableRowsHighlight={true}
+                selectableRowsNoSelectAll={true}
+                onSelectedRowsChange={({ selectedRows }) => {
+                  this.context.selectNotaryRequest(selectedRows);
+                }}
+              />
+            </div>
+
           ) : (
             <CircularProgress
               style={{ margin: "200px 50%", color: "rgb(0, 144, 255)" }}
@@ -614,31 +620,33 @@ export default class RootKeyHolder extends Component<
 
         {this.state.tabs === "2" &&
           (this.context.verified.length > 0 ? (
-            <DataTable
-              columns={[
-                {
-                  name: "Notary",
-                  selector: (row: any) => row.verifier,
-                  sortable: true,
-                },
-                {
-                  name: "Address",
-                  selector: (row: any) => row.verifierAccount,
-                  sortable: true,
-                  grow: 2,
-                },
-                {
-                  name: "Datacap",
-                  selector: (row: any) => row.datacap,
-                  sortable: true,
-                  cell: (row: any) => <span>{bytesToiB(row.datacap)}</span>,
-                },
-              ]}
-              data={this.context.verified}
-              pagination
-              paginationRowsPerPageOptions={[7]}
-              paginationPerPage={7}
-            />
+            <div style={{ minHeight: "500px" }}>
+              <DataTable
+                columns={[
+                  {
+                    name: "Notary",
+                    selector: (row: any) => row.verifier,
+                    sortable: true,
+                  },
+                  {
+                    name: "Address",
+                    selector: (row: any) => row.verifierAccount,
+                    sortable: true,
+                    grow: 2,
+                  },
+                  {
+                    name: "Datacap",
+                    selector: (row: any) => row.datacap,
+                    sortable: true,
+                    cell: (row: any) => <span>{bytesToiB(row.datacap)}</span>,
+                  },
+                ]}
+                data={this.context.verified}
+                pagination
+                paginationRowsPerPageOptions={[10, 20, 30]}
+                paginationPerPage={10}
+              />
+            </div>
           ) : (
             <CircularProgress
               style={{ margin: "200px 50%", color: "rgb(0, 144, 255)" }}
