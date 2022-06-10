@@ -1,7 +1,7 @@
 import React from 'react'
 import { useLocation } from 'react-router-dom';
 import Footer from '../components/Common/Footer'
-import Header from '../components/Common/Header'
+import Header from '../components/Common/Header/Header'
 
 
 const Layout = ({ children }: any) => {
