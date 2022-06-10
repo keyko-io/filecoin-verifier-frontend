@@ -179,7 +179,7 @@ class App extends Component<{}, States> {
     return (
       <div className="App">
         <div className="header">
-          <div className="headerLogoCtrlPanel" onClick={() => this.onClick()}><img src={Logo} title="Return to home page" alt="Filecoin" /></div>
+          <div style={{ cursor: "pointer" }} onClick={() => this.onClick()}><img src={Logo} title="Return to home page" alt="Filecoin" /></div>
           <div className="networkselect" onClick={this.openNetworkSelect}>
             {this.state.networkSelect ?
               <div className="networkselectholder">
