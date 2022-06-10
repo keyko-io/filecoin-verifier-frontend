@@ -37,6 +37,7 @@ class App extends Component<{}, States> {
   public static contextType = Data
   child: any
   modalRef: any
+  viewSwitch: any
 
   constructor(props: {}) {
     super(props);
@@ -49,15 +50,18 @@ class App extends Component<{}, States> {
     }
     this.child = React.createRef();
     this.modalRef = React.createRef();
+    this.viewSwitch = React.createRef()
   }
 
 
   closeModal = (e: any) => {
-    if (e.path[1] !== this.modalRef.current) {
+    console.log(e)
+    if (e.path[1] !== this.modalRef.current && !e.path.includes(this.viewSwitch.current)) {
       this.setState({
         accountSelect: false
       })
     }
+
   }
 
   componentDidMount() {
@@ -88,15 +92,9 @@ class App extends Component<{}, States> {
   }
 
   openAccountSelect = (e: any) => {
-    this.setState({
-      accountSelect: this.state.accountSelect === false ? true : false
-    })
-  }
-
-  openNotifications = (e: any) => {
-    this.setState({
-      notificationsOpen: this.state.notificationsOpen === false ? true : false
-    })
+    if (this.state.accountSelect === false) {
+      this.setState({ accountSelect: true })
+    }
   }
 
   switchNetwork = async (index: number) => {
@@ -171,10 +169,6 @@ class App extends Component<{}, States> {
   }
 
 
-
-
-
-
   render() {
     return (
       <div className="App">
@@ -214,13 +208,13 @@ class App extends Component<{}, States> {
             <FontAwesomeIcon icon={["fas", "redo"]} flip="vertical" transform={{ rotate: 135 }} />
           </div>
 
-          <div className="accountholder" onClick={this.openAccountSelect} ref={this.modalRef}>
+          <div className="accountholder" onClick={(e) => this.openAccountSelect(e)} ref={this.modalRef}>
             {this.state.accountSelect ?
-              <div className="accountselectholder">
+              <div className="accountselectholder" ref={this.viewSwitch}>
                 <div className="headertitles">Select Account Type</div>
                 <div>
                   <div>{this.context.viewroot ? 'Rootkey Holder' : 'Approved Notary'}</div>
-                  <div className="viewswitch">
+                  <div className="viewswitch" >
                     <Toggle
                       active={this.context.viewroot}
                       name="accountview"
@@ -284,8 +278,14 @@ class App extends Component<{}, States> {
                 }
               </div>
               : null}
-            <div className="headertitles">{this.context.viewroot ? 'Rootkey Holder ID' : 'Approved Notary ID'}</div>
-            <div>{addressFilter(this.context.wallet.activeAccount)}, {this.context.wallet.multisig && this.context.viewroot === false ? this.context.wallet.multisigAddress.length > 20 ? addressFilter(this.context.wallet.multisigAddress) : this.context.wallet.multisigAddress : null}</div>
+            <div onClick={(e) => {
+              e.stopPropagation()
+              this.setState({ accountSelect: this.state.accountSelect === true ? false : true })
+            }} className="headertitles">{this.context.viewroot ? 'Rootkey Holder ID' : 'Approved Notary ID'}</div>
+            <div onClick={(e) => {
+              e.stopPropagation()
+              this.setState({ accountSelect: this.state.accountSelect === true ? false : true })
+            }}>{addressFilter(this.context.wallet.activeAccount)}, {this.context.wallet.multisig && this.context.viewroot === false ? this.context.wallet.multisigAddress.length > 20 ? addressFilter(this.context.wallet.multisigAddress) : this.context.wallet.multisigAddress : null}</div>
           </div>
           <div className="wallet">
             <div className="WalletMenu">
