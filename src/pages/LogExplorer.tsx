@@ -114,6 +114,7 @@ const LogExplorer = () => {
                   size="small"
                   onChange={(e) => inputIssueNumber(e)}
                   className="inputRounded-2"
+                  type="number"
                 />
 
                 <Button
@@ -165,7 +166,7 @@ const LogExplorer = () => {
                         </tr>
                       )}
                   <tr style={{ textAlign: "center" }}>
-                    <td colSpan={7}>
+                    {logs.length ? <td colSpan={7}>
                       {isLogsLoading ? <div>Loading...</div> :
                         <Button
                           size="small"
@@ -175,7 +176,9 @@ const LogExplorer = () => {
                         >Load more logs
                         </Button>
                       }
-                    </td>
+                    </td> : <td colSpan={7}>
+                      {<div>No logs found for this issue number</div>}
+                    </td>}
                   </tr>
                 </tbody>
               </table>
