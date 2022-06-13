@@ -2180,13 +2180,10 @@ div[role="columnheader"] div {
 
 //This styles added for table , to fix overflow problem happening on the large request table...
 
-div.sc-ezWOiH.jMMJgk {
-  button {
-    background-color: inherit !important;
-  }
+.rdt_Pagination div button {
+  background-color: inherit !important;
 }
 
-
-div.ifOHjV {
-  display: flex !important;
+.large-request-table div div {
+  display: flex !important
 }
