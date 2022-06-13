@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React from "react";
 // @ts-ignore
 import RootKey from "../svg/rkh-verifiers.svg";
 import Cients from "../svg/client-miners.svg";
@@ -7,17 +7,8 @@ import history from "../context/History";
 import Welcome from "../components/Welcome";
 import LearnMore from "../components/LearnMore";
 
-type States = {};
 
-type OptionType = {
-  title: string;
-  desc: string;
-  imgSrc: string;
-};
-
-type OptionsType = OptionType[];
-
-const options: OptionsType = [
+const options = [
   {
     title: "For Root Key Holders and Notaries",
     desc: "Manage and process in-bound DataCap allocation requests.",
@@ -30,53 +21,48 @@ const options: OptionsType = [
   },
 ];
 
-class Onboarding extends Component<{}, States> {
-  constructor(props: {}) {
-    super(props);
-    this.state = {};
-  }
+const Onboarding = () => {
 
-  changeActive = (e: any) => {
-    console.log(typeof e.currentTarget.id);
-
-    e.currentTarget.id === "0"
-      ? history.push({
+  const changeActive = (index: number) => {
+    if (index === 0) {
+      history.push({
         pathname: "/wallet",
-        state: { selected: 0 },
       })
-      : history.push({
+    } else {
+      history.push({
         pathname: "/landing",
       });
+    }
   };
 
-  render() {
-    return (
-      <div className="onboarding">
-        <div className="container">
-          <Welcome
-            title="Welcome to the Filecoin Plus Registry"
-            description="You may proceed in any of these pathways but you may not have access to both of them. It all depends on whether you’ve been granted access to it by either the network, a rootkey holder, or an approved verifier respectively."
-          />
-          <div className="options twooptions">
-            {options.map((option: OptionType, index: number) => {
-              return (
-                <Option
-                  key={index}
-                  id={index}
-                  title={option.title}
-                  desc={option.desc}
-                  imgSrc={option.imgSrc}
-                  onClick={this.changeActive.bind(this)}
-                  buttonName="Proceed"
-                />
-              );
-            })}
-          </div>
-          <LearnMore />
+
+  return (
+    <div className="onboarding">
+      <div className="container">
+        <Welcome
+          title="Welcome to the Filecoin Plus Registry"
+          description="You may proceed in any of these pathways but you may not have access to both of them. It all depends on whether you’ve been granted access to it by either the network, a rootkey holder, or an approved verifier respectively."
+        />
+        <div className="options twooptions">
+          {options.map((option, index) => {
+            return (
+              <Option
+                key={index}
+                id={index}
+                title={option.title}
+                desc={option.desc}
+                imgSrc={option.imgSrc}
+                onClick={() => changeActive(index)}
+                buttonName="Proceed"
+              />
+            );
+          })}
         </div>
+        <LearnMore />
       </div>
-    );
-  }
+    </div>
+  );
+
 }
 
 export default Onboarding;

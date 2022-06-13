@@ -199,27 +199,32 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
     });
   };
 
-  const checkNotaryIsVerifiedAndShowWarnVerify = async (e: any, origin: string) => {
-    const isVerified: any = await context.checkVerifyWallet()
-    if (!isVerified) {
+  // if(config.lotusNodes[this.context.wallet.networkIndex].name !== "Localhost") 
 
-      await e.preventDefault();
-      dispatchCustomEvent({
-        name: "create-modal",
-        detail: {
-          id: Math.random()
-            .toString(36)
-            .replace(/[^a-z]+/g, "")
-            .substr(0, 5),
-          modal: (
-            <WarnModalNotaryVerified
-              onClick={async () => await context.verifyWalletAddress()
-              }
-            />
-          ),
-        },
-      });
-      return
+  const checkNotaryIsVerifiedAndShowWarnVerify = async (e: any, origin: string) => {
+
+    if (config.lotusNodes[context.wallet.networkIndex].name !== "Localhost") {
+      const isVerified: any = await context.checkVerifyWallet()
+      if (!isVerified) {
+
+        await e.preventDefault();
+        dispatchCustomEvent({
+          name: "create-modal",
+          detail: {
+            id: Math.random()
+              .toString(36)
+              .replace(/[^a-z]+/g, "")
+              .substr(0, 5),
+            modal: (
+              <WarnModalNotaryVerified
+                onClick={async () => await context.verifyWalletAddress()
+                }
+              />
+            ),
+          },
+        });
+        return
+      }
     }
 
     showWarnVerify(origin)
@@ -782,7 +787,7 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
                 },
                 {
                   name: "TxId",
-                  selector: (row: any) => row.tx.id || "-",
+                  selector: (row: any) => row.tx.id,
                   grow: 0.5,
                 },
                 {
@@ -826,23 +831,27 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
           </div>
         </div>
       ) : null}
-      {tabs === "1" && !context.github.githubLogged ? (
-        <div id="githublogin">
-          <LoginGithub
-            redirectUri={config.oauthUri}
-            clientId={config.githubApp}
-            scope="repo"
-            onSuccess={async (response: any) => {
-              await context.github.loginGithub(response.code);
-              await context.refreshGithubData();
-            }}
-            onFailure={(response: any) => {
-              console.log("failure", response);
-            }}
-          />
+      {!context.github.githubLogged ? (
+        <div style={{ marginTop: "50px" }}>
+          <div id="githublogin">
+            <LoginGithub
+              redirectUri={config.oauthUri}
+              clientId={config.githubApp}
+              scope="repo"
+              onSuccess={async (response: any) => {
+                await context.github.loginGithub(response.code);
+                await context.refreshGithubData();
+              }}
+              onFailure={(response: any) => {
+                console.log("failure", response);
+              }}
+            />
+          </div>
         </div>
+
       ) : null}
-      {tabs === "2" ? (
+      {tabs === "2" && context.github.githubLogged ? (
+
         <DataTable
           columns={[
             {
@@ -875,6 +884,7 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
           paginationRowsPerPageOptions={[10, 20, 30]}
           paginationPerPage={10}
         />
+
       ) : null}
     </div>
   );

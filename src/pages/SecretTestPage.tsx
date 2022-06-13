@@ -23,7 +23,7 @@ const SecretTestPage = () => {
   const [messageSentCid, setMessageSentCid] = useState('')
   const [isMessageVerified, setIsMessageVerified] = useState(false)
   const [messagesList, setMessagesList] = useState([])
-  const [error, setError] = useState('')
+  const [error, setError] = useState(false)
 
 
 
@@ -39,7 +39,7 @@ const SecretTestPage = () => {
       if (logged) setLogged(logged)
 
     } catch (error) {
-      setError(error)
+      setError(true)
       console.log(error)
     }
 
@@ -47,7 +47,7 @@ const SecretTestPage = () => {
 
   const verifyWallet = async () => {
     try {
-      const sending = await context.wallet.api.methods.sendTx(context.wallet.api.client, context.wallet.walletIndex, context.wallet, context.wallet.api.methods.encodeSend(config.secretRecieverAddress, 'ciao'))
+      const sending = await context.wallet.api.methods.sendTx(context.wallet.api.client, context.wallet.walletIndex, context.wallet, context.wallet.api.methods.encodeSend(config.secretRecieverAddress))
       console.log("sending:", sending)
       if (sending['/']) {
         setIsMessageSent(true)
@@ -55,7 +55,7 @@ const SecretTestPage = () => {
       }
 
     } catch (error) {
-      setError(error)
+      setError(true)
       console.log(error)
     }
   }
@@ -73,7 +73,7 @@ const SecretTestPage = () => {
       return listMessagesFromToAddress.success
 
     } catch (error) {
-      setError(error)
+      setError(true)
       console.log(error)
 
     }
@@ -86,7 +86,7 @@ const SecretTestPage = () => {
       <Header />
       <div style={{position: 'absolute', top:'100px'}}>
       <Typography>Testing wallet verification.</Typography>
-      <Typography> At the end, you should be able to send a message with a 'ciao' as a parameter and verify it.</Typography>
+      <Typography> At the end, you should be able to send a message and verify it.</Typography>
       <Typography> You should be able to retrieve your messages on filfox.</Typography>
       </div>
 
@@ -123,7 +123,7 @@ const SecretTestPage = () => {
       }
       {error &&
         <>
-          <Typography>Error: {error} </Typography>
+          <Typography>Error, try again </Typography>
 
         </>
       }
