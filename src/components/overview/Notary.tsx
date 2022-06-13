@@ -740,7 +740,7 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
         </div>
       ) : null}
       {tabs === "3" && context.github.githubLogged ? (
-        <div style={{ minHeight: "500px" }}>
+        <div className="large-request-table" style={{ minHeight: "500px" }}>
           {largeRequestListLoading ? <CircularProgress
             style={{ margin: "100px 50%", color: "rgb(0, 144, 255)" }}
           /> :
@@ -769,13 +769,6 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
                   grow: 0.6
                 },
                 {
-                  name: "Proposer",
-                  selector: (row: any) => row.proposer.signerGitHandle,
-                  sortable: true,
-                  cell: (row: any) => <span >{row.proposer.signerGitHandle || "-"}</span>,
-                  grow: 0.5,
-                },
-                {
                   name: "Audit Trail",
                   selector: (row: any) => row.issue_number,
                   sortable: true,
@@ -784,6 +777,13 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
                     target="_blank"
                     rel="noopener noreferrer"
                     href={row.url}>#{row.issue_number}</a>,
+                },
+                {
+                  name: "Proposer",
+                  selector: (row: any) => row.proposer.signerGitHandle,
+                  sortable: true,
+                  cell: (row: any) => <span >{row.proposer.signerGitHandle || "-"}</span>,
+                  grow: 0.5,
                 },
                 {
                   name: "TxId",
