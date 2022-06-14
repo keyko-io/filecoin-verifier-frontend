@@ -24,7 +24,8 @@ type States = {
     emailMethod: boolean,
     gitHubMethod: boolean,
     region: string,
-    errorAddressMessage: string
+    errorAddressMessage: string,
+    redirect: boolean
 }
 
 type ModalProps = {
@@ -60,7 +61,8 @@ class MakeRequestModal extends Component<ModalProps, States> {
             emailMethod: false,
             gitHubMethod: true,
             region: 'North America',
-            errorAddressMessage: ' '
+            errorAddressMessage: ' ',
+            redirect: false
         }
     }
 
@@ -71,13 +73,21 @@ class MakeRequestModal extends Component<ModalProps, States> {
     handleSubmit = async (e: any) => {
         e.preventDefault()
 
+
+
         if ((parseInt(this.state.datacap) > 1024 && this.state.datacapExt === "TiB")) {
 
-            dispatchCustomEvent({ name: "delete-modal", detail: {} })
+            this.setState({ redirect: true })
 
-            history.push({
-                pathname: "/ldn-application",
-            })
+            setTimeout(() => {
+                this.setState({ redirect: false })
+
+                dispatchCustomEvent({ name: "delete-modal", detail: {} })
+
+                history.push({
+                    pathname: "/ldn-application",
+                })
+            }, 3000)
 
             return;
         }
@@ -211,6 +221,9 @@ class MakeRequestModal extends Component<ModalProps, States> {
             <div className="addmodal requestmodal" style={this.props.verifier.docs_url ? {} : { height: 680 }}>
                 <form>
                     <div className="title">Datacap Allocation Request</div>
+                    {this.state.redirect && <div
+                        style={{ fontSize: "20px", padding: "40px 60px", zIndex: "10", position: "absolute", top: "0", left: "0", background: "white", color: "black", width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center" }}
+                    >Since you asked for more than 1024 TiB, <br /> you are being redirecting to large dataset path...</div>}
                     <div className="makerequest">
                         <div className="inputholder">
                             <Input
