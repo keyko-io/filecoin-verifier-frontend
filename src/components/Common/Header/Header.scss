@@ -1,0 +1,19 @@
+.layoutHeader {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: fixed;
+    width: 100%;
+    background-color: white;
+    z-index: 10;
+    height: 4.2rem;
+    cursor: pointer;
+   
+    .goBack {
+        position: absolute;
+        left: 2rem;
+        font-weight: 600;
+        cursor: pointer;
+        font-size: 1.2rem;
+    }
+}

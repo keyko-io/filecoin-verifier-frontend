@@ -54,7 +54,7 @@
       padding-top: 27px;
       cursor: pointer;
     }
-
+    
     .headertitles {
       font-weight: bold;
       font-family: "suisseintl";
@@ -63,7 +63,7 @@
       font-size: 16px;
       line-height: 24px;
     }
-
+    
     .accounttype {
       font-family: "suisseintl";
       font-style: normal;
@@ -1244,38 +1244,6 @@
   margin-bottom: 30px;
 }
 
-.header {
-  .headerlogo {
-    padding: 5px 5px;
-    position: relative;
-    width: 100px;
-    margin: auto;
-    cursor: pointer;
-  }
-
-  .headerLogoCtrlPanel {
-    cursor: pointer;
-  }
-
-  .headerback {
-    cursor: pointer;
-    float: left;
-    margin: 15px 20px;
-    font-family: "suisseintl";
-    font-style: normal;
-    font-weight: 600;
-    font-size: 16px;
-    line-height: 24px;
-  }
-
-  .headerrequest {
-    position: relative;
-    width: 180px;
-    float: right;
-    top: -60px;
-    right: 150px;
-  }
-}
 
 .errormodal,
 .confirmmodal {
