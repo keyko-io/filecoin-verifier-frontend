@@ -739,6 +739,7 @@
 
   .twooptions {
     .option {
+      position: relative;
       border-right: 1px solid #0091ff;
       border-bottom: 1px solid #0091ff;
     }
@@ -854,7 +855,11 @@
     }
 
     .buttonoption {
-      padding-top: 20px;
+      position: absolute;
+      bottom: 70px;
+      display: flex;
+      width: 100%;
+      justify-content: center;
 
       button {
         font-family: "suisseintl";
