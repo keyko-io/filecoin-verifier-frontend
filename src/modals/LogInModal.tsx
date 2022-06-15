@@ -9,10 +9,13 @@ import { Data } from "../context/Data/Index";
 // @ts-ignore
 import { ButtonPrimary, dispatchCustomEvent } from "slate-react-system";
 import { config } from "../config";
+import { CircularProgress } from "@material-ui/core";
 
 type ModalStates = {
   address: string;
   multisig: boolean;
+  ledgerLoading: boolean;
+  browserLoading: boolean
 };
 
 type ModalProps = {
@@ -27,49 +30,69 @@ class LogInModal extends Component<ModalProps, ModalStates> {
     this.state = {
       multisig: false,
       address: "",
+      ledgerLoading: false,
+      browserLoading: false,
     };
   }
 
-  componentDidMount() {}
+  componentDidMount() { }
 
   handleChange = (e: any) => {
     this.setState({ [e.target.name]: e.target.value } as any);
   };
 
   loadLedgerWallet = async () => {
-    const logged = await this.context.wallet.loadWallet("Ledger", {
-      multisig: this.state.multisig,
-      multisigAddress: this.state.address,
-    });
-    if (logged) {
-      if (this.context.viewroot === false && this.props.type == "0") {
-        this.context.switchview();
-      }
-
-      dispatchCustomEvent({ name: "delete-modal", detail: {} });
-
-      history.push({
-        pathname: "/app",
+    this.setState({ ledgerLoading: true })
+    try {
+      const logged = await this.context.wallet.loadWallet("Ledger", {
+        multisig: this.state.multisig,
+        multisigAddress: this.state.address,
       });
+
+      if (logged) {
+        this.setState({ ledgerLoading: false })
+        if (this.context.viewroot === false && this.props.type == "0") {
+          this.context.switchview();
+        }
+
+        dispatchCustomEvent({ name: "delete-modal", detail: {} });
+
+        history.push({
+          pathname: "/app",
+        });
+      }
+    } catch (error) {
+      console.log(error)
+      this.setState({ ledgerLoading: false })
     }
+
   };
 
   loadBurnerWallet = async () => {
-    const logged = await this.context.wallet.loadWallet("Burner", {
-      multisig: this.state.multisig,
-      multisigAddress: this.state.address,
-    });
-    if (logged) {
-      if (this.context.viewroot === false && this.props.type == "0") {
-        this.context.switchview();
-      }
-
-      dispatchCustomEvent({ name: "delete-modal", detail: {} });
-
-      history.push({
-        pathname: "/app",
+    this.setState({ browserLoading: true })
+    try {
+      const logged = await this.context.wallet.loadWallet("Burner", {
+        multisig: this.state.multisig,
+        multisigAddress: this.state.address,
       });
+      if (logged) {
+        this.setState({ browserLoading: false })
+        if (this.context.viewroot === false && this.props.type == "0") {
+          this.context.switchview();
+        }
+
+        dispatchCustomEvent({ name: "delete-modal", detail: {} });
+
+        history.push({
+          pathname: "/app",
+        });
+      }
+    } catch (error) {
+      console.log(error)
+      this.setState({ browserLoading: false })
     }
+
+
   };
 
   loadPrivate = () => {
@@ -103,9 +126,9 @@ class LogInModal extends Component<ModalProps, ModalStates> {
             <div className="buttons">
               {!config.networks.includes("Mainnet") ? (
                 <div className="button left">
-                  <ButtonPrimary onClick={this.loadBurnerWallet}>
-                    <img src={Logo} alt={"Logo"} />
-                    Load Browser Wallet
+                  <ButtonPrimary onClick={this.loadBurnerWallet} style={{ minWidth: "220px", boxShadow: "none" }}>
+                    {!this.state.browserLoading && <img src={Logo} alt={"Logo"} />}
+                    {this.state.browserLoading ? <CircularProgress size={20} style={{ color: "rgb(0, 144, 255)" }} /> : "Load Browser Wallet"}
                   </ButtonPrimary>
                 </div>
               ) : null}
@@ -116,11 +139,12 @@ class LogInModal extends Component<ModalProps, ModalStates> {
                     : "button right"
                 }
               >
-                <ButtonPrimary onClick={this.loadLedgerWallet}>
-                  <img src={Ledger} alt={"Ledger"} />
-                  Load Ledger Wallet
+                <ButtonPrimary onClick={this.loadLedgerWallet} style={{ minWidth: "220px", boxShadow: "none" }}>
+                  {!this.state.ledgerLoading && <img src={Ledger} alt={"Ledger"} />}
+                  {this.state.ledgerLoading ? <CircularProgress size={20} style={{ color: "rgb(0, 144, 255)" }} /> : "Load Ledger Wallet"}
+
                 </ButtonPrimary>
-                <p>Please ensure you have “expert mode” enabled</p>
+                <p style={{ marginTop: "10px" }}>Please ensure you have “expert mode” enabled</p>
               </div>
             </div>
           </React.Fragment>
@@ -156,9 +180,9 @@ class LogInModal extends Component<ModalProps, ModalStates> {
             <div className="buttons">
               {!config.networks.includes("Mainnet") ? (
                 <div className="button left">
-                  <ButtonPrimary onClick={this.loadBurnerWallet}>
-                    <img src={Logo} alt={"Logo"} />
-                    Load Browser Wallet
+                  <ButtonPrimary onClick={this.loadBurnerWallet} style={{ minWidth: "220px", boxShadow: "none" }}>
+                    {!this.state.browserLoading && <img src={Logo} alt={"Logo"} />}
+                    {this.state.browserLoading ? <CircularProgress size={20} style={{ color: "rgb(0, 144, 255)" }} /> : "Load Browser Wallet"}
                   </ButtonPrimary>
                   {this.state.multisig ? (
                     <input
@@ -178,9 +202,9 @@ class LogInModal extends Component<ModalProps, ModalStates> {
                     : "button right"
                 }
               >
-                <ButtonPrimary onClick={this.loadLedgerWallet}>
-                  <img src={Ledger} alt={"Ledger"} />
-                  Load Ledger Wallet
+                <ButtonPrimary onClick={this.loadLedgerWallet} style={{ minWidth: "220px", boxShadow: "none" }}>
+                  {!this.state.ledgerLoading && <img src={Ledger} alt={"Ledger"} />}
+                  {this.state.ledgerLoading ? <CircularProgress size={20} style={{ color: "rgb(0, 144, 255)" }} /> : "Load Ledger Wallet"}
                 </ButtonPrimary>
                 {this.state.multisig ? (
                   <input
@@ -191,7 +215,7 @@ class LogInModal extends Component<ModalProps, ModalStates> {
                     onChange={this.handleChange}
                   />
                 ) : null}
-                <p>Please ensure you have “expert mode” enabled</p>
+                <p style={{ marginTop: "10px" }}>Please ensure you have “expert mode” enabled</p>
               </div>
             </div>
           </React.Fragment>
