@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import DataTable from "react-data-table-component";
 import Welcome from "../components/Welcome";
-import { data } from "./VerifiersData/index";
 import MakeRequestModal from "../modals/MakeRequestModal";
 import { searchAllColumnsFromTable } from "./tableUtils/searchAllColumnsFromTable";
 import TableContainer from "./tableUtils/TableContainer";
@@ -13,10 +12,12 @@ import TableRightCornerContainer from "./tableUtils/TableRightCornerContainer";
 import { columns } from "./tableUtils/verifiersColumns";
 import lodash from "lodash";
 
+import { notaries } from "../data/verifiers-registry.json"
+
 const Verifiers = () => {
   const [selectedData, setSelectedData] = useState<any>(null);
   const [query, setQuery] = useState<string>("");
-  const [shuffleData, setShuffleData] = useState(data);
+  const [shuffleData, setShuffleData] = useState(notaries);
 
   useEffect(() => {
     setShuffleData(lodash.shuffle(shuffleData));
