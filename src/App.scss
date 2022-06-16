@@ -759,66 +759,7 @@
     border-right: 1px solid #0091ff;
     border-left: 1px solid #0091ff;
 
-    .option {
-      flex: 50%;
-      box-sizing: border-box;
-      cursor: pointer;
-
-      img {
-        margin-top: 70px;
-        max-height: 186px;
-      }
-
-      .optionhead {
-        margin-top: 50px;
-        font-family: JetBrains Mono;
-        font-style: normal;
-        font-weight: normal;
-        font-size: 48px;
-        line-height: 48px;
-      }
-
-      .optiontitle {
-        top: 150px;
-        font-family: "suisseintl";
-        font-style: normal;
-        font-weight: bold;
-        font-size: 24px;
-        line-height: 36px;
-        padding-top: 60px;
-      }
-
-      .optionsubtitle {
-        font-family: "suisseintl";
-        font-style: normal;
-        font-weight: 600;
-        font-size: 16px;
-        line-height: 24px;
-        line-height: 36px;
-        padding-top: 0px;
-      }
-
-      .optiondesc {
-        margin-top: 10px;
-        width: 350px;
-        height: 100px;
-        left: 0;
-        right: 0;
-        margin-left: auto;
-        margin-right: auto;
-        font-family: "suisseintl";
-        font-style: normal;
-        font-weight: normal;
-        font-size: 16px;
-        line-height: 24px;
-      }
-
-      .optionavailable {
-        padding-top: 15px;
-        font-style: italic;
-        font-size: 16px;
-      }
-    }
+    
 
     .columnleft {
       border-top: 1px solid #0091ff;
@@ -851,25 +792,6 @@
         font-weight: normal;
         font-size: 16px;
         line-height: 24px;
-      }
-    }
-
-    .buttonoption {
-      position: absolute;
-      bottom: 70px;
-      display: flex;
-      width: 100%;
-      justify-content: center;
-
-      button {
-        font-family: "suisseintl";
-        font-size: 14px;
-        background: #33a7ff;
-        border-radius: 4px;
-        height: 40px;
-        width: 176px;
-        left: 0px;
-        top: 0px;
       }
     }
   }
