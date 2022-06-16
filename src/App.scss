@@ -1384,43 +1384,6 @@
   }
 }
 
-.learnmore {
-  align-items: center;
-  justify-content: center;
-  margin-left: auto;
-  margin-right: auto;
-  max-width: 1280px;
-  height: 60px;
-  left: 0;
-  right: 0;
-  background: #fff;
-  text-align: center;
-  display: flex;
-  border: 1px solid #0091ff;
-
-  button,
-  button:checked,
-  button:active,
-  button:hover,
-  button:visited,
-  button:checked {
-    height: 20px;
-    font-family: "suisseintl";
-    font-style: normal;
-    font-weight: 600;
-    font-size: 14px;
-    line-height: 20px;
-    border: 1px solid #0091ff;
-    width: 180px;
-    background: #fff;
-    color: #0091ff;
-  }
-
-  button:not(:hover) {
-    background-color: #fff;
-  }
-}
-
 
 .warnmodal {
   height: 200px;

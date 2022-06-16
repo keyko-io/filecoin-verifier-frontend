@@ -9,7 +9,7 @@ import history from '../context/History'
 // @ts-ignore
 import { dispatchCustomEvent } from "slate-react-system";
 import VerificationOptionsModal from '../modals/VerificationOptionsModal';
-import LearnMore from '../components/LearnMore';
+import LearnMore from '../components/LearnMore/LearnMore';
 
 
 const options = [
