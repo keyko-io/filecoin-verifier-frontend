@@ -1,10 +1,11 @@
 import React, { Component, memo } from 'react';
-import { Data } from '../context/Data/Index';
-import { bytesToiB } from "../utils/Filters"
+import { Data } from '../../context/Data/Index';
+import { bytesToiB } from "../../utils/Filters"
 // @ts-ignore
-import RootKeyHolder from './overview/RootKeyHolder';
-import Notary from './overview/Notary';
+import RootKeyHolder from './RootKeyHolder';
+import Notary from './Notary';
 import { BeatLoader } from "react-spinners";
+import "./Overview.scss"
 
 type OverviewStates = {
     tabs: string
