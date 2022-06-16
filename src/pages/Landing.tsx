@@ -3,7 +3,7 @@ import React from 'react';
 import TiB from '../svg/tib.svg';
 import Mining from '../svg/mining.png';
 import Option from '../components/Option'
-import Welcome from '../components/Welcome'
+import Welcome from '../components/Welcome/Welcome'
 import history from '../context/History'
 
 // @ts-ignore

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import DataTable from 'react-data-table-component'
-import Welcome from '../components/Welcome'
+import Welcome from '../components/Welcome/Welcome'
 import { searchAllColumnsFromTable } from './tableUtils/searchAllColumnsFromTable';
 import TableContainer from './tableUtils/TableContainer';
 import TableSearchInput from './tableUtils/TableSearchInput';

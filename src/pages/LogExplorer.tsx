@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react';
 // @ts-ignore
-import Welcome from '../components/Welcome'
+import Welcome from '../components/Welcome/Welcome'
 import { TextField, Button, CircularProgress } from '@material-ui/core';
 import { Data } from '../context/Data/Index'
 import { config } from '../config'
