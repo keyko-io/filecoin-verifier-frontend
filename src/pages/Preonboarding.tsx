@@ -3,11 +3,8 @@ import React from 'react';
 import { dispatchCustomEvent } from "slate-react-system";
 import RootKey from '../svg/root-key.svg';
 import Verifiers from '../svg/verifier-wallet.svg';
-
 import Welcome from '../components/Welcome/Welcome'
 import LearnMore from '../components/LearnMore';
-
-  
 import Option from '../components/Option'
 import LogInModal from '../modals/LogInModal'
 
