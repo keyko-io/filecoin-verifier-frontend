@@ -1,5 +1,5 @@
 import React, { Component, memo } from 'react';
-import Overview from './components/Overview'
+import Overview from './components/Overview/Overview'
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { fab } from '@fortawesome/free-brands-svg-icons'
