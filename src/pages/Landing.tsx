@@ -2,10 +2,8 @@ import React from 'react';
 // @ts-ignore
 import TiB from '../svg/tib.svg';
 import Mining from '../svg/mining.png';
-
 import Option from '../components/Option/Option'
-import Welcome from '../components/Welcome'
-
+import Welcome from '../components/Welcome/Welcome'
 import history from '../context/History'
 
 // @ts-ignore
