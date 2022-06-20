@@ -19,7 +19,7 @@ export const config = {
     largeClientRequest: 5497558000000000000000000,
     metrics_api_environment: process.env.REACT_APP_METRICS_API_ENVIRONMENT || "test",
     loggerApiKey: process.env.REACT_APP_X_API_KEY || "fake-api-key-change-with-a-real-one",
-    secretRecieverAddress: process.env.REACT_APP_SECRET_RECIEVER_ADDRESS || 't0100', 
+    secretRecieverAddress: process.env.REACT_APP_SECRET_RECIEVER_ADDRESS || 't0100',
     lotusNodes: [{
         name: 'Mainnet',
         code: 461,
@@ -86,13 +86,12 @@ export const config = {
     ],
     regions: [
         { value: "Africa", name: "Africa" },
-        { value: "Asia excl. Greater China", name: "Asia excl. Greater China" },
+        { value: "Asia (excl. Greater China)", name: "Asia (excl. Greater China)" },
         { value: "Europe", name: "Europe" },
-        { value: "Greater China", name: "Greater China" },
+        { value: "Greater China Region", name: "Greater China Region" },
         { value: "North America", name: "North America" },
         { value: "Oceania", name: "Oceania" },
         { value: "South America", name: "South America" }
-
     ],
     dataSource: process.env.REACT_APP_VERIFIES_DATA || 'verifiers'
-}
+} 
