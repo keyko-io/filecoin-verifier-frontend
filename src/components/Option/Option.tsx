@@ -1,7 +1,7 @@
 import React from 'react';
 // @ts-ignore
 import { ButtonPrimary } from "slate-react-system";
-
+import "./Option.scss"
 
 type OptionProps = {
     head?: string
@@ -14,7 +14,6 @@ type OptionProps = {
     id: number,
     onClick: (target: any) => void;
 }
-
 
 const Option = (props: OptionProps) => {
     return (
