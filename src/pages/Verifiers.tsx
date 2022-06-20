@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import DataTable from "react-data-table-component";
-import Welcome from "../components/Welcome";
+import Welcome from "../components/Welcome/Welcome";
 import MakeRequestModal from "../modals/MakeRequestModal";
 import { searchAllColumnsFromTable } from "./tableUtils/searchAllColumnsFromTable";
 import TableContainer from "./tableUtils/TableContainer";
