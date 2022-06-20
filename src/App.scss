@@ -220,80 +220,7 @@
     }
   }
 
-  .page {
-    .imageholder {
-      height: 200px;
-      background: url(/bg_image.png);
-      background-size: cover;
-      background-repeat: no-repeat;
-    }
-
-    .info {
-      background: linear-gradient(
-        180deg,
-        #0090ff 0%,
-        #39c1cb 99.99%,
-        rgba(0, 144, 255, 0) 100%
-      );
-      position: relative;
-      height: 190px;
-      margin-bottom: 70px;
-      top: 50px;
-
-      .textinfo {
-        font-family: "suisseintl";
-        position: absolute;
-        left: 0;
-        right: 0;
-        margin-left: auto;
-        margin-right: auto;
-        top: 5px;
-        max-width: 1280px;
-        color: #fff;
-
-        .textinfotext {
-          padding: 30px 80px;
-
-          h2 {
-            text-align: center;
-          }
-
-          .description {
-            text-align: center;
-          }
-        }
-
-        .textinfodata {
-          display: flex;
-          align-content: stretch;
-          border: 1px solid #0090ff;
-          font-family: "suisseintl";
-
-          .textinfodatablock {
-            text-align: center;
-            flex-grow: 1;
-            border: 1px solid #0090ff;
-            background-color: #fff;
-            color: #000;
-
-            .data {
-              font-size: 30px;
-              padding: 15px 20px;
-            }
-
-            .text {
-              padding-bottom: 20px;
-            }
-          }
-        }
-
-        h2 {
-          padding-top: 0px;
-          padding-bottom: 15px;
-        }
-      }
-    }
-  }
+ 
 
   .main {
     max-width: 1280px;
@@ -2015,13 +1942,6 @@
   margin-bottom: 4px;
   box-shadow: 2px 2px grey;
   transition: 0.1s;
-}
-
-.zeroOpaque {
-  opacity: 0.1;
-  z-index: 0;
-  position: absolute;
-  padding-left: 19px;
 }
 
 .searchMakeReuestForm {
