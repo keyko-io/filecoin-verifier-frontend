@@ -4,7 +4,7 @@ import Welcome from '../components/Welcome/Welcome'
 import { searchAllColumnsFromTable } from './tableUtils/searchAllColumnsFromTable';
 import TableContainer from './tableUtils/TableContainer/TableContainer';
 import TableSearchInput from './tableUtils/TableSearchInput';
-import TableRightCornerContainer from './tableUtils/TableRightCornerContainer';
+import TableRightCornerContainer from './tableUtils/TableRightCornerContainer/TableRightCornerContainer';
 import { loadData } from './tableUtils/loadMiners';
 import { columns } from './tableUtils/minersColumns';
 import CircularProgress from '@mui/material/CircularProgress';
