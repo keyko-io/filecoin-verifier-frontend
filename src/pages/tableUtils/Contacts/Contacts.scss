@@ -1,0 +1,17 @@
+.contacts-box{
+    display: flex;
+    align-items: center;
+
+    svg {
+        height: 18px;
+        width: 18px;
+    }
+
+    span:hover {
+        color: #0090ff;
+    }
+
+    span.active {
+        color: #0090ff;
+    }
+}

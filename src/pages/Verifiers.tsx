@@ -3,12 +3,12 @@ import DataTable from "react-data-table-component";
 import Welcome from "../components/Welcome/Welcome";
 import MakeRequestModal from "../modals/MakeRequestModal";
 import { searchAllColumnsFromTable } from "./tableUtils/searchAllColumnsFromTable";
-import TableContainer from "./tableUtils/TableContainer";
+import TableContainer from "./tableUtils/TableContainer/TableContainer";
 import WarnModal from "../modals/WarnModal";
 // @ts-ignore
 import { dispatchCustomEvent } from "slate-react-system";
-import TableSearchInput from "./tableUtils/TableSearchInput";
-import TableRightCornerContainer from "./tableUtils/TableRightCornerContainer";
+import TableSearchInput from "./tableUtils/TableSearchInput/TableSearchInput";
+import TableRightCornerContainer from "./tableUtils/TableRightCornerContainer/TableRightCornerContainer";
 import { columns } from "./tableUtils/verifiersColumns";
 import lodash from "lodash";
 
