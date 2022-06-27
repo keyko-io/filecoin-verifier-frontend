@@ -54,7 +54,7 @@
       padding-top: 27px;
       cursor: pointer;
     }
-
+    
     .headertitles {
       font-weight: bold;
       font-family: "suisseintl";
@@ -63,7 +63,7 @@
       font-size: 16px;
       line-height: 24px;
     }
-
+    
     .accounttype {
       font-family: "suisseintl";
       font-style: normal;
@@ -220,80 +220,7 @@
     }
   }
 
-  .page {
-    .imageholder {
-      height: 200px;
-      background: url(/bg_image.png);
-      background-size: cover;
-      background-repeat: no-repeat;
-    }
-
-    .info {
-      background: linear-gradient(
-        180deg,
-        #0090ff 0%,
-        #39c1cb 99.99%,
-        rgba(0, 144, 255, 0) 100%
-      );
-      position: relative;
-      height: 190px;
-      margin-bottom: 70px;
-      top: 50px;
-
-      .textinfo {
-        font-family: "suisseintl";
-        position: absolute;
-        left: 0;
-        right: 0;
-        margin-left: auto;
-        margin-right: auto;
-        top: 5px;
-        max-width: 1280px;
-        color: #fff;
-
-        .textinfotext {
-          padding: 30px 80px;
-
-          h2 {
-            text-align: center;
-          }
-
-          .description {
-            text-align: center;
-          }
-        }
-
-        .textinfodata {
-          display: flex;
-          align-content: stretch;
-          border: 1px solid #0090ff;
-          font-family: "suisseintl";
-
-          .textinfodatablock {
-            text-align: center;
-            flex-grow: 1;
-            border: 1px solid #0090ff;
-            background-color: #fff;
-            color: #000;
-
-            .data {
-              font-size: 30px;
-              padding: 15px 20px;
-            }
-
-            .text {
-              padding-bottom: 20px;
-            }
-          }
-        }
-
-        h2 {
-          padding-top: 0px;
-          padding-bottom: 15px;
-        }
-      }
-    }
-  }
+ 
 
   .main {
     max-width: 1280px;
@@ -739,6 +666,7 @@
 
   .twooptions {
     .option {
+      position: relative;
       border-right: 1px solid #0091ff;
       border-bottom: 1px solid #0091ff;
     }
@@ -758,66 +686,7 @@
     border-right: 1px solid #0091ff;
     border-left: 1px solid #0091ff;
 
-    .option {
-      flex: 50%;
-      box-sizing: border-box;
-      cursor: pointer;
-
-      img {
-        margin-top: 70px;
-        max-height: 186px;
-      }
-
-      .optionhead {
-        margin-top: 50px;
-        font-family: JetBrains Mono;
-        font-style: normal;
-        font-weight: normal;
-        font-size: 48px;
-        line-height: 48px;
-      }
-
-      .optiontitle {
-        top: 150px;
-        font-family: "suisseintl";
-        font-style: normal;
-        font-weight: bold;
-        font-size: 24px;
-        line-height: 36px;
-        padding-top: 60px;
-      }
-
-      .optionsubtitle {
-        font-family: "suisseintl";
-        font-style: normal;
-        font-weight: 600;
-        font-size: 16px;
-        line-height: 24px;
-        line-height: 36px;
-        padding-top: 0px;
-      }
-
-      .optiondesc {
-        margin-top: 10px;
-        width: 350px;
-        height: 100px;
-        left: 0;
-        right: 0;
-        margin-left: auto;
-        margin-right: auto;
-        font-family: "suisseintl";
-        font-style: normal;
-        font-weight: normal;
-        font-size: 16px;
-        line-height: 24px;
-      }
-
-      .optionavailable {
-        padding-top: 15px;
-        font-style: italic;
-        font-size: 16px;
-      }
-    }
+    
 
     .columnleft {
       border-top: 1px solid #0091ff;
@@ -850,21 +719,6 @@
         font-weight: normal;
         font-size: 16px;
         line-height: 24px;
-      }
-    }
-
-    .buttonoption {
-      padding-top: 20px;
-
-      button {
-        font-family: "suisseintl";
-        font-size: 14px;
-        background: #33a7ff;
-        border-radius: 4px;
-        height: 40px;
-        width: 176px;
-        left: 0px;
-        top: 0px;
       }
     }
   }
@@ -1244,38 +1098,6 @@
   margin-bottom: 30px;
 }
 
-.header {
-  .headerlogo {
-    padding: 5px 5px;
-    position: relative;
-    width: 100px;
-    margin: auto;
-    cursor: pointer;
-  }
-
-  .headerLogoCtrlPanel {
-    cursor: pointer;
-  }
-
-  .headerback {
-    cursor: pointer;
-    float: left;
-    margin: 15px 20px;
-    font-family: "suisseintl";
-    font-style: normal;
-    font-weight: 600;
-    font-size: 16px;
-    line-height: 24px;
-  }
-
-  .headerrequest {
-    position: relative;
-    width: 180px;
-    float: right;
-    top: -60px;
-    right: 150px;
-  }
-}
 
 .errormodal,
 .confirmmodal {
@@ -1411,43 +1233,6 @@
   }
 }
 
-.learnmore {
-  align-items: center;
-  justify-content: center;
-  margin-left: auto;
-  margin-right: auto;
-  max-width: 1280px;
-  height: 60px;
-  left: 0;
-  right: 0;
-  background: #fff;
-  text-align: center;
-  display: flex;
-  border: 1px solid #0091ff;
-
-  button,
-  button:checked,
-  button:active,
-  button:hover,
-  button:visited,
-  button:checked {
-    height: 20px;
-    font-family: "suisseintl";
-    font-style: normal;
-    font-weight: 600;
-    font-size: 14px;
-    line-height: 20px;
-    border: 1px solid #0091ff;
-    width: 180px;
-    background: #fff;
-    color: #0091ff;
-  }
-
-  button:not(:hover) {
-    background-color: #fff;
-  }
-}
-
 
 .warnmodal {
   height: 200px;
@@ -1561,53 +1346,7 @@
   }
 }
 
-.footer {
-  width: 100%;
-  height: 220px;
-  font-size: 12px;
-  background: linear-gradient(
-    230deg,
-    #0090ff 0%,
-    #39c1cb 99.99%,
-    rgba(0, 144, 255, 0) 100%
-  );
-  padding: 3rem 3.5rem;
-  display: flex;
-  color: white;
 
-  .logo {
-    display: flex;
-
-    span {
-      font-size: 16px;
-      font-weight: bold;
-      margin-top: 0.5rem;
-      margin-left: 0.5rem;
-    }
-  }
-
-  .resources,
-  .reach_out {
-    margin-left: 16rem;
-    margin-top: 0.5rem;
-    color: white;
-
-    a {
-      text-decoration: none;
-      color: inherit;
-      font-size: 14px;
-    }
-
-    &-links {
-      display: flex;
-      flex-direction: column;
-
-      a {
-        margin-top: 1rem;
-      }
-    }
-  }
-}
 
 .notaryinfoModal {
   height: 400px;
@@ -2125,13 +1864,6 @@
   margin-bottom: 4px;
   box-shadow: 2px 2px grey;
   transition: 0.1s;
-}
-
-.zeroOpaque {
-  opacity: 0.1;
-  z-index: 0;
-  position: absolute;
-  padding-left: 19px;
 }
 
 .searchMakeReuestForm {

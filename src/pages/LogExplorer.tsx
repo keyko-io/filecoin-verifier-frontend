@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react';
 // @ts-ignore
-import Welcome from '../components/Welcome'
+import Welcome from '../components/Welcome/Welcome'
 import { TextField, Button, CircularProgress } from '@material-ui/core';
 import { Data } from '../context/Data/Index'
 import { config } from '../config'
@@ -18,9 +18,10 @@ const LogExplorer = () => {
   const [maxLogsNumber, setMaxLogsNumber] = useState(10)
   const [searchText, setSearchText] = useState("")
   const [date, setDate] = useState("")
-  const [logs, setLogs] = useState<any[]>([])
+  const [logs, setLogs] = useState<any>([])
   const [sortBy, setSortBy] = useState("dateTimestamp")
   const [isLogsLoading, setIsLogsLoading] = useState(false)
+  const [isSearched, setIsSearched] = useState(false)
 
   const columns = [
     { key: "dateTimestamp", name: "Date", width: "98px" },
@@ -34,6 +35,11 @@ const LogExplorer = () => {
   useEffect(() => {
     if (history.location.search.split("=")[1]) {
       selectIssueNumber(history.location.search.split("=")[1])
+      setIsSearched(true)
+    }
+
+    if (!history.location.search) {
+      setIsSearched(false)
     }
   }, [])
 
@@ -51,6 +57,7 @@ const LogExplorer = () => {
       setLogs(formatItems(res.items))
       setSrchButtonDisabled(false)
       setIsLogsLoading(false)
+      setIsSearched(true)
       history.push({
         search: `?search=${issueNumberId ? issueNumberId : issueNumber}`
       })
@@ -166,18 +173,18 @@ const LogExplorer = () => {
                         </tr>
                       )}
                   <tr style={{ textAlign: "center" }}>
-                    {logs.length ? <td colSpan={7}>
-                      {isLogsLoading ? <div>Loading...</div> :
+                    {!isLogsLoading ? <td colSpan={7}>
+                      {logs.length ?
                         <Button
                           size="small"
                           onClick={() => setMaxLogsNumber(prev => prev + 5)}
                           variant="outlined"
                           color="primary"
                         >Load more logs
-                        </Button>
+                        </Button> : (isSearched ? <div>No logs found for this issue number</div> : <div>Select issue number and search</div>)
                       }
                     </td> : <td colSpan={7}>
-                      {<div>No logs found for this issue number</div>}
+                      {<div>Loading...</div>}
                     </td>}
                   </tr>
                 </tbody>

@@ -104,6 +104,11 @@ export default class DataProvider extends React.Component<
         repo: string
       ) => {
         try {
+
+          if (config.lotusNodes[this.props.wallet.networkIndex].name === "Localhost") {
+            return
+          }
+
           const logArray = [
             {
               message,

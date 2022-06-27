@@ -17,8 +17,17 @@ const utils = require('@keyko-io/filecoin-verifier-tools/utils/large-issue-parse
 //view 3: core info of the issue
 //view 4: other info of the issue (3 sub-view 'stepViewFour')
 //view 2: (not implemented) reconnect a previous issue to keep the allocation flow going
-class LdnApplication extends Component<{}> {
+
+type LdnApplicationProps = {
+  location?: {
+    state: any
+  }
+};
+
+
+class LdnApplication extends Component<LdnApplicationProps> {
   public static contextType = Data
+
 
   state = {
     coreInfo: [...coreInfo],
@@ -32,8 +41,10 @@ class LdnApplication extends Component<{}> {
     issueNumber: 0,
     addressList: [] as string[],
     isIssueComplete: false
-
   }
+
+
+
 
   async componentDidMount() {
     await this.context.github.checkToken()
@@ -41,7 +52,18 @@ class LdnApplication extends Component<{}> {
       this.setState({ view: 0 })
       return
     }
+
     await this.fetchIssuesAndSelectView()
+
+    if (this.props.location?.state) {
+      const { organization, website, address, region } = this.props.location.state
+      const newCoreInfo = [...coreInfo]
+      newCoreInfo[1].value = organization
+      newCoreInfo[2].value = region
+      newCoreInfo[3].value = website
+      newCoreInfo[6].value = address
+      this.setState({ coreInfo: [...newCoreInfo] })
+    }
   }
 
 

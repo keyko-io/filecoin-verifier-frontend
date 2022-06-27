@@ -1,0 +1,28 @@
+.welcome {
+    text-align: center;
+    margin-top: 50px;
+    height: 200px;
+    color: #fff;
+    background: linear-gradient(rgb(0, 144, 255) 0%, rgb(57, 193, 203) 99.99%, rgba(0, 144, 255, 0) 100%);
+ 
+    .title {
+       padding-top: 35px;
+       font-family: "suisseintl";
+       font-weight: bold;
+       font-size: 24px;
+       line-height: 36px;
+       align-items: center;
+       text-align: center;
+    }
+  
+    .description {
+      padding-top: 10px;
+      font-family: "suisseintl";
+      font-style: normal;
+      font-weight: normal;
+      font-size: 16px;
+      line-height: 24px;
+      max-width: 960px;
+      margin: 0 auto;
+    }
+  }

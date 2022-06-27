@@ -2,12 +2,15 @@ import React, { Component } from 'react';
 import { Data } from '../context/Data/Index'
 import { config } from '../config'
 // @ts-ignore
-import { dispatchCustomEvent, Input, ButtonPrimary, SelectMenu, LoaderSpinner } from "slate-react-system";
+import { dispatchCustomEvent, Input, ButtonPrimary, SelectMenu } from "slate-react-system";
 import ConfirmModal from '../pages/ConfirmModal';
 import { anyToBytes } from "../utils/Filters"
 // @ts-ignore
 import LoginGithub from 'react-login-github';
 import { BurnerWallet } from '../context/Wallet/BurnerWallet';
+import history from "../context/History"
+import { CircularProgress } from "@material-ui/core";
+
 
 type States = {
     address: string
@@ -22,7 +25,8 @@ type States = {
     emailMethod: boolean,
     gitHubMethod: boolean,
     region: string,
-    errorAddressMessage: string
+    errorAddressMessage: string,
+    redirect: boolean
 }
 
 type ModalProps = {
@@ -58,7 +62,8 @@ class MakeRequestModal extends Component<ModalProps, States> {
             emailMethod: false,
             gitHubMethod: true,
             region: 'North America',
-            errorAddressMessage: ' '
+            errorAddressMessage: ' ',
+            redirect: false
         }
     }
 
@@ -66,11 +71,35 @@ class MakeRequestModal extends Component<ModalProps, States> {
         this.context.github.checkToken()
     }
 
+    handleRedirection = (e: any) => {
+        e.preventDefault()
+
+        dispatchCustomEvent({ name: "delete-modal", detail: {} })
+
+        history.push({
+            pathname: "/ldn-application",
+            state: {
+                address: this.state.address,
+                region: this.state.region,
+                website: this.state.publicprofile,
+                organization: this.state.organization
+            }
+        })
+    }
+
     handleSubmit = async (e: any) => {
         e.preventDefault()
 
+        if ((parseInt(this.state.datacap) > 1024 && this.state.datacapExt === "TiB")) {
+
+            this.setState({ redirect: true })
+
+            return;
+        }
+
+
         if (this.state.gitHubMethod) {
-             this.handleGithubSubmit()
+            this.handleGithubSubmit()
         }
 
         if (this.state.emailMethod) {
@@ -187,6 +216,8 @@ class MakeRequestModal extends Component<ModalProps, States> {
         if (e.target.name === 'emailMethod') {
             this.setState({ gitHubMethod: false })
         }
+
+
         this.setState({ [e.target.name]: e.target.value } as any)
     }
 
@@ -195,6 +226,12 @@ class MakeRequestModal extends Component<ModalProps, States> {
             <div className="addmodal requestmodal" style={this.props.verifier.docs_url ? {} : { height: 680 }}>
                 <form>
                     <div className="title">Datacap Allocation Request</div>
+                    {this.state.redirect && <div
+                        style={{ fontSize: "18px", padding: "40px 60px", zIndex: "10", position: "absolute", top: "0", left: "0", background: "white", color: "black", width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center", flexDirection: "column" }}
+                    >
+                        <div style={{ lineHeight: "1.3" }}>Direct notary allocations are in the 0-1024 TiB range. To request more DataCap, please apply for a large dataset instead. Click here to apply.</div>
+                        <button onClick={this.handleRedirection} style={{ marginTop: "40px", fontSize: "18px", background: "#0090ff", padding: "12px 32px", borderRadius: "6px", border: "none", color: "white", cursor: "pointer" }}>continue</button>
+                    </div>}
                     <div className="makerequest">
                         <div className="inputholder">
                             <Input
@@ -239,7 +276,7 @@ class MakeRequestModal extends Component<ModalProps, States> {
                                     name="datacapExt"
                                     value={this.state.datacapExt}
                                     onChange={this.handleChange}
-                                    options={config.datacapExtName}
+                                    options={config.datacapExtName.slice(0, 5)}
                                 />
                             </div>
                         </div>
@@ -263,7 +300,7 @@ class MakeRequestModal extends Component<ModalProps, States> {
                                     checked={this.state.gitHubMethod}
                                     onChange={this.handleChange}
                                 /> Github - create issue
-                                </div>
+                            </div>
                             {this.props.verifier.private_request === "true" ?
                                 <div className="methodtype">
                                     <input
@@ -278,19 +315,19 @@ class MakeRequestModal extends Component<ModalProps, States> {
                         </div>
                         {this.props.verifier.docs_url ?
                             <div className="docsmessage">Before submitting your request, please make sure to check out the
-                             guidelines and criteria to accept Datacap request for <a href={this.props.verifier.docs_url} target="_blank" rel="noopener noreferrer">{this.props.verifier.name}</a></div>
+                                guidelines and criteria to accept Datacap request for <a href={this.props.verifier.docs_url} target="_blank" rel="noopener noreferrer">{this.props.verifier.name}</a></div>
                             :
                             null}
                     </div>
                     <div className="centerbutton buttondiv" style={this.props.verifier.docs_url ? {} : { paddingTop: 0, marginTop: 0 }}>
-                        <div id="sendbutton buttonrequest">
+                        <div id="sendbutton">
                             {this.context.github.githubLogged || this.state.emailMethod ?
-                                <ButtonPrimary onClick={this.handleSubmit}>{this.state.submitLoading ? <LoaderSpinner /> : 'Send Request'}</ButtonPrimary>
+                                <ButtonPrimary onClick={this.handleSubmit}>{this.state.submitLoading ? <CircularProgress size={16} style={{ color: "white" }} /> : 'Send Request'}</ButtonPrimary>
                                 : null
                             }
                         </div>
                     </div>
-                </form>
+                </form >
                 {!this.context.github.githubLogged && this.state.gitHubMethod ?
 
                     <div className="centerbutton">
@@ -312,7 +349,7 @@ class MakeRequestModal extends Component<ModalProps, States> {
                     </div>
                     : null
                 }
-            </div>
+            </div >
         )
     }
 }

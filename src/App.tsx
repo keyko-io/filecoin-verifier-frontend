@@ -1,5 +1,5 @@
 import React, { Component, memo } from 'react';
-import Overview from './components/Overview'
+import Overview from './components/OverviewApp/Overview'
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { fab } from '@fortawesome/free-brands-svg-icons'
@@ -55,7 +55,6 @@ class App extends Component<{}, States> {
 
 
   closeModal = (e: any) => {
-    console.log(e)
     if (e.path[1] !== this.modalRef.current && !e.path.includes(this.viewSwitch.current)) {
       this.setState({
         accountSelect: false
@@ -173,7 +172,7 @@ class App extends Component<{}, States> {
     return (
       <div className="App">
         <div className="header">
-          <div className="headerLogoCtrlPanel" onClick={() => this.onClick()}><img src={Logo} title="Return to home page" alt="Filecoin" /></div>
+          <div style={{ cursor: "pointer" }} onClick={() => this.onClick()}><img src={Logo} title="Return to home page" alt="Filecoin" /></div>
           <div className="networkselect" onClick={this.openNetworkSelect}>
             {this.state.networkSelect ?
               <div className="networkselectholder">
