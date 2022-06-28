@@ -289,8 +289,7 @@ export default class DataProvider extends React.Component<
 
                       const txs = pendingLargeTxs.filter(
                         (pending: any) =>
-                          pending.parsed.params.address ===
-                          comment.clientAddress
+                          pending.parsed && pending.parsed.params.address === comment.clientAddress
                       );
                       const approvals = rawLargeIssue.labels.find(
                         (label: any) => label.name === "state:StartSignDatacap"
