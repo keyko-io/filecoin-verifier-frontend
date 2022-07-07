@@ -13,6 +13,14 @@ const LDN_PREFIX_URL = `https://github.com/${config.onboardingOwner}/${config.on
 const LogExplorer = () => {
   const context: any = useContext(Data)
 
+  const onTop = () => {
+    window.scrollTo(0, 0);
+  }
+
+  useEffect(() => {
+    onTop()
+  }, []);
+
   const [issueNumber, setIssueNumber] = useState("")
   const [srchButtonDisabled, setSrchButtonDisabled] = useState(false)
   const [maxLogsNumber, setMaxLogsNumber] = useState(10)

@@ -9,7 +9,6 @@ import Welcome from "../components/Welcome/Welcome";
 import LearnMore from "../components/LearnMore/LearnMore";
 
 
-
 const options = [
   {
     title: "For Root Key Holders and Notaries",
