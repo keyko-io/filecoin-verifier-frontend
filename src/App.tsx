@@ -20,17 +20,13 @@ import { Button } from '@material-ui/core';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import RefreshIcon from '@mui/icons-material/Refresh';
 
-
 library.add(fab, far, fas)
 
 type States = {
   networkSelect: boolean
   accountSelect: boolean
-  notificationsOpen: boolean
   search: string,
-  // isCurrentAddressVerified: boolean
 }
-
 
 class App extends Component<{}, States> {
   public static contextType = Data
@@ -43,56 +39,37 @@ class App extends Component<{}, States> {
     this.state = {
       networkSelect: false,
       accountSelect: false,
-      notificationsOpen: false,
       search: '',
-      // isCurrentAddressVerified: false
     }
     this.child = React.createRef();
     this.modalRef = React.createRef();
     this.viewSwitch = React.createRef()
   }
 
-
   closeModal = (e: any) => {
     if (e.path[1] !== this.modalRef.current && !e.path.includes(this.viewSwitch.current)) {
-      this.setState({
-        accountSelect: false
-      })
+      this.setState({ accountSelect: false })
     }
-
   }
 
   componentDidMount() {
     document.body.addEventListener("click", this.closeModal)
-
-    if (this.context.wallet.isLogged === false) {
-      history.push({
-        pathname: "/"
-      })
-    }
+    if (!this.context.wallet.isLogged) history.push("/")
   }
 
   componentWillUnmount() {
     document.body.removeEventListener("click", this.closeModal)
   }
 
-  onClick = () => {
-    history.push({
-      pathname: "/"
-    })
-  }
-
+  goToHomePage = () => history.push("/")
+  goToLogs = () => history.push("/logs")
 
   openNetworkSelect = (e: any) => {
-    this.setState({
-      networkSelect: this.state.networkSelect === false ? true : false
-    })
+    this.setState({ networkSelect: !this.state.networkSelect })
   }
 
   openAccountSelect = (e: any) => {
-    if (this.state.accountSelect === false) {
-      this.setState({ accountSelect: true })
-    }
+    if (!this.state.accountSelect) this.setState({ accountSelect: true })
   }
 
   switchNetwork = async (index: number) => {
@@ -105,9 +82,7 @@ class App extends Component<{}, States> {
   }
 
   switchRoot = () => {
-    if (this.context.switchview) {
-      this.context.switchview()
-    }
+    if (this.context.switchview) this.context.switchview()
   }
 
   openWallet = async () => {
@@ -118,7 +93,6 @@ class App extends Component<{}, States> {
       }
     })
   }
-
 
   openLoginModalNotary = async () => {
     dispatchCustomEvent({
@@ -155,51 +129,42 @@ class App extends Component<{}, States> {
     this.setState({ [e.target.name]: e.target.value } as any, this.updateSearch)
   }
 
-  search = async (event: any) => {
+  handleSearch = async (event: any) => {
     event.preventDefault()
     this.context.search(this.state.search)
   }
 
-  goToLogs = () => {
-    history.push({
-      pathname: "/logs"
-    })
-  }
-
-
   render() {
+    let context = this.context
+    let { accountSelect, networkSelect } = this.state
     return (
       <div className="App">
         <div className="header">
-          <div style={{ display: "flex", flex: "1", alignItems: "center", justifyContent: "space-around" }}>
-            <div style={{ cursor: "pointer" }} onClick={() => this.onClick()}><img src={Logo} title="Return to home page" alt="Filecoin" /></div>
+          <div className="headerLeftRight">
+            <div style={{ cursor: "pointer" }} onClick={this.goToHomePage}><img src={Logo} title="Return to home page" alt="Filecoin" /></div>
             <div className="networkselect" onClick={this.openNetworkSelect}>
-              {this.state.networkSelect ?
+              {networkSelect ?
                 <div className="networkselectholder">
                   <div className="headertitles">Network Select</div>
                   {config.lotusNodes.filter((node: any, index: number) => config.networks.includes(node.name)).map((node: any, index: number) => {
-                    return <div key={index} style={{ color: index === this.context.wallet.networkIndex ? '#003fe3' : 'inherit' }} className="networkentry" onClick={() => this.switchNetwork(index)}>{node.name}</div>
+                    return <div key={index} style={{ color: index === context.wallet.networkIndex ? '#003fe3' : 'inherit' }} className="networkentry" onClick={() => this.switchNetwork(index)}>{node.name}</div>
                   })}
                 </div>
                 : null}
               <div className="headertitles">Network selected</div>
-              <div className="addressholder">{config.lotusNodes[this.context.wallet.networkIndex].name}</div>
+              <div className="addressholder">{config.lotusNodes[context.wallet.networkIndex].name}</div>
             </div>
-
             <div className="refresh">
               <Button
                 size="small"
-                onClick={() => this.goToLogs()}
+                onClick={this.goToLogs}
                 variant="text"
-                style={{ letterSpacing: "1px", backgroundColor: "#0090ff", color: "white", padding: "4px", borderRadius: "4px" }}
               >LOGS
               </Button>
             </div>
-
           </div>
-
           <div className="search" >
-            <form onSubmit={this.search}>
+            <form onSubmit={this.handleSearch}>
               <Input
                 name="search"
                 placeholder="Search"
@@ -207,39 +172,37 @@ class App extends Component<{}, States> {
               />
             </form>
           </div>
-
-          <div style={{ display: "flex", flex: "1", alignItems: "center", justifyContent: "space-around" }}>
-            <div className="refresh" onClick={() => this.refresh()}>
-              {this.context.isPendingRequestLoading ? <RefreshIcon className="rotation" /> : <RefreshIcon />}
+          <div className="headerLeftRight">
+            <div className="refresh" onClick={this.refresh}>
+              {context.isPendingRequestLoading ? <RefreshIcon className="rotation" /> : <RefreshIcon />}
             </div>
-
             <div className="accountholder" onClick={(e) => this.openAccountSelect(e)} ref={this.modalRef}>
-              {this.state.accountSelect ?
+              {accountSelect ?
                 <div className="accountselectholder" ref={this.viewSwitch}>
                   <div className="headertitles">Select Account Type</div>
                   <div>
-                    <div>{this.context.viewroot ? 'Rootkey Holder' : 'Approved Notary'}</div>
+                    <div>{context.viewroot ? 'Rootkey Holder' : 'Approved Notary'}</div>
                     <div className="viewswitch" >
                       <Toggle
-                        active={this.context.viewroot}
+                        active={context.viewroot}
                         name="accountview"
                         onChange={this.switchRoot}
                       />
                     </div>
                   </div>
-                  {this.context.wallet.multisig && this.context.viewroot === false ?
+                  {context.wallet.multisig && !context.viewroot ?
                     <React.Fragment>
                       <div className="headertitles">Multisig address</div>
                       <div className="accountentry">
                         <div>
                           <div className="datacapdata">
-                            <span className="datacap">Datacap: {bytesToiB(this.getVerifierAmount(this.context.wallet.multisigID))}</span>
-                            {this.context.wallet.multisig ?
+                            <span className="datacap">Datacap: {bytesToiB(this.getVerifierAmount(context.wallet.multisigID))}</span>
+                            {context.wallet.multisig ?
                               <img src={Network} alt="network" />
                               : null}
                           </div>
                           <div className="accountdata">
-                            <span className="accountaddress">{this.context.wallet.multisigAddress.length > 20 ? addressFilter(this.context.wallet.multisigAddress) : this.context.wallet.multisigAddress}</span>
+                            <span className="accountaddress">{context.wallet.multisigAddress.length > 20 ? addressFilter(context.wallet.multisigAddress) : context.wallet.multisigAddress}</span>
                             <span className="copyaddress"><SVG.CopyAndPaste height='15px' /></span>
                           </div>
                         </div>
@@ -247,18 +210,16 @@ class App extends Component<{}, States> {
                     </React.Fragment>
                     : null}
                   <div className="headertitles">Account addresses</div>
-
-                  <div style={{ height: "255px", overflow: "scroll", width: "100%", padding: "0px 10px" }}>
-                    {this.context.wallet.accounts.map((account: any, index: number) => {
-                      return <div key={index} className="accountentry" style={{ backgroundColor: index === this.context.wallet.walletIndex ? '#C7C7C7' : 'inherit' }}>
+                  <div className="accountModal">
+                    {context.wallet.accounts.map((account: any, index: number) => {
+                      return <div key={index} className="accountentry" style={{ backgroundColor: index === context.wallet.walletIndex ? '#C7C7C7' : 'inherit' }}>
                         <div>
                           <div className="datacapdata" onClick={() => this.switchAccount(index)} >
-                            {this.context.viewroot === false ? <span className="datacap">Datacap: {bytesToiB(this.getVerifierAmount(account))}</span> : <span className="datacap"></span>}
-                            {this.context.wallet.accountsActive[account] ?
+                            {!context.viewroot ? <span className="datacap">Datacap: {bytesToiB(this.getVerifierAmount(account))}</span> : <span className="datacap"></span>}
+                            {context.wallet.accountsActive[account] ?
                               <img src={Network} alt="network" />
                               : null}
                           </div>
-
                           <div className="accountdata">
                             <span className="accountaddress" onClick={() => this.switchAccount(index)} >{addressFilter(account)}</span>
                             <span className="copyaddress" onClick={() => this.copyAddress(account)}><SVG.CopyAndPaste height='15px' /></span>
@@ -267,17 +228,11 @@ class App extends Component<{}, States> {
                       </div>
                     })}
                   </div>
-
-                  {this.context.wallet.accounts.length > 4 && <div style={{ margin: "10px", display: "flex", justifyContent: "center" }}>
-                    <KeyboardArrowDownIcon />
-                  </div>}
-
-
-                  {this.context.wallet.wallet !== 'ledger' ?
+                  {context.wallet.accounts.length > 4 && <div className="arrowDownIcon"><KeyboardArrowDownIcon /></div>}
+                  {context.wallet.wallet !== 'ledger' ?
                     <div>
                       <div className="importseedphrase" onClick={() => { this.openWallet() }}>Import seedphrase</div>
                       <div className="importseedphrase" onClick={() => { this.openLoginModalNotary() }}>Change multisig</div>
-
                     </div>
                     : null
                   }
@@ -285,25 +240,21 @@ class App extends Component<{}, States> {
                 : null}
               <div onClick={(e) => {
                 e.stopPropagation()
-                this.setState({ accountSelect: this.state.accountSelect === true ? false : true })
-              }} className="headertitles">{this.context.viewroot ? 'Rootkey Holder ID' : 'Approved Notary ID'}</div>
+                this.setState({ accountSelect: !accountSelect })
+              }} className="headertitles">{context.viewroot ? 'Rootkey Holder ID' : 'Approved Notary ID'}</div>
               <div onClick={(e) => {
                 e.stopPropagation()
-                this.setState({ accountSelect: this.state.accountSelect === true ? false : true })
-              }}>{addressFilter(this.context.wallet.activeAccount)}, {this.context.wallet.multisig && this.context.viewroot === false ? this.context.wallet.multisigAddress.length > 20 ? addressFilter(this.context.wallet.multisigAddress) : this.context.wallet.multisigAddress : null}</div>
+                this.setState({ accountSelect: !accountSelect })
+              }}>{addressFilter(context.wallet.activeAccount)}, {context.wallet.multisig && !context.viewroot ? context.wallet.multisigAddress.length > 20 ? addressFilter(context.wallet.multisigAddress) : context.wallet.multisigAddress : null}</div>
             </div>
             <div>
-              {this.context.github.githubLogged ? <div style={{ width: "40px", height: "40px", }}>
-                <img style={{ width: "40px", height: "40px", borderRadius: "50%" }} src={localStorage.getItem("avatar") || this.context.github.avatarUrl} alt="user_profile_photo" />
-              </div> : <img style={{ width: "40px", height: "40px", borderRadius: "50%" }} src="https://avatars.githubusercontent.com/u/72555788?v=4" alt="user_profile_photo" />}
+              {context.github.githubLogged ? <div className="avatarContainer">
+                <img className="avatarImage" src={localStorage.getItem("avatar") || context.github.avatarUrl} alt="user_profile_photo" />
+              </div> : <img className="avatarImage" src="https://avatars.githubusercontent.com/u/72555788?v=4" alt="user_profile_photo" />}
             </div>
           </div>
         </div>
-        {
-          this.context.wallet.isLoading === true || this.context.wallet.isLogged === false ?
-            <div className="walletpicker"><LoaderSpinner /></div>
-            : <Overview ref={this.child} />
-        }
+        {context.wallet.isLoading || !context.wallet.isLogged ? <div className="walletpicker"><LoaderSpinner /></div> : <Overview ref={this.child} />}
       </div >
     );
   }
