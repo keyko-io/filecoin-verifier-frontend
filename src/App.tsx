@@ -1,7 +1,6 @@
 import React, { Component, memo } from 'react';
 import Overview from './components/OverviewApp/Overview'
 import { library } from '@fortawesome/fontawesome-svg-core'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { fab } from '@fortawesome/free-brands-svg-icons'
 import { far } from '@fortawesome/free-regular-svg-icons'
 import { fas } from '@fortawesome/free-solid-svg-icons'
@@ -15,11 +14,11 @@ import './App.scss';
 // @ts-ignore
 import { dispatchCustomEvent, Toggle, SVG, LoaderSpinner, Input } from "slate-react-system"
 import { config } from './config'
-import Blockies from 'react-blockies'
 import history from './context/History'
 import LogAsNotaryModal from './modals/LogAsNotaryModal'
 import { Button } from '@material-ui/core';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
+import RefreshIcon from '@mui/icons-material/Refresh';
 
 
 library.add(fab, far, fas)
@@ -172,20 +171,34 @@ class App extends Component<{}, States> {
     return (
       <div className="App">
         <div className="header">
-          <div style={{ cursor: "pointer" }} onClick={() => this.onClick()}><img src={Logo} title="Return to home page" alt="Filecoin" /></div>
-          <div className="networkselect" onClick={this.openNetworkSelect}>
-            {this.state.networkSelect ?
-              <div className="networkselectholder">
-                <div className="headertitles">Network Select</div>
-                {config.lotusNodes.filter((node: any, index: number) => config.networks.includes(node.name)).map((node: any, index: number) => {
-                  return <div key={index} style={{ color: index === this.context.wallet.networkIndex ? '#003fe3' : 'inherit' }} className="networkentry" onClick={() => this.switchNetwork(index)}>{node.name}</div>
-                })}
-              </div>
-              : null}
-            <div className="headertitles">Network selected</div>
-            <div className="addressholder">{config.lotusNodes[this.context.wallet.networkIndex].name}</div>
+          <div style={{ display: "flex", flex: "1", alignItems: "center", justifyContent: "space-around" }}>
+            <div style={{ cursor: "pointer" }} onClick={() => this.onClick()}><img src={Logo} title="Return to home page" alt="Filecoin" /></div>
+            <div className="networkselect" onClick={this.openNetworkSelect}>
+              {this.state.networkSelect ?
+                <div className="networkselectholder">
+                  <div className="headertitles">Network Select</div>
+                  {config.lotusNodes.filter((node: any, index: number) => config.networks.includes(node.name)).map((node: any, index: number) => {
+                    return <div key={index} style={{ color: index === this.context.wallet.networkIndex ? '#003fe3' : 'inherit' }} className="networkentry" onClick={() => this.switchNetwork(index)}>{node.name}</div>
+                  })}
+                </div>
+                : null}
+              <div className="headertitles">Network selected</div>
+              <div className="addressholder">{config.lotusNodes[this.context.wallet.networkIndex].name}</div>
+            </div>
+
+            <div className="refresh">
+              <Button
+                size="small"
+                onClick={() => this.goToLogs()}
+                variant="text"
+                style={{ letterSpacing: "1px", backgroundColor: "#0090ff", color: "white", padding: "4px", borderRadius: "4px" }}
+              >LOGS
+              </Button>
+            </div>
+
           </div>
-          <div className="search">
+
+          <div className="search" >
             <form onSubmit={this.search}>
               <Input
                 name="search"
@@ -193,109 +206,96 @@ class App extends Component<{}, States> {
                 onChange={this.handleChange}
               />
             </form>
-            <FontAwesomeIcon icon={["fas", "search"]} />
-          </div>
-          <div className="refresh">
-            <Button
-              size="small"
-              onClick={() => this.goToLogs()}
-              variant="text"
-            >LOGS
-            </Button>
-          </div>
-          <div className="refresh" onClick={() => this.refresh()}>
-            <FontAwesomeIcon icon={["fas", "redo"]} flip="vertical" transform={{ rotate: 135 }} />
           </div>
 
-          <div className="accountholder" onClick={(e) => this.openAccountSelect(e)} ref={this.modalRef}>
-            {this.state.accountSelect ?
-              <div className="accountselectholder" ref={this.viewSwitch}>
-                <div className="headertitles">Select Account Type</div>
-                <div>
-                  <div>{this.context.viewroot ? 'Rootkey Holder' : 'Approved Notary'}</div>
-                  <div className="viewswitch" >
-                    <Toggle
-                      active={this.context.viewroot}
-                      name="accountview"
-                      onChange={this.switchRoot}
-                    />
-                  </div>
-                </div>
-                {this.context.wallet.multisig && this.context.viewroot === false ?
-                  <React.Fragment>
-                    <div className="headertitles">Multisig address</div>
-                    <div className="accountentry">
-                      <div>
-                        <div className="datacapdata">
-                          <span className="datacap">Datacap: {bytesToiB(this.getVerifierAmount(this.context.wallet.multisigID))}</span>
-                          {this.context.wallet.multisig ?
-                            <img src={Network} alt="network" />
-                            : null}
-                        </div>
-                        <div className="accountdata">
-                          <span className="accountaddress">{this.context.wallet.multisigAddress.length > 20 ? addressFilter(this.context.wallet.multisigAddress) : this.context.wallet.multisigAddress}</span>
-                          <span className="copyaddress"><SVG.CopyAndPaste height='15px' /></span>
-                        </div>
-                      </div>
-                    </div>
-                  </React.Fragment>
-                  : null}
-                <div className="headertitles">Account addresses</div>
+          <div style={{ display: "flex", flex: "1", alignItems: "center", justifyContent: "space-around" }}>
+            <div className="refresh" onClick={() => this.refresh()}>
+              {this.context.isPendingRequestLoading ? <RefreshIcon className="rotation" /> : <RefreshIcon />}
+            </div>
 
-                <div style={{ height: "255px", overflow: "scroll", width: "100%", padding: "0px 10px" }}>
-                  {this.context.wallet.accounts.map((account: any, index: number) => {
-                    return <div key={index} className="accountentry" style={{ backgroundColor: index === this.context.wallet.walletIndex ? '#C7C7C7' : 'inherit' }}>
-                      <div>
-                        <div className="datacapdata" onClick={() => this.switchAccount(index)} >
-                          {this.context.viewroot === false ? <span className="datacap">Datacap: {bytesToiB(this.getVerifierAmount(account))}</span> : <span className="datacap"></span>}
-                          {this.context.wallet.accountsActive[account] ?
-                            <img src={Network} alt="network" />
-                            : null}
-                        </div>
-
-                        <div className="accountdata">
-                          <span className="accountaddress" onClick={() => this.switchAccount(index)} >{addressFilter(account)}</span>
-                          <span className="copyaddress" onClick={() => this.copyAddress(account)}><SVG.CopyAndPaste height='15px' /></span>
-                        </div>
-                      </div>
-                    </div>
-                  })}
-                </div>
-
-                {this.context.wallet.accounts.length > 4 && <div style={{ margin: "10px", display: "flex", justifyContent: "center" }}>
-                  <KeyboardArrowDownIcon />
-                </div>}
-
-
-                {this.context.wallet.wallet !== 'ledger' ?
+            <div className="accountholder" onClick={(e) => this.openAccountSelect(e)} ref={this.modalRef}>
+              {this.state.accountSelect ?
+                <div className="accountselectholder" ref={this.viewSwitch}>
+                  <div className="headertitles">Select Account Type</div>
                   <div>
-                    <div className="importseedphrase" onClick={() => { this.openWallet() }}>Import seedphrase</div>
-                    <div className="importseedphrase" onClick={() => { this.openLoginModalNotary() }}>Change multisig</div>
-
+                    <div>{this.context.viewroot ? 'Rootkey Holder' : 'Approved Notary'}</div>
+                    <div className="viewswitch" >
+                      <Toggle
+                        active={this.context.viewroot}
+                        name="accountview"
+                        onChange={this.switchRoot}
+                      />
+                    </div>
                   </div>
-                  : null
-                }
-              </div>
-              : null}
-            <div onClick={(e) => {
-              e.stopPropagation()
-              this.setState({ accountSelect: this.state.accountSelect === true ? false : true })
-            }} className="headertitles">{this.context.viewroot ? 'Rootkey Holder ID' : 'Approved Notary ID'}</div>
-            <div onClick={(e) => {
-              e.stopPropagation()
-              this.setState({ accountSelect: this.state.accountSelect === true ? false : true })
-            }}>{addressFilter(this.context.wallet.activeAccount)}, {this.context.wallet.multisig && this.context.viewroot === false ? this.context.wallet.multisigAddress.length > 20 ? addressFilter(this.context.wallet.multisigAddress) : this.context.wallet.multisigAddress : null}</div>
-          </div>
-          <div className="wallet">
-            <div className="WalletMenu">
-              <Blockies
-                seed={this.context.wallet.activeAccount}
-                size={10}
-                scale={4}
-                color="#dfe"
-                bgColor="#ffe"
-                spotColor="#abc"
-              />
+                  {this.context.wallet.multisig && this.context.viewroot === false ?
+                    <React.Fragment>
+                      <div className="headertitles">Multisig address</div>
+                      <div className="accountentry">
+                        <div>
+                          <div className="datacapdata">
+                            <span className="datacap">Datacap: {bytesToiB(this.getVerifierAmount(this.context.wallet.multisigID))}</span>
+                            {this.context.wallet.multisig ?
+                              <img src={Network} alt="network" />
+                              : null}
+                          </div>
+                          <div className="accountdata">
+                            <span className="accountaddress">{this.context.wallet.multisigAddress.length > 20 ? addressFilter(this.context.wallet.multisigAddress) : this.context.wallet.multisigAddress}</span>
+                            <span className="copyaddress"><SVG.CopyAndPaste height='15px' /></span>
+                          </div>
+                        </div>
+                      </div>
+                    </React.Fragment>
+                    : null}
+                  <div className="headertitles">Account addresses</div>
+
+                  <div style={{ height: "255px", overflow: "scroll", width: "100%", padding: "0px 10px" }}>
+                    {this.context.wallet.accounts.map((account: any, index: number) => {
+                      return <div key={index} className="accountentry" style={{ backgroundColor: index === this.context.wallet.walletIndex ? '#C7C7C7' : 'inherit' }}>
+                        <div>
+                          <div className="datacapdata" onClick={() => this.switchAccount(index)} >
+                            {this.context.viewroot === false ? <span className="datacap">Datacap: {bytesToiB(this.getVerifierAmount(account))}</span> : <span className="datacap"></span>}
+                            {this.context.wallet.accountsActive[account] ?
+                              <img src={Network} alt="network" />
+                              : null}
+                          </div>
+
+                          <div className="accountdata">
+                            <span className="accountaddress" onClick={() => this.switchAccount(index)} >{addressFilter(account)}</span>
+                            <span className="copyaddress" onClick={() => this.copyAddress(account)}><SVG.CopyAndPaste height='15px' /></span>
+                          </div>
+                        </div>
+                      </div>
+                    })}
+                  </div>
+
+                  {this.context.wallet.accounts.length > 4 && <div style={{ margin: "10px", display: "flex", justifyContent: "center" }}>
+                    <KeyboardArrowDownIcon />
+                  </div>}
+
+
+                  {this.context.wallet.wallet !== 'ledger' ?
+                    <div>
+                      <div className="importseedphrase" onClick={() => { this.openWallet() }}>Import seedphrase</div>
+                      <div className="importseedphrase" onClick={() => { this.openLoginModalNotary() }}>Change multisig</div>
+
+                    </div>
+                    : null
+                  }
+                </div>
+                : null}
+              <div onClick={(e) => {
+                e.stopPropagation()
+                this.setState({ accountSelect: this.state.accountSelect === true ? false : true })
+              }} className="headertitles">{this.context.viewroot ? 'Rootkey Holder ID' : 'Approved Notary ID'}</div>
+              <div onClick={(e) => {
+                e.stopPropagation()
+                this.setState({ accountSelect: this.state.accountSelect === true ? false : true })
+              }}>{addressFilter(this.context.wallet.activeAccount)}, {this.context.wallet.multisig && this.context.viewroot === false ? this.context.wallet.multisigAddress.length > 20 ? addressFilter(this.context.wallet.multisigAddress) : this.context.wallet.multisigAddress : null}</div>
+            </div>
+            <div>
+              {this.context.github.githubLogged ? <div style={{ width: "40px", height: "40px", }}>
+                <img style={{ width: "40px", height: "40px", borderRadius: "50%" }} src={localStorage.getItem("avatar") || this.context.github.avatarUrl} alt="user_profile_photo" />
+              </div> : <img style={{ width: "40px", height: "40px", borderRadius: "50%" }} src="https://avatars.githubusercontent.com/u/72555788?v=4" alt="user_profile_photo" />}
             </div>
           </div>
         </div>
