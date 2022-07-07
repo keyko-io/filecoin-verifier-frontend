@@ -19,6 +19,30 @@
     height: 4.4rem;
     font-family: "suisseintl";
 
+
+    .avatarContainer {
+      width: 40px;
+      height: 40px;
+
+      .avatarImage {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+      }
+    }
+  
+    .arrowDownIcon {
+      margin: 10px;
+      display: flex;
+      justify-content: center;
+    }
+ 
+    .headerLeftRight {
+      display: flex;
+      flex: 1;
+      align-items: center;
+      justify-content: space-around;
+    }
   
     .WalletMenu {
       border-radius: 20px;
@@ -27,10 +51,19 @@
       height: 40px;
       width: 40px;
     }
+  
+      
+     
+    .accountModal{
+      height: 255px;
+      overflow: scroll;
+      width: 100%;
+      padding: 0 10px;
+    }
 
     .accountholder {
       cursor: pointer;
-      position: relative;
+      position: relative;     
     }
 
     .networkselect {
@@ -48,6 +81,11 @@
 
       button {
         font-weight: bold;
+        letter-spacing: 1px;
+         background-color: #0090ff;
+         color: white;
+         padding : "4px";
+         border-radius: "4px";
       }
 
       span {
