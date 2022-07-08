@@ -6,6 +6,7 @@ import { Data } from '../context/Data/Index'
 import { config } from '../config'
 import SearchIcon from '@mui/icons-material/Search';
 import history from '../context/History';
+import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 
 const NOTARY_PREFIX_URL = `https://github.com/${config.onboardingOwner}/${config.onboardingNotaryOwner}/issues/`
 const LDN_PREFIX_URL = `https://github.com/${config.onboardingOwner}/${config.onboardingLargeClientRepo}/issues/`
@@ -14,7 +15,10 @@ const LogExplorer = () => {
   const context: any = useContext(Data)
 
   const onTop = () => {
-    window.scrollTo(0, 0);
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth"
+    });
   }
 
   useEffect(() => {
@@ -201,7 +205,13 @@ const LogExplorer = () => {
           </div>
         </div>
       </div>
-    </div>
+      <div style={{ display: "flex", justifyContent: "center", marginBottom: "30px" }}>
+        <div className='gotoTopLogs' onClick={onTop}><KeyboardArrowUpIcon style={{ fontSize: "60px" }} /></div>
+      </div>
+      <div style={{ display: "flex", justifyContent: "center", margin: "30px", fontSize: "16px" }}>
+        Click the arrow to go to the top of the page.
+      </div>
+    </div >
   );
 }
 

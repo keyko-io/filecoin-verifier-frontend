@@ -1919,3 +1919,22 @@ div[role="columnheader"] div {
 .large-request-table div div {
   display: flex !important
 }
+
+
+.gotoTopLogs {
+  background-color: white;
+  color: #0090ff;
+  cursor: pointer;
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  transition: background-color 0.2s;
+
+  &:hover {
+    background-color: #0090ff;
+    color: white;
+  }
+}
