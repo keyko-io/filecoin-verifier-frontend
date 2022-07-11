@@ -13,36 +13,62 @@
   .header {
     display: flex;
     justify-content: space-between;
+    align-items: center;
     border-right: none;
     background-color: #fff;
-    height: 73px;
+    height: 4.4rem;
+    font-family: "suisseintl";
 
-    img {
-      padding-top: 20px;
-      padding-left: 20px;
+
+    .avatarContainer {
+      width: 40px;
+      height: 40px;
+
+      .avatarImage {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+      }
     }
-
+  
+    .arrowDownIcon {
+      margin: 10px;
+      display: flex;
+      justify-content: center;
+    }
+ 
+    .headerLeftRight {
+      display: flex;
+      flex: 1;
+      align-items: center;
+      justify-content: space-around;
+    }
+  
     .WalletMenu {
       border-radius: 20px;
       overflow: hidden;
       cursor: pointer;
       height: 40px;
       width: 40px;
-      margin-right: 40px;
-      margin-top: 16px;
+    }
+  
+      
+     
+    .accountModal{
+      height: 255px;
+      overflow: scroll;
+      width: 100%;
+      padding: 0 10px;
     }
 
     .accountholder {
-      padding-top: 19px;
       cursor: pointer;
-      position: relative;
+      position: relative;     
     }
 
     .networkselect {
-      padding-top: 19px;
       cursor: pointer;
       position: relative;
-      font-family: "suisseintl";
     }
 
     .datacap {
@@ -51,13 +77,24 @@
     }
 
     .refresh {
-      padding-top: 27px;
       cursor: pointer;
+
+      button {
+        font-weight: bold;
+        letter-spacing: 1px;
+         background-color: #0090ff;
+         color: white;
+         padding : "4px";
+         border-radius: "4px";
+      }
+
+      span {
+        font-family: 'suisseintl';
+      }
     }
     
     .headertitles {
       font-weight: bold;
-      font-family: "suisseintl";
       font-style: normal;
       font-weight: 600;
       font-size: 16px;
@@ -65,7 +102,6 @@
     }
     
     .accounttype {
-      font-family: "suisseintl";
       font-style: normal;
       font-weight: normal;
       font-size: 12px;
@@ -90,10 +126,6 @@
       margin-top: 6px;
     }
 
-    
-    #search {
-      font-family: "suisseintl";
-    }
 
     .search {
       position: relative;
@@ -105,11 +137,10 @@
       }
 
       input {
-        margin-top: 16px;
         box-shadow: none;
         border: 1px solid #c7c7c7;
         width: 300px;
-        padding-left: 48px;
+        padding-left: 20px;
       }
 
       input::placeholder {
@@ -1920,7 +1951,6 @@ div[role="columnheader"] div {
   display: flex !important
 }
 
-
 .gotoTopLogs {
   background-color: white;
   color: #0090ff;
@@ -1937,4 +1967,17 @@ div[role="columnheader"] div {
     background-color: #0090ff;
     color: white;
   }
+
+.rotation {
+	animation: rotation 2s infinite linear;
+}
+
+@keyframes rotation {
+		from {
+			transform: rotate(0deg);
+		}
+		to {
+				transform: rotate(359deg);
+		}
+
 }
