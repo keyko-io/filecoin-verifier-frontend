@@ -248,9 +248,15 @@ class App extends Component<{}, States> {
               }}>{addressFilter(context.wallet.activeAccount)}, {context.wallet.multisig && !context.viewroot ? context.wallet.multisigAddress.length > 20 ? addressFilter(context.wallet.multisigAddress) : context.wallet.multisigAddress : null}</div>
             </div>
             <div>
-              {context.github.githubLogged ? <div className="avatarContainer">
-                <img className="avatarImage" src={localStorage.getItem("avatar") || context.github.avatarUrl} alt="user_profile_photo" />
-              </div> : <img className="avatarImage" src="https://avatars.githubusercontent.com/u/72555788?v=4" alt="user_profile_photo" />}
+              {
+                context.github.githubLogged ?
+                <div className="avatarContainer">
+                  <img className="avatarImage" src={localStorage.getItem("avatar") || context.github.avatarUrl} alt="user_profile_photo" />
+                </div>
+              :
+                <div className="avatarContainer">
+                  <img className="avatarImage" src="https://avatars.githubusercontent.com/u/72555788?v=4" alt="user_profile_photo" />
+                </div>}
             </div>
           </div>
         </div>
