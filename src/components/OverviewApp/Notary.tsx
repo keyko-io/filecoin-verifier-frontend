@@ -726,7 +726,7 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
           {context.clientRequests.length === 0 ? (
             <div className="nodata">No client requests yet</div>
           ) : null}
-          <div className="alignright">
+          <div className="alignright" style={{ marginBottom: "40px" }} >
             <ButtonSecondary
               className="buttonsecondary"
               onClick={async () => {
@@ -818,7 +818,7 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
               noContextMenu={true}
               data={searchAllColumnsFromTable({ rows: dataForLargeRequestTable, query: props.notaryProps.searchString })}
             />}
-          <div className="alignright">
+          <div className="alignright" style={{ marginBottom: "40px" }}>
             <ButtonSecondary
               className="buttonsecondary"
               onClick={async () => {

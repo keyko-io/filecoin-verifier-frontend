@@ -13,8 +13,9 @@ interface WalletProviderStates {
     githubOctoGenericLogin: any
     githubOctoGeneric: any
     loggedUser: any
+    avatarUrl: any
     fetchGithubIssues: any
-    fetchGithubComments:any
+    fetchGithubComments: any
 }
 
 export default class WalletProvider extends React.Component<{}, WalletProviderStates> {
@@ -35,6 +36,7 @@ export default class WalletProvider extends React.Component<{}, WalletProviderSt
 
     state = {
         loggedUser: '',
+        avatarUrl: '',
         githubLogged: false,
         githubOcto: {} as any,
         githubOctoGeneric: { logged: false } as any,
@@ -56,8 +58,9 @@ export default class WalletProvider extends React.Component<{}, WalletProviderSt
                 localStorage.setItem('tokenExpiration', expiration.toString())
                 localStorage.setItem('githubToken', authjson.data.access_token)
                 this.state.initGithubOcto(authjson.data.access_token)
-                const loggedUser = (await this.state.githubOcto.users.getAuthenticated()).data.login
-                this.setState({ loggedUser })
+                const { login, avatar_url } = (await this.state.githubOcto.users.getAuthenticated()).data
+                localStorage.setItem("avatar", avatar_url)
+                this.setState({ loggedUser: login, avatarUrl: avatar_url })
 
             } catch (e) {
                 // this.state.dispatchNotification('Failed to login. Try again later.')
