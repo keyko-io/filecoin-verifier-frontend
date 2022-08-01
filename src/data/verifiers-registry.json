@@ -1,981 +1,1678 @@
 {
-  "notaries": [
-    {
-      "id": 1,
-      "name": "4Everland - Deon Erda",
-      "use_case": [
-        "general"
-      ],
-      "location": "Europe",
-      "website": "",
-      "email": "contact@4everland.org",
-      "fil_slack_id": "Deon Erda",
-      "github_user": [
-        "4everlandorg"
-      ],
-      "ldn_config": {
-        "active_signer": "true",
-        "signing_address": "f1wp5enznnbgzyoaiafzlox3h3bkwcl347iwqivga"
-      }
-    },
-    {
-      "id": 2,
-      "name": "12ships Foundation - Irene Young",
-      "use_case": [
-        "general"
-      ],
-      "location": "Asia minus GCN",
-      "website": "",
-      "email": "irene@12ships.com",
-      "fil_slack_id": "Irene - 12Ships Foundation",
-      "github_user": [
-        "IreneYoung"
-      ],
-      "ldn_config": {
-        "active_signer": "true",
-        "signing_address": "f1d4gmpqz3execjj2wvrxuuhvbms5mzh7t7yqrviq"
-      }
-    },
-    {
-      "id": 3,
-      "name": "1475 - Simon",
-      "use_case": [
-        "general"
-      ],
-      "location": "Greater China",
-      "website": "",
-      "email": "simon686@protonmail.com",
-      "fil_slack_id": "@Simon686",
-      "github_user": [
-        "1475Notary"
-      ],
-      "ldn_config": {
-        "active_signer": "true",
-        "signing_address": "f1ofq4mngy7ggcp755pfquq2gphjjnlydolf6awtq"
-      }
-    },
-    {
-      "id": 4,
-      "name": "Banyan - Claudia Richoux",
-      "use_case": [
-        "general"
-      ],
-      "location": "North America",
-      "website": "",
-      "email": "c@banyan.computer",
-      "fil_slack_id": "@laudiacay",
-      "github_user": [
-        "laudiacay"
-      ],
-      "ldn_config": {
-        "active_signer": "true",
-        "signing_address": "f1oc6qvenzp7wsriu7edyebb325gnaovktmujl7jq"
-      }
-    },
-    {
-      "id": 5,
-      "name": "BingHe Web3.0 Lab",
-      "use_case": [
-        "general"
-      ],
-      "location": "Greater China",
-      "website": "",
-      "email": "610145641@qq.com",
-      "fil_slack_id": "BingHe Web3.0 Lab(冰河web3实验室)",
-      "github_user": [
-        "MRJAVAZHAO"
-      ],
-      "ldn_config": {
-        "active_signer": "true",
-        "signing_address": "f14gme3f52prtyzk6pblogrdd6b6ivp4swc6qmesi"
-      }
-    },
-    {
-      "id": 6,
-      "name": "Bitrise Capital - Suki",
-      "use_case": [
-        "general"
-      ],
-      "location": "Asia minus GCN",
-      "website": "",
-      "email": "accounting@bitrisevc.com",
-      "fil_slack_id": "Bitrise-work",
-      "github_user": [
-        "Bitrise2020"
-      ],
-      "ldn_config": {
-        "active_signer": "true",
-        "signing_address": "f1dfkdmjhuvvol6okun57mix447wdpolwcd323ktq"
-      }
-    },
-    {
-      "id": 7,
-      "name": "BlockChain World - Sounghwan Park",
-      "use_case": [
-        "general"
-      ],
-      "location": "Asia minus GCN",
-      "website": "",
-      "email": "psh0691@gmail.com",
-      "fil_slack_id": "psh0691",
-      "github_user": [
-        "psh0691"
-      ],
-      "ldn_config": {
-        "active_signer": "true",
-        "signing_address": "f1qdko4jg25vo35qmyvcrw4ak4fmuu3f5rif2kc7i"
-      }
-    },
-    {
-      "id": 8,
-      "name": "BlockMaker - BlockMaker",
-      "use_case": [
-        "general"
-      ],
-      "location": "Asia minus GCN",
-      "website": "",
-      "email": "blockmaker@sina.com",
-      "fil_slack_id": "BlockMaker",
-      "github_user": [
-        "BlockMakeronline"
-      ],
-      "ldn_config": {
-        "active_signer": "true",
-        "signing_address": "f1o3twrcpwjtpcd4q36lpq4qmy2qfbgtyy5h6tsty"
-      }
-    },
-    {
-      "id": 9,
-      "name": "ByteBase - Eric",
-      "use_case": [
-        "general"
-      ],
-      "location": "Greater China",
-      "website": "",
-      "email": "swatchliu@163.com",
-      "fil_slack_id": "ByteBase",
-      "github_user": [
-        "swatchliu"
-      ],
-      "ldn_config": {
-        "active_signer": "true",
-        "signing_address": "f1yh6q3nmsg7i2sys7f7dexcuajgoweudcqj2chfi"
-      }
-    },
-    {
-      "id": 10,
-      "name": "Cabrina Huang - Cabrina Huang",
-      "use_case": [
-        "general"
-      ],
-      "location": "Greater China",
-      "website": "",
-      "email": "cabrinahuang@gmail.com",
-      "fil_slack_id": "CabrinaHuang",
-      "github_user": [
-        "xingjitansuo"
-      ],
-      "ldn_config": {
-        "active_signer": "true",
-        "signing_address": "f1a2lia2cwwekeubwo4nppt4v4vebxs2frozarz3q"
-      }
-    },
-    {
-      "id": 11,
-      "name": "Coffee Cloud",
-      "use_case": [
-        "general"
-      ],
-      "location": "Greater China",
-      "website": "",
-      "email": "job@coffeecloud.io,, david@coffeecloud.io",
-      "fil_slack_id": "@job deng, Dave CoffeeCloud",
-      "github_user": [
-        "jobdeng",
-        "davidthoms"
-      ],
-      "ldn_config": {
-        "active_signer": "true",
-        "signing_address": "f13weizhii77v7bp2jb3h5sjotrfmhchee5ktlnvq"
-      }
-    },
-    {
-      "id": 12,
-      "name": "DeFil - Eden",
-      "use_case": [
-        "general"
-      ],
-      "location": "Greater China",
-      "website": "",
-      "email": "defil@defil.org",
-      "fil_slack_id": "defil@defil.org",
-      "github_user": [
-        "DeFIL123"
-      ],
-      "ldn_config": {
-        "active_signer": "true",
-        "signing_address": "f1dnb3uz7sylxk6emti3ififcvu3nlufnnsjui6ea"
-      }
-    },
-    {
-      "id": 13,
-      "name": "Define Platform - Alex Kim",
-      "use_case": [
-        "general"
-      ],
-      "location": "Asia minus GCN",
-      "website": "",
-      "email": "alex@de-fine.art",
-      "fil_slack_id": "Alex Kim (Define)",
-      "github_user": [
-        "Alex11801"
-      ],
-      "ldn_config": {
-        "active_signer": "true",
-        "signing_address": "f1hhippi64yiyhpjdtbidfyzma6irc2nuav7mrwmi"
-      }
-    },
-    {
-      "id": 14,
-      "name": "FBG Capital - Gary Gao",
-      "use_case": [
-        "general"
-      ],
-      "location": "Asia minus GCN",
-      "website": "",
-      "email": "gary.gao@fbg.capital",
-      "fil_slack_id": "gary.gao@fbg.capital",
-      "github_user": [
-        "gary.gao@fbg.capital"
-      ],
-      "ldn_config": {
-        "active_signer": "true",
-        "signing_address": "f1zffqhxwq2rrg7rtot6lmkl6hb2xyrrseawprzsq"
-      }
-    },
-    {
-      "id": 15,
-      "name": "Fenbushi Capital",
-      "use_case": [
-        "general"
-      ],
-      "location": "Greater China",
-      "website": "",
-      "email": "k.chen@fenbushi.vc",
-      "fil_slack_id": "Zhehao Chen - Fenbushi Capital",
-      "github_user": [
-        "Fenbushi-Filecoin"
-      ],
-      "ldn_config": {
-        "active_signer": "true",
-        "signing_address": "f1yqydpmqb5en262jpottko2kd65msajax7fi4rmq"
-      }
-    },
-    {
-      "id": 16,
-      "name": "Filecoin Foundation",
-      "use_case": [
-        "general"
-      ],
-      "location": "Europe",
-      "website": "",
-      "email": "danny@fil.org",
-      "fil_slack_id": "Danny O'Brien",
-      "github_user": [
-        "dannyob"
-      ],
-      "ldn_config": {
-        "active_signer": "true",
-        "signing_address": "f1k6wwevxvp466ybil7y2scqlhtnrz5atjkkyvm4a"
-      }
-    },
-    {
-      "id": 17,
-      "name": "Filswan - Charles Cao",
-      "use_case": [
-        "general"
-      ],
-      "location": "North America",
-      "website": "",
-      "email": "ccao@filswan.com",
-      "fil_slack_id": "Charles Cao -Filswan",
-      "github_user": [
-        "flyworker"
-      ],
-      "ldn_config": {
-        "active_signer": "true",
-        "signing_address": "f1hlubjsdkv4wmsdadihloxgwrz3j3ernf6i3cbpy"
-      }
-    },
-    {
-      "id": 18,
-      "name": "Firefly (YuanHe Tech) - embedsky",
-      "use_case": [
-        "general"
-      ],
-      "location": "Asia minus GCN",
-      "website": "",
-      "email": "liuwencheng@fireflyminer.com",
-      "fil_slack_id": "UJ81VJNNQ",
-      "github_user": [
-        "fireflyHZ"
-      ],
-      "ldn_config": {
-        "active_signer": "true",
-        "signing_address": "f1fg6jkxsr3twfnyhdlatmq36xca6sshptscds7xa"
-      }
-    },
-    {
-      "id": 19,
-      "name": "Force Web3 Community - Tim Guo (柏礼）",
-      "use_case": [
-        "general"
-      ],
-      "location": "Asia minus GCN",
-      "website": "",
-      "email": "jinhaoguo@hotmail.com",
-      "fil_slack_id": "Tim Guo（柏礼）",
-      "github_user": [
-        "TimGuo7"
-      ],
-      "ldn_config": {
-        "active_signer": "true",
-        "signing_address": "f1mxtcba3l5qnzkh2wjmnynnrrht35bya6ec53pnq"
-      }
-    },
-    {
-      "id": 20,
-      "name": "Gate.io - Fafa",
-      "use_case": [
-        "general"
-      ],
-      "location": "North America",
-      "website": "",
-      "email": "filecoin_notary@gate.io",
-      "fil_slack_id": "filecoin_notary@gate.io",
-      "github_user": [
-        "gateio"
-      ],
-      "ldn_config": {
-        "active_signer": "true",
-        "signing_address": "f1jqyyoqncny5bbo5inwnopjrcoig4ivxlm5pnxly"
-      }
-    },
-    {
-      "id": 21,
-      "name": "Genesis - Anne",
-      "use_case": [
-        "general"
-      ],
-      "location": "Greater China",
-      "website": "",
-      "email": "1286679231@qq.com, 297511521@qq.com",
-      "fil_slack_id": "chuangshiIPFS, U015T4BULA2",
-      "github_user": [
-        "Genesis/1ane-1",
-        "KIMQI001"
-      ],
-      "ldn_config": {
-        "active_signer": "true",
-        "signing_address": "f1mdk7s2vntzm6hu35yuo6vjubtrpfnb2awhgvrri"
-      }
-    },
-    {
-      "id": 22,
-      "name": "Guazi Dynamic - Fatman13",
-      "use_case": [
-        "general"
-      ],
-      "location": "Greater China",
-      "website": "",
-      "email": "yu.leng@foxmail.com",
-      "fil_slack_id": "Fatman13",
-      "github_user": [
-        "Fatman13"
-      ],
-      "ldn_config": {
-        "active_signer": "true",
-        "signing_address": "f15ofoeeq57euuha3ig273lhkcpjhhnlbgyylqdii"
-      }
-    },
-    {
-      "id": 23,
-      "name": "Holon Innovations",
-      "use_case": [
-        "general"
-      ],
-      "location": "Oceania",
-      "website": "",
-      "email": "meg@holon.investments",
-      "fil_slack_id": "@Meg Dennis",
-      "github_user": [
-        "@megtei"
-      ],
-      "ldn_config": {
-        "active_signer": "true",
-        "signing_address": "f1ystxl2ootvpirpa7ebgwl7vlhwkbx2r4zjxwe5i"
-      }
-    },
-    {
-      "id": 24,
-      "name": "Infinite Scroll // Glif",
-      "use_case": [
-        "general"
-      ],
-      "location": "North America",
-      "website": "",
-      "email": "jonathan@infinitescroll.org",
-      "fil_slack_id": "Jonathan Schwartz",
-      "github_user": [
-        "glifio"
-      ],
-      "ldn_config": {
-        "active_signer": "true",
-        "signing_address": "f3qqlzlsjxgy67wdwe5ade5ygk7omp6cnze3nr3aoxwtptjg3ar4i3w26p4rplnm7ppeeyjlwtxqawx2boioma"
-      }
-    },
-    {
-      "id": 25,
-      "name": "IPFS Japan Consortium - Masaaki Nawatani",
-      "use_case": [
-        "general"
-      ],
-      "location": "Asia minus GCN",
-      "website": "",
-      "email": "mark.nawatani@blotocol.com",
-      "fil_slack_id": "@MasaakiNawatani",
-      "github_user": [
-        "@MasaakiNawatani"
-      ],
-      "ldn_config": {
-        "active_signer": "true",
-        "signing_address": "f1ciu27vn3r7htmanzvwrm6ksx6y774gqsz3cot3i"
-      }
-    },
-    {
-      "id": 26,
-      "name": "IPFS Metaverse Community - Nic",
-      "use_case": [
-        "general"
-      ],
-      "location": "Greater China",
-      "website": "",
-      "email": "ipfs2022@outlook.com",
-      "fil_slack_id": "Nic-IPFS Metaverse Community",
-      "github_user": [
-        "ipfscn"
-      ],
-      "ldn_config": {
-        "active_signer": "true",
-        "signing_address": "f1j4n74chme7whbz3yls4a7ixqewb6dijypqg2a3a"
-      }
-    },
-    {
-      "id": 27,
-      "name": "IPFSForce - Steven Li",
-      "use_case": [
-        "general"
-      ],
-      "location": "Greater China",
-      "website": "",
-      "email": "steven004@gmail.com",
-      "fil_slack_id": "Steven",
-      "github_user": [
-        "steven004"
-      ],
-      "ldn_config": {
-        "active_signer": "true",
-        "signing_address": "f1w2vyp4w6df44gbh4vxqle4w65zfrfnwhrl3hojy"
-      }
-    },
-    {
-      "id": 28,
-      "name": "IPFSMain - Neo Ge",
-      "use_case": [
-        "general"
-      ],
-      "location": "Greater China",
-      "website": "",
-      "email": "nge@ipfsmain.ca",
-      "fil_slack_id": "neogeweb3",
-      "github_user": [
-        "neogeweb3"
-      ],
-      "ldn_config": {
-        "active_signer": "true",
-        "signing_address": "f13k5zr6ovc2gjmg3lvd43ladbydhovpylcvbflpa"
-      }
-    },
-    {
-      "id": 29,
-      "name": "IPOLLO - M",
-      "use_case": [
-        "general"
-      ],
-      "location": "North America",
-      "website": "",
-      "email": "ipollo_gh@ipollo.com",
-      "fil_slack_id": "ipollo_gh@ipollo.com",
-      "github_user": [
-        "IPOLLO-OFFICIAL"
-      ],
-      "ldn_config": {
-        "active_signer": "true",
-        "signing_address": "f1guplg5wyjdn6bv4forsb5eu2lohexvdlttkavpq"
-      }
-    },
-    {
-      "id": 30,
-      "name": "Kernelogic - Fei Yan",
-      "use_case": [
-        "general"
-      ],
-      "location": "North America",
-      "website": "",
-      "email": "feiya200@gmail.com",
-      "fil_slack_id": "feiya200",
-      "github_user": [
-        "kernelogic"
-      ],
-      "ldn_config": {
-        "active_signer": "true",
-        "signing_address": "f1yjhnsoga2ccnepb7t3p3ov5fzom3syhsuinxexa"
-      }
-    },
-    {
-      "id": 31,
-      "name": "MatrixStorage",
-      "use_case": [
-        "general"
-      ],
-      "location": "Greater China",
-      "website": "",
-      "email": "matrixstoragems@gmail.com",
-      "fil_slack_id": "矩阵存储MatrixStorage",
-      "github_user": [
-        "MatrixStorage"
-      ],
-      "ldn_config": {
-        "active_signer": "true",
-        "signing_address": "f1tbxqwjxfyv7swsdin4einirlsfquv3vnmlapley"
-      }
-    },
-    {
-      "id": 32,
-      "name": "MetaWave - Jazz Hsiao",
-      "use_case": [
-        "general"
-      ],
-      "location": "Oceania",
-      "website": "",
-      "email": "metawaveinfo@gmail.com",
-      "fil_slack_id": "@Jazz - MetaWave",
-      "github_user": [
-        "MetaWaveInfo"
-      ],
-      "ldn_config": {
-        "active_signer": "true",
-        "signing_address": "f1ktlkcxnmzxcdaoqfsunrg3vocfbmgv4n3mrn74a"
-      }
-    },
-    {
-      "id": 33,
-      "name": "ND Labs - Leo",
-      "use_case": [
-        "general"
-      ],
-      "location": "Asia minus GCN",
-      "website": "",
-      "email": "hzpd@ndlabs.io",
-      "fil_slack_id": "hzpd@ndlabs.io",
-      "github_user": [
-        "NDLabs"
-      ],
-      "ldn_config": {
-        "active_signer": "true",
-        "signing_address": "f1y7xmlneep3qtxcumqlmqrja3fhqdxdaxwou6mdq"
-      }
-    },
-    {
-      "id": 34,
-      "name": "New Web Group",
-      "use_case": [
-        "general"
-      ],
-      "location": "Greater China",
-      "website": "",
-      "email": "yuan@newwebgroup.com, brandonhjones8@gmail.com",
-      "fil_slack_id": "Yuan, U027SDP1PGD",
-      "github_user": [
-        "newwebgroup"
-      ],
-      "ldn_config": {
-        "active_signer": "true",
-        "signing_address": "f1e77zuityhvvw6u2t6tb5qlnsegy2s67qs4lbbbq"
-      }
-    },
-    {
-      "id": 35,
-      "name": "NFTStar - Vito",
-      "use_case": [
-        "general"
-      ],
-      "location": "North America",
-      "website": "",
-      "email": "garnicat474@gmail.com",
-      "fil_slack_id": "garnicat474@gmail.com",
-      "github_user": [
-        "NFTstar1"
-      ],
-      "ldn_config": {
-        "active_signer": "true",
-        "signing_address": "f1ng6g57r4u62q67u6lm33ftijfsggyzzjzb2l4cy"
-      }
-    },
-    {
-      "id": 36,
-      "name": "NonEntropy Tech - Junyao Ren",
-      "use_case": [
-        "general"
-      ],
-      "location": "Greater China",
-      "website": "",
-      "email": "renjunyao@gmail.com",
-      "fil_slack_id": "@Josh",
-      "github_user": [
-        "@junyaoren"
-      ],
-      "ldn_config": {
-        "active_signer": "true",
-        "signing_address": "f1y5rllqjmhqj6ppz64ixl42pqe7hua3nzjbd5bpy"
-      }
-    },
-    {
-      "id": 37,
-      "name": "Origin Storage",
-      "use_case": [
-        "general"
-      ],
-      "location": "North America",
-      "website": "",
-      "email": "guoyong90hou@gmail.com, sddenter@gmail.com",
-      "fil_slack_id": "cryptostack：U01FV5B9Z2P Tom [OriginStorage] : U037UV4Q8HL Zou [OriginStorage] : U01K3DQE0EB",
-      "github_user": [
-        "llifezou",
-        "Tom-OriginStorage"
-      ],
-      "ldn_config": {
-        "active_signer": "true",
-        "signing_address": "f1q6bpjlqia6iemqbrdaxr2uehrhpvoju3qh4lpga"
-      }
-    },
-    {
-      "id": 38,
-      "name": "Performive - Tim Williams",
-      "use_case": [
-        "general"
-      ],
-      "location": "North America",
-      "website": "",
-      "email": "wtim0029@gmail.com",
-      "fil_slack_id": "@Tim Williams",
-      "github_user": [
-        "TimWilliams00"
-      ],
-      "ldn_config": {
-        "active_signer": "true",
-        "signing_address": "f1fkxkfxgopjf3ufnfg5i3m6qlwf73kp4w5zz7nnq"
-      }
-    },
-    {
-      "id": 39,
-      "name": "PiKNiK - James Hoang",
-      "use_case": [
-        "general"
-      ],
-      "location": "North America",
-      "website": "",
-      "email": "james@piknik.com",
-      "fil_slack_id": "James - PiKNiK",
-      "github_user": [
-        "jamerduhgamer"
-      ],
-      "ldn_config": {
-        "active_signer": "true",
-        "signing_address": "f1ypuqpi4xn5q7zi5at3rmdltosozifhqmrt66vhq"
-      }
-    },
-    {
-      "id": 40,
-      "name": "Pluskit - Pluskit",
-      "use_case": [
-        "general"
-      ],
-      "location": "Asia minus GCN",
-      "website": "",
-      "email": "pluskitofficial@163.com",
-      "fil_slack_id": "@PluskitOfficial",
-      "github_user": [
-        "@PluskitOfficial"
-      ],
-      "ldn_config": {
-        "active_signer": "true",
-        "signing_address": "f1tgnlhtcmhwipfm7thsftxhn5k52velyjlazpvka"
-      }
-    },
-    {
-      "id": 41,
-      "name": "POW Power - ZHIHUI",
-      "use_case": [
-        "general"
-      ],
-      "location": "Greater China",
-      "website": "",
-      "email": "powpower778@gmail.com",
-      "fil_slack_id": "powpower778@gmail.com",
-      "github_user": [
-        "powpower2021"
-      ],
-      "ldn_config": {
-        "active_signer": "true",
-        "signing_address": "f1ji2xty4dtg2a4pfnslltkw7pbhy76kvihizkfmq"
-      }
-    },
-    {
-      "id": 42,
-      "name": "Speedium - Wijnand Schouten",
-      "use_case": [
-        "general"
-      ],
-      "location": "Europe",
-      "website": "",
-      "email": "wijnandschouten@protonmail.com",
-      "fil_slack_id": "WijnandSchouten",
-      "github_user": [
-        "@cryptowhizzard"
-      ],
-      "ldn_config": {
-        "active_signer": "true",
-        "signing_address": "f1krmypm4uoxxf3g7okrwtrahlmpcph3y7rbqqgfa"
-      }
-    },
-    {
-      "id": 43,
-      "name": "STCloud - Barry",
-      "use_case": [
-        "general"
-      ],
-      "location": "Greater China",
-      "website": "",
-      "email": "zxydoris666888@gmail.com",
-      "fil_slack_id": "LISA",
-      "github_user": [
-        "1LISA2"
-      ],
-      "ldn_config": {
-        "active_signer": "true",
-        "signing_address": "f1jvvltduw35u6inn5tr4nfualyd42bh3vjtylgci"
-      }
-    },
-    {
-      "id": 44,
-      "name": "Tech Greedy - Xinan Xu",
-      "use_case": [
-        "general"
-      ],
-      "location": "North America",
-      "website": "",
-      "email": "xinan.xu@techgreedy.net",
-      "fil_slack_id": "Xinan Xu",
-      "github_user": [
-        "xinaxu"
-      ],
-      "ldn_config": {
-        "active_signer": "true",
-        "signing_address": "f1k3ysofkrrmqcot6fkx4wnezpczlltpirmrpsgui"
-      }
-    },
-    {
-      "id": 45,
-      "name": "TechHedge (Reiers) - Nicklas Reiersen",
-      "use_case": [
-        "general"
-      ],
-      "location": "Europe",
-      "website": "",
-      "email": "nicklas@filecoin.no",
-      "fil_slack_id": "Reiers",
-      "github_user": [
-        "Reiers"
-      ],
-      "ldn_config": {
-        "active_signer": "true",
-        "signing_address": "f1oz43ckvmtxmmsfzqm6bpnemqlavz4ifyl524chq"
-      }
-    },
-    {
-      "id": 46,
-      "name": "Tenet Data Systems",
-      "use_case": [
-        "general"
-      ],
-      "location": "Asia minus GCN",
-      "website": "",
-      "email": "contact@tenetds.co.kr, sjk891027@tenetds.co.kr",
-      "fil_slack_id": "contact@tenetds.co.kr, sjk891027@tenetds.co.kr, contact@tenetds.co.kr",
-      "github_user": [
-        "TENET-Data-Systems"
-      ],
-      "ldn_config": {
-        "active_signer": "true",
-        "signing_address": "f1eon4u6vq5ejirmyfbz7xmgqimojudmo6xlhpqcq"
-      }
-    },
-    {
-      "id": 47,
-      "name": "Textile - Andrew Hill",
-      "use_case": [
-        "general"
-      ],
-      "location": "North America",
-      "website": "",
-      "email": "ignacio@textile.io",
-      "fil_slack_id": "jsign",
-      "github_user": [
-        "jsign"
-      ],
-      "ldn_config": {
-        "active_signer": "true",
-        "signing_address": "f2kb4izxsxu2jyyslzwmv2sfbrgpld56efedgru5i"
-      }
-    },
-    {
-      "id": 48,
-      "name": "Tianji Studio - Bailey-li",
-      "use_case": [
-        "general"
-      ],
-      "location": "Greater China",
-      "website": "",
-      "email": "yz.li@m.dapponline.io",
-      "fil_slack_id": "@Patrick-li, @Patrick-li",
-      "github_user": [
-        "@liyunzhi-666"
-      ],
-      "ldn_config": {
-        "active_signer": "true",
-        "signing_address": "f1pszcrsciyixyuxxukkvtazcokexbn54amf7gvoq"
-      }
-    },
-    {
-      "id": 49,
-      "name": "Tinfra",
-      "use_case": [
-        "general"
-      ],
-      "location": "North America",
-      "website": "",
-      "email": "xd@telnyx.com, david@telnyx.com",
-      "fil_slack_id": "@xd (xd@telnyx.com, member ID U08TCB8DQ), @david (david@telnyx.com, Member ID U03UKUFPD)",
-      "github_user": [
-        "xzhai1",
-        "dcasem"
-      ],
-      "ldn_config": {
-        "active_signer": "true",
-        "signing_address": "f1jqk7xok5kautet2knhwlg74jvcfbrqlj47kbp2i"
-      }
-    },
-    {
-      "id": 50,
-      "name": "Twinquasar - Julien NOEL",
-      "use_case": [
-        "general"
-      ],
-      "location": "Europe",
-      "website": "",
-      "email": "julien.noel@twinquasar.io",
-      "fil_slack_id": "Julien NOEL",
-      "github_user": [
-        "s0nik42"
-      ],
-      "ldn_config": {
-        "active_signer": "true",
-        "signing_address": "f1wxhnytjmklj2czezaqcfl7eb4nkgmaxysnegwii"
-      }
-    },
-    {
-      "id": 51,
-      "name": "Union Labs (formally IPFSUnion) - Jackie Mo",
-      "use_case": [
-        "general"
-      ],
-      "location": "Greater China",
-      "website": "",
-      "email": "Unionlabs2020@gmail.com",
-      "fil_slack_id": "@Jackie - UnionLabs",
-      "github_user": [
-        "UnionLabs2020"
-      ],
-      "ldn_config": {
-        "active_signer": "true",
-        "signing_address": "f17xdri3wunqgld7dm23e4f3eqsntjakwc47xjo6i"
-      }
-    },
-    {
-      "id": 52,
-      "name": "Venus Team - IPFSForce - Joss Hua",
-      "use_case": [
-        "general"
-      ],
-      "location": "Greater China",
-      "website": "",
-      "email": "josshrb@gmail.com",
-      "fil_slack_id": "Joss Hua (ID: UNGKP21HC)",
-      "github_user": [
-        "Joss-Hua"
-      ],
-      "ldn_config": {
-        "active_signer": "true",
-        "signing_address": "f1tfg54zzscugttejv336vivknmsnzzmyudp3t7wi"
-      }
-    },
-    {
-      "id": 53,
-      "name": "Waterdrop Lab",
-      "use_case": [
-        "general"
-      ],
-      "location": "Greater China",
-      "website": "",
-      "email": "amiclan@gmail.com, cyx384356052@gmail.com, 85589661@qq.com",
-      "fil_slack_id": "amiclan, yangxichen, wenxin",
-      "github_user": [
-        "jggapp",
-        "hxcyx"
-      ],
-      "ldn_config": {
-        "active_signer": "true",
-        "signing_address": "f122qmy25wdtt5mxd77kndiq7z5x2n3iwiuz2wdsa"
-      }
-    },
-    {
-      "id": 54,
-      "name": "West Labs",
-      "use_case": [
-        "general"
-      ],
-      "location": "Oceania",
-      "website": "",
-      "email": "service@westlabs.io",
-      "fil_slack_id": "Korbin Lee",
-      "github_user": [
-        "westlabsventure/westlabsventure"
-      ],
-      "ldn_config": {
-        "active_signer": "true",
-        "signing_address": "f1b5wse72uiusm4n2waqx4vuvsnvadz4ltcfruksa"
-      }
-    }
-  ]
+"notaries": [
+ {
+   "id": 1,
+   "organization": "4Everland",
+   "name": "Deon Erda",
+   "election_round": "3rd",
+   "status": "Active",
+   "use_case": "Web 3.0 Applications/ Web 2.0 Applications/ Developer Tools/ Scientific Data/ User Content/ Professional Services/ Media & Entertainment",
+   "location": "Europe",
+   "website": "",
+   "email": [
+      "contact@4everland.org",
+      "",
+      ""
+   ],
+   "fil_slack_id": "Deon Erda",
+   "github_user": [
+      "4everlandorg",
+      ""
+   ],
+   "ldn_config": {
+      "active_signer": true,
+      "signing_address": "f1wp5enznnbgzyoaiafzlox3h3bkwcl347iwqivga"
+   },
+   "direct_config": {
+      "active_signer": true,
+      "signing_address": "f1wp5enznnbgzyoaiafzlox3h3bkwcl347iwqivga"
+   },
+   "previous_config": {
+      "signing_address": ""
+   }
+},
+ {
+   "id": 2,
+   "organization": "12ships Foundation",
+   "name": "Irene Young",
+   "election_round": "2nd, 3rd",
+   "status": "Active",
+   "use_case": "Professional Services (Hosting Reseller, Digital Preservation, Long-term Backups, Long-term Log Storage), Developer Tools (Package Managers, Automatic Notaries), Web 3.0 / Decentralized Applications, Web 2.0 Applications, User Content (Personal Storage, User Generated Media), Scientific Data (Satellite Imagery, Geological Data, Computer Vision, Autonomous Driving), Media & Entertainment",
+   "location": "Asia minus GCN",
+   "website": "",
+   "email": [
+      "irene@12ships.com",
+      "",
+      ""
+   ],
+   "fil_slack_id": "Irene - 12Ships Foundation",
+   "github_user": [
+      "IreneYoung",
+      ""
+   ],
+   "ldn_config": {
+      "active_signer": true,
+      "signing_address": "f1d4gmpqz3execjj2wvrxuuhvbms5mzh7t7yqrviq"
+   },
+   "direct_config": {
+      "active_signer": true,
+      "signing_address": "f1d4gmpqz3execjj2wvrxuuhvbms5mzh7t7yqrviq"
+   },
+   "previous_config": {
+      "signing_address": ""
+   }
+},
+ {
+   "id": 3,
+   "organization": "1475",
+   "name": "Simon",
+   "election_round": "2nd, 3rd",
+   "status": "Active",
+   "use_case": "General",
+   "location": "Greater China",
+   "website": "",
+   "email": [
+      "simon686@protonmail.com",
+      "",
+      ""
+   ],
+   "fil_slack_id": "@Simon686",
+   "github_user": [
+      "1475Notary",
+      ""
+   ],
+   "ldn_config": {
+      "active_signer": true,
+      "signing_address": "f1ofq4mngy7ggcp755pfquq2gphjjnlydolf6awtq"
+   },
+   "direct_config": {
+      "active_signer": true,
+      "signing_address": "f1ofq4mngy7ggcp755pfquq2gphjjnlydolf6awtq"
+   },
+   "previous_config": {
+      "signing_address": "f1lwpw2bcv66pla3lpkcuzquw37pbx7ur4m6zvq2a"
+   }
+},
+ {
+   "id": 4,
+   "organization": "Banyan",
+   "name": "Claudia Richoux",
+   "election_round": "3rd",
+   "status": "Active",
+   "use_case": "Professional Services/Web 3.0/Other",
+   "location": "North America",
+   "website": "",
+   "email": [
+      "c@banyan.computer",
+      "",
+      ""
+   ],
+   "fil_slack_id": "@laudiacay",
+   "github_user": [
+      "laudiacay",
+      ""
+   ],
+   "ldn_config": {
+      "active_signer": true,
+      "signing_address": "f1oc6qvenzp7wsriu7edyebb325gnaovktmujl7jq"
+   },
+   "direct_config": {
+      "active_signer": true,
+      "signing_address": "f1oc6qvenzp7wsriu7edyebb325gnaovktmujl7jq"
+   },
+   "previous_config": {
+      "signing_address": ""
+   }
+},
+ {
+   "id": 5,
+   "organization": "BingHe Web3.0 Lab",
+   "name": "",
+   "election_round": "2nd, 3rd",
+   "status": "Active",
+   "use_case": "General",
+   "location": "Greater China",
+   "website": "",
+   "email": [
+      "610145641@qq.com",
+      "",
+      ""
+   ],
+   "fil_slack_id": "BingHe Web3.0 Lab(冰河web3实验室)",
+   "github_user": [
+      "MRJAVAZHAO",
+      ""
+   ],
+   "ldn_config": {
+      "active_signer": true,
+      "signing_address": "f14gme3f52prtyzk6pblogrdd6b6ivp4swc6qmesi"
+   },
+   "direct_config": {
+      "active_signer": true,
+      "signing_address": "f14gme3f52prtyzk6pblogrdd6b6ivp4swc6qmesi"
+   },
+   "previous_config": {
+      "signing_address": ""
+   }
+},
+ {
+   "id": 6,
+   "organization": "Bitrise Capital",
+   "name": "Suki",
+   "election_round": "3rd",
+   "status": "Active",
+   "use_case": "General",
+   "location": "Asia minus GCN",
+   "website": "",
+   "email": [
+      "accounting@bitrisevc.com",
+      "",
+      ""
+   ],
+   "fil_slack_id": "Bitrise-work",
+   "github_user": [
+      "Bitrise2020",
+      ""
+   ],
+   "ldn_config": {
+      "active_signer": true,
+      "signing_address": "f1dfkdmjhuvvol6okun57mix447wdpolwcd323ktq"
+   },
+   "direct_config": {
+      "active_signer": true,
+      "signing_address": "f1dfkdmjhuvvol6okun57mix447wdpolwcd323ktq"
+   },
+   "previous_config": {
+      "signing_address": ""
+   }
+},
+ {
+   "id": 7,
+   "organization": "BlockChain World",
+   "name": "Sounghwan Park",
+   "election_round": "3rd",
+   "status": "Active",
+   "use_case": "general, blockchain data, other",
+   "location": "Asia minus GCN",
+   "website": "http://bcwnews.com/",
+   "email": [
+      "psh0691@gmail.com",
+      "",
+      ""
+   ],
+   "fil_slack_id": "psh0691",
+   "github_user": [
+      "psh0691",
+      ""
+   ],
+   "ldn_config": {
+      "active_signer": true,
+      "signing_address": "f1qdko4jg25vo35qmyvcrw4ak4fmuu3f5rif2kc7i"
+   },
+   "direct_config": {
+      "active_signer": true,
+      "signing_address": "f1qdko4jg25vo35qmyvcrw4ak4fmuu3f5rif2kc7i"
+   },
+   "previous_config": {
+      "signing_address": ""
+   }
+},
+ {
+   "id": 8,
+   "organization": "BlockMaker",
+   "name": "",
+   "election_round": "3rd",
+   "status": "Active",
+   "use_case": "General",
+   "location": "Asia minus GCN",
+   "website": "",
+   "email": [
+      "blockmaker@sina.com",
+      "",
+      ""
+   ],
+   "fil_slack_id": "BlockMaker",
+   "github_user": [
+      "BlockMakeronline",
+      ""
+   ],
+   "ldn_config": {
+      "active_signer": true,
+      "signing_address": "f1o3twrcpwjtpcd4q36lpq4qmy2qfbgtyy5h6tsty"
+   },
+   "direct_config": {
+      "active_signer": true,
+      "signing_address": "f1o3twrcpwjtpcd4q36lpq4qmy2qfbgtyy5h6tsty"
+   },
+   "previous_config": {
+      "signing_address": ""
+   }
+},
+ {
+   "id": 9,
+   "organization": "ByteBase",
+   "name": "Eric",
+   "election_round": "3rd",
+   "status": "Active",
+   "use_case": "General (user content, enterprise data, scientific data etc.)",
+   "location": "Greater China",
+   "website": "",
+   "email": [
+      "swatchliu@163.com",
+      "",
+      ""
+   ],
+   "fil_slack_id": "ByteBase",
+   "github_user": [
+      "swatchliu",
+      ""
+   ],
+   "ldn_config": {
+      "active_signer": true,
+      "signing_address": "f1yh6q3nmsg7i2sys7f7dexcuajgoweudcqj2chfi"
+   },
+   "direct_config": {
+      "active_signer": true,
+      "signing_address": "f1yh6q3nmsg7i2sys7f7dexcuajgoweudcqj2chfi"
+   },
+   "previous_config": {
+      "signing_address": ""
+   }
+},
+ {
+   "id": 10,
+   "organization": "Cabrina Huang",
+   "name": "",
+   "election_round": "3rd",
+   "status": "Active",
+   "use_case": "Web 2.0 Applications,Web 3.0 / Decentralized Applications, Scientific Data",
+   "location": "Greater China",
+   "website": "",
+   "email": [
+      "cabrinahuang@gmail.com",
+      "",
+      ""
+   ],
+   "fil_slack_id": "CabrinaHuang",
+   "github_user": [
+      "xingjitansuo",
+      ""
+   ],
+   "ldn_config": {
+      "active_signer": true,
+      "signing_address": "f1a2lia2cwwekeubwo4nppt4v4vebxs2frozarz3q"
+   },
+   "direct_config": {
+      "active_signer": true,
+      "signing_address": "f1a2lia2cwwekeubwo4nppt4v4vebxs2frozarz3q"
+   },
+   "previous_config": {
+      "signing_address": ""
+   }
+},
+ {
+   "id": 11,
+   "organization": "Coffee Cloud",
+   "name": "",
+   "election_round": "3rd",
+   "status": "Active",
+   "use_case": "General",
+   "location": "Greater China",
+   "website": "https://coffeecloud.io/home",
+   "email": [
+      "job@coffeecloud.io",
+      "david@coffeecloud.io",
+      ""
+   ],
+   "fil_slack_id": "@job deng, Dave CoffeeCloud",
+   "github_user": [
+      "jobdeng",
+      "davidthoms"
+   ],
+   "ldn_config": {
+      "active_signer": true,
+      "signing_address": "f14qmuid2b6ne4342m5dk56f4rcr7y5sz4sg5fiwy"
+   },
+   "direct_config": {
+      "active_signer": true,
+      "signing_address": "f14qmuid2b6ne4342m5dk56f4rcr7y5sz4sg5fiwy"
+   },
+   "previous_config": {
+      "signing_address": "f13weizhii77v7bp2jb3h5sjotrfmhchee5ktlnvq"
+   }
+},
+ {
+   "id": 12,
+   "organization": "DeFil",
+   "name": "Eden",
+   "election_round": "3rd",
+   "status": "Active",
+   "use_case": "Individual user storage, enterprise user storage, public project storage, scientific data sets, video and music",
+   "location": "Greater China",
+   "website": "",
+   "email": [
+      "defil@defil.org",
+      "",
+      ""
+   ],
+   "fil_slack_id": "defil@defil.org",
+   "github_user": [
+      "DeFIL123",
+      ""
+   ],
+   "ldn_config": {
+      "active_signer": true,
+      "signing_address": "f1dnb3uz7sylxk6emti3ififcvu3nlufnnsjui6ea"
+   },
+   "direct_config": {
+      "active_signer": true,
+      "signing_address": "f1dnb3uz7sylxk6emti3ififcvu3nlufnnsjui6ea"
+   },
+   "previous_config": {
+      "signing_address": ""
+   }
+},
+ {
+   "id": 13,
+   "organization": "Define Platform",
+   "name": "Alex Kim",
+   "election_round": "3rd",
+   "status": "Active",
+   "use_case": "Web 3.0 / Decentralized Applications, Web 2.0 Applications, User Content (Personal Storage, User Generated Media), Media & Entertainment, and others",
+   "location": "Asia minus GCN",
+   "website": "",
+   "email": [
+      "alex@de-fine.art",
+      "",
+      ""
+   ],
+   "fil_slack_id": "Alex Kim (Define)",
+   "github_user": [
+      "Alex11801",
+      ""
+   ],
+   "ldn_config": {
+      "active_signer": true,
+      "signing_address": "f1hhippi64yiyhpjdtbidfyzma6irc2nuav7mrwmi"
+   },
+   "direct_config": {
+      "active_signer": true,
+      "signing_address": "f1hhippi64yiyhpjdtbidfyzma6irc2nuav7mrwmi"
+   },
+   "previous_config": {
+      "signing_address": ""
+   }
+},
+ {
+   "id": 14,
+   "organization": "FBG Capital",
+   "name": "Gary Gao",
+   "election_round": "3rd",
+   "status": "Active",
+   "use_case": "Web 3.0 Applications/ Web 2.0 Applications/ Developer Tools/ Scientific Data/ User Content/ Professional Services/ Media & Entertainment",
+   "location": "Asia minus GCN",
+   "website": "",
+   "email": [
+      "gary.gao@fbg.capital",
+      "",
+      ""
+   ],
+   "fil_slack_id": "gary.gao@fbg.capital",
+   "github_user": [
+      "GaryGJG",
+      "gary.gao@fbg.capital"
+   ],
+   "ldn_config": {
+      "active_signer": true,
+      "signing_address": "f1zffqhxwq2rrg7rtot6lmkl6hb2xyrrseawprzsq"
+   },
+   "direct_config": {
+      "active_signer": true,
+      "signing_address": "f1zffqhxwq2rrg7rtot6lmkl6hb2xyrrseawprzsq"
+   },
+   "previous_config": {
+      "signing_address": ""
+   }
+},
+ {
+   "id": 15,
+   "organization": "Fenbushi Capital",
+   "name": "",
+   "election_round": "2nd, 3rd",
+   "status": "Active",
+   "use_case": "General",
+   "location": "Greater China",
+   "website": "",
+   "email": [
+      "k.chen@fenbushi.vc",
+      "",
+      ""
+   ],
+   "fil_slack_id": "Zhehao Chen - Fenbushi Capital",
+   "github_user": [
+      "Fenbushi-Filecoin",
+      ""
+   ],
+   "ldn_config": {
+      "active_signer": true,
+      "signing_address": "f1yqydpmqb5en262jpottko2kd65msajax7fi4rmq"
+   },
+   "direct_config": {
+      "active_signer": true,
+      "signing_address": "f1yqydpmqb5en262jpottko2kd65msajax7fi4rmq"
+   },
+   "previous_config": {
+      "signing_address": ""
+   }
+},
+ {
+   "id": 16,
+   "organization": "Filecoin Foundation",
+   "name": "",
+   "election_round": "2nd, 3rd",
+   "status": "Active",
+   "use_case": "All use cases, with an institutional emphasis on our aim to preserve \"Humanities most important open and public data\"",
+   "location": "Europe",
+   "website": "https://fil.org/",
+   "email": [
+      "danny@fil.org",
+      "",
+      ""
+   ],
+   "fil_slack_id": "Danny O'Brien",
+   "github_user": [
+      "dannyob",
+      ""
+   ],
+   "ldn_config": {
+      "active_signer": true,
+      "signing_address": "f1k6wwevxvp466ybil7y2scqlhtnrz5atjkkyvm4a"
+   },
+   "direct_config": {
+      "active_signer": true,
+      "signing_address": "f1k6wwevxvp466ybil7y2scqlhtnrz5atjkkyvm4a"
+   },
+   "previous_config": {
+      "signing_address": ""
+   }
+},
+ {
+   "id": 17,
+   "organization": "Filswan",
+   "name": "Charles Cao",
+   "election_round": "2nd, 3rd",
+   "status": "Active",
+   "use_case": "Scientific Data, Media & Entertainment",
+   "location": "North America",
+   "website": "",
+   "email": [
+      "ccao@filswan.com",
+      "",
+      ""
+   ],
+   "fil_slack_id": "Charles Cao -Filswan",
+   "github_user": [
+      "flyworker",
+      ""
+   ],
+   "ldn_config": {
+      "active_signer": true,
+      "signing_address": "f1hlubjsdkv4wmsdadihloxgwrz3j3ernf6i3cbpy"
+   },
+   "direct_config": {
+      "active_signer": true,
+      "signing_address": "f1hlubjsdkv4wmsdadihloxgwrz3j3ernf6i3cbpy"
+   },
+   "previous_config": {
+      "signing_address": ""
+   }
+},
+ {
+   "id": 18,
+   "organization": "Firefly (YuanHe Tech)",
+   "name": "embedsky",
+   "election_round": "3rd",
+   "status": "Active",
+   "use_case": "Web 3.0 / Decentralized Applications",
+   "location": "Asia minus GCN",
+   "website": "",
+   "email": [
+      "liuwencheng@fireflyminer.com",
+      "",
+      ""
+   ],
+   "fil_slack_id": "UJ81VJNNQ",
+   "github_user": [
+      "fireflyHZ",
+      ""
+   ],
+   "ldn_config": {
+      "active_signer": true,
+      "signing_address": "f1fg6jkxsr3twfnyhdlatmq36xca6sshptscds7xa"
+   },
+   "direct_config": {
+      "active_signer": true,
+      "signing_address": "f1fg6jkxsr3twfnyhdlatmq36xca6sshptscds7xa"
+   },
+   "previous_config": {
+      "signing_address": ""
+   }
+},
+ {
+   "id": 19,
+   "organization": "Force Web3 Community",
+   "name": "Tim Guo (柏礼）",
+   "election_round": "3rd",
+   "status": "Active",
+   "use_case": "General, Media & Entertainment, User Content.",
+   "location": "Asia minus GCN",
+   "website": "",
+   "email": [
+      "jinhaoguo@hotmail.com",
+      "",
+      ""
+   ],
+   "fil_slack_id": "Tim Guo（柏礼）",
+   "github_user": [
+      "TimGuo7",
+      ""
+   ],
+   "ldn_config": {
+      "active_signer": true,
+      "signing_address": "f1mxtcba3l5qnzkh2wjmnynnrrht35bya6ec53pnq"
+   },
+   "direct_config": {
+      "active_signer": true,
+      "signing_address": "f1mxtcba3l5qnzkh2wjmnynnrrht35bya6ec53pnq"
+   },
+   "previous_config": {
+      "signing_address": ""
+   }
+},
+ {
+   "id": 20,
+   "organization": "Gate.io",
+   "name": "Fafa",
+   "election_round": "3rd",
+   "status": "Active",
+   "use_case": "General",
+   "location": "North America",
+   "website": "",
+   "email": [
+      "filecoin_notary@gate.io",
+      "",
+      ""
+   ],
+   "fil_slack_id": "filecoin_notary@gate.io",
+   "github_user": [
+      "gateio",
+      ""
+   ],
+   "ldn_config": {
+      "active_signer": true,
+      "signing_address": "f1blw3s545cgl7bwkrvojtbkdyd6oyvg3vxfldqqa"
+   },
+   "direct_config": {
+      "active_signer": true,
+      "signing_address": "f1blw3s545cgl7bwkrvojtbkdyd6oyvg3vxfldqqa"
+   },
+   "previous_config": {
+      "signing_address": "f1jqyyoqncny5bbo5inwnopjrcoig4ivxlm5pnxly"
+   }
+},
+ {
+   "id": 21,
+   "organization": "Genesis",
+   "name": "Anne",
+   "election_round": "3rd",
+   "status": "Active",
+   "use_case": "Building surveillance video / SDCloud user personal data / disaster recovery data",
+   "location": "Greater China",
+   "website": "",
+   "email": [
+      "1286679231@qq.com",
+      "297511521@qq.com",
+      ""
+   ],
+   "fil_slack_id": "chuangshiIPFS, U015T4BULA2",
+   "github_user": [
+      "1ane-1",
+      "KIMQI001"
+   ],
+   "ldn_config": {
+      "active_signer": true,
+      "signing_address": "f1mdk7s2vntzm6hu35yuo6vjubtrpfnb2awhgvrri"
+   },
+   "direct_config": {
+      "active_signer": true,
+      "signing_address": "f1mdk7s2vntzm6hu35yuo6vjubtrpfnb2awhgvrri"
+   },
+   "previous_config": {
+      "signing_address": ""
+   }
+},
+ {
+   "id": 22,
+   "organization": "Guazi Dynamic",
+   "name": "Fatman13",
+   "election_round": "3rd",
+   "status": "Active",
+   "use_case": "Web 3.0 / Decentralized Applications, Web 2.0 Applications, User Content, Scientific Data, Media & Entertainment",
+   "location": "Greater China",
+   "website": "",
+   "email": [
+      "yu.leng@foxmail.com",
+      "",
+      ""
+   ],
+   "fil_slack_id": "Fatman13",
+   "github_user": [
+      "Fatman13",
+      ""
+   ],
+   "ldn_config": {
+      "active_signer": true,
+      "signing_address": "f1j3u7crhjzwb2cj5mq7vodlt4o66yoyci7lhcauy"
+   },
+   "direct_config": {
+      "active_signer": true,
+      "signing_address": "f1j3u7crhjzwb2cj5mq7vodlt4o66yoyci7lhcauy"
+   },
+   "previous_config": {
+      "signing_address": "f15ofoeeq57euuha3ig273lhkcpjhhnlbgyylqdii"
+   }
+},
+ {
+   "id": 23,
+   "organization": "Holon Innovations",
+   "name": "",
+   "election_round": "2nd, 3rd",
+   "status": "Active",
+   "use_case": "General",
+   "location": "Oceania",
+   "website": "https://holon.investments/",
+   "email": [
+      "meg@holon.investments",
+      "",
+      ""
+   ],
+   "fil_slack_id": "@Meg Dennis",
+   "github_user": [
+      "megtei",
+      ""
+   ],
+   "ldn_config": {
+      "active_signer": true,
+      "signing_address": "f1ystxl2ootvpirpa7ebgwl7vlhwkbx2r4zjxwe5i"
+   },
+   "direct_config": {
+      "active_signer": true,
+      "signing_address": "f1ystxl2ootvpirpa7ebgwl7vlhwkbx2r4zjxwe5i"
+   },
+   "previous_config": {
+      "signing_address": ""
+   }
+},
+ {
+   "id": 24,
+   "organization": "Infinite Scroll // Glif",
+   "name": "",
+   "election_round": "2nd, 3rd",
+   "status": "Active",
+   "use_case": "Automatic Notary",
+   "location": "North America",
+   "website": "",
+   "email": [
+      "jonathan@infinitescroll.org",
+      "",
+      ""
+   ],
+   "fil_slack_id": "Jonathan Schwartz",
+   "github_user": [
+      "Schwartz10",
+      "glifio"
+   ],
+   "ldn_config": {
+      "active_signer": true,
+      "signing_address": "f3qqlzlsjxgy67wdwe5ade5ygk7omp6cnze3nr3aoxwtptjg3ar4i3w26p4rplnm7ppeeyjlwtxqawx2boioma"
+   },
+   "direct_config": {
+      "active_signer": true,
+      "signing_address": "f3qqlzlsjxgy67wdwe5ade5ygk7omp6cnze3nr3aoxwtptjg3ar4i3w26p4rplnm7ppeeyjlwtxqawx2boioma"
+   },
+   "previous_config": {
+      "signing_address": ""
+   }
+},
+ {
+   "id": 25,
+   "organization": "IPFS Japan Consortium",
+   "name": "Masaaki Nawatani",
+   "election_round": "2nd, 3rd",
+   "status": "Active",
+   "use_case": "Web 3.0 / Decentralized Applications",
+   "location": "Asia minus GCN",
+   "website": "",
+   "email": [
+      "mark.nawatani@blotocol.com",
+      "",
+      ""
+   ],
+   "fil_slack_id": "@MasaakiNawatani",
+   "github_user": [
+      "MasaakiNawatani",
+      ""
+   ],
+   "ldn_config": {
+      "active_signer": true,
+      "signing_address": "f1ciu27vn3r7htmanzvwrm6ksx6y774gqsz3cot3i"
+   },
+   "direct_config": {
+      "active_signer": true,
+      "signing_address": "f1ciu27vn3r7htmanzvwrm6ksx6y774gqsz3cot3i"
+   },
+   "previous_config": {
+      "signing_address": ""
+   }
+},
+ {
+   "id": 26,
+   "organization": "IPFS Metaverse Community",
+   "name": "Nic",
+   "election_round": "3rd",
+   "status": "Active",
+   "use_case": "General, Media & Entertainment, User Content.",
+   "location": "Greater China",
+   "website": "",
+   "email": [
+      "ipfs2022@outlook.com",
+      "",
+      ""
+   ],
+   "fil_slack_id": "Nic-IPFS Metaverse Community",
+   "github_user": [
+      "ipfscn",
+      ""
+   ],
+   "ldn_config": {
+      "active_signer": true,
+      "signing_address": "f1j4n74chme7whbz3yls4a7ixqewb6dijypqg2a3a"
+   },
+   "direct_config": {
+      "active_signer": true,
+      "signing_address": "f1j4n74chme7whbz3yls4a7ixqewb6dijypqg2a3a"
+   },
+   "previous_config": {
+      "signing_address": ""
+   }
+},
+ {
+   "id": 27,
+   "organization": "IPFSForce",
+   "name": "Steven Li",
+   "election_round": "2nd, 3rd",
+   "status": "Active",
+   "use_case": "User Content, Scientific Data, Media & Entertainment",
+   "location": "Greater China",
+   "website": "",
+   "email": [
+      "steven004@gmail.com",
+      "",
+      ""
+   ],
+   "fil_slack_id": "Steven",
+   "github_user": [
+      "steven004",
+      ""
+   ],
+   "ldn_config": {
+      "active_signer": true,
+      "signing_address": "f1w2vyp4w6df44gbh4vxqle4w65zfrfnwhrl3hojy"
+   },
+   "direct_config": {
+      "active_signer": true,
+      "signing_address": "f1w2vyp4w6df44gbh4vxqle4w65zfrfnwhrl3hojy"
+   },
+   "previous_config": {
+      "signing_address": "f1qoxqy3npwcvoqy7gpstm65lejcy7pkd3hqqekna"
+   }
+},
+ {
+   "id": 28,
+   "organization": "IPFSMain",
+   "name": "Neo Ge",
+   "election_round": "2nd, 3rd",
+   "status": "Active",
+   "use_case": "Personal user storage, scientific datasets, video & music",
+   "location": "Greater China",
+   "website": "",
+   "email": [
+      "nge@ipfsmain.ca",
+      "",
+      ""
+   ],
+   "fil_slack_id": "neogeweb3",
+   "github_user": [
+      "neogeweb3",
+      ""
+   ],
+   "ldn_config": {
+      "active_signer": true,
+      "signing_address": "f13k5zr6ovc2gjmg3lvd43ladbydhovpylcvbflpa"
+   },
+   "direct_config": {
+      "active_signer": true,
+      "signing_address": "f13k5zr6ovc2gjmg3lvd43ladbydhovpylcvbflpa"
+   },
+   "previous_config": {
+      "signing_address": ""
+   }
+},
+ {
+   "id": 29,
+   "organization": "IPOLLO",
+   "name": "M",
+   "election_round": "3rd",
+   "status": "Active",
+   "use_case": "General",
+   "location": "North America",
+   "website": "",
+   "email": [
+      "ipollo_gh@ipollo.com",
+      "",
+      ""
+   ],
+   "fil_slack_id": "ipollo_gh@ipollo.com",
+   "github_user": [
+      "IPOLLO-OFFICIAL",
+      ""
+   ],
+   "ldn_config": {
+      "active_signer": true,
+      "signing_address": "f1guplg5wyjdn6bv4forsb5eu2lohexvdlttkavpq"
+   },
+   "direct_config": {
+      "active_signer": true,
+      "signing_address": "f1guplg5wyjdn6bv4forsb5eu2lohexvdlttkavpq"
+   },
+   "previous_config": {
+      "signing_address": ""
+   }
+},
+ {
+   "id": 30,
+   "organization": "Kernelogic",
+   "name": "Fei Yan",
+   "election_round": "3rd",
+   "status": "Active",
+   "use_case": "Slingshot Restore, Scientific Data",
+   "location": "North America",
+   "website": "",
+   "email": [
+      "feiya200@gmail.com",
+      "",
+      ""
+   ],
+   "fil_slack_id": "feiya200",
+   "github_user": [
+      "kernelogic",
+      ""
+   ],
+   "ldn_config": {
+      "active_signer": true,
+      "signing_address": "f1yjhnsoga2ccnepb7t3p3ov5fzom3syhsuinxexa"
+   },
+   "direct_config": {
+      "active_signer": true,
+      "signing_address": "f1yjhnsoga2ccnepb7t3p3ov5fzom3syhsuinxexa"
+   },
+   "previous_config": {
+      "signing_address": ""
+   }
+},
+ {
+   "id": 31,
+   "organization": "MatrixStorage",
+   "name": "",
+   "election_round": "3rd",
+   "status": "Active",
+   "use_case": "General, prefer cases on IPFS ecological applications, not limited to Web3.0 or Dapp, and big data service.",
+   "location": "Greater China",
+   "website": "",
+   "email": [
+      "matrixstoragems@gmail.com",
+      "",
+      ""
+   ],
+   "fil_slack_id": "矩阵存储MatrixStorage",
+   "github_user": [
+      "MatrixStorage",
+      ""
+   ],
+   "ldn_config": {
+      "active_signer": true,
+      "signing_address": "f1tbxqwjxfyv7swsdin4einirlsfquv3vnmlapley"
+   },
+   "direct_config": {
+      "active_signer": true,
+      "signing_address": "f1tbxqwjxfyv7swsdin4einirlsfquv3vnmlapley"
+   },
+   "previous_config": {
+      "signing_address": ""
+   }
+},
+ {
+   "id": 32,
+   "organization": "MetaWave",
+   "name": "Jazz Hsiao",
+   "election_round": "3rd",
+   "status": "Active",
+   "use_case": "Web 3.0 / Decentralized Applications, Web 2.0 Applications, User Content, Scientific Data, Media & Entertainment, Other",
+   "location": "Oceania",
+   "website": "",
+   "email": [
+      "metawaveinfo@gmail.com",
+      "",
+      ""
+   ],
+   "fil_slack_id": "@Jazz - MetaWave",
+   "github_user": [
+      "MetaWaveInfo",
+      ""
+   ],
+   "ldn_config": {
+      "active_signer": true,
+      "signing_address": "f1ktlkcxnmzxcdaoqfsunrg3vocfbmgv4n3mrn74a"
+   },
+   "direct_config": {
+      "active_signer": true,
+      "signing_address": "f1ktlkcxnmzxcdaoqfsunrg3vocfbmgv4n3mrn74a"
+   },
+   "previous_config": {
+      "signing_address": ""
+   }
+},
+ {
+   "id": 33,
+   "organization": "ND Labs",
+   "name": "Leo",
+   "election_round": "3rd",
+   "status": "Active",
+   "use_case": "General",
+   "location": "Asia minus GCN",
+   "website": "",
+   "email": [
+      "hzpd@ndlabs.io",
+      "",
+      ""
+   ],
+   "fil_slack_id": "hzpd@ndlabs.io",
+   "github_user": [
+      "NDLabs",
+      ""
+   ],
+   "ldn_config": {
+      "active_signer": true,
+      "signing_address": "f1y7xmlneep3qtxcumqlmqrja3fhqdxdaxwou6mdq"
+   },
+   "direct_config": {
+      "active_signer": true,
+      "signing_address": "f1y7xmlneep3qtxcumqlmqrja3fhqdxdaxwou6mdq"
+   },
+   "previous_config": {
+      "signing_address": ""
+   }
+},
+ {
+   "id": 34,
+   "organization": "New Web Group",
+   "name": "",
+   "election_round": "3rd",
+   "status": "Active",
+   "use_case": "General",
+   "location": "Greater China",
+   "website": "",
+   "email": [
+      "yuan@newwebgroup.com",
+      "brandonhjones8@gmail.com",
+      ""
+   ],
+   "fil_slack_id": "Yuan, U027SDP1PGD",
+   "github_user": [
+      "newwebgroup",
+      ""
+   ],
+   "ldn_config": {
+      "active_signer": true,
+      "signing_address": "f1e77zuityhvvw6u2t6tb5qlnsegy2s67qs4lbbbq"
+   },
+   "direct_config": {
+      "active_signer": true,
+      "signing_address": "f1e77zuityhvvw6u2t6tb5qlnsegy2s67qs4lbbbq"
+   },
+   "previous_config": {
+      "signing_address": ""
+   }
+},
+ {
+   "id": 35,
+   "organization": "NFTStar",
+   "name": "Vito",
+   "election_round": "3rd",
+   "status": "Active",
+   "use_case": "General",
+   "location": "North America",
+   "website": "",
+   "email": [
+      "garnicat474@gmail.com",
+      "",
+      ""
+   ],
+   "fil_slack_id": "garnicat474@gmail.com",
+   "github_user": [
+      "NFTstar1",
+      ""
+   ],
+   "ldn_config": {
+      "active_signer": true,
+      "signing_address": "f1ng6g57r4u62q67u6lm33ftijfsggyzzjzb2l4cy"
+   },
+   "direct_config": {
+      "active_signer": true,
+      "signing_address": "f1ng6g57r4u62q67u6lm33ftijfsggyzzjzb2l4cy"
+   },
+   "previous_config": {
+      "signing_address": ""
+   }
+},
+ {
+   "id": 36,
+   "organization": "NonEntropy Tech",
+   "name": "Junyao Ren",
+   "election_round": "3rd",
+   "status": "Active",
+   "use_case": "Web 3.0 / Decentralized Applications, Web 2.0 Applications, User Content, Scientific Data, Media & Entertainment",
+   "location": "Greater China",
+   "website": "",
+   "email": [
+      "renjunyao@gmail.com",
+      "",
+      ""
+   ],
+   "fil_slack_id": "@Josh",
+   "github_user": [
+      "junyaoren",
+      ""
+   ],
+   "ldn_config": {
+      "active_signer": true,
+      "signing_address": "f1y5rllqjmhqj6ppz64ixl42pqe7hua3nzjbd5bpy"
+   },
+   "direct_config": {
+      "active_signer": true,
+      "signing_address": "f1y5rllqjmhqj6ppz64ixl42pqe7hua3nzjbd5bpy"
+   },
+   "previous_config": {
+      "signing_address": ""
+   }
+},
+ {
+   "id": 37,
+   "organization": "Origin Storage",
+   "name": "",
+   "election_round": "3rd",
+   "status": "Active",
+   "use_case": "General, Web3.0 application data and web2.0 p2p cdn data",
+   "location": "North America",
+   "website": "https://www.originstorage.io/",
+   "email": [
+      "guoyong90hou@gmail.com",
+      "sddenter@gmail.com",
+      ""
+   ],
+   "fil_slack_id": "cryptostack：U01FV5B9Z2P Tom [OriginStorage] : U037UV4Q8HL Zou [OriginStorage] : U01K3DQE0EB",
+   "github_user": [
+      "llifezou",
+      "Tom-OriginStorage"
+   ],
+   "ldn_config": {
+      "active_signer": true,
+      "signing_address": "f1q6bpjlqia6iemqbrdaxr2uehrhpvoju3qh4lpga"
+   },
+   "direct_config": {
+      "active_signer": true,
+      "signing_address": "f1q6bpjlqia6iemqbrdaxr2uehrhpvoju3qh4lpga"
+   },
+   "previous_config": {
+      "signing_address": ""
+   }
+},
+ {
+   "id": 38,
+   "organization": "Performive",
+   "name": "Tim Williams",
+   "election_round": "2nd, 3rd",
+   "status": "Active",
+   "use_case": "General",
+   "location": "North America",
+   "website": "",
+   "email": [
+      "wtim0029@gmail.com",
+      "",
+      ""
+   ],
+   "fil_slack_id": "@Tim Williams",
+   "github_user": [
+      "TimWilliams00",
+      ""
+   ],
+   "ldn_config": {
+      "active_signer": true,
+      "signing_address": "f1fkxkfxgopjf3ufnfg5i3m6qlwf73kp4w5zz7nnq"
+   },
+   "direct_config": {
+      "active_signer": true,
+      "signing_address": "f1fkxkfxgopjf3ufnfg5i3m6qlwf73kp4w5zz7nnq"
+   },
+   "previous_config": {
+      "signing_address": ""
+   }
+},
+ {
+   "id": 39,
+   "organization": "PiKNiK",
+   "name": "James Hoang",
+   "election_round": "3rd",
+   "status": "Active",
+   "use_case": "Professional Services, Web 3.0 / Decentralized Applications, Web 2.0 Applications, Scientific Data, Media & Entertainment",
+   "location": "North America",
+   "website": "",
+   "email": [
+      "james@piknik.com",
+      "",
+      ""
+   ],
+   "fil_slack_id": "James - PiKNiK",
+   "github_user": [
+      "jamerduhgamer",
+      ""
+   ],
+   "ldn_config": {
+      "active_signer": true,
+      "signing_address": "f1ypuqpi4xn5q7zi5at3rmdltosozifhqmrt66vhq"
+   },
+   "direct_config": {
+      "active_signer": true,
+      "signing_address": "f1ypuqpi4xn5q7zi5at3rmdltosozifhqmrt66vhq"
+   },
+   "previous_config": {
+      "signing_address": ""
+   }
+},
+ {
+   "id": 40,
+   "organization": "Pluskit",
+   "name": "",
+   "election_round": "3rd",
+   "status": "Active",
+   "use_case": "General",
+   "location": "Asia minus GCN",
+   "website": "",
+   "email": [
+      "pluskitofficial@163.com",
+      "",
+      ""
+   ],
+   "fil_slack_id": "@PluskitOfficial",
+   "github_user": [
+      "PluskitOfficial",
+      ""
+   ],
+   "ldn_config": {
+      "active_signer": true,
+      "signing_address": "f1tgnlhtcmhwipfm7thsftxhn5k52velyjlazpvka"
+   },
+   "direct_config": {
+      "active_signer": true,
+      "signing_address": "f1tgnlhtcmhwipfm7thsftxhn5k52velyjlazpvka"
+   },
+   "previous_config": {
+      "signing_address": ""
+   }
+},
+ {
+   "id": 41,
+   "organization": "POW Power",
+   "name": "ZHIHUI",
+   "election_round": "3rd",
+   "status": "Active",
+   "use_case": "General",
+   "location": "Greater China",
+   "website": "",
+   "email": [
+      "powpower778@gmail.com",
+      "",
+      ""
+   ],
+   "fil_slack_id": "powpower778@gmail.com",
+   "github_user": [
+      "powpower2021",
+      ""
+   ],
+   "ldn_config": {
+      "active_signer": true,
+      "signing_address": "f1ji2xty4dtg2a4pfnslltkw7pbhy76kvihizkfmq"
+   },
+   "direct_config": {
+      "active_signer": true,
+      "signing_address": "f1ji2xty4dtg2a4pfnslltkw7pbhy76kvihizkfmq"
+   },
+   "previous_config": {
+      "signing_address": ""
+   }
+},
+ {
+   "id": 42,
+   "organization": "Speedium",
+   "name": "Wijnand Schouten",
+   "election_round": "2nd, 3rd",
+   "status": "Active",
+   "use_case": "Personal user storage, scientific datasets, video & music.",
+   "location": "Europe",
+   "website": "",
+   "email": [
+      "wijnandschouten@protonmail.com",
+      "",
+      ""
+   ],
+   "fil_slack_id": "WijnandSchouten",
+   "github_user": [
+      "cryptowhizzard",
+      ""
+   ],
+   "ldn_config": {
+      "active_signer": true,
+      "signing_address": "f1krmypm4uoxxf3g7okrwtrahlmpcph3y7rbqqgfa"
+   },
+   "direct_config": {
+      "active_signer": true,
+      "signing_address": "f1krmypm4uoxxf3g7okrwtrahlmpcph3y7rbqqgfa"
+   },
+   "previous_config": {
+      "signing_address": ""
+   }
+},
+ {
+   "id": 43,
+   "organization": "STCloud",
+   "name": "Barry",
+   "election_round": "3rd",
+   "status": "Active",
+   "use_case": "Individual user storage, enterprise user storage, public project storage, scientific data sets, video and music",
+   "location": "Greater China",
+   "website": "",
+   "email": [
+      "zxydoris666888@gmail.com",
+      "",
+      ""
+   ],
+   "fil_slack_id": "LISA",
+   "github_user": [
+      "1LISA2",
+      ""
+   ],
+   "ldn_config": {
+      "active_signer": true,
+      "signing_address": "f1jvvltduw35u6inn5tr4nfualyd42bh3vjtylgci"
+   },
+   "direct_config": {
+      "active_signer": true,
+      "signing_address": "f1jvvltduw35u6inn5tr4nfualyd42bh3vjtylgci"
+   },
+   "previous_config": {
+      "signing_address": ""
+   }
+},
+ {
+   "id": 44,
+   "organization": "Tech Greedy",
+   "name": "Xinan Xu",
+   "election_round": "3rd",
+   "status": "Active",
+   "use_case": "Web 2/3 applications, storing public data",
+   "location": "North America",
+   "website": "",
+   "email": [
+      "xinan.xu@techgreedy.net",
+      "",
+      ""
+   ],
+   "fil_slack_id": "Xinan Xu",
+   "github_user": [
+      "xinaxu",
+      ""
+   ],
+   "ldn_config": {
+      "active_signer": true,
+      "signing_address": "f1k3ysofkrrmqcot6fkx4wnezpczlltpirmrpsgui"
+   },
+   "direct_config": {
+      "active_signer": true,
+      "signing_address": "f1k3ysofkrrmqcot6fkx4wnezpczlltpirmrpsgui"
+   },
+   "previous_config": {
+      "signing_address": ""
+   }
+},
+ {
+   "id": 45,
+   "organization": "TechHedge (Reiers)",
+   "name": "Nicklas Reiersen",
+   "election_round": "2nd, 3rd",
+   "status": "Active",
+   "use_case": "General",
+   "location": "Europe",
+   "website": "www.filecoin.no",
+   "email": [
+      "nicklas@filecoin.no",
+      "",
+      ""
+   ],
+   "fil_slack_id": "Reiers",
+   "github_user": [
+      "Reiers",
+      ""
+   ],
+   "ldn_config": {
+      "active_signer": true,
+      "signing_address": "f1oz43ckvmtxmmsfzqm6bpnemqlavz4ifyl524chq"
+   },
+   "direct_config": {
+      "active_signer": true,
+      "signing_address": "f1oz43ckvmtxmmsfzqm6bpnemqlavz4ifyl524chq"
+   },
+   "previous_config": {
+      "signing_address": ""
+   }
+},
+ {
+   "id": 46,
+   "organization": "Tenet Data Systems",
+   "name": "",
+   "election_round": "3rd",
+   "status": "Active",
+   "use_case": "General",
+   "location": "Asia minus GCN",
+   "website": "",
+   "email": [
+      "contact@tenetds.co.kr",
+      "sjk891027@tenetds.co.kr",
+      ""
+   ],
+   "fil_slack_id": "contact@tenetds.co.kr, sjk891027@tenetds.co.kr, contact@tenetds.co.kr",
+   "github_user": [
+      "TENET-Data-Systems",
+      ""
+   ],
+   "ldn_config": {
+      "active_signer": true,
+      "signing_address": "f1eon4u6vq5ejirmyfbz7xmgqimojudmo6xlhpqcq"
+   },
+   "direct_config": {
+      "active_signer": true,
+      "signing_address": "f1eon4u6vq5ejirmyfbz7xmgqimojudmo6xlhpqcq"
+   },
+   "previous_config": {
+      "signing_address": ""
+   }
+},
+ {
+   "id": 47,
+   "organization": "Textile",
+   "name": "Andrew Hill",
+   "election_round": "2nd, 3rd",
+   "status": "Active",
+   "use_case": "Web3, Web2 integrations, Data Warehousing",
+   "location": "North America",
+   "website": "textile.io",
+   "email": [
+      "ignacio@textile.io",
+      "",
+      ""
+   ],
+   "fil_slack_id": "jsign",
+   "github_user": [
+      "jsign",
+      ""
+   ],
+   "ldn_config": {
+      "active_signer": true,
+      "signing_address": "f2kb4izxsxu2jyyslzwmv2sfbrgpld56efedgru5i"
+   },
+   "direct_config": {
+      "active_signer": true,
+      "signing_address": "f2kb4izxsxu2jyyslzwmv2sfbrgpld56efedgru5i"
+   },
+   "previous_config": {
+      "signing_address": "f2kb4izxsxu2jyyslzwmv2sfbrgpld56efedgru5i"
+   }
+},
+ {
+   "id": 48,
+   "organization": "Tianji Studio",
+   "name": "Bailey-li",
+   "election_round": "3rd",
+   "status": "Active",
+   "use_case": "Web 3.0 / Decentralized Applications, User Content, Scientific Data, Media & Entertainment",
+   "location": "Greater China",
+   "website": "",
+   "email": [
+      "yz.li@m.dapponline.io",
+      "",
+      ""
+   ],
+   "fil_slack_id": "@Patrick-li, @Patrick-li",
+   "github_user": [
+      "liyunzhi-666",
+      ""
+   ],
+   "ldn_config": {
+      "active_signer": true,
+      "signing_address": "f1pszcrsciyixyuxxukkvtazcokexbn54amf7gvoq"
+   },
+   "direct_config": {
+      "active_signer": true,
+      "signing_address": "f1pszcrsciyixyuxxukkvtazcokexbn54amf7gvoq"
+   },
+   "previous_config": {
+      "signing_address": ""
+   }
+},
+ {
+   "id": 49,
+   "organization": "Tinfra",
+   "name": "",
+   "election_round": "3rd",
+   "status": "Active",
+   "use_case": "General",
+   "location": "North America",
+   "website": "",
+   "email": [
+      "brandon@tinfra.io",
+      "xd@telnyx.com",
+      "david@telnyx.com"
+   ],
+   "fil_slack_id": "@Brandon McNabb, @xd (xd@telnyx.com, member ID U08TCB8DQ), @david (david@telnyx.com, Member ID U03UKUFPD)",
+   "github_user": [
+      "bmcnabb25",
+      "xzhai1"
+   ],
+   "ldn_config": {
+      "active_signer": true,
+      "signing_address": "f1jqk7xok5kautet2knhwlg74jvcfbrqlj47kbp2i"
+   },
+   "direct_config": {
+      "active_signer": true,
+      "signing_address": "f1jqk7xok5kautet2knhwlg74jvcfbrqlj47kbp2i"
+   },
+   "previous_config": {
+      "signing_address": "f3rxsadodcupkqtxuh5lf3yn2i4z3ktmljfcuzfft4dm6kcy7znm2qzrbqfda3e4rjtdhq7vfqknt2yvqvn7ca"
+   }
+},
+ {
+   "id": 50,
+   "organization": "Twinquasar",
+   "name": "Julien NOEL",
+   "election_round": "2nd, 3rd",
+   "status": "Active",
+   "use_case": "General",
+   "location": "Europe",
+   "website": "http://twinquasar.io",
+   "email": [
+      "julien.noel@twinquasar.io",
+      "",
+      ""
+   ],
+   "fil_slack_id": "Julien NOEL",
+   "github_user": [
+      "s0nik42",
+      ""
+   ],
+   "ldn_config": {
+      "active_signer": true,
+      "signing_address": "f1wxhnytjmklj2czezaqcfl7eb4nkgmaxysnegwii"
+   },
+   "direct_config": {
+      "active_signer": true,
+      "signing_address": "f1wxhnytjmklj2czezaqcfl7eb4nkgmaxysnegwii"
+   },
+   "previous_config": {
+      "signing_address": ""
+   }
+},
+ {
+   "id": 51,
+   "organization": "Union Labs (formally IPFSUnion)",
+   "name": "Jackie Mo",
+   "election_round": "2nd, 3rd",
+   "status": "Active",
+   "use_case": "Web 3.0 / Decentralized Applications, Web 2.0 Applications, User Content, Scientific Data, Media & Entertainment, Other",
+   "location": "Greater China",
+   "website": "",
+   "email": [
+      "Unionlabs2020@gmail.com",
+      "",
+      ""
+   ],
+   "fil_slack_id": "@Jackie - UnionLabs",
+   "github_user": [
+      "UnionLabs2020",
+      ""
+   ],
+   "ldn_config": {
+      "active_signer": true,
+      "signing_address": "f17xdri3wunqgld7dm23e4f3eqsntjakwc47xjo6i"
+   },
+   "direct_config": {
+      "active_signer": true,
+      "signing_address": "f17xdri3wunqgld7dm23e4f3eqsntjakwc47xjo6i"
+   },
+   "previous_config": {
+      "signing_address": "f1enfilmuyphmnqexjt33zfbk56c25mo2lplgbpxa"
+   }
+},
+ {
+   "id": 52,
+   "organization": "IPFSForce - Venus Team",
+   "name": "Joss Hua",
+   "election_round": "3rd",
+   "status": "Active",
+   "use_case": "User Content, Scientific Data, Media & Entertainment, Other",
+   "location": "Greater China",
+   "website": "",
+   "email": [
+      "josshrb@gmail.com",
+      "",
+      ""
+   ],
+   "fil_slack_id": "Joss Hua (ID: UNGKP21HC)",
+   "github_user": [
+      "Joss-Hua",
+      ""
+   ],
+   "ldn_config": {
+      "active_signer": true,
+      "signing_address": "f1tfg54zzscugttejv336vivknmsnzzmyudp3t7wi"
+   },
+   "direct_config": {
+      "active_signer": true,
+      "signing_address": "f1tfg54zzscugttejv336vivknmsnzzmyudp3t7wi"
+   },
+   "previous_config": {
+      "signing_address": ""
+   }
+},
+ {
+   "id": 53,
+   "organization": "Waterdrop Lab",
+   "name": "",
+   "election_round": "3rd",
+   "status": "Active",
+   "use_case": "General",
+   "location": "Greater China",
+   "website": "",
+   "email": [
+      "amiclan@gmail.com",
+      "cyx384356052@gmail.com",
+      "85589661@qq.com"
+   ],
+   "fil_slack_id": "amiclan, yangxichen, wenxin",
+   "github_user": [
+      "jggapp",
+      "hxcyx"
+   ],
+   "ldn_config": {
+      "active_signer": true,
+      "signing_address": "f122qmy25wdtt5mxd77kndiq7z5x2n3iwiuz2wdsa"
+   },
+   "direct_config": {
+      "active_signer": true,
+      "signing_address": "f122qmy25wdtt5mxd77kndiq7z5x2n3iwiuz2wdsa"
+   },
+   "previous_config": {
+      "signing_address": ""
+   }
+},
+ {
+   "id": 54,
+   "organization": "West Labs",
+   "name": "",
+   "election_round": "3rd",
+   "status": "Active",
+   "use_case": "General",
+   "location": "Oceania",
+   "website": "http://westlabs.io",
+   "email": [
+      "service@westlabs.io",
+      "",
+      ""
+   ],
+   "fil_slack_id": "Korbin Lee",
+   "github_user": [
+      "westlabsventure",
+      ""
+   ],
+   "ldn_config": {
+      "active_signer": true,
+      "signing_address": "f1b5wse72uiusm4n2waqx4vuvsnvadz4ltcfruksa"
+   },
+   "direct_config": {
+      "active_signer": true,
+      "signing_address": "f1b5wse72uiusm4n2waqx4vuvsnvadz4ltcfruksa"
+   },
+   "previous_config": {
+      "signing_address": ""
+   }
+}
+]
 }
