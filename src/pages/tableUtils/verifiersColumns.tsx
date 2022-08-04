@@ -18,8 +18,11 @@ export const columns: any = [
     cell: (row: any) => (
       <div style={{ display: "flex", flexDirection: "column" }}>
         <span>Slack : {row.fil_slack_id}</span>
-        <span>Github : {row.github_user}</span>
-      </div>
+        {row.github_user.map((item: any, i: any) => (
+          item && <span key={item} style={{ marginRight: "10px" }}> Github : {item}</span>
+        ))
+        }
+      </div >
     ),
   },
   {
