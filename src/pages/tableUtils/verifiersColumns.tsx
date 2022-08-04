@@ -1,17 +1,10 @@
 import React from "react";
 
-
 export const columns: any = [
   {
-    name: "Notary Name",
-    selector: (row: any) => row.name,
+    name: "Organization / Notary Name",
+    selector: (row: any) => row.name ? row.organization + " - " + row.name : row.organization,
     sortable: true,
-  },
-  {
-    name: "Use Case",
-    selector: (row: any) => row.use_case,
-    sortable: true,
-    cell: (row: any) => <span>{row.use_case.join(", ")}</span>,
   },
   {
     name: "Location",
@@ -29,4 +22,11 @@ export const columns: any = [
       </div>
     ),
   },
+  {
+    name: "Use Case",
+    selector: (row: any) => row.use_case,
+    sortable: true,
+    grow: 2,
+    wrap: true
+  }
 ];
