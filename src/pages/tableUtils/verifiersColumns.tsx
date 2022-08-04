@@ -2,8 +2,8 @@ import React from "react";
 
 export const columns: any = [
   {
-    name: "Notary Name / Organization",
-    selector: (row: any) => row.name ? row.name + " - " + row.organization : row.organization,
+    name: "Organization / Notary Name",
+    selector: (row: any) => row.name ? row.organization + " - " + row.name : row.organization,
     sortable: true,
   },
   {
