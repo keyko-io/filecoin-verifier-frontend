@@ -1,17 +1,10 @@
 import React from "react";
 
-
 export const columns: any = [
   {
-    name: "Notary Name",
-    selector: (row: any) => row.name,
+    name: "Organization / Notary Name",
+    selector: (row: any) => row.name ? row.organization + " - " + row.name : row.organization,
     sortable: true,
-  },
-  {
-    name: "Use Case",
-    selector: (row: any) => row.use_case,
-    sortable: true,
-    cell: (row: any) => <span>{row.use_case.join(", ")}</span>,
   },
   {
     name: "Location",
@@ -25,8 +18,18 @@ export const columns: any = [
     cell: (row: any) => (
       <div style={{ display: "flex", flexDirection: "column" }}>
         <span>Slack : {row.fil_slack_id}</span>
-        <span>Github : {row.github_user}</span>
-      </div>
+        {row.github_user.map((item: any, i: any) => (
+          item && <span key={item} style={{ marginRight: "10px" }}> Github : {item}</span>
+        ))
+        }
+      </div >
     ),
   },
+  {
+    name: "Use Case",
+    selector: (row: any) => row.use_case,
+    sortable: true,
+    grow: 2,
+    wrap: true
+  }
 ];

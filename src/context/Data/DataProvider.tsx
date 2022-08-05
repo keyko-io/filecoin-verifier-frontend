@@ -521,7 +521,9 @@ export default class DataProvider extends React.Component<
                 }
               );
             // loop over comments
-            for (const rawComment of rawComments.data) {
+            for (let i=rawComments.data.length -1; i>=0; i--) {
+              const rawComment =  rawComments.data[i]
+            // for (const rawComment of rawComments.data) {
               const comment = parser.parseMultipleApproveComment(
                 rawComment.body
               );
