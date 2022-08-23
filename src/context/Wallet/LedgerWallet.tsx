@@ -21,11 +21,12 @@ export class LedgerWallet {
     this.lotusNode = config.lotusNodes[networkIndex]
     this.api = new VerifyAPI(
       VerifyAPI.browserProvider(this.lotusNode.url
-        , {
-          token: async () => {
-            return this.lotusNode.token
-          }
-        })
+        // , {
+        //   token: async () => {
+        //     return this.lotusNode.token
+        //   }
+        // }
+        )
       , { sign: this.sign, getAccounts: this.getAccounts }
       , this.lotusNode.name !== "Mainnet" // if node != Mainnet => testnet = true
     )
