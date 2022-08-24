@@ -334,7 +334,6 @@ export default class DataProvider extends React.Component<
                         : msigIncludeSigner;
                       if (config.networks.includes("Localhost"))
                         signable = true;
-
                       if (
                         comment &&
                         comment.multisigMessage &&
@@ -364,7 +363,9 @@ export default class DataProvider extends React.Component<
                           data,
                           signable,
                         };
-                        largeissues.push(largeRequest);
+                        if (largeRequest.tx || !approvals) {
+                          largeissues.push(largeRequest);
+                        }
                       }
                     }
                     resolve(largeissues);
@@ -521,9 +522,9 @@ export default class DataProvider extends React.Component<
                 }
               );
             // loop over comments
-            for (let i=rawComments.data.length -1; i>=0; i--) {
-              const rawComment =  rawComments.data[i]
-            // for (const rawComment of rawComments.data) {
+            for (let i = rawComments.data.length - 1; i >= 0; i--) {
+              const rawComment = rawComments.data[i]
+              // for (const rawComment of rawComments.data) {
               const comment = parser.parseMultipleApproveComment(
                 rawComment.body
               );
