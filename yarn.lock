@@ -1416,6 +1416,11 @@
   resolved "https://registry.yarnpkg.com/@filecoin-shipyard/lotus-client-schema/-/lotus-client-schema-2.0.0.tgz#4c081ad82cfc85650117f50501ec126977914615"
   integrity sha512-3XIoyCPr7FyK9rbI3LIKAB755TlpQ0ankFs7uDpU8JXA38gZK7YGc+zcXMLiyIzknbhOmlfGPJ1jpcm3n9Y/0A==
 
+"@filecoin-shipyard/lotus-client-schema@4.2.0":
+  version "4.2.0"
+  resolved "https://registry.yarnpkg.com/@filecoin-shipyard/lotus-client-schema/-/lotus-client-schema-4.2.0.tgz#684dd9e53657e2f76ab9960637ca5c2e2c264f67"
+  integrity sha512-JX1ItITk5wdsMLRwdmxfFP+p7M9qatTbQ1C2iH4KPhRU0Yds4/b2R37XovuH88gNHqKq89VBOOzHehyibEzvtQ==
+
 "@fortawesome/fontawesome-common-types@6.1.1":
   version "6.1.1"
   resolved "https://registry.yarnpkg.com/@fortawesome/fontawesome-common-types/-/fontawesome-common-types-6.1.1.tgz#7dc996042d21fc1ae850e3173b5c67b0549f9105"
