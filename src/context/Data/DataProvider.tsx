@@ -354,7 +354,7 @@ export default class DataProvider extends React.Component<
                           approvals,
                           tx: txs.length > 0 ? txs[0] : null,
                           proposer: {
-                            signerAddress,
+                            signeraddress: signerAddress,
                             signerGitHandle,
                           },
                           labels: rawLargeIssue.labels.map(
