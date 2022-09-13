@@ -475,7 +475,6 @@ export default class DataProvider extends React.Component<
                     let signerAddress: any;
                     let signerGitHandle;
                     if (elem.tx) {
-                      console.log('signer', elem.tx[0].signers[0])
                       signerAddress = await this.props.wallet.api.actorKey(elem.tx[0].signers[0])
                       signerGitHandle =
                         verifierRegistry.notaries.find(
@@ -629,7 +628,6 @@ export default class DataProvider extends React.Component<
                     ? pendingTxs[txs].parsed.params
                     : pendingTxs[txs].parsed.params.verifier
                 );
-                console.log("TRS", pendingTxs[txs], pendingTxs[txs].signers[0])
                 const signerAddress = await this.props.wallet.api.actorKey(
                   pendingTxs[txs].signers[0]
                 );
@@ -767,7 +765,6 @@ export default class DataProvider extends React.Component<
           const approvedVerifiers = await this.props.wallet.api.listVerifiers();
 
           let verified: any = [];
-
           await Promise.all(
             approvedVerifiers.map(
               (verifiedAddress: any) =>
@@ -813,13 +810,14 @@ export default class DataProvider extends React.Component<
             .toString();
           this.setState({ clients, clientsAmount });
 
-          await Promise.all(
-            clients.map(async (txs: any) => {
-              txs["key"] = await this.props.wallet.api.actorKey(txs.verified);
-            })
-          );
+          // this is making more 1400 calls, commenting for now
+          // await Promise.all(
+          //   clients.map(async (txs: any) => {
+          //     txs["key"] = await this.props.wallet.api.actorKey(txs.verified);
+          //   })
+          // );
 
-          this.setState({ clients });
+          // this.setState({ clients });
         } catch (error) {
           console.error("error in resolving promises", error);
         }
