@@ -710,7 +710,7 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
               <tr>
                 <td></td>
                 {publicRequestColums.map((column: any) => (
-                  <td id={column.id} onClick={orderPublic}>
+                  <td id={column.id} key={column.id} onClick={orderPublic}>
                     {column.value}
                     <FontAwesomeIcon icon={["fas", "sort"]} />
                   </td>
@@ -910,19 +910,19 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
               selector: (row: any) => row.verified,
               sortable: true,
             },
-            {
-              name: "Address",
-              selector: (row: any) => row.key,
-              sortable: true,
-              grow: 3,
-              cell: (row: any) => (
-                <span>
-                  {row.key || (
-                    <BeatLoader size={5} color={"rgb(24,160,237)"} />
-                  )}
-                </span>
-              ),
-            },
+            // {
+            //   name: "Address",
+            //   selector: (row: any) => row.key,
+            //   sortable: true,
+            //   grow: 3,
+            //   cell: (row: any) => (
+            //     <span>
+            //       {row.key || (
+            //         <BeatLoader size={5} color={"rgb(24,160,237)"} />
+            //       )}
+            //     </span>
+            //   ),
+            // },
             {
               name: "Datacap",
               selector: (row: any) => row.datacap,
