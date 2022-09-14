@@ -493,15 +493,15 @@ export default class DataProvider extends React.Component<
                       : msigIncludeSigner;
                     if (config.networks.includes("Localhost"))
                       signable = true;
-
-
+                    const datacap = elem.tx ?
+                      bytesToiB(parseInt(elem.tx[0].parsed.params.cap )) : elem.issue[0].datacap
 
                     const obj: largeRequest = {
                       issue_number: elem.issue[0].issueInfo.issue_number,
                       url: elem.issue[0].issueInfo.issue.html_url,
                       address: elem.clientAddress,
                       multisig: elem.multisigAddress,
-                      datacap: elem.issue[0].datacap,
+                      datacap,
                       approvals,
                       tx: elem.tx ? elem.tx[0] : null,
                       proposer: {
@@ -521,7 +521,6 @@ export default class DataProvider extends React.Component<
                 )
               )
             )
-
 
           const largeClientRequests = largeissues.map((i: any) => i.value)
 
