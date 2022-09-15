@@ -301,7 +301,7 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
     dispatchCustomEvent({ name: "delete-modal", detail: {} });
     setApproveLoading(true)
     for (const request of context.clientRequests) {
-      if (selectedClientRequests.includes(request.number)) {
+      if (selectedClientRequests.includes(request.issue_number)) {
         let messageID = "";
         let address = "";
         let dc = request.data.datacap;
@@ -338,7 +338,7 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
           if (txReceipt.ExitCode !== 0) {
             errorMessage += `#### There was an error processing the message \n>${messageID}, retry later.`;
             context.updateGithubVerified(
-              request.number,
+              request.issue_number,
               messageID,
               address,
               datacap,
@@ -353,7 +353,7 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
           setApproveLoading(false)
           // github update
           context.updateGithubVerified(
-            request.number,
+            request.issue_number,
             messageID,
             address,
             datacap,
@@ -367,7 +367,7 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
           );
           context.loadClientRequests();
           sentryData = {
-            requestNumber: request.number,
+            requestNumber: request.issue_number,
             messageID: messageID,
             address: address,
             dataCap: dc,
@@ -384,8 +384,8 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
           };
 
           context.logToSentry(
-            `verifyClients issue n. ${request.number}`,
-            `verifyClients error - issue n. ${request.number}: ${e.message}`,
+            `verifyClients issue n. ${request.issue_number}`,
+            `verifyClients error - issue n. ${request.issue_number}: ${e.message}`,
             "error",
             sentryData
           );
@@ -394,8 +394,8 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
           );
         } finally {
           context.logToSentry(
-            `verifyClients issue n. ${request.number}`,
-            `verifyClients info: verifyClients issue n. ${request.number}`,
+            `verifyClients issue n. ${request.issue_number}`,
+            `verifyClients info: verifyClients issue n. ${request.issue_number}`,
             "info",
             sentryData
           );
@@ -409,10 +409,10 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
     dispatchCustomEvent({ name: "delete-modal", detail: {} });
     let thisStateLargeRequestList = context.largeClientRequests;
     for (const request of thisStateLargeRequestList) {
-      if (selectedLargeClientRequests.includes(request.number)) {
+      if (selectedLargeClientRequests.includes(request.issue_number)) {
         let sentryData: any = {};
         sentryData.request = { ...request };
-        sentryData.requestNumber = request.number;
+        sentryData.requestNumber = request.issue_number;
         let errorMessage = "";
         const PHASE = "DATACAP-SIGN";
         try {
@@ -452,7 +452,7 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
             );
             setApprovedDcRequests([
               ...approvedDcRequests,
-              request.number,
+              request.issue_number,
             ])
             await context.postLogs(
               `Datacap GRANTED: ${messageID} - signer: ${signer}`,
@@ -492,7 +492,7 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
           if (!messageID) {
             errorMessage += `#### the transaction was unsuccessful - retry later.`;
             await context.updateGithubVerifiedLarge(
-              request.number,
+              request.issue_number,
               null,
               address,
               datacap,
@@ -511,7 +511,7 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
           sentryData.signer = signer;
 
           await context.updateGithubVerifiedLarge(
-            request.number,
+            request.issue_number,
             messageID,
             address,
             datacap,
@@ -558,8 +558,8 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
             error: e,
           };
           context.logToSentry(
-            `verifyLargeClients issue n. ${request.number}`,
-            `verifyLargeClients error - issue n. ${request.number}, error:${e.message}`,
+            `verifyLargeClients issue n. ${request.issue_number}`,
+            `verifyLargeClients error - issue n. ${request.issue_number}, error:${e.message}`,
             "error",
             sentryData
           );
@@ -713,7 +713,7 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
               <tr>
                 <td></td>
                 {publicRequestColums.map((column: any) => (
-                  <td id={column.id} onClick={orderPublic}>
+                  <td id={column.id} key={column.id} onClick={orderPublic}>
                     {column.value}
                     <FontAwesomeIcon icon={["fas", "sort"]} />
                   </td>
