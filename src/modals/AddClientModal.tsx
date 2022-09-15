@@ -41,7 +41,7 @@ class AddClientModal extends Component<ModalProps, States> {
             const requestSelected = this.props.selected || ''
             const request = this.props.clientRequest.find(element => element.number == requestSelected);
             this.setState({
-                issueNumber: request.number,
+                issueNumber: request.issue_number,
                 address: request.data.address
             })
 
@@ -60,14 +60,14 @@ class AddClientModal extends Component<ModalProps, States> {
             console.log("fullDatacap: " + fullDatacap)
 
             let messageID
-            if(this.context.wallet.multisig){
-                messageID =await this.context.wallet.api.multisigVerifyClient(this.context.wallet.multisigID, this.state.address, BigInt(fullDatacap), this.context.wallet.walletIndex)
+            if (this.context.wallet.multisig) {
+                messageID = await this.context.wallet.api.multisigVerifyClient(this.context.wallet.multisigID, this.state.address, BigInt(fullDatacap), this.context.wallet.walletIndex)
             } else {
                 messageID = await this.context.wallet.api.verifyClient(this.state.address, BigInt(fullDatacap), this.context.wallet.walletIndex)
             }
-           
+
             if (this.props.newDatacap) {
-                this.context.updateGithubVerified(this.state.issueNumber, messageID, this.state.address, dataCapIssue, this.context.wallet.activeAccount,'')
+                this.context.updateGithubVerified(this.state.issueNumber, messageID, this.state.address, dataCapIssue, this.context.wallet.activeAccount, '')
             }
 
             this.setState({

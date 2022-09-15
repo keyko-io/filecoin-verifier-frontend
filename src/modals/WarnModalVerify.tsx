@@ -31,8 +31,9 @@ class WarnModalVerify extends Component<ModalProps, ModalState> {
         let requestToShow = []
 
         if (this.props.origin === 'Notary') {
+
             for (const request of this.props.clientRequests) {
-                if (this.props.selectedClientRequests.includes(request.number)) {
+                if (this.props.selectedClientRequests.includes(request.issue_number)) {
                     requestToShow.push({
                         address: this.props.largeAddress ? request.address : request.data.address,
                         datacap: request.data.datacap ? request.data.datacap : request.datacap
@@ -91,7 +92,7 @@ class WarnModalVerify extends Component<ModalProps, ModalState> {
                     </tbody>
                 </table>
                 <div className="ledgermessage">Please check your Ledger to sign and send the message.
-                   <div> <ButtonPrimary onClick={this.props.onClick}>Accept</ButtonPrimary></div>
+                    <div> <ButtonPrimary onClick={this.props.onClick}>Accept</ButtonPrimary></div>
                 </div>
             </div>
         )
