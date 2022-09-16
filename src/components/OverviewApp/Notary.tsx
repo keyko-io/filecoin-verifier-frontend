@@ -243,50 +243,14 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
   }, [])
 
   const getPending = async () => {
+    const LDNIssuesAndTransactions: any = await context.getLDNIssuesAndTransactions()
 
-    const allPendingTransaction = await context.wallet.api.pendingTransactions("t01021")
+    const transactionsData = LDNIssuesAndTransactions.transactionAndIssue
 
-    const id = await context.wallet.api.actorAddress(context.wallet.activeAccount)
+    //const id = await context.wallet.api.actorAddress(context.wallet.activeAccount)
 
-    const walletPendingTransactions = allPendingTransaction.filter((item: any) => {
-      return item.signers.includes(id)
-    })
+    //console.log(transactionsData)
 
-    const clientAddress = walletPendingTransactions.map((item: any) => item.parsed.params.address)
-
-    const issues = await context.github.githubOcto
-      .paginate(context.github.githubOcto.rest.issues.listForRepo, {
-        owner: config.onboardingLargeOwner,
-        repo: config.onboardingLargeClientRepo,
-        state: "open",
-      })
-
-    let issueNumbers: any = []
-
-    for (let i = 0; i < clientAddress.length; i++) {
-      for (let j = 0; j < issues.length; j++) {
-        if (issues[j].body.includes(clientAddress[i])) {
-          console.log(issues[j].body.includes(i))
-          issueNumbers.push(issues[j].number)
-        }
-      }
-    }
-
-    const commentGetters = (number: any) => {
-      return context.github.githubOcto.rest.issues.listComments({
-        owner: config.onboardingLargeOwner,
-        repo: config.onboardingLargeClientRepo,
-        issue_number: number
-      });
-    }
-
-    const allIssueComment = issueNumbers.map((item: any) => commentGetters(item))
-
-
-    const arrayOfArrayWithComments: any = await Promise.all(allIssueComment)
-
-
-    console.log(arrayOfArrayWithComments, "woww")
   }
 
   useEffect(() => {
