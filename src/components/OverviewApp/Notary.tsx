@@ -24,15 +24,6 @@ import { cancelColumns } from "./Notary/cancelProposalDataColumns";
 import { verifiedColumns } from "./Notary/verifiedClientsColumns";
 import { largeReqColumns } from "./Notary/largeRequestColumns";
 
-const dataCancel = [
-  {
-    clientName: "abc",
-    clientAddress: "wow",
-    issueNumber: "11",
-    txId: "555",
-    datacap: "5PiB"
-  }
-]
 
 type NotaryProps = {
   clients: any[];
@@ -63,6 +54,7 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
   const [dataForLargeRequestTable, setDataForLargeRequestTable] = useState([])
   const [largeRequestListLoading, setLargeRequestListLoading] = useState(false)
   const [cancelProposalData, setCancelProposalData] = useState<any>(null)
+  const [dataCancel, setDataCancel] = useState<any>([])
 
   const changeStateTabs = (indexTab: string) => {
     setTabs(indexTab)
@@ -247,10 +239,31 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
 
     const transactionsData = LDNIssuesAndTransactions.transactionAndIssue
 
-    //const id = await context.wallet.api.actorAddress(context.wallet.activeAccount)
+    const id = await context.wallet.api.actorAddress(context.wallet.activeAccount)
 
-    //console.log(transactionsData)
+    const dataByActiveAccount: any = []
 
+    for (let transaction of transactionsData) {
+      for (let txId of transaction.tx) {
+        if (txId.signers.includes(id)) {
+          dataByActiveAccount.push(transaction)
+        }
+      }
+    }
+
+    const DataCancel = dataByActiveAccount.map((item: any) => {
+
+      console.log(item, "11")
+
+      return {
+        clientAddress: item.clientAddress,
+        issueNumber: item.issue[0].issueInfo.issue_number,
+        datacap: item.issue[0].datacap,
+        txId: "11"
+      }
+    })
+
+    setDataCancel(DataCancel)
   }
 
   useEffect(() => {
