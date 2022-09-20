@@ -2,10 +2,6 @@ import React from "react"
 
 export const cancelColumns: any = [
   {
-    name: "Client Name",
-    selector: (row: any) => row.clientName,
-  },
-  {
     name: "Client Address",
     selector: (row: any) => row.clientAddress,
   },
