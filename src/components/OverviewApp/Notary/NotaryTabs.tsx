@@ -48,7 +48,7 @@ const NotaryTabs = ({ changeStateTabs, tabs, ctx, dataCancelLength, verifiedClie
                         changeStateTabs("4");
                     }}
                 >
-                    Duplicate Request ({dataCancelLength})
+                    Cancel Request ({dataCancelLength})
                 </div>
             </div>
         </>

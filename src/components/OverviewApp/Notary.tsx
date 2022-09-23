@@ -54,10 +54,7 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
   };
 
   const verifyNewDatacap = () => {
-    if (
-      selectedClientRequests.length === 0 ||
-      selectedClientRequests.length > 1
-    ) {
+    if (selectedClientRequests.length !== 1) {
       dispatchCustomEvent({
         name: "create-modal",
         detail: {
@@ -166,13 +163,19 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
 
 
   const cancelDuplicateRequest = async () => {
+
+    if (!cancelProposalData) {
+      alert("You should select one pending request")
+      return
+    }
+
     // const res = await context.github.githubOcto.rest.issues.deleteComment({
     //   owner: config.onboardingLargeOwner,
     //   repo: config.onboardingLargeClientRepo,
     //   comment_id: cancelProposalData.comment[0].id
     // });
 
-    console.log("11")
+    console.log(cancelProposalData.comment[0].id, "<=")
 
     //Ask fabrizio about parameters!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     //await context.wallet.api.cancelPending()
@@ -263,9 +266,7 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
             );
           }
 
-          const signer = context.wallet.activeAccount
-            ? context.wallet.activeAccount
-            : "";
+          const signer = context.wallet.activeAccount ?? ""
 
           const txReceipt = await context.wallet.api.getReceipt(messageID);
           if (txReceipt.ExitCode !== 0) {
@@ -350,6 +351,7 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
         const PHASE = "DATACAP-SIGN";
         try {
           const datacap = anyToBytes(request.datacap);
+
           let address = request.address;
 
           sentryData.datacap = request.datacap;
@@ -539,16 +541,22 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
       <div className="tabsholder">
         <NotaryTabs tabs={tabs} changeStateTabs={changeStateTabs} ctx={context} verifiedClientsLength={props.notaryProps.clients.length} dataCancelLength={dataCancel.length} />
         <div className="tabssadd">
+          {tabs === "1" && (
+            <ButtonPrimary onClick={() => requestDatacap()}>
+              Approve Private Request
+            </ButtonPrimary>
+          )}
+          {tabs === "1" && (
+            <ButtonPrimary onClick={() => verifyNewDatacap()}>
+              Verify new datacap
+            </ButtonPrimary>
+          )}
           {tabs === "4" && <ButtonPrimary
             onClick={cancelDuplicateRequest}
           >
             Cancel Proposal
           </ButtonPrimary>}
-          {tabs !== "4" && tabs !== "3" ? (
-            <ButtonPrimary onClick={() => requestDatacap()}>
-              Approve Private Request
-            </ButtonPrimary>
-          ) : null}
+
           {tabs === "1" ||
             tabs === "2" ||
             tabs === "3" ? (
@@ -569,11 +577,6 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
                     : "Verify client"}
                 </ButtonPrimary>
               )}
-              {tabs !== "3" ? (
-                <ButtonPrimary onClick={() => verifyNewDatacap()}>
-                  Verify new datacap
-                </ButtonPrimary>
-              ) : null}
             </>
           ) : null}
         </div>
