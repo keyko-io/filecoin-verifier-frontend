@@ -1,4 +1,5 @@
 import React from "react"
+import DataTable from "react-data-table-component"
 import { BeatLoader } from "react-spinners"
 import { bytesToiB } from "../../../utils/Filters"
 
@@ -28,3 +29,21 @@ export const verifiedColumns: any = [
         cell: (row: any) => <span>{bytesToiB(row.datacap)}</span>,
     },
 ]
+
+type VerifiedClientsTableProps = {
+    verifiedClients: any;
+}
+
+const VerifiedClientsTable = ({ verifiedClients }: VerifiedClientsTableProps) => {
+    return (
+        <DataTable
+            columns={verifiedColumns}
+            data={verifiedClients}
+            pagination
+            paginationRowsPerPageOptions={[10, 20, 30]}
+            paginationPerPage={10}
+        />
+    )
+}
+
+export default VerifiedClientsTable

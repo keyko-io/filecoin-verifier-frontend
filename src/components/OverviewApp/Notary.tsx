@@ -10,45 +10,25 @@ import LoginGithub from "react-login-github";
 import { config } from "../../config";
 import WarnModal from "../../modals/WarnModal";
 import WarnModalVerify from "../../modals/WarnModalVerify";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { tableElementFilter } from "../../utils/SortFilter";
-import Pagination from "../Pagination";
-import history from "../../context/History";
 import { BeatLoader } from "react-spinners";
-import DataTable from "react-data-table-component";
 import { useContext } from "react";
-import { searchAllColumnsFromTable } from "../../pages/tableUtils/searchAllColumnsFromTable";
 import WarnModalNotaryVerified from "../../modals/WarnModalNotaryVeried";
 import { CircularProgress } from "@material-ui/core";
-import { cancelColumns } from "./Notary/cancelProposalDataColumns";
-import { verifiedColumns } from "./Notary/verifiedClientsColumns";
-import { largeReqColumns } from "./Notary/largeRequestColumns";
-
+import { LargeRequestTable, CancelProposalTable, NotaryTabs, PublicRequestTable, VerifiedClientsTable } from "./Notary/index";
+import { checkAlreadyProposed } from "../../utils/checkAlreadyProposed";
 
 type NotaryProps = {
   clients: any[];
   searchString: string;
 };
 
-const CANT_SIGN_MESSAGE = "You can currently only approve the allocation requests associated with the multisig organization you signed in with. Signing proposals for additional DataCap allocations will require you to sign in again";
-
 const Notary = (props: { notaryProps: NotaryProps }) => {
 
   const context = useContext(Data)
 
-  const publicRequestColums = [
-    { id: "name", value: "Client" },
-    { id: "address", value: "Address" },
-    { id: "datacap", value: "Datacap" },
-    { id: "number", value: "Audit Trail" },
-  ];
-
   const [selectedClientRequests, setSelectedClientRequests] = useState([] as any)
   const [selectedLargeClientRequests, setSelectedLargeClientRequests] = useState([] as any)
   const [tabs, setTabs] = useState('1')
-  const [sortOrderPublic, setSortOrderPublic] = useState(-1)
-  const [orderByPublic, setOrderByPublic] = useState('name')
-  const [refPublic, setRefPublic] = useState({} as any)
   const [approveLoading, setApproveLoading] = useState(false)
   const [approvedDcRequests, setApprovedDcRequests] = useState([] as any)
   const [dataForLargeRequestTable, setDataForLargeRequestTable] = useState([])
@@ -59,10 +39,6 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
   const changeStateTabs = (indexTab: string) => {
     setTabs(indexTab)
   }
-
-  const onRefPublicChange = (refPublic: any) => {
-    setRefPublic(refPublic)
-  };
 
   const requestDatacap = () => {
     dispatchCustomEvent({
@@ -113,48 +89,6 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
       });
     }
   };
-
-  const checkAlreadyProposed = async (issueNumber: number) => {
-    const { data } = await context.github.githubOcto.issues.listComments({
-      owner: config.onboardingLargeOwner,
-      repo: config.onboardingLargeClientRepo,
-      issue_number: issueNumber
-    });
-
-    let proposeIndex;
-    let approveIndex;
-    let alreadyProposed = false;
-
-    for (let i = data.length - 1; i >= 0; i--) {
-      const { body } = data[i]
-
-      if (body.includes("## Request Proposed")) {
-        proposeIndex = i
-        break
-      } else {
-        proposeIndex = -2
-      }
-    }
-
-    for (let i = data.length - 1; i >= 0; i--) {
-      const { body } = data[i]
-
-      if (body.includes("## Request Approved")) {
-        approveIndex = i
-        break
-      } else {
-        approveIndex = -1
-      }
-    }
-
-    if (proposeIndex && approveIndex) {
-      if (proposeIndex > approveIndex) {
-        alreadyProposed = true
-      }
-    }
-
-    return alreadyProposed
-  }
 
   const showWarnVerify = async (origin: string) => {
     dispatchCustomEvent({
@@ -230,8 +164,25 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
     showWarnVerify(origin)
   }
 
+
+  const cancelDuplicateRequest = async () => {
+    // const res = await context.github.githubOcto.rest.issues.deleteComment({
+    //   owner: config.onboardingLargeOwner,
+    //   repo: config.onboardingLargeClientRepo,
+    //   comment_id: cancelProposalData.comment[0].id
+    // });
+
+    console.log("11")
+
+    //Ask fabrizio about parameters!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    //await context.wallet.api.cancelPending()
+  }
+
+
   useEffect(() => {
-    getPending()
+    if (context.github.githubLogged) {
+      getPending()
+    }
   }, [])
 
   const getPending = async () => {
@@ -244,22 +195,27 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
     const dataByActiveAccount: any = []
 
     for (let transaction of transactionsData) {
-      for (let txId of transaction.tx) {
-        if (txId.signers.includes(id)) {
-          dataByActiveAccount.push(transaction)
+      if (Array.isArray(transaction.tx)) {
+        for (let txId of transaction.tx) {
+          if (txId.signers.includes(id)) {
+            dataByActiveAccount.push(transaction)
+          }
         }
       }
     }
 
     const DataCancel = dataByActiveAccount.map((item: any) => {
 
-      console.log(item, "11")
+      console.log(item, "ix")
+
+      const comment = item.issue[0].issueInfo.comments.filter((c: any) => c.body.includes(context.wallet.activeAccount))
 
       return {
         clientAddress: item.clientAddress,
         issueNumber: item.issue[0].issueInfo.issue_number,
         datacap: item.issue[0].datacap,
-        txId: "11"
+        tx: item.tx[0],
+        comment,
       }
     })
 
@@ -440,8 +396,7 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
             );
             action = "Approved";
           } else {
-
-            const isProposed = await checkAlreadyProposed(request.issue_number)
+            const isProposed = await checkAlreadyProposed(request.issue_number, context)
 
             if (isProposed) {
               alert("Something is wrong. There is already one pending proposal for this issue. Please, contact the governance team.")
@@ -465,6 +420,7 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
             );
             action = "Proposed";
           }
+
 
           if (!messageID) {
             errorMessage += `#### the transaction was unsuccessful - retry later.`;
@@ -548,42 +504,27 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
     setLargeRequestListLoading(false)
   };
 
-  const selectClientRow = (number: string) => {
-
-    let selectedTxs = selectedClientRequests;
-    if (selectedTxs.includes(number)) {
-      selectedTxs = selectedTxs.filter((item: any) => item !== number);
-    } else {
-      selectedTxs.push(number);
+  const activeTable = (tabs: any) => {
+    const tables: any = {
+      "1": <div style={{ minHeight: "500px" }}>
+        <PublicRequestTable selectedClientRequests={selectedClientRequests} searchString={props.notaryProps.searchString} setSelectedClientRequests={setSelectedClientRequests} />
+      </div>,
+      "2": <div style={{ minHeight: "500px" }}>
+        <VerifiedClientsTable verifiedClients={props.notaryProps.clients} />
+      </div>,
+      "3": <div className="large-request-table" style={{ minHeight: "500px" }}>
+        {largeRequestListLoading ? <CircularProgress
+          style={{ margin: "100px 50%", color: "rgb(0, 144, 255)" }}
+        /> :
+          < LargeRequestTable setSelectedLargeClientRequests={setSelectedLargeClientRequests} searchInput={props.notaryProps.searchString} dataForLargeRequestTable={dataForLargeRequestTable} />
+        }
+      </div>,
+      "4": <div style={{ minHeight: "500px" }}>
+        <CancelProposalTable dataCancel={dataCancel} setCancelProposalData={setCancelProposalData} />
+      </div>
     }
-    setSelectedClientRequests(selectedTxs)
 
-  };
-
-  const orderPublic = async (e: any) => {
-    const { orderBy, sortOrder }: any = await context.sortPublicRequests(
-      e,
-      orderByPublic,
-      sortOrderPublic,
-    );
-    setOrderByPublic(orderBy)
-    setSortOrderPublic(sortOrder)
-  };
-
-  const showClientDetail = (e: any) => {
-    const listRequestFiltered = context.clientRequests
-      .filter(
-        (element: any) =>
-          tableElementFilter(props.notaryProps.searchString, element.data) === true
-      )
-      .filter((_: any, i: any) => refPublic?.checkIndex(i));
-
-    const client = listRequestFiltered[e.currentTarget.id].data.name;
-    const user = listRequestFiltered[e.currentTarget.id].owner;
-    const address = listRequestFiltered[e.currentTarget.id].data.address;
-    const datacap = listRequestFiltered[e.currentTarget.id].data.datacap;
-
-    history.push("/client", { client, user, address, datacap });
+    return tables[tabs]
   }
 
   useEffect(() => {
@@ -596,59 +537,13 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
   return (
     <div className="main">
       <div className="tabsholder">
-
-        <div className="tabs">
-          <div
-            className={tabs === "1" ? "selected" : ""}
-            onClick={() => {
-              changeStateTabs("1");
-            }}
-          >
-            Public Requests ({context.clientRequests.length})
-          </div>
-          <div
-            className={tabs === "3" ? "selected" : ""}
-            onClick={() => {
-              changeStateTabs("3");
-            }}
-          >
-            Large Requests ({context.largeClientRequests.length})
-          </div>
-          <div
-            className={tabs === "2" ? "selected" : ""}
-            onClick={() => {
-              changeStateTabs("2");
-            }}
-          >
-            Verified clients ({props.notaryProps.clients.length})
-          </div>
-          <div
-            className={tabs === "4" ? "selected" : ""}
-            onClick={() => {
-              changeStateTabs("4");
-            }}
-          >
-            Duplicate Request
-          </div>
-        </div>
-
+        <NotaryTabs tabs={tabs} changeStateTabs={changeStateTabs} ctx={context} verifiedClientsLength={props.notaryProps.clients.length} dataCancelLength={dataCancel.length} />
         <div className="tabssadd">
-          {tabs === "4" && <button
-            style={{
-              color: "white",
-              height: "100%",
-              borderRadius: "4px",
-              border: "none",
-              padding: "0 10px",
-              background: "#0090ff",
-              cursor: "pointer"
-            }}
-            onClick={() => {
-              console.log(cancelProposalData)
-            }}
+          {tabs === "4" && <ButtonPrimary
+            onClick={cancelDuplicateRequest}
           >
             Cancel Proposal
-          </button>}
+          </ButtonPrimary>}
           {tabs !== "4" && tabs !== "3" ? (
             <ButtonPrimary onClick={() => requestDatacap()}>
               Approve Private Request
@@ -683,132 +578,10 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
           ) : null}
         </div>
       </div>
-      {tabs === "1" && context.github.githubLogged ? (
-        <div style={{ minHeight: "500px" }}>
-          <table>
-            <thead>
-              <tr>
-                <td></td>
-                {publicRequestColums.map((column: any) => (
-                  <td id={column.id} key={column.id} onClick={orderPublic}>
-                    {column.value}
-                    <FontAwesomeIcon icon={["fas", "sort"]} />
-                  </td>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {refPublic && refPublic.checkIndex
-                ? context.clientRequests
-                  .filter(
-                    (element: any) =>
-                      tableElementFilter(
-                        props.notaryProps.searchString,
-                        element.data
-                      ) === true
-                  )
-                  .filter((_: any, i: any) =>
-                    refPublic?.checkIndex(i)
-                  )
-                  .map((clientReq: any, index: any) => (
-                    <tr key={index}>
-                      <td>
-                        <input
-                          type="checkbox"
-                          onChange={() =>
-                            selectClientRow(clientReq.number)
-                          }
-                          checked={selectedClientRequests.includes(
-                            clientReq.number
-                          )}
-                        />
-                      </td>
-                      <td>
-                        <FontAwesomeIcon
-                          icon={["fas", "info-circle"]}
-                          id={index}
-                          onClick={(e) => showClientDetail(e)}
-                        />{" "}
-                        {clientReq.data.name}{" "}
-                      </td>
-                      <td>{clientReq.data.address}</td>
-                      <td>{clientReq.data.datacap}</td>
-                      <td>
-                        <a
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          href={clientReq.url}
-                        >
-                          #{clientReq.number}
-                        </a>
-                      </td>
-                    </tr>
-                  ))
-                : null}
-            </tbody>
-          </table>
-          <Pagination
-            elements={context.clientRequests}
-            maxElements={10}
-            ref={onRefPublicChange}
-            refresh={() => { }}
-            search={props.notaryProps.searchString}
-          />
-          {!context.clientRequests.length && <div className="nodata">No client requests yet</div>}
-          <div className="alignright" style={{ marginBottom: "40px" }} >
-            <ButtonSecondary
-              className="buttonsecondary"
-              onClick={async () => {
-                await context.github.logoutGithub();
-                await context.refreshGithubData();
-              }}
-            >
-              Logout GitHub
-            </ButtonSecondary>
-          </div>
-        </div>
-      ) : null}
-      {tabs === "3" && context.github.githubLogged &&
-        <div className="large-request-table" style={{ minHeight: "500px" }}>
-          {largeRequestListLoading ? <CircularProgress
-            style={{ margin: "100px 50%", color: "rgb(0, 144, 255)" }}
-          /> :
-            <DataTable
-              columns={largeReqColumns}
-              selectableRowDisabled={(row) => !row.signable}
-              selectableRowsHighlight
-              selectableRows
-              selectableRowsNoSelectAll={true}
-              pagination
-              paginationRowsPerPageOptions={[10, 20, 30]}
-              paginationPerPage={10}
-              defaultSortFieldId={1}
-              noDataComponent="No large client requests yet"
-              onSelectedRowsChange={({ selectedRows }) => {
-                const rowNumbers = selectedRows.map((row: any) => row.issue_number)
-                setSelectedLargeClientRequests(rowNumbers)
-              }}
-              onRowClicked={(row: any) => {
-                if (!row.signable) {
-                  context.wallet.dispatchNotification(CANT_SIGN_MESSAGE)
-                }
-              }}
-              noContextMenu={true}
-              data={searchAllColumnsFromTable({ rows: dataForLargeRequestTable, query: props.notaryProps.searchString })}
-            />}
-          <div className="alignright" style={{ marginBottom: "40px" }}>
-            <ButtonSecondary
-              className="buttonsecondary"
-              onClick={async () => {
-                await context.github.logoutGithub();
-                await context.refreshGithubData();
-              }}
-            >
-              Logout GitHub
-            </ButtonSecondary>
-          </div>
-        </div>}
-      {!context.github.githubLogged &&
+
+      {context.github.githubLogged && activeTable(tabs)}
+
+      {!context.github.githubLogged ?
         <div style={{ marginTop: "50px" }}>
           <div id="githublogin">
             <LoginGithub
@@ -824,30 +597,18 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
               }}
             />
           </div>
+        </div> : <div className="alignright" style={{ marginBottom: "40px" }}>
+          <ButtonSecondary
+            className="buttonsecondary"
+            onClick={async () => {
+              await context.github.logoutGithub();
+              await context.refreshGithubData();
+            }}
+          >
+            Logout GitHub
+          </ButtonSecondary>
         </div>
       }
-      {tabs === "2" && context.github.githubLogged &&
-        <div style={{ minHeight: "500px" }}>
-          <DataTable
-            columns={verifiedColumns}
-            data={props.notaryProps.clients}
-            pagination
-            paginationRowsPerPageOptions={[10, 20, 30]}
-            paginationPerPage={10}
-          />
-        </div>}
-      {tabs === "4" && context.github.githubLogged && <div style={{ minHeight: "500px" }}>
-        <DataTable
-          selectableRows
-          selectableRowsHighlight={true}
-          selectableRowsSingle={true}
-          onSelectedRowsChange={({ selectedRows }) => {
-            setCancelProposalData(selectedRows[0])
-          }}
-          data={dataCancel}
-          columns={cancelColumns}
-        />
-      </div>}
     </div >
   );
 }
