@@ -35,6 +35,7 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
   const [largeRequestListLoading, setLargeRequestListLoading] = useState(false)
   const [cancelProposalData, setCancelProposalData] = useState<any>(null)
   const [dataCancel, setDataCancel] = useState<any>([])
+  const [dataCancelLoading, setDataCancelLoading] = useState(false)
 
   const changeStateTabs = (indexTab: string) => {
     setTabs(indexTab)
@@ -169,15 +170,32 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
       return
     }
 
-    // const res = await context.github.githubOcto.rest.issues.deleteComment({
-    //   owner: config.onboardingLargeOwner,
-    //   repo: config.onboardingLargeClientRepo,
-    //   comment_id: cancelProposalData.comment[0].id
-    // });
+    setDataCancelLoading(true);
 
-    console.log(cancelProposalData.comment[0].id, "<=")
+    try {
+      //this is deleting the comment with the ID
+      // const res = await context.github.githubOcto.rest.issues.deleteComment({
+      //   owner: config.onboardingLargeOwner,
+      //   repo: config.onboardingLargeClientRepo,
+      //   comment_id: cancelProposalData.comment[0].id
+      // });
 
-    //Ask fabrizio about parameters!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+      // console.log(res)
+
+      setTimeout(() => {
+        setDataCancelLoading(false);
+        console.log("done")
+      }, 2000)
+
+      console.log("processing")
+
+    } catch (error) {
+      console.log(error)
+      setDataCancelLoading(false)
+    }
+
+
+    //Ask fabrizio about parameters
     //await context.wallet.api.cancelPending()
   }
 
@@ -189,14 +207,18 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
   }, [])
 
   const getPending = async () => {
+    //get issue from the context
     const LDNIssuesAndTransactions: any = await context.getLDNIssuesAndTransactions()
 
+    //get transactionData 
     const transactionsData = LDNIssuesAndTransactions.transactionAndIssue
 
+    //this is conveerting id with the short version because we have short version in the array of signers
     const id = await context.wallet.api.actorAddress(context.wallet.activeAccount)
 
     const dataByActiveAccount: any = []
 
+    //check if the activeAccount id is in the array
     for (let transaction of transactionsData) {
       if (Array.isArray(transaction.tx)) {
         for (let txId of transaction.tx) {
@@ -207,9 +229,11 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
       }
     }
 
+
+    //manipulate the data for the table and also the cancel function usage
     const DataCancel = dataByActiveAccount.map((item: any) => {
 
-      console.log(item, "ix")
+      console.log(item, "item")
 
       const comment = item.issue[0].issueInfo.comments.filter((c: any) => c.body.includes(context.wallet.activeAccount))
 
@@ -551,11 +575,11 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
               Verify new datacap
             </ButtonPrimary>
           )}
-          {tabs === "4" && <ButtonPrimary
+          {tabs === "4" && (dataCancelLoading ? <BeatLoader size={15} color={"rgb(24,160,237)"} /> : <ButtonPrimary
             onClick={cancelDuplicateRequest}
           >
             Cancel Proposal
-          </ButtonPrimary>}
+          </ButtonPrimary>)}
 
           {tabs === "1" ||
             tabs === "2" ||

@@ -31,7 +31,7 @@ export const cancelColumns: any = [
 
 type CancelProposalTableProps = {
   setCancelProposalData: any,
-  dataCancel: any
+  dataCancel: any,
 }
 
 const CancelProposalTable = ({ setCancelProposalData, dataCancel }: CancelProposalTableProps) => {
