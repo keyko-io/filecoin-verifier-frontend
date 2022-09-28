@@ -1,3 +1,4 @@
+import { CircularProgress } from "@material-ui/core"
 import React, { useContext } from "react"
 import DataTable from "react-data-table-component"
 import { Data } from "../../../context/Data/Index"
@@ -60,9 +61,10 @@ type LargeRequestTableProps = {
     setSelectedLargeClientRequests: any
     dataForLargeRequestTable: any
     searchInput: any
+    largeRequestListLoading: boolean
 }
 
-const LargeRequestTable = ({ setSelectedLargeClientRequests, dataForLargeRequestTable, searchInput }: LargeRequestTableProps) => {
+const LargeRequestTable = ({ setSelectedLargeClientRequests, largeRequestListLoading, dataForLargeRequestTable, searchInput }: LargeRequestTableProps) => {
 
     const context = useContext(Data)
 
@@ -91,6 +93,8 @@ const LargeRequestTable = ({ setSelectedLargeClientRequests, dataForLargeRequest
             }}
             noContextMenu={true}
             data={searchAllColumnsFromTable({ rows: dataForLargeRequestTable, query: searchInput })}
+            progressPending={largeRequestListLoading}
+            progressComponent={<CircularProgress style={{ marginTop: "100px", color: "#0090ff" }} />}
         />
     )
 }

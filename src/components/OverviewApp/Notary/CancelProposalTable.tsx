@@ -1,10 +1,16 @@
+import { CircularProgress } from "@material-ui/core"
 import React from "react"
 import DataTable from "react-data-table-component"
 
 export const cancelColumns: any = [
   {
+    name: "Client Name",
+    selector: (row: any) => row.clientName,
+  },
+  {
     name: "Client Address",
     selector: (row: any) => row.clientAddress,
+    grow: 2,
   },
   {
     name: "Issue Number",
@@ -32,9 +38,10 @@ export const cancelColumns: any = [
 type CancelProposalTableProps = {
   setCancelProposalData: any,
   dataCancel: any,
+  dataCancelLoading: boolean
 }
 
-const CancelProposalTable = ({ setCancelProposalData, dataCancel }: CancelProposalTableProps) => {
+const CancelProposalTable = ({ setCancelProposalData, dataCancel, dataCancelLoading }: CancelProposalTableProps) => {
   return (
     <DataTable
       selectableRows
@@ -45,6 +52,9 @@ const CancelProposalTable = ({ setCancelProposalData, dataCancel }: CancelPropos
       }}
       data={dataCancel}
       columns={cancelColumns}
+      noDataComponent="You don't have any pending request yet"
+      progressPending={dataCancelLoading}
+      progressComponent={<CircularProgress style={{ marginTop: "100px", color: "#0090ff" }} />}
     />
   )
 }
