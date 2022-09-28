@@ -48,7 +48,9 @@ const NotaryTabs = ({ changeStateTabs, tabs, ctx, dataCancelLength, verifiedClie
                         changeStateTabs("4");
                     }}
                 >
-                    Cancel Request ({dataCancelLength})
+                    Proposed Requests
+
+                    ({dataCancelLength})
                 </div>
             </div>
         </>
