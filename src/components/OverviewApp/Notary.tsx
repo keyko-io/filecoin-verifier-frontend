@@ -13,9 +13,10 @@ import WarnModalVerify from "../../modals/WarnModalVerify";
 import { BeatLoader } from "react-spinners";
 import { useContext } from "react";
 import WarnModalNotaryVerified from "../../modals/WarnModalNotaryVeried";
-import { CircularProgress } from "@material-ui/core";
 import { LargeRequestTable, CancelProposalTable, NotaryTabs, PublicRequestTable, VerifiedClientsTable } from "./Notary/index";
 import { checkAlreadyProposed } from "../../utils/checkAlreadyProposed";
+import toast from 'react-hot-toast';
+const largeutils = require("@keyko-io/filecoin-verifier-tools/utils/large-issue-parser");
 
 type NotaryProps = {
   clients: any[];
@@ -164,43 +165,42 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
 
 
   const cancelDuplicateRequest = async () => {
-
     if (!cancelProposalData) {
-      alert("You should select one pending request")
+      toast.error("You should select one pending request!")
       return
     }
 
-    setDataCancelLoading(true);
-
     try {
+      setDataCancelLoading(true);
+
+      // change the msig ID
+      await context.wallet.api.cancelPending("t01021", cancelProposalData.tx, context.wallet.walletIndex, context.wallet)
+
       //this is deleting the comment with the ID
-      // const res = await context.github.githubOcto.rest.issues.deleteComment({
-      //   owner: config.onboardingLargeOwner,
-      //   repo: config.onboardingLargeClientRepo,
-      //   comment_id: cancelProposalData.comment[0].id
-      // });
+      await context.github.githubOcto.rest.issues.deleteComment({
+        owner: config.onboardingLargeOwner,
+        repo: config.onboardingLargeClientRepo,
+        comment_id: cancelProposalData.comment[0].id
+      });
 
-      // console.log(res)
+      toast.success("Your pending request has been successfully canceled.")
 
-      setTimeout(() => {
-        setDataCancelLoading(false);
-        console.log("done")
-      }, 2000)
+      const updateCancelData = (item: any) => item.clientAddress !== cancelProposalData.clientAddress
 
-      console.log("processing")
+      setDataCancel((dataCancel: any) => dataCancel.filter(updateCancelData))
+
+      setDataCancelLoading(false);
+      setCancelProposalData(null);
 
     } catch (error) {
       console.log(error)
       setDataCancelLoading(false)
     }
-
-
-    //Ask fabrizio about parameters
-    //await context.wallet.api.cancelPending()
   }
 
-
   useEffect(() => {
+    console.log(context.wallet, "wallet")
+
     if (context.github.githubLogged) {
       getPending()
     }
@@ -212,6 +212,8 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
 
     //get transactionData 
     const transactionsData = LDNIssuesAndTransactions.transactionAndIssue
+
+    console.log(transactionsData)
 
     //this is conveerting id with the short version because we have short version in the array of signers
     const id = await context.wallet.api.actorAddress(context.wallet.activeAccount)
@@ -233,11 +235,13 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
     //manipulate the data for the table and also the cancel function usage
     const DataCancel = dataByActiveAccount.map((item: any) => {
 
-      console.log(item, "item")
+
+      const { name } = largeutils.parseIssue(item.issue[0].issueInfo.issue.body)
 
       const comment = item.issue[0].issueInfo.comments.filter((c: any) => c.body.includes(context.wallet.activeAccount))
 
       return {
+        clientName: name,
         clientAddress: item.clientAddress,
         issueNumber: item.issue[0].issueInfo.issue_number,
         datacap: item.issue[0].datacap,
@@ -533,20 +537,23 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
   const activeTable = (tabs: any) => {
     const tables: any = {
       "1": <div style={{ minHeight: "500px" }}>
-        <PublicRequestTable selectedClientRequests={selectedClientRequests} searchString={props.notaryProps.searchString} setSelectedClientRequests={setSelectedClientRequests} />
+        <PublicRequestTable selectedClientRequests={selectedClientRequests}
+          searchString={props.notaryProps.searchString}
+          setSelectedClientRequests={setSelectedClientRequests} />
       </div>,
       "2": <div style={{ minHeight: "500px" }}>
         <VerifiedClientsTable verifiedClients={props.notaryProps.clients} />
       </div>,
       "3": <div className="large-request-table" style={{ minHeight: "500px" }}>
-        {largeRequestListLoading ? <CircularProgress
-          style={{ margin: "100px 50%", color: "rgb(0, 144, 255)" }}
-        /> :
-          < LargeRequestTable setSelectedLargeClientRequests={setSelectedLargeClientRequests} searchInput={props.notaryProps.searchString} dataForLargeRequestTable={dataForLargeRequestTable} />
-        }
+        < LargeRequestTable largeRequestListLoading={largeRequestListLoading}
+          setSelectedLargeClientRequests={setSelectedLargeClientRequests}
+          searchInput={props.notaryProps.searchString}
+          dataForLargeRequestTable={dataForLargeRequestTable} />
       </div>,
       "4": <div style={{ minHeight: "500px" }}>
-        <CancelProposalTable dataCancel={dataCancel} setCancelProposalData={setCancelProposalData} />
+        <CancelProposalTable dataCancel={dataCancel}
+          dataCancelLoading={dataCancelLoading}
+          setCancelProposalData={setCancelProposalData} />
       </div>
     }
 
