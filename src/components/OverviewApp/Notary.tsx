@@ -167,14 +167,18 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
   const cancelDuplicateRequest = async () => {
     if (!cancelProposalData) {
       toast.error("You should select one pending request!")
-      return
+      return;
     }
 
     try {
       setDataCancelLoading(true);
 
       // change the msig ID
-      await context.wallet.api.cancelPending("t01021", cancelProposalData.tx, context.wallet.walletIndex, context.wallet)
+      const res = await context.wallet.api.cancelPending("t01021", cancelProposalData.tx, context.wallet.walletIndex, context.wallet)
+
+      if (!res) {
+        return;
+      }
 
       //this is deleting the comment with the ID
       await context.github.githubOcto.rest.issues.deleteComment({
@@ -193,14 +197,12 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
       setCancelProposalData(null);
 
     } catch (error) {
-      console.log(error)
+      toast.error("Something went wrong, please try again!")
       setDataCancelLoading(false)
     }
   }
 
   useEffect(() => {
-    console.log(context.wallet, "wallet")
-
     if (context.github.githubLogged) {
       getPending()
     }
