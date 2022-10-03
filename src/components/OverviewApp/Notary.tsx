@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect, useState } from "react";
 import { Data } from "../../context/Data/Index";
 import AddClientModal from "../../modals/AddClientModal";
@@ -23,6 +24,16 @@ type NotaryProps = {
   searchString: string;
 };
 
+type CancelProposalData = {
+  clientName: string,
+  clientAddress: string,
+  issueNumber: number,
+  datacap: string,
+  tx: any,
+  comment: any
+  msig: string
+}
+
 const Notary = (props: { notaryProps: NotaryProps }) => {
 
   const context = useContext(Data)
@@ -34,8 +45,8 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
   const [approvedDcRequests, setApprovedDcRequests] = useState([] as any)
   const [dataForLargeRequestTable, setDataForLargeRequestTable] = useState([])
   const [largeRequestListLoading, setLargeRequestListLoading] = useState(false)
-  const [cancelProposalData, setCancelProposalData] = useState<any>(null)
-  const [dataCancel, setDataCancel] = useState<any>([])
+  const [cancelProposalData, setCancelProposalData] = useState<CancelProposalData | null>(null)
+  const [dataCancel, setDataCancel] = useState<CancelProposalData[] | null>(null)
   const [dataCancelLoading, setDataCancelLoading] = useState(false)
 
   const changeStateTabs = (indexTab: string) => {
@@ -123,7 +134,7 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
                     : requestDatacap()
             }
             }
-            largeAddress={origin == "Large" ? true : false}
+            largeAddress={origin === "Large" ? true : false}
             origin={
               origin === "Notary" || "Large" ? "Notary" : "single-message"
             }
@@ -163,7 +174,6 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
     showWarnVerify(origin)
   }
 
-
   const cancelDuplicateRequest = async () => {
     if (!cancelProposalData) {
       toast.error("You should select one pending request!")
@@ -173,8 +183,7 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
     try {
       setDataCancelLoading(true);
 
-      // change the msig ID
-      const res = await context.wallet.api.cancelPending("t01021", cancelProposalData.tx, context.wallet.walletIndex, context.wallet)
+      const res = await context.wallet.api.cancelPending(cancelProposalData.msig, cancelProposalData.tx, context.wallet.walletIndex, context.wallet)
 
       if (!res) {
         return;
@@ -215,9 +224,7 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
     //get transactionData 
     const transactionsData = LDNIssuesAndTransactions.transactionAndIssue
 
-    console.log(transactionsData)
-
-    //this is conveerting id with the short version because we have short version in the array of signers
+    //this is converting id with the short version because we have short version in the array of signers
     const id = await context.wallet.api.actorAddress(context.wallet.activeAccount)
 
     const dataByActiveAccount: any = []
@@ -233,13 +240,12 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
       }
     }
 
-
     //manipulate the data for the table and also the cancel function usage
     const DataCancel = dataByActiveAccount.map((item: any) => {
+      //getting client name
+      const { name } = largeutils.parseIssue(item?.issue[0]?.issueInfo.issue.body)
 
-
-      const { name } = largeutils.parseIssue(item.issue[0].issueInfo.issue.body)
-
+      //getting comment with the signer id
       const comment = item.issue[0].issueInfo.comments.filter((c: any) => c.body.includes(context.wallet.activeAccount))
 
       return {
@@ -249,6 +255,7 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
         datacap: item.issue[0].datacap,
         tx: item.tx[0],
         comment,
+        msig: item.multisigAddress
       }
     })
 
@@ -538,25 +545,17 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
 
   const activeTable = (tabs: any) => {
     const tables: any = {
-      "1": <div style={{ minHeight: "500px" }}>
-        <PublicRequestTable selectedClientRequests={selectedClientRequests}
-          searchString={props.notaryProps.searchString}
-          setSelectedClientRequests={setSelectedClientRequests} />
-      </div>,
-      "2": <div style={{ minHeight: "500px" }}>
-        <VerifiedClientsTable verifiedClients={props.notaryProps.clients} />
-      </div>,
-      "3": <div className="large-request-table" style={{ minHeight: "500px" }}>
-        < LargeRequestTable largeRequestListLoading={largeRequestListLoading}
-          setSelectedLargeClientRequests={setSelectedLargeClientRequests}
-          searchInput={props.notaryProps.searchString}
-          dataForLargeRequestTable={dataForLargeRequestTable} />
-      </div>,
-      "4": <div style={{ minHeight: "500px" }}>
-        <CancelProposalTable dataCancel={dataCancel}
-          dataCancelLoading={dataCancelLoading}
-          setCancelProposalData={setCancelProposalData} />
-      </div>
+      "1": <PublicRequestTable selectedClientRequests={selectedClientRequests}
+        searchString={props.notaryProps.searchString}
+        setSelectedClientRequests={setSelectedClientRequests} />,
+      "2": <VerifiedClientsTable verifiedClients={props.notaryProps.clients} />,
+      "3": < LargeRequestTable largeRequestListLoading={largeRequestListLoading}
+        setSelectedLargeClientRequests={setSelectedLargeClientRequests}
+        searchInput={props.notaryProps.searchString}
+        dataForLargeRequestTable={dataForLargeRequestTable} />,
+      "4": <CancelProposalTable dataCancel={dataCancel}
+        dataCancelLoading={dataCancelLoading}
+        setCancelProposalData={setCancelProposalData} />
     }
 
     return tables[tabs]
@@ -572,7 +571,7 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
   return (
     <div className="main">
       <div className="tabsholder">
-        <NotaryTabs tabs={tabs} changeStateTabs={changeStateTabs} ctx={context} verifiedClientsLength={props.notaryProps.clients.length} dataCancelLength={dataCancel.length} />
+        <NotaryTabs tabs={tabs} changeStateTabs={changeStateTabs} ctx={context} verifiedClientsLength={props.notaryProps.clients.length} dataCancelLength={dataCancel?.length} />
         <div className="tabssadd">
           {tabs === "1" && (
             <ButtonPrimary onClick={() => requestDatacap()}>
