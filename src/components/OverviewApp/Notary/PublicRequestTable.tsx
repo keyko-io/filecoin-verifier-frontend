@@ -70,7 +70,7 @@ const PublicRequestTable = ({ searchString, selectedClientRequests, setSelectedC
         history.push("/client", { client, user, address, datacap });
     }
 
-    return (<>
+    return (<div style={{ minHeight: "500px" }}>
         <table>
             <thead>
                 <tr>
@@ -141,7 +141,7 @@ const PublicRequestTable = ({ searchString, selectedClientRequests, setSelectedC
             search={searchString}
         />
         {!context.clientRequests.length && <div className="nodata">No client requests yet</div>}
-    </>
+    </div>
     )
 }
 

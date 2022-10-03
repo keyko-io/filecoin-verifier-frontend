@@ -43,19 +43,22 @@ type CancelProposalTableProps = {
 
 const CancelProposalTable = ({ setCancelProposalData, dataCancel, dataCancelLoading }: CancelProposalTableProps) => {
   return (
-    <DataTable
-      selectableRows
-      selectableRowsHighlight={true}
-      selectableRowsSingle={true}
-      onSelectedRowsChange={({ selectedRows }) => {
-        setCancelProposalData(selectedRows[0])
-      }}
-      data={dataCancel}
-      columns={cancelColumns}
-      noDataComponent="You don't have any pending request yet"
-      progressPending={dataCancelLoading}
-      progressComponent={<CircularProgress style={{ marginTop: "100px", color: "#0090ff" }} />}
-    />
+    <div style={{ minHeight: "500px" }}>
+      <DataTable
+        selectableRows
+        selectableRowsHighlight={true}
+        selectableRowsSingle={true}
+        onSelectedRowsChange={({ selectedRows }) => {
+          setCancelProposalData(selectedRows[0])
+        }}
+        data={dataCancel}
+        columns={cancelColumns}
+        noDataComponent="You don't have any pending request yet"
+        progressPending={dataCancelLoading}
+        progressComponent={<CircularProgress style={{ marginTop: "100px", color: "#0090ff" }} />}
+      />
+    </div>
+
   )
 }
 

@@ -36,13 +36,16 @@ type VerifiedClientsTableProps = {
 
 const VerifiedClientsTable = ({ verifiedClients }: VerifiedClientsTableProps) => {
     return (
-        <DataTable
-            columns={verifiedColumns}
-            data={verifiedClients}
-            pagination
-            paginationRowsPerPageOptions={[10, 20, 30]}
-            paginationPerPage={10}
-        />
+        <div style={{ minHeight: "500px" }}>
+            <DataTable
+                columns={verifiedColumns}
+                data={verifiedClients}
+                pagination
+                paginationRowsPerPageOptions={[10, 20, 30]}
+                paginationPerPage={10}
+            />
+        </div>
+
     )
 }
 
