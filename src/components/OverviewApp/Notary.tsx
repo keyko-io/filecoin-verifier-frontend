@@ -46,7 +46,7 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
   const [dataForLargeRequestTable, setDataForLargeRequestTable] = useState([])
   const [largeRequestListLoading, setLargeRequestListLoading] = useState(false)
   const [cancelProposalData, setCancelProposalData] = useState<CancelProposalData | null>(null)
-  const [dataCancel, setDataCancel] = useState<CancelProposalData[] | null>(null)
+  const [dataCancel, setDataCancel] = useState<CancelProposalData[]>([])
   const [dataCancelLoading, setDataCancelLoading] = useState(false)
 
   const changeStateTabs = (indexTab: string) => {
