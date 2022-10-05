@@ -17,7 +17,7 @@ import WarnModalNotaryVerified from "../../modals/WarnModalNotaryVeried";
 import { LargeRequestTable, CancelProposalTable, NotaryTabs, PublicRequestTable, VerifiedClientsTable } from "./Notary/index";
 import { checkAlreadyProposed } from "../../utils/checkAlreadyProposed";
 import toast from 'react-hot-toast';
-const largeutils = require("@keyko-io/filecoin-verifier-tools/utils/large-issue-parser");
+const largeUtils = require("@keyko-io/filecoin-verifier-tools/utils/large-issue-parser");
 
 type NotaryProps = {
   clients: any[];
@@ -99,8 +99,6 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
       });
     }
   };
-
-
 
   const showWarnVerify = async (origin: string) => {
     dispatchCustomEvent({
@@ -188,15 +186,33 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
       const res = await context.wallet.api.cancelPending(cancelProposalData.msig, cancelProposalData.tx, context.wallet.walletIndex, context.wallet)
 
       if (!res) {
+        setDataCancelLoading(false);
         return;
       }
 
-      //this is deleting the comment with the ID
-      await context.github.githubOcto.rest.issues.deleteComment({
-        owner: config.onboardingLargeOwner,
-        repo: config.onboardingLargeClientRepo,
-        comment_id: cancelProposalData.comment[0].id
-      });
+      await context.postLogs(
+        `Request Canceled with txID:${cancelProposalData.tx.id}, Signer Address: ${context.wallet.activeAccount}`,
+        "INFO",
+        "cancel_request",
+        cancelProposalData.issueNumber,
+        "CANCEL_REQUEST"
+      );
+
+
+      const parsedBody = largeUtils.parseApproveComment(cancelProposalData.comment.body)
+
+      console.log("parsedComment => ", parsedBody)
+
+      debugger
+
+      //update comment
+      // await context.github.githubOcto.rest.issues.updateComment({
+      //   owner: config.onboardingLargeOwner,
+      //   repo: config.onboardingLargeClientRepo,
+      //   comment_id: cancelProposalData.comment.id,
+      //   body: "yavrum nerdesin"
+      // });
+
 
       toast.success("Your pending request has been successfully canceled.")
 
@@ -208,12 +224,20 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
       setCancelProposalData(null);
 
     } catch (error) {
+      await context.postLogs(
+        `Error canceling pending request txID:${cancelProposalData.tx.id}, Signer Address:${context.wallet.activeAccount}`,
+        "ERROR",
+        "cancel_request",
+        cancelProposalData.issueNumber,
+        "CANCEL_REQUEST"
+      );
       toast.error("Something went wrong, please try again!")
       setDataCancelLoading(false)
     }
   }
 
   useEffect(() => {
+
     if (context.github.githubLogged) {
       getPending()
     }
@@ -245,10 +269,11 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
     //manipulate the data for the table and also the cancel function usage
     const DataCancel = dataByActiveAccount.map((item: any) => {
       //getting client name
-      const { name } = largeutils.parseIssue(item?.issue[0]?.issueInfo.issue.body)
+      const { name } = largeUtils.parseIssue(item?.issue[0]?.issueInfo.issue.body)
 
       //getting comment with the signer id
-      const comment = item.issue[0].issueInfo.comments.filter((c: any) => c.body.includes(context.wallet.activeAccount))
+      const comment = item.issue[0].issueInfo.comments.filter((c: any) => c.body.includes(context.wallet.activeAccount)).reverse()
+
 
       return {
         clientName: name,
@@ -256,7 +281,7 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
         issueNumber: item.issue[0].issueInfo.issue_number,
         datacap: item.issue[0].datacap,
         tx: item.tx[0],
-        comment,
+        comment: comment[0],
         msig: item.multisigAddress
       }
     })
@@ -450,6 +475,7 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
               BigInt(Math.floor(datacap)),
               context.wallet.walletIndex
             );
+
             console.log(request);
             request.approvals = true;
             await context.postLogs(
