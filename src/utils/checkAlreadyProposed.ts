@@ -1,14 +1,19 @@
 import { config } from "../../src/config"
 
-export const checkAlreadyProposed = async (issueNumber: number, ctx: any) => {
-    const { data } = await ctx.github.githubOcto.issues.listComments({
-        owner: config.onboardingLargeOwner,
-        repo: config.onboardingLargeClientRepo,
-        issue_number: issueNumber
-    });
+export const checkAlreadyProposed = async (issueNumber: number, context: any) => {
+
+    const data = await context.github.githubOcto.paginate(
+        context.github.githubOcto.issues.listComments,
+        {
+            owner: config.onboardingLargeOwner,
+            repo: config.onboardingLargeClientRepo,
+            issue_number: issueNumber,
+        }
+    );
 
     let proposeIndex;
     let approveIndex;
+    let datacapAllocation;
     let alreadyProposed = false;
 
     for (let i = data.length - 1; i >= 0; i--) {
@@ -36,6 +41,21 @@ export const checkAlreadyProposed = async (issueNumber: number, ctx: any) => {
     if (proposeIndex && approveIndex) {
         if (proposeIndex > approveIndex) {
             alreadyProposed = true
+        }
+    }
+
+    for (let i = data.length - 1; i >= 0; i--) {
+        const { body } = data[i]
+
+        if (body.includes("## DataCap Allocation requested")) {
+            datacapAllocation = i
+            break
+        }
+    }
+
+    if (datacapAllocation && proposeIndex) {
+        if (datacapAllocation > proposeIndex) {
+            alreadyProposed = false
         }
     }
 
