@@ -155,13 +155,16 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
     }
   };
 
-
   const checkAlreadyProposed = async (issueNumber: number) => {
-    const { data } = await context.github.githubOcto.issues.listComments({
-      owner: config.onboardingLargeOwner,
-      repo: config.onboardingLargeClientRepo,
-      issue_number: issueNumber
-    });
+
+    const data = await context.github.githubOcto.paginate(
+      context.github.githubOcto.issues.listComments,
+      {
+        owner: config.onboardingLargeOwner,
+        repo: config.onboardingLargeClientRepo,
+        issue_number: issueNumber,
+      }
+    );
 
     let proposeIndex;
     let approveIndex;
