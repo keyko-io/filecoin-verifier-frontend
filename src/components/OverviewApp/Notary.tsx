@@ -1,4 +1,4 @@
-/* eslint-disable react-hooks/exhaustive-deps */
+
 import React, { useEffect, useState } from "react";
 import { Data } from "../../context/Data/Index";
 import AddClientModal from "../../modals/AddClientModal";
@@ -199,15 +199,6 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
         return;
       }
 
-      await context.postLogs(
-        `Request Canceled with txID:${cancelProposalData.tx.id}, Signer Address: ${context.wallet.activeAccount}`,
-        "INFO",
-        "cancel_request",
-        cancelProposalData.issueNumber,
-        "CANCEL_REQUEST"
-      );
-
-
       const parsedBody: ProposedRequestBody = largeUtils.parseApprovedRequestWithSignerAddress(cancelProposalData.comment.body)
 
       const cancelRequestBody = (proposedCommentBody: ProposedRequestBody) => {
@@ -217,13 +208,22 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
         return `## Canceled Request\nThe following request has been canceled by the notary, thus should not be considered as valid anymore.\n#### Message sent to Filecoin Network\n>${message} \n#### Address \n> ${address}\n#### Datacap Allocated\n> ${datacap}\n#### Signer Address\n> ${signerAddress}\n#### You can check the status of the message here: https://filfox.info/en/message/${message}`
       }
 
-      await context.github.githubOcto.rest.issues.updateComment({
+      const postLogs = context.postLogs(
+        `Request Canceled with txID:${cancelProposalData.tx.id}, Signer Address: ${context.wallet.activeAccount}`,
+        "INFO",
+        "cancel_request",
+        cancelProposalData.issueNumber,
+        "CANCEL_REQUEST"
+      );
+
+      const updateComment = context.github.githubOcto.rest.issues.updateComment({
         owner: config.onboardingLargeOwner,
         repo: config.onboardingLargeClientRepo,
         comment_id: cancelProposalData.comment.id,
         body: cancelRequestBody(parsedBody)
       });
 
+      await Promise.all([updateComment, postLogs])
 
       toast.success("Your pending request has been successfully canceled.")
 
@@ -248,13 +248,13 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
   }
 
   useEffect(() => {
-
     if (context.github.githubLogged) {
       getPending()
     }
   }, [])
 
   const getPending = async () => {
+
     //get issue from the context
     const LDNIssuesAndTransactions: any = await context.getLDNIssuesAndTransactions()
 
@@ -578,7 +578,8 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
       }
     }
     setLargeRequestListLoading(true)
-    await context.loadClientRequests()
+    context.loadClientRequests()
+    getPending()
     setLargeRequestListLoading(false)
   };
 
