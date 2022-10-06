@@ -34,6 +34,15 @@ type CancelProposalData = {
   msig: string
 }
 
+interface ProposedRequestBody {
+  approvedMessage: boolean;
+  correct: boolean;
+  address: string;
+  datacap: string;
+  signerAddress: string;
+  message: string;
+}
+
 const Notary = (props: { notaryProps: NotaryProps }) => {
 
   const context = useContext(Data)
@@ -199,19 +208,21 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
       );
 
 
-      const parsedBody = largeUtils.parseApproveComment(cancelProposalData.comment.body)
+      const parsedBody: ProposedRequestBody = largeUtils.parseApprovedRequestWithSignerAddress(cancelProposalData.comment.body)
 
-      console.log("parsedComment => ", parsedBody)
+      const cancelRequestBody = (proposedCommentBody: ProposedRequestBody) => {
 
-      debugger
+        const { message, address, datacap, signerAddress } = proposedCommentBody
 
-      //update comment
-      // await context.github.githubOcto.rest.issues.updateComment({
-      //   owner: config.onboardingLargeOwner,
-      //   repo: config.onboardingLargeClientRepo,
-      //   comment_id: cancelProposalData.comment.id,
-      //   body: "yavrum nerdesin"
-      // });
+        return `## Canceled Request\nThe following request has been canceled by the notary, thus should not be considered as valid anymore.\n#### Message sent to Filecoin Network\n>${message} \n#### Address \n> ${address}\n#### Datacap Allocated\n> ${datacap}\n#### Signer Address\n> ${signerAddress}\n#### You can check the status of the message here: https://filfox.info/en/message/${message}`
+      }
+
+      await context.github.githubOcto.rest.issues.updateComment({
+        owner: config.onboardingLargeOwner,
+        repo: config.onboardingLargeClientRepo,
+        comment_id: cancelProposalData.comment.id,
+        body: cancelRequestBody(parsedBody)
+      });
 
 
       toast.success("Your pending request has been successfully canceled.")
