@@ -196,6 +196,7 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
 
       if (!res) {
         setDataCancelLoading(false);
+        toast.error("Something went wrong, please try again!")
         return;
       }
 
@@ -259,7 +260,7 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
     const LDNIssuesAndTransactions: any = await context.getLDNIssuesAndTransactions()
 
     //get transactionData 
-    const transactionsData = LDNIssuesAndTransactions.transactionAndIssue
+    const transactionsData = LDNIssuesAndTransactions.transactionAndIssue.filter((item: any) => item.issue)
 
     //this is converting id with the short version because we have short version in the array of signers
     const id = await context.wallet.api.actorAddress(context.wallet.activeAccount)
@@ -280,7 +281,7 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
     //manipulate the data for the table and also the cancel function usage
     const DataCancel = dataByActiveAccount.map((item: any) => {
       //getting client name
-      const { name } = largeUtils.parseIssue(item?.issue[0]?.issueInfo.issue.body)
+      const { name } = largeUtils.parseIssue(item.issue[0].issueInfo.issue.body)
 
       //getting comment with the signer id
       const comment = item.issue[0].issueInfo.comments.filter((c: any) => c.body.includes(context.wallet.activeAccount)).reverse()
@@ -577,6 +578,7 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
         }
       }
     }
+
     setLargeRequestListLoading(true)
     context.loadClientRequests()
     getPending()
