@@ -280,18 +280,19 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
 
     //manipulate the data for the table and also the cancel function usage
     const DataCancel = dataByActiveAccount.map((item: any) => {
+
       //getting client name
       const { name } = largeUtils.parseIssue(item.issue[0].issueInfo.issue.body)
 
       //getting comment with the signer id
       const comment = item.issue[0].issueInfo.comments.filter((c: any) => c.body.includes(context.wallet.activeAccount)).reverse()
 
-
       return {
         clientName: name,
         clientAddress: item.clientAddress,
         issueNumber: item.issue[0].issueInfo.issue_number,
         datacap: item.issue[0].datacap,
+        url: item.issue[0].issueInfo.issue.html_url,
         tx: item.tx[0],
         comment: comment[0],
         msig: item.multisigAddress

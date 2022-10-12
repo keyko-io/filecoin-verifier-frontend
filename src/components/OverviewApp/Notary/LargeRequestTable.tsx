@@ -14,9 +14,10 @@ export const largeReqColumns: any = [
         name: "Address",
         selector: (row: any) => row.address,
         sortable: true,
+        cell: (row: any) => <div>{`${row.address.substring(0, 9)}...${row.address.substring(row.address.length - 9, row.address.length)}`}</div>
     },
     {
-        name: "multisig",
+        name: "Multisig",
         selector: (row: any) => row.multisig,
         sortable: true,
         grow: 0.6
