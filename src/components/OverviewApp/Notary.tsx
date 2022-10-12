@@ -588,7 +588,7 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
 
   const activeTable = (tabs: any) => {
     const tables: any = {
-      "1": <Doremi /> || <PublicRequestTable selectedClientRequests={selectedClientRequests}
+      "1": 0 || <PublicRequestTable selectedClientRequests={selectedClientRequests}
         searchString={props.notaryProps.searchString}
         setSelectedClientRequests={setSelectedClientRequests} />,
       "2": <VerifiedClientsTable verifiedClients={props.notaryProps.clients} />,

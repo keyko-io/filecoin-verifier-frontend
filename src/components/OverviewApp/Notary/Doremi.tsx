@@ -48,6 +48,7 @@ const PublicRequestTable2 = () => {
                 pagination
                 paginationRowsPerPageOptions={[10, 20, 30]}
                 paginationPerPage={10}
+                noDataComponent="No client requests yet"
             />
         </div>
     )
