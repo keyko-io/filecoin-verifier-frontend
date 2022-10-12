@@ -19,7 +19,7 @@ export const cancelColumns: any = [
       <a
         target="_blank"
         rel="noopener noreferrer"
-        href={"/verifiers"}
+        href={row.url}
       >
         #{row.issueNumber}
       </a>
