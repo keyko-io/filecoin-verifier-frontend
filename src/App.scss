@@ -1578,36 +1578,7 @@
   display: inline-block;
 }
 
-.pagination {
-  position: absolute;
-  top: 595px;
-  max-width: 1280px;
-  left: 0;
-  right: 0;
-  margin-left: auto;
-  margin-right: auto;
-  text-align: center;
-  padding: 10px;
-  display: flex;
-  justify-content: center;
 
-  .pagenumber {
-    width: 40px;
-    height: 40px;
-    cursor: pointer;
-    font-family: "suisseintl" !important;
-    font-size: 18px;
-    font-style: normal;
-    font-weight: 400;
-    line-height: 20px;
-    letter-spacing: 0px;
-    padding-top: 10px;
-  }
-
-  .paginator {
-    color: #33a7ff;
-  }
-}
 
 .twooptionsbelow {
   top: 820px !important;
