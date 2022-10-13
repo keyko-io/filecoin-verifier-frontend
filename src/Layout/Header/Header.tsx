@@ -9,8 +9,10 @@ const Header = () => {
     const goHomePage = () => history.push({ pathname: "/" })
     const goBack = () => history.goBack()
 
+    const addBorderBottom = history.location.pathname === "/client" ? { borderBottom: "1.5px solid #0090ff" } : {}
+
     return (
-        <div className="layoutHeader" >
+        <div className="layoutHeader" style={addBorderBottom} >
             {
                 window.location.pathname.length === 1 ? null :
                     < div className="goBack" onClick={goBack}>
