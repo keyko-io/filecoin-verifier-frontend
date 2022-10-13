@@ -1,22 +1,28 @@
 import React, { useContext } from "react"
 import DataTable from "react-data-table-component"
 import { Data } from "../../../context/Data/Index"
+import InfoIcon from '@mui/icons-material/Info';
+import Tooltip from '@mui/material/Tooltip';
+import history from "../../../context/History";
 
 const publicRequestColumns: any = [
     {
         name: "Name",
         selector: (row: any) => row.data.name,
         sortable: true,
+        grow: 1
     },
     {
         name: "Address",
         selector: (row: any) => row.data.address,
         sortable: true,
+        grow: 1
     },
     {
         name: "Datacap",
         selector: (row: any) => row.data.datacap,
         sortable: true,
+        grow: 1
     },
     {
         name: "Audit Trail",
@@ -31,10 +37,33 @@ const publicRequestColumns: any = [
                 #{row.number}
             </a>
         ),
+        grow: 1
     },
+    {
+        button: true,
+        cell: (row: any) => <span onClick={() => clientDetail(row)} style={{ cursor: "pointer" }}>
+            <Tooltip title="See Detail" placement="left" >
+                <InfoIcon />
+            </Tooltip>
+        </span>,
+        grow: 0.5
+    }
 ]
 
-const PublicRequestTable2 = () => {
+const clientDetail = (row: any) => {
+    const client = row.data.name
+    const user = row.owner
+    const { address, datacap } = row.data
+
+    history.push("/client", { client, user, address, datacap });
+}
+
+
+type PublicRequestTable2Props = {
+    setSelectedClientRequests: any
+}
+
+const PublicRequestTable2 = ({ setSelectedClientRequests }: PublicRequestTable2Props) => {
     const context = useContext(Data)
 
     return (
@@ -43,6 +72,10 @@ const PublicRequestTable2 = () => {
                 selectableRows
                 selectableRowsHighlight={true}
                 selectableRowsSingle={true}
+                onSelectedRowsChange={({ selectedRows }: any) => {
+                    const rowNumbers = selectedRows.map((item: any) => item.number)
+                    setSelectedClientRequests(rowNumbers)
+                }}
                 columns={publicRequestColumns}
                 data={context.clientRequests}
                 pagination
