@@ -4,7 +4,6 @@ import Welcome from "../components/Welcome/Welcome";
 import MakeRequestModal from "../modals/MakeRequestModal";
 import { searchAllColumnsFromTable } from "./tableUtils/searchAllColumnsFromTable";
 import TableContainer from "./tableUtils/TableContainer/TableContainer";
-import WarnModal from "../modals/WarnModal";
 // @ts-ignore
 import { dispatchCustomEvent } from "slate-react-system";
 import TableSearchInput from "./tableUtils/TableSearchInput/TableSearchInput";
@@ -13,6 +12,7 @@ import { columns } from "./tableUtils/verifiersColumns";
 import lodash from "lodash";
 
 import { notaries } from "../data/verifiers-registry.json"
+import toast from "react-hot-toast";
 
 const Verifiers = () => {
   const [selectedData, setSelectedData] = useState<any>(null);
@@ -25,19 +25,8 @@ const Verifiers = () => {
   }, []);
 
   const contactVerifier = async () => {
-    if (selectedData) {
-      let verifier: any = selectedData;
-
-      dispatchCustomEvent({
-        name: "create-modal",
-        detail: {
-          id: Math.random()
-            .toString(36)
-            .replace(/[^a-z]+/g, "")
-            .substr(0, 5),
-          modal: <MakeRequestModal verifier={verifier} />,
-        },
-      });
+    if (!selectedData) {
+      toast.error("You should select one verifier")
       return;
     }
 
@@ -48,7 +37,7 @@ const Verifiers = () => {
           .toString(36)
           .replace(/[^a-z]+/g, "")
           .substr(0, 5),
-        modal: <WarnModal message={"Please select one verifier"} />,
+        modal: <MakeRequestModal verifier={selectedData} />,
       },
     });
   };

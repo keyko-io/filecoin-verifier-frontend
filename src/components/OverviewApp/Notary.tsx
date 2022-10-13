@@ -9,12 +9,11 @@ import { anyToBytes } from "../../utils/Filters";
 // @ts-ignore
 import LoginGithub from "react-login-github";
 import { config } from "../../config";
-import WarnModal from "../../modals/WarnModal";
 import WarnModalVerify from "../../modals/WarnModalVerify";
 import { BeatLoader } from "react-spinners";
 import { useContext } from "react";
 import WarnModalNotaryVerified from "../../modals/WarnModalNotaryVeried";
-import { LargeRequestTable, CancelProposalTable, NotaryTabs, PublicRequestTable, VerifiedClientsTable, Doremi } from "./Notary/index";
+import { LargeRequestTable, CancelProposalTable, NotaryTabs, PublicRequestTable, VerifiedClientsTable } from "./Notary/index";
 import { checkAlreadyProposed } from "../../utils/checkAlreadyProposed";
 import toast from 'react-hot-toast';
 const largeUtils = require("@keyko-io/filecoin-verifier-tools/utils/large-issue-parser");
@@ -577,9 +576,7 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
 
   const activeTable = (tabs: any) => {
     const tables: any = {
-      "1": <Doremi setSelectedClientRequests={setSelectedClientRequests} /> || <PublicRequestTable selectedClientRequests={selectedClientRequests}
-        searchString={props.notaryProps.searchString}
-        setSelectedClientRequests={setSelectedClientRequests} />,
+      "1": <PublicRequestTable setSelectedClientRequests={setSelectedClientRequests} />,
       "2": <VerifiedClientsTable verifiedClients={props.notaryProps.clients} />,
       "3": < LargeRequestTable largeRequestListLoading={largeRequestListLoading}
         setSelectedLargeClientRequests={setSelectedLargeClientRequests}

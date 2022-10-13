@@ -1,147 +1,89 @@
-import React, { useContext, useState } from "react"
-import Pagination from "../../Pagination";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-// @ts-ignore
-// prettier-ignore
-import { ButtonSecondary } from "slate-react-system";
-import { Data } from "../../../context/Data/Index";
+import React, { useContext } from "react"
+import DataTable from "react-data-table-component"
+import { Data } from "../../../context/Data/Index"
+import InfoIcon from '@mui/icons-material/Info';
+import Tooltip from '@mui/material/Tooltip';
 import history from "../../../context/History";
-import { tableElementFilter } from "../../../utils/SortFilter";
 
-const publicRequestColums = [
-    { id: "name", value: "Client" },
-    { id: "address", value: "Address" },
-    { id: "datacap", value: "Datacap" },
-    { id: "number", value: "Audit Trail" },
-];
+const publicRequestColumns: any = [
+    {
+        name: "Name",
+        selector: (row: any) => row.data.name,
+        sortable: true,
+        grow: 1
+    },
+    {
+        name: "Address",
+        selector: (row: any) => row.data.address,
+        sortable: true,
+        grow: 1
+    },
+    {
+        name: "Datacap",
+        selector: (row: any) => row.data.datacap,
+        sortable: true,
+        grow: 0.7
+    },
+    {
+        name: "Audit Trail",
+        selector: (row: any) => row.number,
+        sortable: true,
+        cell: (row: any) => (
+            <a
+                target="_blank"
+                rel="noopener noreferrer"
+                href={row.url}
+            >
+                #{row.number}
+            </a>
+        ),
+        grow: 0.7
+    },
+    {
+        button: true,
+        cell: (row: any) => <span onClick={() => clientDetail(row)} style={{ cursor: "pointer" }}>
+            <Tooltip title="See Client Detail" placement="left" >
+                <InfoIcon />
+            </Tooltip>
+        </span>,
+        grow: 0.5
+    }
+]
 
-type PublicRequestTableProps = {
-    searchString: any
-    selectedClientRequests: any
+const clientDetail = (row: any) => {
+    const client = row.data.name
+    const user = row.owner
+    const { address, datacap } = row.data
+
+    history.push("/client", { client, user, address, datacap });
+}
+
+
+type PublicRequestTable2Props = {
     setSelectedClientRequests: any
 }
 
-const PublicRequestTable = ({ searchString, selectedClientRequests, setSelectedClientRequests }: PublicRequestTableProps) => {
+const PublicRequestTable = ({ setSelectedClientRequests }: PublicRequestTable2Props) => {
     const context = useContext(Data)
 
-    const [refPublic, setRefPublic] = useState({} as any)
-    const [sortOrderPublic, setSortOrderPublic] = useState(-1)
-    const [orderByPublic, setOrderByPublic] = useState('name')
-
-    const orderPublic = async (e: any) => {
-        const { orderBy, sortOrder }: any = await context.sortPublicRequests(
-            e,
-            orderByPublic,
-            sortOrderPublic,
-        );
-        setOrderByPublic(orderBy)
-        setSortOrderPublic(sortOrder)
-    };
-
-    const onRefPublicChange = (refPublic: any) => {
-        setRefPublic(refPublic)
-    };
-
-    const selectClientRow = (number: string) => {
-
-        let selectedTxs = selectedClientRequests;
-        if (selectedTxs.includes(number)) {
-            selectedTxs = selectedTxs.filter((item: any) => item !== number);
-        } else {
-            selectedTxs.push(number);
-        }
-        setSelectedClientRequests(selectedTxs)
-
-    };
-
-    const showClientDetail = (e: any) => {
-        const listRequestFiltered = context.clientRequests
-            .filter(
-                (element: any) =>
-                    tableElementFilter(searchString, element.data) === true
-            )
-            .filter((_: any, i: any) => refPublic?.checkIndex(i));
-
-        const client = listRequestFiltered[e.currentTarget.id].data.name;
-        const user = listRequestFiltered[e.currentTarget.id].owner;
-        const address = listRequestFiltered[e.currentTarget.id].data.address;
-        const datacap = listRequestFiltered[e.currentTarget.id].data.datacap;
-
-        history.push("/client", { client, user, address, datacap });
-    }
-
-    return (<div style={{ minHeight: "500px" }}>
-        <table>
-            <thead>
-                <tr>
-                    <td></td>
-                    {publicRequestColums.map((column: any) => (
-                        <td id={column.id} key={column.id} onClick={orderPublic}>
-                            {column.value}
-                            <FontAwesomeIcon icon={["fas", "sort"]} />
-                        </td>
-                    ))}
-                </tr>
-            </thead>
-            <tbody>
-                {refPublic && refPublic.checkIndex
-                    ? context.clientRequests
-                        .filter(
-                            (element: any) =>
-                                tableElementFilter(
-                                    searchString,
-                                    element.data
-                                ) === true
-                        )
-                        .filter((_: any, i: any) =>
-                            refPublic?.checkIndex(i)
-                        )
-                        .map((clientReq: any, index: any) => (
-                            <tr key={index}>
-                                <td>
-                                    <input
-                                        type="checkbox"
-                                        onChange={() =>
-                                            selectClientRow(clientReq.number)
-                                        }
-                                        checked={selectedClientRequests.includes(
-                                            clientReq.number
-                                        )}
-                                    />
-                                </td>
-                                <td>
-                                    <FontAwesomeIcon
-                                        icon={["fas", "info-circle"]}
-                                        id={index}
-                                        onClick={(e) => showClientDetail(e)}
-                                    />{" "}
-                                    {clientReq.data.name}{" "}
-                                </td>
-                                <td>{clientReq.data.address}</td>
-                                <td>{clientReq.data.datacap}</td>
-                                <td>
-                                    <a
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        href={clientReq.url}
-                                    >
-                                        #{clientReq.number}
-                                    </a>
-                                </td>
-                            </tr>
-                        ))
-                    : null}
-            </tbody>
-        </table>
-        <Pagination
-            elements={context.clientRequests}
-            maxElements={10}
-            ref={onRefPublicChange}
-            refresh={() => { }}
-            search={searchString}
-        />
-        {!context.clientRequests.length && <div className="nodata">No client requests yet</div>}
-    </div>
+    return (
+        <div style={{ minHeight: "500px" }}>
+            <DataTable
+                selectableRows
+                selectableRowsHighlight={true}
+                selectableRowsSingle={true}
+                onSelectedRowsChange={({ selectedRows }: any) => {
+                    const rowNumbers = selectedRows.map((item: any) => item.number)
+                    setSelectedClientRequests(rowNumbers)
+                }}
+                columns={publicRequestColumns}
+                data={context.clientRequests}
+                pagination
+                paginationRowsPerPageOptions={[10, 20, 30]}
+                paginationPerPage={10}
+                noDataComponent="No client requests yet"
+            />
+        </div>
     )
 }
 
