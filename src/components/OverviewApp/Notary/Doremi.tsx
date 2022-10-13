@@ -22,7 +22,7 @@ const publicRequestColumns: any = [
         name: "Datacap",
         selector: (row: any) => row.data.datacap,
         sortable: true,
-        grow: 1
+        grow: 0.7
     },
     {
         name: "Audit Trail",
@@ -37,7 +37,7 @@ const publicRequestColumns: any = [
                 #{row.number}
             </a>
         ),
-        grow: 1
+        grow: 0.7
     },
     {
         button: true,
