@@ -42,7 +42,7 @@ const publicRequestColumns: any = [
     {
         button: true,
         cell: (row: any) => <span onClick={() => clientDetail(row)} style={{ cursor: "pointer" }}>
-            <Tooltip title="See Client Detail" placement="left" >
+            <Tooltip title="See Client Detail" placement="left" arrow>
                 <InfoIcon />
             </Tooltip>
         </span>,
