@@ -16,7 +16,7 @@ const publicRequestColumns: any = [
         name: "Address",
         selector: (row: any) => row.data.address,
         sortable: true,
-        grow: 1
+        grow: 1.2
     },
     {
         name: "Datacap",
