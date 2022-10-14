@@ -6,8 +6,6 @@ import { IssueBody } from "../../utils/IssueBody";
 import BigNumber from "bignumber.js";
 import {
   tableSort,
-  tableSortLargeRequest,
-  tableSortPublicRequest,
 } from "../../utils/SortFilter";
 import _ from 'lodash'
 import { v4 as uuidv4 } from "uuid";
@@ -40,11 +38,6 @@ interface DataProviderStates {
   clientsGithub: any;
   loadClientsGithub: any;
   loadClients: any;
-  sortClients: any;
-  sortLargeRequests: any;
-  sortPublicRequests: any;
-  sortVerified: any;
-  sortNotaryRequests: any;
   assignToIssue: any;
   clients: any[];
   clientsAmount: string;
@@ -820,82 +813,6 @@ export default class DataProvider extends React.Component<
         } catch (error) {
           console.error("error in resolving promises", error);
         }
-      },
-
-      sortClients: async (
-        e: any,
-        previousOrderBy: string,
-        previousOrder: number
-      ) => {
-        const { arraySorted, orderBy, sortOrder } = tableSort(
-          e,
-          this.state.clients as [],
-          previousOrderBy,
-          previousOrder
-        );
-
-        this.setState({ clients: arraySorted });
-        return { orderBy, sortOrder };
-      },
-      sortPublicRequests: async (
-        e: any,
-        previousOrderBy: string,
-        previousOrder: number
-      ) => {
-        const { arraySorted, orderBy, sortOrder } = tableSortPublicRequest(
-          e,
-          this.state.clientRequests as [],
-          previousOrderBy,
-          previousOrder
-        );
-
-        this.setState({ clientRequests: arraySorted });
-        return { orderBy, sortOrder };
-      },
-      sortLargeRequests: async (
-        e: any,
-        previousOrderBy: string,
-        previousOrder: number
-      ) => {
-        const { arraySorted, orderBy, sortOrder } = tableSortLargeRequest(
-          e,
-          this.state.largeClientRequests as [],
-          previousOrderBy,
-          previousOrder
-        );
-
-        this.setState({ largeClientRequests: arraySorted });
-        return { orderBy, sortOrder };
-      },
-      sortNotaryRequests: async (
-        e: any,
-        previousOrderBy: string,
-        previousOrder: number
-      ) => {
-        const { arraySorted, orderBy, sortOrder } = tableSort(
-          e,
-          this.state.verifierAndPendingRequests as [],
-          previousOrderBy,
-          previousOrder
-        );
-
-        this.setState({ clientRequests: arraySorted });
-        return { orderBy, sortOrder };
-      },
-      sortVerified: async (
-        e: any,
-        previousOrderBy: string,
-        previousOrder: number
-      ) => {
-        const { arraySorted, orderBy, sortOrder } = tableSort(
-          e,
-          this.state.verified as [],
-          previousOrderBy,
-          previousOrder
-        );
-
-        this.setState({ clientRequests: arraySorted });
-        return { orderBy, sortOrder };
       },
       updateGithubVerified: async (
         requestNumber: any,

@@ -477,24 +477,6 @@ export default class RootKeyHolder extends Component<
     this.setState({ refRequests });
   };
 
-  orderAccepted = async (e: any) => {
-    const { orderBy, sortOrder } = await this.context.sortVerified(
-      e,
-      this.state.orderByAccepted,
-      this.state.sortOrderAccepted
-    );
-    this.setState({ orderByAccepted: orderBy, sortOrderAccepted: sortOrder });
-  };
-
-  orderRequest = async (e: any) => {
-    const { orderBy, sortOrder } = await this.context.sortNotaryRequests(
-      e,
-      this.state.orderByRequest,
-      this.state.sortOrderRequest
-    );
-    this.setState({ orderByRequest: orderBy, sortOrderRequest: sortOrder });
-  };
-
   timeout(delay: number) {
     return new Promise((res) => setTimeout(res, delay));
   }

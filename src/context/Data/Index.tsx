@@ -59,11 +59,6 @@ export const Data = React.createContext({
     labels: string[],
     action?: string
   ) => { },
-  sortPublicRequests: async (
-    e: any,
-    previousOrderBy: string,
-    previousOrder: number
-  ) => { },
   selectedLargeClientRequests: [],
   setSelectedLargeClientRequests: (rowNumbers: any[]) => { },
   searchString: '',
