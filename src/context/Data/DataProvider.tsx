@@ -4,9 +4,6 @@ import { config } from "../../config";
 // @ts-ignore
 import { IssueBody } from "../../utils/IssueBody";
 import BigNumber from "bignumber.js";
-import {
-  tableSort,
-} from "../../utils/SortFilter";
 import _ from 'lodash'
 import { v4 as uuidv4 } from "uuid";
 import { anyToBytes, bytesToiB } from "../../utils/Filters";
@@ -15,9 +12,6 @@ import { notaryLedgerVerifiedComment } from './comments'
 const utils = require("@keyko-io/filecoin-verifier-tools/utils/issue-parser");
 const largeutils = require("@keyko-io/filecoin-verifier-tools/utils/large-issue-parser");
 const parser = require("@keyko-io/filecoin-verifier-tools/utils/notary-issue-parser");
-const {
-  callMetricsApi,
-} = require("@keyko-io/filecoin-verifier-tools/metrics/metrics");
 const verifierRegistry = require("../../data/verifiers-registry.json");
 
 interface DataProviderStates {
