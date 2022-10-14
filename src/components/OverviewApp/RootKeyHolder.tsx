@@ -52,23 +52,13 @@ export default class RootKeyHolder extends Component<
     sortOrderRequest: -1,
   };
 
-  acceptedNotaryColums = [
-    { id: "verifier", value: "Notary" },
-    { id: "verifierAccount", value: "Address" },
-    { id: "datacapConverted", value: "Datacap" },
-  ];
-
-  requestColums = [
-    { id: "proposed", value: "Status" },
-    { id: "issue_number", value: "Issue" },
-    { id: "addresses", value: "Address" },
-    { id: "datacaps", value: "Datacap" },
-    { id: "txs", value: "Transaction ID" },
-    { id: "proposedBy", value: "Proposed by" },
-  ];
-
   componentDidMount() {
     this.context.loadVerifierAndPendingRequests();
+
+
+    //ASK  FABRİ ABOUT THİS COMPONENTS!!!!! PROBABLY WE ARE NOT USING THEM???
+    //this.requestVerifier()
+    //this.proposeVerifier()
   }
 
   showApproved = async () => {
