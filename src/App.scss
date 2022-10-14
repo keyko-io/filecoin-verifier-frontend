@@ -1358,67 +1358,6 @@
 }
 
 
-
-.notaryinfoModal {
-  height: 400px;
-  width: 550px;
-  display: inline-block;
-  text-align: center;
-
-  .title {
-    font-weight: bold;
-    font-family: "suisseintl";
-    font-style: normal;
-    font-weight: 600;
-    font-size: 16px;
-    line-height: 24px;
-    padding-bottom: 20px;
-  }
-}
-
-.notaryinfoModal {
-  height: 400px;
-  width: 550px;
-  display: inline-block;
-  text-align: center;
-  font-family: "suisseintl";
-
-  p {
-    max-width: 600px;
-    padding-bottom: 20px;
-    left: 0;
-    right: 0;
-    margin: auto;
-    text-align: center;
-  }
-
-  .markdown {
-    width: 800px;
-    text-align: left;
-
-    table {
-      padding-top: 20px;
-      padding-bottom: 20px;
-      text-align: center;
-    }
-  }
-
-  .title {
-    font-weight: bold;
-    font-family: Inter;
-    font-style: normal;
-    font-weight: 600;
-    font-size: 16px;
-    line-height: 24px;
-    padding-bottom: 20px;
-  }
-
-  .content {
-    max-height: 380px;
-    overflow: scroll;
-  }
-}
-
 .notaryinfo {
   float: left;
   margin-right: 10px;
