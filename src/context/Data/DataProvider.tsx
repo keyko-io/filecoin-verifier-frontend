@@ -494,7 +494,7 @@ export default class DataProvider extends React.Component<
                     if (config.networks.includes("Localhost"))
                       signable = true;
                     const datacap = elem.tx ?
-                      bytesToiB(parseInt(elem.tx[0].parsed.params.cap )) : elem.issue[0].datacap
+                      bytesToiB(parseInt(elem.tx[0].parsed.params.cap)) : elem.issue[0].datacap
 
                     const obj: largeRequest = {
                       issue_number: elem.issue[0].issueInfo.issue_number,

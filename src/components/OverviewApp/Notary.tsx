@@ -1,109 +1,66 @@
-import React, { useEffect, useState } from "react";
 
+import React, { useEffect, useState } from "react";
 import { Data } from "../../context/Data/Index";
 import AddClientModal from "../../modals/AddClientModal";
-import AddVerifierModal from "../../modals/AddVerifierModal";
 // @ts-ignore
 // prettier-ignore
 import { ButtonPrimary, dispatchCustomEvent, ButtonSecondary } from "slate-react-system";
-import { bytesToiB, anyToBytes } from "../../utils/Filters";
-import BigNumber from "bignumber.js";
+import { anyToBytes } from "../../utils/Filters";
 // @ts-ignore
 import LoginGithub from "react-login-github";
 import { config } from "../../config";
 import WarnModal from "../../modals/WarnModal";
 import WarnModalVerify from "../../modals/WarnModalVerify";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { tableElementFilter } from "../../utils/SortFilter";
-import Pagination from "../Pagination";
-import history from "../../context/History";
 import { BeatLoader } from "react-spinners";
-import DataTable from "react-data-table-component";
 import { useContext } from "react";
-import { searchAllColumnsFromTable } from "../../pages/tableUtils/searchAllColumnsFromTable";
 import WarnModalNotaryVerified from "../../modals/WarnModalNotaryVeried";
-import { CircularProgress } from "@material-ui/core";
-
-
-
+import { LargeRequestTable, CancelProposalTable, NotaryTabs, PublicRequestTable, VerifiedClientsTable } from "./Notary/index";
+import { checkAlreadyProposed } from "../../utils/checkAlreadyProposed";
+import toast from 'react-hot-toast';
+const largeUtils = require("@keyko-io/filecoin-verifier-tools/utils/large-issue-parser");
 
 type NotaryProps = {
   clients: any[];
   searchString: string;
 };
-const CANT_SIGN_MESSAGE = "You can currently only approve the allocation requests associated with the multisig organization you signed in with. Signing proposals for additional DataCap allocations will require you to sign in again";
+
+type CancelProposalData = {
+  clientName: string,
+  clientAddress: string,
+  issueNumber: number,
+  datacap: string,
+  tx: any,
+  comment: any
+  msig: string
+}
+
+interface ProposedRequestBody {
+  approvedMessage: boolean;
+  correct: boolean;
+  address: string;
+  datacap: string;
+  signerAddress: string;
+  message: string;
+}
 
 const Notary = (props: { notaryProps: NotaryProps }) => {
 
   const context = useContext(Data)
 
-  const verifiedClientsColums = [
-    { id: "verified", value: "ID" },
-    { id: "key", value: "Address" },
-    { id: "datacap", value: "Datacap" },
-  ];
-
-  const publicRequestColums = [
-    { id: "name", value: "Client" },
-    { id: "address", value: "Address" },
-    { id: "datacap", value: "Datacap" },
-    { id: "number", value: "Audit Trail" },
-  ];
-
-  const largeRequestColums = [
-    { id: "name", value: "Client" },
-    { id: "address", value: "Address" },
-    { id: "multisig", value: "multisig" },
-    { id: "datacap", value: "Datacap" },
-    { id: "approvals", value: "Approvals" },
-    { id: "proposer", value: "Proposer" },
-    { id: "issue_number", value: "Audit Trail" },
-  ];
-
-  const [selectedTransactions, setSelectedTransactions] = useState([])
   const [selectedClientRequests, setSelectedClientRequests] = useState([] as any)
   const [selectedLargeClientRequests, setSelectedLargeClientRequests] = useState([] as any)
   const [tabs, setTabs] = useState('1')
-  const [sortOrderVerified, setSortOrderVerified] = useState(-1)
-  const [orderByVerified, setOrderByVerified] = useState('name')
-  const [refVerified, setRefVerified] = useState({})
-  const [sortOrderPublic, setSortOrderPublic] = useState(-1)
-  const [orderByPublic, setOrderByPublic] = useState('name')
-  const [sortOrderLargePublic, setSortOrderLargePublic] = useState(-1)
-  const [orderByLargePublic, setOrderByLargePublic] = useState('name')
-  const [refPublic, setRefPublic] = useState({} as any)
-  const [regLargePublic, setRegLargePublic] = useState({})
   const [approveLoading, setApproveLoading] = useState(false)
   const [approvedDcRequests, setApprovedDcRequests] = useState([] as any)
-  const [largeRequestList, setLargeRequestList] = useState([])
-  const [listIsChecked, setListIsChecked] = useState([])
   const [dataForLargeRequestTable, setDataForLargeRequestTable] = useState([])
   const [largeRequestListLoading, setLargeRequestListLoading] = useState(false)
+  const [cancelProposalData, setCancelProposalData] = useState<CancelProposalData | null>(null)
+  const [dataCancel, setDataCancel] = useState<CancelProposalData[]>([])
+  const [dataCancelLoading, setDataCancelLoading] = useState(false)
 
-
-  const showVerifiedClients = async () => {
-    setTabs('2')
-  };
-
-  const showClientRequests = async () => {
-    setTabs('1')
-  };
-
-  const showLargeRequests = async () => {
-    setTabs('3')
-  };
-
-  const onRefVerifiedChange = (refVerified: any) => {
-    setRefVerified(refVerified)
-  };
-
-  const onRefPublicChange = (refPublic: any) => {
-    setRefPublic(refPublic)
-  };
-
-  const onRefLargePublicChange = (regLargePublic: any) => {
-    setRegLargePublic(regLargePublic)
-  };
+  const changeStateTabs = (indexTab: string) => {
+    setTabs(indexTab)
+  }
 
   const requestDatacap = () => {
     dispatchCustomEvent({
@@ -119,10 +76,7 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
   };
 
   const verifyNewDatacap = () => {
-    if (
-      selectedClientRequests.length === 0 ||
-      selectedClientRequests.length > 1
-    ) {
+    if (selectedClientRequests.length !== 1) {
       dispatchCustomEvent({
         name: "create-modal",
         detail: {
@@ -154,68 +108,6 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
       });
     }
   };
-
-  const checkAlreadyProposed = async (issueNumber: number) => {
-
-    const data = await context.github.githubOcto.paginate(
-      context.github.githubOcto.issues.listComments,
-      {
-        owner: config.onboardingLargeOwner,
-        repo: config.onboardingLargeClientRepo,
-        issue_number: issueNumber,
-      }
-    );
-
-    let proposeIndex;
-    let approveIndex;
-    let datacapAllocation;
-    let alreadyProposed = false;
-
-    for (let i = data.length - 1; i >= 0; i--) {
-      const { body } = data[i]
-
-      if (body.includes("## Request Proposed")) {
-        proposeIndex = i
-        break
-      } else {
-        proposeIndex = -2
-      }
-    }
-
-    for (let i = data.length - 1; i >= 0; i--) {
-      const { body } = data[i]
-
-      if (body.includes("## Request Approved")) {
-        approveIndex = i
-        break
-      } else {
-        approveIndex = -1
-      }
-    }
-
-    if (proposeIndex && approveIndex) {
-      if (proposeIndex > approveIndex) {
-        alreadyProposed = true
-      }
-    }
-
-    for (let i = data.length - 1; i >= 0; i--) {
-      const { body } = data[i]
-
-      if (body.includes("## DataCap Allocation requested")) {
-        datacapAllocation = i
-        break
-      }
-    }
-
-    if (datacapAllocation && proposeIndex) {
-      if (datacapAllocation > proposeIndex) {
-        alreadyProposed = false
-      }
-    }
-
-    return alreadyProposed
-  }
 
   const showWarnVerify = async (origin: string) => {
     dispatchCustomEvent({
@@ -251,7 +143,7 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
                     : requestDatacap()
             }
             }
-            largeAddress={origin == "Large" ? true : false}
+            largeAddress={origin === "Large" ? true : false}
             origin={
               origin === "Notary" || "Large" ? "Notary" : "single-message"
             }
@@ -288,9 +180,126 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
         return
       }
     }
-
     showWarnVerify(origin)
+  }
 
+  const cancelDuplicateRequest = async () => {
+    if (!cancelProposalData) {
+      toast.error("You should select one pending request!")
+      return;
+    }
+
+    try {
+      setDataCancelLoading(true);
+
+      const res = await context.wallet.api.cancelPending(cancelProposalData.msig, cancelProposalData.tx, context.wallet.walletIndex, context.wallet)
+
+      if (!res) {
+        setDataCancelLoading(false);
+        toast.error("Something went wrong, please try again!")
+        return;
+      }
+
+      const parsedBody: ProposedRequestBody = largeUtils.parseApprovedRequestWithSignerAddress(cancelProposalData.comment.body)
+
+      const cancelRequestBody = (proposedCommentBody: ProposedRequestBody) => {
+
+        const { message, address, datacap, signerAddress } = proposedCommentBody
+
+        return `## Canceled Request\nThe following request has been canceled by the notary, thus should not be considered as valid anymore.\n#### Message sent to Filecoin Network\n>${message} \n#### Address \n> ${address}\n#### Datacap Allocated\n> ${datacap}\n#### Signer Address\n> ${signerAddress}\n#### You can check the status of the message here: https://filfox.info/en/message/${message}`
+      }
+
+      const postLogs = context.postLogs(
+        `Request Canceled with txID:${cancelProposalData.tx.id}, Signer Address: ${context.wallet.activeAccount}`,
+        "INFO",
+        "cancel_request",
+        cancelProposalData.issueNumber,
+        "CANCEL_REQUEST"
+      );
+
+      const updateComment = context.github.githubOcto.rest.issues.updateComment({
+        owner: config.onboardingLargeOwner,
+        repo: config.onboardingLargeClientRepo,
+        comment_id: cancelProposalData.comment.id,
+        body: cancelRequestBody(parsedBody)
+      });
+
+      await Promise.all([updateComment, postLogs])
+
+      toast.success("Your pending request has been successfully canceled.")
+
+      const updateCancelData = (item: any) => item.clientAddress !== cancelProposalData.clientAddress
+
+      setDataCancel((dataCancel: any) => dataCancel.filter(updateCancelData))
+
+      setDataCancelLoading(false);
+      setCancelProposalData(null);
+
+    } catch (error) {
+      await context.postLogs(
+        `Error canceling pending request txID:${cancelProposalData.tx.id}, Signer Address:${context.wallet.activeAccount}`,
+        "ERROR",
+        "cancel_request",
+        cancelProposalData.issueNumber,
+        "CANCEL_REQUEST"
+      );
+      toast.error("Something went wrong, please try again!")
+      setDataCancelLoading(false)
+    }
+  }
+
+  useEffect(() => {
+    if (context.github.githubLogged) {
+      getPending()
+    }
+  }, [])
+
+  const getPending = async () => {
+
+    //get issue from the context
+    const LDNIssuesAndTransactions: any = await context.getLDNIssuesAndTransactions()
+
+    //get transactionData 
+    const transactionsData = LDNIssuesAndTransactions.transactionAndIssue.filter((item: any) => item.issue)
+
+    //this is converting id with the short version because we have short version in the array of signers
+    const id = await context.wallet.api.actorAddress(context.wallet.activeAccount)
+
+    const dataByActiveAccount: any = []
+
+    //check if the activeAccount id is in the array
+    for (let transaction of transactionsData) {
+      if (Array.isArray(transaction.tx)) {
+        for (let txId of transaction.tx) {
+          if (txId.signers.includes(id)) {
+            dataByActiveAccount.push(transaction)
+          }
+        }
+      }
+    }
+
+    //manipulate the data for the table and also the cancel function usage
+    const DataCancel = dataByActiveAccount.map((item: any) => {
+
+      //getting client name
+      const { name } = largeUtils.parseIssue(item.issue[0].issueInfo.issue.body)
+
+      //getting comment with the signer id
+      const comment = item.issue[0].issueInfo.comments.filter((c: any) => c.body.includes(context.wallet.activeAccount)).reverse()
+
+      return {
+        clientName: name,
+        clientAddress: item.clientAddress,
+        issueNumber: item.issue[0].issueInfo.issue_number,
+        datacap: item.issue[0].datacap,
+        url: item.issue[0].issueInfo.issue.html_url,
+        tx: item.tx[0],
+        comment: comment[0],
+        msig: item.multisigAddress
+      }
+    })
+
+    setDataCancel(DataCancel)
   }
 
   useEffect(() => {
@@ -300,8 +309,6 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
       showWarnVerify(selectedTab)
     }
   }, [context.isAddressVerified])
-
-
 
   const verifyClients = async () => {
     dispatchCustomEvent({ name: "delete-modal", detail: {} });
@@ -336,9 +343,7 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
             );
           }
 
-          const signer = context.wallet.activeAccount
-            ? context.wallet.activeAccount
-            : "";
+          const signer = context.wallet.activeAccount ?? ""
 
           const txReceipt = await context.wallet.api.getReceipt(messageID);
           if (txReceipt.ExitCode !== 0) {
@@ -423,6 +428,7 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
         const PHASE = "DATACAP-SIGN";
         try {
           const datacap = anyToBytes(request.datacap);
+
           let address = request.address;
 
           sentryData.datacap = request.datacap;
@@ -469,8 +475,7 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
             );
             action = "Approved";
           } else {
-
-            const isProposed = await checkAlreadyProposed(request.issue_number)
+            const isProposed = await checkAlreadyProposed(request.issue_number, context)
 
             if (isProposed) {
               alert("Something is wrong. There is already one pending proposal for this issue. Please, contact the governance team.")
@@ -483,6 +488,7 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
               BigInt(Math.floor(datacap)),
               context.wallet.walletIndex
             );
+
             console.log(request);
             request.approvals = true;
             await context.postLogs(
@@ -494,6 +500,7 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
             );
             action = "Proposed";
           }
+
 
           if (!messageID) {
             errorMessage += `#### the transaction was unsuccessful - retry later.`;
@@ -572,55 +579,30 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
         }
       }
     }
+
     setLargeRequestListLoading(true)
-    await context.loadClientRequests()
+    context.loadClientRequests()
+    getPending()
     setLargeRequestListLoading(false)
   };
 
-
-  const selectClientRow = (number: string) => {
-
-    let selectedTxs = selectedClientRequests;
-    if (selectedTxs.includes(number)) {
-      selectedTxs = selectedTxs.filter((item: any) => item !== number);
-    } else {
-      selectedTxs.push(number);
+  const activeTable = (tabs: any) => {
+    const tables: any = {
+      "1": <PublicRequestTable selectedClientRequests={selectedClientRequests}
+        searchString={props.notaryProps.searchString}
+        setSelectedClientRequests={setSelectedClientRequests} />,
+      "2": <VerifiedClientsTable verifiedClients={props.notaryProps.clients} />,
+      "3": < LargeRequestTable largeRequestListLoading={largeRequestListLoading}
+        setSelectedLargeClientRequests={setSelectedLargeClientRequests}
+        searchInput={props.notaryProps.searchString}
+        dataForLargeRequestTable={dataForLargeRequestTable} />,
+      "4": <CancelProposalTable dataCancel={dataCancel}
+        dataCancelLoading={dataCancelLoading}
+        setCancelProposalData={setCancelProposalData} />
     }
-    setSelectedClientRequests(selectedTxs)
 
-  };
-
-
-
-
-  const orderPublic = async (e: any) => {
-    const { orderBy, sortOrder }: any = await context.sortPublicRequests(
-      e,
-      orderByPublic,
-      sortOrderPublic,
-    );
-    setOrderByPublic(orderBy)
-    setSortOrderPublic(sortOrder)
-  };
-
-
-
-  const showClientDetail = (e: any) => {
-    const listRequestFiltered = context.clientRequests
-      .filter(
-        (element: any) =>
-          tableElementFilter(props.notaryProps.searchString, element.data) === true
-      )
-      .filter((_: any, i: any) => refPublic?.checkIndex(i));
-
-    const client = listRequestFiltered[e.currentTarget.id].data.name;
-    const user = listRequestFiltered[e.currentTarget.id].owner;
-    const address = listRequestFiltered[e.currentTarget.id].data.address;
-    const datacap = listRequestFiltered[e.currentTarget.id].data.datacap;
-
-    history.push("/client", { client, user, address, datacap });
+    return tables[tabs]
   }
-
 
   useEffect(() => {
     const data = context.largeClientRequests
@@ -632,67 +614,24 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
   return (
     <div className="main">
       <div className="tabsholder">
-        {context.ldnRequestsLoading ? (
-          <div className="tabs">
-            <div
-              className={tabs === "1" ? "selected" : ""}
-              onClick={() => {
-                showClientRequests();
-              }}
-            >
-              <BeatLoader size={15} color={"rgb(24,160,237)"} />
-            </div>
-            <div
-              className={tabs === "3" ? "selected" : ""}
-              onClick={() => {
-                showLargeRequests();
-              }}
-            >
-              <BeatLoader size={15} color={"rgb(24,160,237)"} />
-            </div>
-            <div
-              className={tabs === "2" ? "selected" : ""}
-              onClick={() => {
-                showVerifiedClients();
-              }}
-            >
-              Verified clients ({props.notaryProps.clients.length})
-            </div>
-          </div>
-        ) : (
-          <div className="tabs">
-            <div
-              className={tabs === "1" ? "selected" : ""}
-              onClick={() => {
-                showClientRequests();
-              }}
-            >
-              Public Requests ({context.clientRequests.length})
-            </div>
-            <div
-              className={tabs === "3" ? "selected" : ""}
-              onClick={() => {
-                showLargeRequests();
-              }}
-            >
-              Large Requests ({context.largeClientRequests.length})
-            </div>
-            <div
-              className={tabs === "2" ? "selected" : ""}
-              onClick={() => {
-                showVerifiedClients();
-              }}
-            >
-              Verified clients ({props.notaryProps.clients.length})
-            </div>
-          </div>
-        )}
+        <NotaryTabs tabs={tabs} changeStateTabs={changeStateTabs} ctx={context} verifiedClientsLength={props.notaryProps.clients.length} dataCancelLength={dataCancel?.length} />
         <div className="tabssadd">
-          {tabs !== "3" ? (
+          {tabs === "1" && (
             <ButtonPrimary onClick={() => requestDatacap()}>
               Approve Private Request
             </ButtonPrimary>
-          ) : null}
+          )}
+          {tabs === "1" && (
+            <ButtonPrimary onClick={() => verifyNewDatacap()}>
+              Verify new datacap
+            </ButtonPrimary>
+          )}
+          {tabs === "4" && (dataCancelLoading ? <BeatLoader size={15} color={"rgb(24,160,237)"} /> : <ButtonPrimary
+            onClick={cancelDuplicateRequest}
+          >
+            Cancel Proposal
+          </ButtonPrimary>)}
+
           {tabs === "1" ||
             tabs === "2" ||
             tabs === "3" ? (
@@ -713,195 +652,14 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
                     : "Verify client"}
                 </ButtonPrimary>
               )}
-              {tabs !== "3" ? (
-                <ButtonPrimary onClick={() => verifyNewDatacap()}>
-                  Verify new datacap
-                </ButtonPrimary>
-              ) : null}
             </>
           ) : null}
         </div>
       </div>
-      {tabs === "1" && context.github.githubLogged ? (
-        <div>
-          <table>
-            <thead>
-              <tr>
-                <td></td>
-                {publicRequestColums.map((column: any) => (
-                  <td id={column.id} key={column.id} onClick={orderPublic}>
-                    {column.value}
-                    <FontAwesomeIcon icon={["fas", "sort"]} />
-                  </td>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {refPublic && refPublic.checkIndex
-                ? context.clientRequests
-                  .filter(
-                    (element: any) =>
-                      tableElementFilter(
-                        props.notaryProps.searchString,
-                        element.data
-                      ) === true
-                  )
-                  .filter((_: any, i: any) =>
-                    refPublic?.checkIndex(i)
-                  )
-                  .map((clientReq: any, index: any) => (
-                    <tr key={index}>
-                      <td>
-                        <input
-                          type="checkbox"
-                          onChange={() =>
-                            selectClientRow(clientReq.number)
-                          }
-                          checked={selectedClientRequests.includes(
-                            clientReq.number
-                          )}
-                        />
-                      </td>
-                      <td>
-                        <FontAwesomeIcon
-                          icon={["fas", "info-circle"]}
-                          id={index}
-                          onClick={(e) => showClientDetail(e)}
-                        />{" "}
-                        {clientReq.data.name}{" "}
-                      </td>
-                      <td>{clientReq.data.address}</td>
-                      <td>{clientReq.data.datacap}</td>
-                      <td>
-                        <a
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          href={clientReq.url}
-                        >
-                          #{clientReq.number}
-                        </a>
-                      </td>
-                    </tr>
-                  ))
-                : null}
-            </tbody>
-          </table>
-          <Pagination
-            elements={context.clientRequests}
-            maxElements={10}
-            ref={onRefPublicChange}
-            refresh={() => { }}
-            search={props.notaryProps.searchString}
-          />
-          {context.clientRequests.length === 0 ? (
-            <div className="nodata">No client requests yet</div>
-          ) : null}
-          <div className="alignright" style={{ marginBottom: "40px" }} >
-            <ButtonSecondary
-              className="buttonsecondary"
-              onClick={async () => {
-                await context.github.logoutGithub();
-                await context.refreshGithubData();
-              }}
-            >
-              Logout GitHub
-            </ButtonSecondary>
-          </div>
-        </div>
-      ) : null}
-      {tabs === "3" && context.github.githubLogged ? (
-        <div className="large-request-table" style={{ minHeight: "500px" }}>
-          {largeRequestListLoading ? <CircularProgress
-            style={{ margin: "100px 50%", color: "rgb(0, 144, 255)" }}
-          /> :
-            <DataTable
-              columns={[
-                {
-                  name: "Client",
-                  selector: (row: any) => row.data,
-                  sortable: true,
-                },
-                {
-                  name: "Address",
-                  selector: (row: any) => row.address,
-                  sortable: true,
-                },
-                {
-                  name: "multisig",
-                  selector: (row: any) => row.multisig,
-                  sortable: true,
-                  grow: 0.6
-                },
-                {
-                  name: "Datacap",
-                  selector: (row: any) => row.datacap,
-                  sortable: true,
-                  grow: 0.6
-                },
-                {
-                  name: "Audit Trail",
-                  selector: (row: any) => row.issue_number,
-                  sortable: true,
-                  grow: 0.6,
-                  cell: (row: any) => <a
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    href={row.url}>#{row.issue_number}</a>,
-                },
-                {
-                  name: "Proposer",
-                  selector: (row: any) => row.proposer.signerGitHandle,
-                  sortable: true,
-                  cell: (row: any) => <span >{row.proposer.signerGitHandle || "-"}</span>,
-                  grow: 0.5,
-                },
-                {
-                  name: "TxId",
-                  selector: (row: any) => row.tx.id,
-                  grow: 0.5,
-                },
-                {
-                  name: "Approvals",
-                  selector: (row: any) => row.approvals,
-                  sortable: true,
-                  grow: 0.5,
-                },
-              ]}
-              selectableRowDisabled={(row) => !row.signable}
-              selectableRowsHighlight
-              selectableRows
-              selectableRowsNoSelectAll={true}
-              pagination
-              paginationRowsPerPageOptions={[10, 20, 30]}
-              paginationPerPage={10}
-              defaultSortFieldId={1}
-              noDataComponent="No large client requests yet"
-              onSelectedRowsChange={({ selectedRows }) => {
-                const rowNumbers = selectedRows.map((row: any) => row.issue_number)
-                setSelectedLargeClientRequests(rowNumbers)
-              }}
-              onRowClicked={(row) => {
-                if (!row.signable) {
-                  context.wallet.dispatchNotification(CANT_SIGN_MESSAGE)
-                }
-              }}
-              noContextMenu={true}
-              data={searchAllColumnsFromTable({ rows: dataForLargeRequestTable, query: props.notaryProps.searchString })}
-            />}
-          <div className="alignright" style={{ marginBottom: "40px" }}>
-            <ButtonSecondary
-              className="buttonsecondary"
-              onClick={async () => {
-                await context.github.logoutGithub();
-                await context.refreshGithubData();
-              }}
-            >
-              Logout GitHub
-            </ButtonSecondary>
-          </div>
-        </div>
-      ) : null}
-      {!context.github.githubLogged ? (
+
+      {context.github.githubLogged && activeTable(tabs)}
+
+      {!context.github.githubLogged ?
         <div style={{ marginTop: "50px" }}>
           <div id="githublogin">
             <LoginGithub
@@ -917,46 +675,20 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
               }}
             />
           </div>
+        </div> : <div className="alignright" style={{ marginBottom: "40px" }}>
+          <ButtonSecondary
+            className="buttonsecondary"
+            onClick={async () => {
+              await context.github.logoutGithub();
+              await context.refreshGithubData();
+            }}
+          >
+            Logout GitHub
+          </ButtonSecondary>
         </div>
-
-      ) : null}
-      {tabs === "2" && context.github.githubLogged ? (
-
-        <DataTable
-          columns={[
-            {
-              name: "ID",
-              selector: (row: any) => row.verified,
-              sortable: true,
-            },
-            // {
-            //   name: "Address",
-            //   selector: (row: any) => row.key,
-            //   sortable: true,
-            //   grow: 3,
-            //   cell: (row: any) => (
-            //     <span>
-            //       {row.key || (
-            //         <BeatLoader size={5} color={"rgb(24,160,237)"} />
-            //       )}
-            //     </span>
-            //   ),
-            // },
-            {
-              name: "Datacap",
-              selector: (row: any) => row.datacap,
-              sortable: true,
-              cell: (row: any) => <span>{bytesToiB(row.datacap)}</span>,
-            },
-          ]}
-          data={props.notaryProps.clients}
-          pagination
-          paginationRowsPerPageOptions={[10, 20, 30]}
-          paginationPerPage={10}
-        />
-
-      ) : null}
-    </div>
+      }
+    </div >
   );
 }
-export default Notary
+
+export default Notary 
