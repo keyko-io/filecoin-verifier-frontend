@@ -9,7 +9,6 @@ import { anyToBytes } from "../../utils/Filters";
 // @ts-ignore
 import LoginGithub from "react-login-github";
 import { config } from "../../config";
-import WarnModal from "../../modals/WarnModal";
 import WarnModalVerify from "../../modals/WarnModalVerify";
 import { BeatLoader } from "react-spinners";
 import { useContext } from "react";
@@ -76,20 +75,9 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
   };
 
   const verifyNewDatacap = () => {
-    if (selectedClientRequests.length !== 1) {
-      dispatchCustomEvent({
-        name: "create-modal",
-        detail: {
-          id: Math.random()
-            .toString(36)
-            .replace(/[^a-z]+/g, "")
-            .substr(0, 5),
-          modal: <WarnModal message={"Please select only one address"} />,
-        },
-      });
+    if (!selectedClientRequests.length) {
+      toast.error("You should select one public request!")
     } else {
-      const selected = selectedClientRequests[0];
-      setSelectedClientRequests([])
       dispatchCustomEvent({
         name: "create-modal",
         detail: {
@@ -101,7 +89,7 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
             <AddClientModal
               newDatacap={true}
               clientRequest={context.clientRequests}
-              selected={selected}
+              selected={selectedClientRequests[0]}
             />
           ),
         },
@@ -588,9 +576,7 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
 
   const activeTable = (tabs: any) => {
     const tables: any = {
-      "1": <PublicRequestTable selectedClientRequests={selectedClientRequests}
-        searchString={props.notaryProps.searchString}
-        setSelectedClientRequests={setSelectedClientRequests} />,
+      "1": <PublicRequestTable setSelectedClientRequests={setSelectedClientRequests} />,
       "2": <VerifiedClientsTable verifiedClients={props.notaryProps.clients} />,
       "3": < LargeRequestTable largeRequestListLoading={largeRequestListLoading}
         setSelectedLargeClientRequests={setSelectedLargeClientRequests}

@@ -18,6 +18,7 @@ export const Data = React.createContext({
   clientsGithub: any,
   loadClientsGithub: any,
   search: any,
+  searchUserIssues: any,
   refreshGithubData: async () => { },
   logToSentry: (category: string, message: string, level: "info" | "error", data: Map<string, any>) => { },
   approvedNotariesLoading: true,
@@ -29,14 +30,14 @@ export const Data = React.createContext({
   verifyWalletAddress: async () => { },
   checkVerifyWallet: async () => { },
   setIsVerifyWalletLoading: () => { },
-    // getLDNIssuesAndTransactions
-    // return value:
-        // both fields contain tx and associated issue
-        // some of them can have tx but no issue
-        // some of them can have issue but no tx
-        // transactionAndIssue is all the array no matter if issue is null
-        // filteredTxsIssue is the slice of transactionAndIssue where issues != null
-  getLDNIssuesAndTransactions: ()=> {} ,
+  // getLDNIssuesAndTransactions
+  // return value:
+  // both fields contain tx and associated issue
+  // some of them can have tx but no issue
+  // some of them can have issue but no tx
+  // transactionAndIssue is all the array no matter if issue is null
+  // filteredTxsIssue is the slice of transactionAndIssue where issues != null
+  getLDNIssuesAndTransactions: () => { },
 
   postLogs: async (
     message: string,
@@ -57,11 +58,6 @@ export const Data = React.createContext({
     errorMessage: string,
     labels: string[],
     action?: string
-  ) => { },
-  sortPublicRequests: async (
-    e: any,
-    previousOrderBy: string,
-    previousOrder: number
   ) => { },
   selectedLargeClientRequests: [],
   setSelectedLargeClientRequests: (rowNumbers: any[]) => { },
