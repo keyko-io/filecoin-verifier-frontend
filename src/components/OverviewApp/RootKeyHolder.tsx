@@ -54,11 +54,6 @@ export default class RootKeyHolder extends Component<
 
   componentDidMount() {
     this.context.loadVerifierAndPendingRequests();
-
-
-    //ASK  FABRİ ABOUT THİS COMPONENTS!!!!! PROBABLY WE ARE NOT USING THEM???
-    //this.requestVerifier()
-    //this.proposeVerifier()
   }
 
   showApproved = async () => {
