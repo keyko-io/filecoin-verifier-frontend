@@ -140,7 +140,10 @@ const LogExplorer = () => {
                   disabled={issueNumber === "" ? true : srchButtonDisabled}
                   size="small"
                   endIcon={!isLogsLoading && <SearchIcon />}
-                  onClick={() => selectIssueNumber()}
+                  onClick={(e) => {
+                    e.preventDefault()
+                    selectIssueNumber()
+                  }}
                   type="submit"
                   variant="contained"
                   color="primary"

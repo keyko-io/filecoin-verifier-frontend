@@ -25,7 +25,9 @@ const Footer = () => {
       <div className='resources'>
         <h3>Resources</h3>
         <div className='resources-links'>
+
           {resourcesLinks.map(resource => (<a key={resource.desc} href={resource.link} target="_blank" rel="noopener noreferrer">{resource.desc}</a>))}
+
         </div>
       </div>
     </div >
