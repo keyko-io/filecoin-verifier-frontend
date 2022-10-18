@@ -7,9 +7,6 @@ import { ButtonPrimary, dispatchCustomEvent } from "slate-react-system";
 import { bytesToiB, anyToBytes } from "../../utils/Filters";
 import { config } from "../../config";
 import WarnModalVerify from "../../modals/WarnModalVerify";
-import Pagination from "../Pagination";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { tableElementFilter } from "../../utils/SortFilter";
 import { BeatLoader } from "react-spinners";
 import { EVENT_TYPE, MetricsApiParams } from "../../utils/Metrics";
 import DataTable from "react-data-table-component";
@@ -54,21 +51,6 @@ export default class RootKeyHolder extends Component<
     orderByRequest: "addresses",
     sortOrderRequest: -1,
   };
-
-  acceptedNotaryColums = [
-    { id: "verifier", value: "Notary" },
-    { id: "verifierAccount", value: "Address" },
-    { id: "datacapConverted", value: "Datacap" },
-  ];
-
-  requestColums = [
-    { id: "proposed", value: "Status" },
-    { id: "issue_number", value: "Issue" },
-    { id: "addresses", value: "Address" },
-    { id: "datacaps", value: "Datacap" },
-    { id: "txs", value: "Transaction ID" },
-    { id: "proposedBy", value: "Proposed by" },
-  ];
 
   componentDidMount() {
     this.context.loadVerifierAndPendingRequests();
@@ -478,24 +460,6 @@ export default class RootKeyHolder extends Component<
 
   onRefRequests = (refRequests: any) => {
     this.setState({ refRequests });
-  };
-
-  orderAccepted = async (e: any) => {
-    const { orderBy, sortOrder } = await this.context.sortVerified(
-      e,
-      this.state.orderByAccepted,
-      this.state.sortOrderAccepted
-    );
-    this.setState({ orderByAccepted: orderBy, sortOrderAccepted: sortOrder });
-  };
-
-  orderRequest = async (e: any) => {
-    const { orderBy, sortOrder } = await this.context.sortNotaryRequests(
-      e,
-      this.state.orderByRequest,
-      this.state.sortOrderRequest
-    );
-    this.setState({ orderByRequest: orderBy, sortOrderRequest: sortOrder });
   };
 
   timeout(delay: number) {
