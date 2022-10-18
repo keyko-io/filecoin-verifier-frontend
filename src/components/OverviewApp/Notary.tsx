@@ -240,7 +240,7 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
     if (context.github.githubLogged) {
       getPending()
     }
-  }, [])
+  }, [context.wallet.activeAccount])
 
   const getPending = async () => {
 
