@@ -29,6 +29,7 @@ import * as Sentry from "@sentry/react";
 import { Integrations } from "@sentry/tracing";
 import Verifiers from "./pages/Verifiers";
 import Miners from "./pages/Miners";
+import StatusPage from "./pages/StatusPage";
 
 
 // redirect to domain if user access fleek url
@@ -80,6 +81,7 @@ ReactDOM.render(
                             component={ClientDetails}
                           ></Route>
                           <Route path={"/logs"} component={LogExplorer}></Route>
+                          <Route path={"/status"} component={StatusPage}></Route>
                         </Switch>
                       </Layout >
                     </Router>
