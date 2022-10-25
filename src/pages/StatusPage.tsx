@@ -8,9 +8,13 @@ const StatusPage = () => {
     const context: any = useContext(Data)
 
     useEffect(() => {
-        context.fetchLogs("0").then((data: any) => console.log(data, "hey"))
+        getLogs()
     }, [])
 
+    const getLogs = async () => {
+        const data = await context.fetchLogs("0")
+        console.log(data)
+    }
 
     return (
         <Box m="8rem auto">
