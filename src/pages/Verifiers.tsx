@@ -100,6 +100,7 @@ const Verifiers = () => {
           selectableRowsHighlight={true}
           selectableRowsSingle={true}
           columns={columns}
+          selectableRowDisabled={(row) => true}
           data={searchAllColumnsFromTable({
             rows: shuffleData,
             query,

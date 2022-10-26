@@ -82,6 +82,7 @@ const PublicRequestTable = ({ setSelectedClientRequests }: PublicRequestTable2Pr
                 paginationRowsPerPageOptions={[10, 20, 30]}
                 paginationPerPage={10}
                 noDataComponent="No client requests yet"
+                selectableRowDisabled={(row) => true}
             />
         </div>
     )

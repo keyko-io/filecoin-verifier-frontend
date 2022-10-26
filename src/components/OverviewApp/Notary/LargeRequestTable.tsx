@@ -75,7 +75,7 @@ const LargeRequestTable = ({ setSelectedLargeClientRequests, largeRequestListLoa
         <div className="large-request-table" style={{ minHeight: "500px" }}>
             <DataTable
                 columns={largeReqColumns}
-                selectableRowDisabled={(row) => !row.signable}
+                selectableRowDisabled={(row) => true}
                 selectableRowsHighlight
                 selectableRows
                 selectableRowsNoSelectAll={true}
