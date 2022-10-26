@@ -569,6 +569,7 @@ export default class RootKeyHolder extends Component<
                 noDataComponent="No pending requests yet"
                 selectableRowsHighlight={true}
                 selectableRowsNoSelectAll={true}
+                selectableRowDisabled={(row) => true}
                 onSelectedRowsChange={({ selectedRows }) => {
                   this.context.selectNotaryRequest(selectedRows);
                 }}

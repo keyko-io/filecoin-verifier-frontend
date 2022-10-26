@@ -48,6 +48,7 @@ const CancelProposalTable = ({ setCancelProposalData, dataCancel, dataCancelLoad
         selectableRows
         selectableRowsHighlight={true}
         selectableRowsSingle={true}
+        selectableRowDisabled={(row) => true}
         onSelectedRowsChange={({ selectedRows }) => {
           setCancelProposalData(selectedRows[0])
         }}
