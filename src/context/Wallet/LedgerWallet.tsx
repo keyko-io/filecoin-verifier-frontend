@@ -22,7 +22,9 @@ export class LedgerWallet {
     this.api = new VerifyAPI(
       VerifyAPI.browserProvider(this.lotusNode.url
         , {
-          token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBbGxvdyI6WyJyZWFkIiwid3JpdGUiXX0.h8l0t2onbj85EKy0HYxmjYPlDJSNap70bQExEHh5yKU'
+          token: async () => {
+            return this.lotusNode.token
+          }
         }
         )
       , { sign: this.sign, getAccounts: this.getAccounts }
