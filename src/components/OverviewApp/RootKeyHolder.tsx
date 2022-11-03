@@ -157,7 +157,7 @@ export default class RootKeyHolder extends Component<
           }
         }
       }
-    } catch (e) {
+    } catch (e:any) {
       this.setState({ approveLoading: false });
       this.context.wallet.dispatchNotification("Cancel failed: " + e.message);
       console.log("error", e.stack);
@@ -426,7 +426,7 @@ export default class RootKeyHolder extends Component<
               PHASE
             );
           }
-        } catch (e) {
+        } catch (e:any) {
           this.context.wallet.dispatchNotification("Failed: " + e.message);
 
           this.setState({ approveLoading: false });
