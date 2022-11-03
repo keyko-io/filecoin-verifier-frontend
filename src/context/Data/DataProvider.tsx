@@ -820,8 +820,8 @@ export default class DataProvider extends React.Component<
           })
 
         const idPattern = /####\s*Id\s*\n>\s*(.*)/g
-        const comment = data.filter((item: any) => item.body.includes("## DataCap Allocation requested"))[0]
-        const Id = commonUtils.matchGroupLargeNotary(idPattern, comment.body)
+        const comment = data.filter((item: any) => item.body.includes("## DataCap Allocation requested")).reverse()
+        const Id = commonUtils.matchGroupLargeNotary(idPattern, comment[0].body)
         return Id
       },
       updateGithubVerified: async (
@@ -902,7 +902,7 @@ export default class DataProvider extends React.Component<
         let commentContent =
           errorMessage !== ""
             ? errorMessage
-            : `## Request ${action}\nYour Datacap Allocation Request has been ${action?.toLowerCase()} by the Notary\n#### Message sent to Filecoin Network\n>${messageID} \n#### Address \n> ${address}\n#### Datacap Allocated\n> ${formattedDc}\n#### Signer Address\n> ${signer}\n#### Id\n> ${await this.state.getLastUniqueId(1313)}\n#### You can check the status of the message here: https://filfox.info/en/message/${messageID}`;
+            : `## Request ${action}\nYour Datacap Allocation Request has been ${action?.toLowerCase()} by the Notary\n#### Message sent to Filecoin Network\n>${messageID} \n#### Address \n> ${address}\n#### Datacap Allocated\n> ${formattedDc}\n#### Signer Address\n> ${signer}\n#### Id\n> ${await this.state.getLastUniqueId(requestNumber)}\n#### You can check the status of the message here: https://filfox.info/en/message/${messageID}`;
 
         //if error, post error comment and error label
         if (errorMessage !== "") {
