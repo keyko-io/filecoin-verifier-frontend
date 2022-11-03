@@ -47,7 +47,7 @@ class AddVerifierModal extends Component<{}, States> {
             })
             this.context.dispatchNotification('Propose Message sent with ID: ' + messageID)
             dispatchCustomEvent({ name: "delete-modal", detail: {} })
-        } catch (e) {
+        } catch (e:any) {
             this.setState({ proposeLoading: false })
             this.context.dispatchNotification('Proposal failed: ' + e.message)
             console.log(e.stack)

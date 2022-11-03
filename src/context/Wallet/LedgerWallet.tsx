@@ -35,7 +35,7 @@ export class LedgerWallet {
     let transport
     try {
       transport = await TransportWebUSB.create();
-    } catch (e) {
+    } catch (e:any) {
       console.log('TransportWebUSB error', e)
     }
     if (transport) {
@@ -54,7 +54,7 @@ export class LedgerWallet {
         if (version.minor < 18 && version.patch < 2) {
           throw new Error('Please update Filecoin app on Ledger.')
         }
-      } catch (e) {
+      } catch (e:any) {
         throw new Error(e.message)
       }
     } else {

@@ -1003,7 +1003,7 @@ export default class DataProvider extends React.Component<
                 data,
               };
             }
-          } catch (e) {
+          } catch (e:any) {
             // console.log(e)
           }
         }

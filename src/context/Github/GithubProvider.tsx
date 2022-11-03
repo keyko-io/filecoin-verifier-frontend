@@ -20,7 +20,7 @@ interface WalletProviderStates {
 
 export default class WalletProvider extends React.Component<{}, WalletProviderStates> {
     setStateAsync(state: any) {
-        return new Promise((resolve) => {
+        return new Promise((resolve:any) => {
             this.setState(state, resolve)
         });
     }
@@ -62,7 +62,7 @@ export default class WalletProvider extends React.Component<{}, WalletProviderSt
                 localStorage.setItem("avatar", avatar_url)
                 this.setState({ loggedUser: login, avatarUrl: avatar_url })
 
-            } catch (e) {
+            } catch (e:any) {
                 // this.state.dispatchNotification('Failed to login. Try again later.')
             }
         },

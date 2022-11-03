@@ -240,7 +240,7 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
     if (context.github.githubLogged) {
       getPending()
     }
-  }, [])
+  }, [context.wallet.activeAccount])
 
   const getPending = async () => {
 
@@ -375,7 +375,7 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
             accounts: context.wallet.accounts,
             walletIndex: context.wallet.walletIndex,
           };
-        } catch (e) {
+        } catch (e:any) {
           setApproveLoading(false)
           sentryData = {
             ...sentryData,
@@ -541,7 +541,7 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
             thisStateLargeRequestList,
             "largeClientRequests"
           );
-        } catch (e) {
+        } catch (e:any) {
           context.wallet.dispatchNotification(
             "Verification failed: " + e.message
           );
