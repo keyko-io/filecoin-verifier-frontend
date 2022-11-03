@@ -28,7 +28,7 @@
     "@testing-library/react": "^9.5.0",
     "@testing-library/user-event": "^7.2.1",
     "@types/jest": "^24.9.1",
-    "@types/lodash": "^4.14.186",
+    "@types/lodash": "^4.14.187",
     "@types/node": "^12.12.51",
     "@types/react": "^16.9.43",
     "@types/react-copy-to-clipboard": "^5.0.2",
@@ -60,7 +60,7 @@
     "sass-loader": "^9.0.2",
     "slate-react-system": "file:./tmp/slate-react-system-0.1.0.tgz",
     "styled-components": "^5.3.6",
-    "typescript": "^3.7.5",
+    "typescript": "^4.8.4",
     "uuid": "^8.3.2"
   },
   "scripts": {

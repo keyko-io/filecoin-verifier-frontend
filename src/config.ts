@@ -1,24 +1,25 @@
+
 export const config = {
     apiUri: process.env.REACT_APP_API_URI || 'http://localhost:4000',
     apiToken: process.env.REACT_APP_API_TOKEN || '',
-    onboardingClientRepo: process.env.REACT_APP_ONBOARDING_REPO || 'filecoin-clients-onboarding-test',
-    onboardingOwner: process.env.REACT_APP_ONBOARDING_REPO_OWNER || 'keyko-io',
-    onboardingLargeClientRepo: process.env.REACT_APP_ONBOARDING_LARGE_REPO || 'filecoin-large-clients-onboarding',
-    onboardingLargeOwner: process.env.REACT_APP_ONBOARDING_LARGE_REPO_OWNER || 'keyko-io',
-    onboardingNotaryOwner: process.env.REACT_APP_ONBOARDING_NOTARY_REPO_OWNER || 'filecoin-notaries-onboarding',
+    onboardingClientRepo: process.env.REACT_APP_ONBOARDING_REPO || 'filecoin-plus-client-onboarding',
+    onboardingOwner: process.env.REACT_APP_ONBOARDING_REPO_OWNER || 'filecoin-project',
+    onboardingLargeClientRepo: process.env.REACT_APP_ONBOARDING_LARGE_REPO || 'filecoin-plus-large-datasets',
+    onboardingLargeOwner: process.env.REACT_APP_ONBOARDING_LARGE_REPO_OWNER || 'filecoin-project',
+    onboardingNotaryOwner: process.env.REACT_APP_ONBOARDING_NOTARY_REPO_OWNER || 'notary-governance',
     githubApp: process.env.REACT_APP_GITHUB_APP || 'Iv1.10e7aaed4654db3c',
-    oauthUri: process.env.REACT_APP_OAUTH_URI || 'https://plus.fil.org/oauth/',
+    oauthUri: process.env.REACT_APP_OAUTH_URI || 'http://localhost:3000/oauth/',
     networks: process.env.REACT_APP_NETWORKS || 'Mainnet,Nerpanet',
     domain: process.env.REACT_APP_DOMAIN || "https://plus.fil.org/",
     githubGenericToken: process.env.REACT_APP_GITHUB_GENERIC_TOKEN,
     minersUrl: 'https://raw.githubusercontent.com/filecoin-project/filecoin-plus-client-onboarding/main/miners.md',
-    defaultAssign: ['fabriziogianni7'],
+    defaultAssign: ['philippbanhardt'],
     willRedirect: process.env.REACT_APP_REDIRECTION || false,
     validateAddress: process.env.REACT_APP_VALIDATE_ADDRESS || true,
     approvalsThreshold: process.env.REACT_APP_APPROVALS_THRESHOLD || '1',
     largeClientRequest: 5497558000000000000000000,
     metrics_api_environment: process.env.REACT_APP_METRICS_API_ENVIRONMENT || "test",
-    loggerApiKey: process.env.REACT_APP_X_API_KEY || "fake-api-key-change-with-a-real-one",
+    loggerApiKey: process.env.REACT_APP_X_API_KEY || "3OJnSXzFX35RnM7p9o5AA9LQPwemx7k4euWy25T5",
     secretRecieverAddress: process.env.REACT_APP_SECRET_RECIEVER_ADDRESS || 't0100',
     lotusNodes: [{
         name: 'Mainnet',
@@ -29,7 +30,7 @@ export const config = {
         notaryOwner: 'filecoin-project',
         rkhMultisig: 'f080',
         rkhtreshold: 2,
-        largeClientRequestAssign: ['fabriziogianni7'],
+        largeClientRequestAssign: ['philippbanhardt'],
     }, {
         name: 'Nerpanet',
         code: 1,
@@ -86,12 +87,13 @@ export const config = {
     ],
     regions: [
         { value: "Africa", name: "Africa" },
-        { value: "Asia (excl. Greater China)", name: "Asia (excl. Greater China)" },
+        { value: "Asia excl. Greater China", name: "Asia excl. Greater China" },
         { value: "Europe", name: "Europe" },
-        { value: "Greater China Region", name: "Greater China Region" },
+        { value: "Greater China", name: "Greater China" },
         { value: "North America", name: "North America" },
         { value: "Oceania", name: "Oceania" },
         { value: "South America", name: "South America" }
+
     ],
     dataSource: process.env.REACT_APP_VERIFIES_DATA || 'verifiers'
-} 
+}

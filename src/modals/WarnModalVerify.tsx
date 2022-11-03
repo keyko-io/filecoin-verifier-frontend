@@ -61,7 +61,7 @@ class WarnModalVerify extends Component<ModalProps, ModalState> {
         this.setState({ requestToShow })
     }
 
-    renderArray(arrayValues: []) {
+    renderArray(arrayValues: any[]) {
         return (<>
             {arrayValues.map((value: any, i: any) => <div key={i} className="elemvalue">{value}</div >)}
         </>)
