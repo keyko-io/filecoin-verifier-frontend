@@ -899,8 +899,8 @@ export default class DataProvider extends React.Component<
         action?: string
       ) => {
         const formattedDc = bytesToiB(datacap);
-        const uniqueLastId = await this.state.getLastUniqueId(requestNumber) ?
-        await this.state.getLastUniqueId(requestNumber) : ''
+        const uniqueLastIdCall = await this.state.getLastUniqueId(requestNumber)
+        const uniqueLastId = uniqueLastIdCall ? uniqueLastIdCall : ""
         let commentContent =
           errorMessage !== ""
             ? errorMessage
