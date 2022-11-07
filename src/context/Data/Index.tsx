@@ -2,6 +2,7 @@ import { any } from 'bluebird'
 import React from 'react'
 
 export const Data = React.createContext({
+  getLastUniqueId: any,
   loadClientRequests: async () => { },
   clientRequests: [] as any,
   largeClientRequests: [] as any,
