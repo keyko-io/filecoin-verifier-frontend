@@ -899,10 +899,12 @@ export default class DataProvider extends React.Component<
         action?: string
       ) => {
         const formattedDc = bytesToiB(datacap);
+        const uniqueLastId = await this.state.getLastUniqueId(requestNumber) ?
+        await this.state.getLastUniqueId(requestNumber) : ''
         let commentContent =
           errorMessage !== ""
             ? errorMessage
-            : `## Request ${action}\nYour Datacap Allocation Request has been ${action?.toLowerCase()} by the Notary\n#### Message sent to Filecoin Network\n>${messageID} \n#### Address \n> ${address}\n#### Datacap Allocated\n> ${formattedDc}\n#### Signer Address\n> ${signer}\n#### Id\n> ${await this.state.getLastUniqueId(requestNumber)}\n#### You can check the status of the message here: https://filfox.info/en/message/${messageID}`;
+            : `## Request ${action}\nYour Datacap Allocation Request has been ${action?.toLowerCase()} by the Notary\n#### Message sent to Filecoin Network\n>${messageID} \n#### Address \n> ${address}\n#### Datacap Allocated\n> ${formattedDc}\n#### Signer Address\n> ${signer}\n#### Id\n> ${uniqueLastId}\n#### You can check the status of the message here: https://filfox.info/en/message/${messageID}`;
 
         //if error, post error comment and error label
         if (errorMessage !== "") {
