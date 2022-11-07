@@ -11,6 +11,7 @@ import * as Sentry from "@sentry/react";
 import { notaryLedgerVerifiedComment } from './comments'
 const utils = require("@keyko-io/filecoin-verifier-tools/utils/issue-parser");
 const largeutils = require("@keyko-io/filecoin-verifier-tools/utils/large-issue-parser");
+const commonUtils = require("@keyko-io/filecoin-verifier-tools/utils/common-utils")
 const parser = require("@keyko-io/filecoin-verifier-tools/utils/notary-issue-parser");
 const verifierRegistry = require("../../data/verifiers-registry.json");
 
@@ -55,6 +56,7 @@ interface DataProviderStates {
   setSelectedLargeClientRequests: any;
   setIsVerifyWalletLoading: any;
   getLDNIssuesAndTransactions: any;
+  getLastUniqueId: any;
 }
 
 interface DataProviderProps {
@@ -808,6 +810,20 @@ export default class DataProvider extends React.Component<
           console.error("error in resolving promises", error);
         }
       },
+      getLastUniqueId: async (issueNumber: number) => {
+        const data = await this.props.github.githubOcto.paginate(
+          this.props.github.githubOcto.issues.listComments,
+          {
+            owner: config.onboardingLargeOwner,
+            repo: config.onboardingLargeClientRepo,
+            issue_number: issueNumber,
+          })
+
+        const idPattern = /####\s*Id\s*\n>\s*(.*)/g
+        const comment = data.filter((item: any) => item.body.includes("## DataCap Allocation requested")).reverse()
+        const Id = commonUtils.matchGroupLargeNotary(idPattern, comment[0].body)
+        return Id
+      },
       updateGithubVerified: async (
         requestNumber: any,
         messageID: string,
@@ -883,10 +899,12 @@ export default class DataProvider extends React.Component<
         action?: string
       ) => {
         const formattedDc = bytesToiB(datacap);
+        const uniqueLastId = await this.state.getLastUniqueId(requestNumber) || ""
+        
         let commentContent =
           errorMessage !== ""
             ? errorMessage
-            : `## Request ${action}\nYour Datacap Allocation Request has been ${action?.toLowerCase()} by the Notary\n#### Message sent to Filecoin Network\n>${messageID} \n#### Address \n> ${address}\n#### Datacap Allocated\n> ${formattedDc}\n#### Signer Address\n> ${signer}\n#### You can check the status of the message here: https://filfox.info/en/message/${messageID}`;
+            : `## Request ${action}\nYour Datacap Allocation Request has been ${action?.toLowerCase()} by the Notary\n#### Message sent to Filecoin Network\n>${messageID} \n#### Address \n> ${address}\n#### Datacap Allocated\n> ${formattedDc}\n#### Signer Address\n> ${signer}\n#### Id\n> ${uniqueLastId}\n#### You can check the status of the message here: https://filfox.info/en/message/${messageID}`;
 
         //if error, post error comment and error label
         if (errorMessage !== "") {
