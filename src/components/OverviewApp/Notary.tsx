@@ -251,7 +251,13 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
     const transactionsData = LDNIssuesAndTransactions.transactionAndIssue.filter((item: any) => item.issue)
 
     //this is converting id with the short version because we have short version in the array of signers
-    const id = await context.wallet.api.actorAddress(context.wallet.activeAccount)
+    // let id = await context.wallet.api.actorAddress(context.wallet.activeAccount) ?  await context.wallet.api.actorAddress(context.wallet.activeAccount) : context.wallet.activeAccount
+    let id;
+    try {
+      id = await context.wallet.api.actorAddress(context.wallet.activeAccount)
+    } catch (error) {
+      id = context.wallet.activeAccount
+    }
 
     const dataByActiveAccount: any = []
 
@@ -375,7 +381,7 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
             accounts: context.wallet.accounts,
             walletIndex: context.wallet.walletIndex,
           };
-        } catch (e:any) {
+        } catch (e: any) {
           setApproveLoading(false)
           sentryData = {
             ...sentryData,
@@ -541,7 +547,7 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
             thisStateLargeRequestList,
             "largeClientRequests"
           );
-        } catch (e:any) {
+        } catch (e: any) {
           context.wallet.dispatchNotification(
             "Verification failed: " + e.message
           );
@@ -677,4 +683,4 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
   );
 }
 
-export default Notary 
+export default Notary
