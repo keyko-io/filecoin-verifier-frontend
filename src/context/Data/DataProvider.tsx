@@ -580,14 +580,14 @@ export default class DataProvider extends React.Component<
             }
           )
 
-          const msigTitle = "large dataset notary request"
+          const msigTitle = "large dataset multisig request"
           const msigRequests = allIssues
             .filter((issue: any) => issue.title.toLowerCase().includes(msigTitle))
             .filter((issue: any) => !issue.labels.find((l: any) => l.name === 'status:AddedOnchain'))
 
 
 
-          const pendingTxs2 =
+          const pendingTxs =
             (await this.props.wallet.api.pendingRootTransactions())
               .filter((ptx: any) => ptx.parsed.name == "addVerifier" || ptx.parsed.name == "removeVerifier")
 
@@ -610,7 +610,7 @@ export default class DataProvider extends React.Component<
                 .filter((o: any) => o.correct).reverse()[0] || null
               const msigAddress = lastRequest?.address || null
 
-              const tx = pendingTxs2.find((ptx: any) => ptx.parsed.params.verifier === msigAddress)
+              const tx = pendingTxs.find((ptx: any) => ptx.parsed.params.verifier === msigAddress)
               resolve({
                 issue,
                 comments,
