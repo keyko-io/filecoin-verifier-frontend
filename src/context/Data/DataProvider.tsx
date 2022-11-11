@@ -584,6 +584,7 @@ export default class DataProvider extends React.Component<
           const msigRequests = allIssues
             .filter((issue: any) => issue.title.toLowerCase().includes(msigTitle))
             .filter((issue: any) => !issue.labels.find((l: any) => l.name === 'status:AddedOnchain'))
+            .filter((issue: any) => issue.labels.find((l: any) => l.name === 'status:Approved' || l.name === "status:StartSignOnchain"))
 
 
 
@@ -595,8 +596,8 @@ export default class DataProvider extends React.Component<
 
           const requestsAndCommentsProm: any = await Promise.allSettled(
             msigRequests.map((issue: any) => new Promise<any>(async (resolve) => {
-              const comments = await this.props.github.githubOcto.paginate(
-                this.props.github.githubOcto.issues.listComments,
+              const comments = await  this.props.github.githubOctoGeneric.octokit.paginate(
+                 this.props.github.githubOctoGeneric.octokit.issues.listComments,
                 {
                   owner:
                     config.lotusNodes[this.props.wallet.networkIndex].notaryOwner,
