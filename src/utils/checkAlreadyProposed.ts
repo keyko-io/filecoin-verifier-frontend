@@ -2,7 +2,7 @@ import { config } from "../../src/config"
 
 export const checkAlreadyProposed = async (issueNumber: number, context: any) => {
 
-    const data = await context.github.githubOcto.paginate(
+    const comments = await context.github.githubOcto.paginate(
         context.github.githubOcto.issues.listComments,
         {
             owner: config.onboardingLargeOwner,
@@ -11,53 +11,70 @@ export const checkAlreadyProposed = async (issueNumber: number, context: any) =>
         }
     );
 
-    let proposeIndex;
-    let approveIndex;
-    let datacapAllocation;
-    let alreadyProposed = false;
+    const rgxProposed = /##\s*request\s*proposed/m
+    const rgxApproved = /##\s*request\s*approved/m
 
-    for (let i = data.length - 1; i >= 0; i--) {
-        const { body } = data[i]
+    const proposed = comments.filter((comment: any) => rgxProposed.test(comment.body))
+    const approved = comments.filter((comment: any) => rgxApproved.test(comment.body))
 
-        if (body.includes("## Request Proposed")) {
-            proposeIndex = i
-            break
-        } else {
-            proposeIndex = -2
-        }
+    console.log('proposed', proposed)
+    console.log('approved', approved)
+
+    if (proposed[proposed.length - 1].timestamp > approved[approved.length - 1].timestamp) {
+        return true
     }
+    return false
 
-    for (let i = data.length - 1; i >= 0; i--) {
-        const { body } = data[i]
 
-        if (body.includes("## Request Approved")) {
-            approveIndex = i
-            break
-        } else {
-            approveIndex = -1
-        }
-    }
 
-    if (proposeIndex && approveIndex) {
-        if (proposeIndex > approveIndex) {
-            alreadyProposed = true
-        }
-    }
 
-    for (let i = data.length - 1; i >= 0; i--) {
-        const { body } = data[i]
+    // let proposeIndex;
+    // let approveIndex;
+    // let datacapAllocation;
+    // let alreadyProposed = false;
 
-        if (body.includes("## DataCap Allocation requested")) {
-            datacapAllocation = i
-            break
-        }
-    }
+    // for (let i = comments.length - 1; i >= 0; i--) {
+    //     const { body } = comments[i]
 
-    if (datacapAllocation && proposeIndex) {
-        if (datacapAllocation > proposeIndex) {
-            alreadyProposed = false
-        }
-    }
+    //     if (body.includes("## Request Proposed")) {
+    //         proposeIndex = i
+    //         break
+    //     } else {
+    //         proposeIndex = -2
+    //     }
+    // }
 
-    return alreadyProposed
+    // for (let i = comments.length - 1; i >= 0; i--) {
+    //     const { body } = comments[i]
+
+    //     if (body.includes("## Request Approved")) {
+    //         approveIndex = i
+    //         break
+    //     } else {
+    //         approveIndex = -1
+    //     }
+    // }
+
+    // if (proposeIndex && approveIndex) {
+    //     if (proposeIndex > approveIndex) {
+    //         alreadyProposed = true
+    //     }
+    // }
+
+    // for (let i = comments.length - 1; i >= 0; i--) {
+    //     const { body } = comments[i]
+
+    //     if (body.includes("## DataCap Allocation requested")) {
+    //         datacapAllocation = i
+    //         break
+    //     }
+    // }
+
+    // if (datacapAllocation && proposeIndex) {
+    //     if (datacapAllocation > proposeIndex) {
+    //         alreadyProposed = false
+    //     }
+    // }
+
+    // return alreadyProposed
 }
