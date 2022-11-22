@@ -95,5 +95,6 @@ export const config = {
         { value: "South America", name: "South America" }
 
     ],
-    dataSource: process.env.REACT_APP_VERIFIES_DATA || 'verifiers'
+    dataSource: process.env.REACT_APP_VERIFIES_DATA || 'verifiers',
+    mode: process.env.REACT_APP_MODE 
 }

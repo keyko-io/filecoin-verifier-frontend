@@ -469,6 +469,7 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
             );
             action = "Approved";
           } else {
+            //it's a doublecheck
             const isProposed = await checkAlreadyProposed(request.issue_number, context)
 
             if (isProposed) {

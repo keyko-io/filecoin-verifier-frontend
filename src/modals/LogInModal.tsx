@@ -124,7 +124,7 @@ class LogInModal extends Component<ModalProps, ModalStates> {
               </div>
             </div>
             <div className="buttons">
-              {!config.networks.includes("Mainnet") ? (
+              {config.mode ? (
                 <div className="button left">
                   <ButtonPrimary onClick={this.loadBurnerWallet} style={{ minWidth: "220px", boxShadow: "none" }}>
                     {!this.state.browserLoading && <img src={Logo} alt={"Logo"} />}
@@ -134,9 +134,9 @@ class LogInModal extends Component<ModalProps, ModalStates> {
               ) : null}
               <div
                 className={
-                  config.networks.includes("Mainnet")
-                    ? "button center"
-                    : "button right"
+                  config.mode
+                    ? "button right"
+                    : "button center"
                 }
               >
                 <ButtonPrimary onClick={this.loadLedgerWallet} style={{ minWidth: "220px", boxShadow: "none" }}>
@@ -168,7 +168,7 @@ class LogInModal extends Component<ModalProps, ModalStates> {
               >
                 Individual
               </div>
-              {!config.networks.includes("Mainnet") && (
+              { config.mode && (
                 <div
                   className={this.state.multisig ? "tab selected" : "tab"}
                   onClick={() => this.loadMultisig()}
@@ -178,7 +178,7 @@ class LogInModal extends Component<ModalProps, ModalStates> {
               )}
             </div>
             <div className="buttons">
-              {!config.networks.includes("Mainnet") ? (
+              { config.mode ? (
                 <div className="button left">
                   <ButtonPrimary onClick={this.loadBurnerWallet} style={{ minWidth: "220px", boxShadow: "none" }}>
                     {!this.state.browserLoading && <img src={Logo} alt={"Logo"} />}
@@ -197,9 +197,9 @@ class LogInModal extends Component<ModalProps, ModalStates> {
               ) : null}
               <div
                 className={
-                  config.networks.includes("Mainnet")
-                    ? "button center"
-                    : "button right"
+                   config.mode
+                    ? "button right"
+                    : "button center"
                 }
               >
                 <ButtonPrimary onClick={this.loadLedgerWallet} style={{ minWidth: "220px", boxShadow: "none" }}>

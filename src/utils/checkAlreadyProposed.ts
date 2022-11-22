@@ -1,4 +1,5 @@
 import { config } from "../../src/config"
+import moment from 'moment'
 
 export const checkAlreadyProposed = async (issueNumber: number, context: any) => {
 
@@ -11,70 +12,43 @@ export const checkAlreadyProposed = async (issueNumber: number, context: any) =>
         }
     );
 
-    const rgxProposed = /##\s*request\s*proposed/m
-    const rgxApproved = /##\s*request\s*approved/m
+    const rgxProposed = /##\s*request\s*proposed/mi
+    const rgxApproved = /##\s*request\s*approved/mi
+    const regexRequest = /##\s*DataCap\s*Allocation\s*requested/m
 
-    const proposed = comments.filter((comment: any) => rgxProposed.test(comment.body))
-    const approved = comments.filter((comment: any) => rgxApproved.test(comment.body))
+    const proposedComms = comments.filter((comment: any) => rgxProposed.test(comment.body))
+    const approvedComms = comments.filter((comment: any) => rgxApproved.test(comment.body))
+    const requestComms = comments.filter((comment: any) => regexRequest.test(comment.body))
+    debugger
+    //if there are any poposal --> return false
+    if (!proposedComms.length) return false
 
-    console.log('proposed', proposed)
-    console.log('approved', approved)
+    const lastProposedDate = proposedComms[proposedComms.length - 1].created_at
+    const lastProposedTimestamp = parseInt(moment(lastProposedDate).format("X"))
+    const lastRequestedDate = requestComms[requestComms.length - 1].created_at
+    const lastRequestedTimestamp = parseInt(moment(lastRequestedDate).format("X"))
 
-    if (proposed[proposed.length - 1].timestamp > approved[approved.length - 1].timestamp) {
+    if (lastRequestedTimestamp > lastProposedTimestamp) {
+        return false
+    }
+
+    let lastApprovedDate
+    let lastApprovedTimestamp
+    if (!approvedComms.length) {
+        lastApprovedTimestamp = 0
+    } else {
+        lastApprovedDate = approvedComms[approvedComms.length - 1].created_at
+        lastApprovedTimestamp = parseInt(moment(lastApprovedDate).format("X"))
+    }
+
+
+    //if proposed comment is more recent than approved comment
+    // and proposed comment is more recent than the request comment
+    //it means that the last comment is the proposed comment --> return true
+    if (lastProposedTimestamp > lastApprovedTimestamp && lastProposedTimestamp > lastRequestedTimestamp) {
         return true
     }
+
     return false
 
-
-
-
-    // let proposeIndex;
-    // let approveIndex;
-    // let datacapAllocation;
-    // let alreadyProposed = false;
-
-    // for (let i = comments.length - 1; i >= 0; i--) {
-    //     const { body } = comments[i]
-
-    //     if (body.includes("## Request Proposed")) {
-    //         proposeIndex = i
-    //         break
-    //     } else {
-    //         proposeIndex = -2
-    //     }
-    // }
-
-    // for (let i = comments.length - 1; i >= 0; i--) {
-    //     const { body } = comments[i]
-
-    //     if (body.includes("## Request Approved")) {
-    //         approveIndex = i
-    //         break
-    //     } else {
-    //         approveIndex = -1
-    //     }
-    // }
-
-    // if (proposeIndex && approveIndex) {
-    //     if (proposeIndex > approveIndex) {
-    //         alreadyProposed = true
-    //     }
-    // }
-
-    // for (let i = comments.length - 1; i >= 0; i--) {
-    //     const { body } = comments[i]
-
-    //     if (body.includes("## DataCap Allocation requested")) {
-    //         datacapAllocation = i
-    //         break
-    //     }
-    // }
-
-    // if (datacapAllocation && proposeIndex) {
-    //     if (datacapAllocation > proposeIndex) {
-    //         alreadyProposed = false
-    //     }
-    // }
-
-    // return alreadyProposed
 }
