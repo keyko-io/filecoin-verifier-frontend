@@ -96,5 +96,5 @@ export const config = {
 
     ],
     dataSource: process.env.REACT_APP_VERIFIES_DATA || 'verifiers',
-    mode: process.env.REACT_APP_MODE 
+    dev_mode: process.env.REACT_APP_MODE 
 }
