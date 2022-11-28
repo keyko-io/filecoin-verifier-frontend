@@ -11,7 +11,7 @@ import TableRightCornerContainer from "./tableUtils/TableRightCornerContainer/Ta
 import { columns } from "./tableUtils/verifiersColumns";
 import lodash from "lodash";
 
-import { notaries } from "../data/verifiers-registry.json"
+import * as notaries from "../data/verifiers-registry.json"
 import toast from "react-hot-toast";
 
 const Verifiers = () => {
@@ -19,10 +19,7 @@ const Verifiers = () => {
   const [query, setQuery] = useState<string>("");
   const [shuffleData, setShuffleData] = useState(notaries);
 
-  useEffect(() => {
-    setShuffleData(lodash.shuffle(shuffleData));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  useEffect(() => setShuffleData(lodash.shuffle(shuffleData) as any), []);
 
   const contactVerifier = async () => {
     if (!selectedData) {
