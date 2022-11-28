@@ -26,7 +26,7 @@ type LdnApplicationProps = {
 
 
 class LdnApplication extends Component<LdnApplicationProps> {
-  public static contextType = Data
+  public static contextType : typeof Data = Data
 
 
   state = {
