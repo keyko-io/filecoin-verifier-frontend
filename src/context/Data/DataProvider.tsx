@@ -596,8 +596,8 @@ export default class DataProvider extends React.Component<
 
           const requestsAndCommentsProm: any = await Promise.allSettled(
             msigRequests.map((issue: any) => new Promise<any>(async (resolve) => {
-              const comments = await  this.props.github.githubOctoGeneric.octokit.paginate(
-                 this.props.github.githubOctoGeneric.octokit.issues.listComments,
+                    const comments = await  this?.props?.github?.githubOctoGeneric?.octokit?.paginate(
+                 this?.props?.github?.githubOctoGeneric?.octokit?.issues?.listComments,
                 {
                   owner:
                     config.lotusNodes[this.props.wallet.networkIndex].notaryOwner,
@@ -631,8 +631,8 @@ export default class DataProvider extends React.Component<
 
           const verifierAndPendingRequests = requestsAndComments.map(
             (r: any) => {
-              const datacap = r.tx ? bytesToiB(Number(r.tx.parsed.params.cap)) : r.lastRequest.datacap
-              const proposedBy = r.tx ? r.tx.signers[0] : ""
+              const datacap = r.tx ? bytesToiB(Number(r.tx?.parsed?.params?.cap)) : r?.lastRequest?.datacap
+              const proposedBy = r.tx ? r?.tx?.signers[0] : ""
               const txs = r.tx ? [r.tx] : []
 
               return {
@@ -946,7 +946,7 @@ export default class DataProvider extends React.Component<
                 data,
               };
             }
-          } catch (e: any) {
+          } catch (e) {
             // console.log(e)
           }
         }
