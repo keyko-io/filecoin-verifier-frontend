@@ -3,7 +3,7 @@
   "version": "1.5.0",
   "private": true,
   "dependencies": {
-    "@emotion/react": "^11.9.0",
+    "@emotion/react": "^11.10.5",
     "@emotion/styled": "^11.8.1",
     "@filecoin-shipyard/lotus-client-provider-nodejs": "0.0.5",
     "@filecoin-shipyard/lotus-client-rpc": "0.0.13",
@@ -28,11 +28,10 @@
     "@testing-library/react": "^9.5.0",
     "@testing-library/user-event": "^7.2.1",
     "@types/jest": "^24.9.1",
-    "@types/lodash": "^4.14.186",
+    "@types/lodash": "^4.14.187",
     "@types/node": "^12.12.51",
     "@types/react": "^16.9.43",
     "@types/react-copy-to-clipboard": "^5.0.2",
-    "@types/react-dom": "^16.9.8",
     "@types/styled-components": "^5.1.26",
     "@types/uuid": "^8.3.0",
     "@wtfcode/byte-converter": "^1.7.11",
@@ -44,12 +43,13 @@
     "himalaya": "^1.1.0",
     "lodash": "^4.17.21",
     "markdown-it": "^12.0.4",
+    "moment": "^2.29.4",
     "node-sass": "^4.14.1",
-    "react": "^16.13.1",
+    "react": "^18.2.0",
     "react-cookie": "^4.0.3",
     "react-copy-to-clipboard": "^5.0.4",
     "react-data-table-component": "^7.5.2",
-    "react-dom": "^16.13.1",
+    "react-dom": "^18.2.0",
     "react-dropdown": "^1.9.2",
     "react-fontawesome": "^1.7.1",
     "react-hot-toast": "^2.4.0",
@@ -59,8 +59,10 @@
     "react-spinners": "^0.11.0",
     "sass-loader": "^9.0.2",
     "slate-react-system": "file:./tmp/slate-react-system-0.1.0.tgz",
+    "stream": "^0.0.2",
+    "stream-browserify": "^3.0.0",
     "styled-components": "^5.3.6",
-    "typescript": "^3.7.5",
+    "typescript": "^4.8.4",
     "uuid": "^8.3.2"
   },
   "scripts": {
@@ -87,12 +89,13 @@
   },
   "devDependencies": {
     "@types/bluebird": "^3.5.32",
+    "@types/react-dom": "^18.0.9",
     "@types/react-router-dom": "^5.1.5",
-    "babel-jest": "^24.9.0",
-    "jest": "^24.9.0"
+    "react-error-overlay": "6.0.9"
   },
   "resolutions": {
     "@types/react": "17.0.2",
-    "@types/react-dom": "17.0.2"
+    "@types/react-dom": "17.0.2",
+    "react-error-overlay": "6.0.9"
   }
 }

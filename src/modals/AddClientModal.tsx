@@ -79,7 +79,7 @@ class AddClientModal extends Component<ModalProps, States> {
             this.context.wallet.dispatchNotification('Verify Client Message sent with ID: ' + messageID)
             dispatchCustomEvent({ name: "delete-modal", detail: {} })
             this.setState({ submitLoading: false })
-        } catch (e) {
+        } catch (e:any) {
             this.setState({ submitLoading: false })
             this.context.wallet.dispatchNotification('Client verification failed: ' + e.message)
             console.log(e.stack)
