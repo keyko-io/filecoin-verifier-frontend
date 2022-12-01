@@ -50,6 +50,9 @@ const LDNBotHealthCheck = async (gh: any): Promise<boolean> => {
                 repo: repoName,
                 issue_number: testIssueNumber,
             });
+        if(!issueAfterChange){ 
+            return false;
+        }
         if (issueAfterChange?.body !== initialBody) {
             result = true;
         }
