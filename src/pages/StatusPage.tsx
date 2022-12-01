@@ -16,7 +16,7 @@ import { config } from "../config";
 const wait5Seconds = () => {
     return new Promise((resolve, reject) => {
         setTimeout(() => {
-            resolve();
+            resolve('ok');
         }, 5000);
     });
 };
