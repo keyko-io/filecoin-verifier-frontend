@@ -11,6 +11,7 @@ import React, { useContext, useEffect, useState } from "react";
 import { Data } from "../context/Data/Index";
 import { config } from "../config";
 import moment from "moment"
+import Alert from '@mui/material/Alert';
 
 // The main goal of this function is just to wait for 5 seconds before
 // executing the next line of code after it
@@ -22,19 +23,18 @@ const wait5Seconds = () => {
   });
 };
 
-const testIssueNumber = process.env.REACT_APP_TEST_ISSUE_NUMBER || 1407
+const testIssueNumber = Number(process.env.REACT_APP_TEST_ISSUE_NUMBER)
 const owner = config.onboardingOwner;
 const repo = config.onboardingLargeClientRepo;
 
-
 const LDNBotHealthCheck = async (gh: any): Promise<boolean> => {
+  let result;
   try {
     if (!gh || Object.keys(gh).length < 1) {
       console.log("NO GH INSTANCE AVAILABLE!!");
       return false;
     }
-    let result = false;
-    const initialBody = "Test Body";
+    const initialBody = "### LDN HEALTH CHECK";
     // Update issue body
     await gh?.githubOcto?.rest?.issues?.update({
       owner,
@@ -52,46 +52,54 @@ const LDNBotHealthCheck = async (gh: any): Promise<boolean> => {
         repo,
         issue_number: testIssueNumber,
       });
-    if (!issueAfterChange) {
-      return false;
-    }
-    if (issueAfterChange?.body !== initialBody) {
+
+
+    if (issueAfterChange?.data?.body !== initialBody) {
       result = true;
+    } else {
+      result = false;
+      await gh?.githubOcto?.rest?.issues?.update({
+        owner,
+        repo,
+        issue_number: testIssueNumber,
+        body: "LDN ready for testing",
+      });
     }
+
     return result;
+
   } catch (err) {
     console.log(err);
     return false;
   }
 };
 
-
-
-
 const StatusPage = () => {
   const context: any = useContext(Data);
   const { github } = context;
-  const [isLDNBotHealthy, setIsLDNBotHealthy] =
-    useState<boolean>(false);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [isSSAHealhty, setIsSSAHealhty] = useState<boolean | null>(null)
 
+  const [isLDNBotHealthy, setIsLDNBotHealthy] = useState<boolean | null>(null);
+  const [isLDNLoading, setIsLDNLoading] = useState<boolean>(false);
+
+  const [isSSAHealhty, setIsSSAHealhty] = useState<boolean | null>(null)
   const [lastSSATime, setLastSSAtime] = useState("")
+  const [isSSALoading, setIsSSALoading] = useState(false)
 
   useEffect(() => {
     getComments()
 
     const handler = async () => {
-      setIsLoading(true);
+      setIsLDNLoading(true);
       let res = await LDNBotHealthCheck(github);
+      setIsLDNLoading(false);
       setIsLDNBotHealthy(Boolean(res));
-      setIsLoading(false);
     };
 
     handler();
   }, [github]);
 
   const getComments = async () => {
+    setIsSSALoading(true)
     try {
       const comments = await github?.githubOcto?.paginate(
         github?.githubOcto?.issues?.listComments,
@@ -101,19 +109,36 @@ const StatusPage = () => {
           issue_number: testIssueNumber,
         })
 
-      const last_SSA = comments[comments.length - 1].created_at
+      // getting last SSA and its time. 
+      const last_SSA = comments.reverse().find((issue: any) => issue.body.includes("SSA bot ran")).created_at
       setLastSSAtime(last_SSA)
+      // check if it is less than 3 hours.
       const is_Ssa_Healhty = moment.duration(moment(new Date()).diff(moment(last_SSA))).asHours() < 3.2
       setIsSSAHealhty(is_Ssa_Healhty)
 
     } catch (error) {
       console.log(error)
+    } finally {
+      setIsSSALoading(false)
     }
   }
 
+  const checkHealthStatus = (isLoading: boolean, botStatus: boolean | null) => {
+    if (isLoading) {
+      return <div>Checking...</div>
+    } else {
+      if (botStatus) {
+        return <CheckCircleIcon sx={{ color: "green" }} />
+      } else {
+        return <DoNotDisturbOnIcon
+          sx={{ color: "red" }}
+        />
+      }
+    }
+  }
 
   return (
-    <Box m="8rem auto">
+    <Box m="0 auto" marginTop="6rem" sx={{ minHeight: "30rem" }}>
       <Typography variant="h4" mb="2rem" textAlign="center">
         Service Status
       </Typography>
@@ -164,18 +189,7 @@ const StatusPage = () => {
               <Typography variant="body1">
                 SSA BOT
               </Typography>
-
-              <div>
-                SSA Bot ran {moment(lastSSATime).fromNow()}
-              </div>
-              {isSSAHealhty ? <CheckCircleIcon
-                sx={{ color: "green" }}
-              /> : <DoNotDisturbOnIcon
-                sx={{ color: "red" }}
-              />
-              }
-
-
+              {checkHealthStatus(isSSALoading, isSSAHealhty)}
             </Stack>
             <Divider />
             <Stack
@@ -186,21 +200,15 @@ const StatusPage = () => {
               <Typography variant="body1">
                 LDN BOT
               </Typography>
-              {isLDNBotHealthy ? (
-                <CheckCircleIcon
-                  sx={{ color: "green" }}
-                />
-              ) : isLoading ? (
-                "Checking.."
-              ) : (
-                <DoNotDisturbOnIcon
-                  sx={{ color: "red" }}
-                />
-              )}
+              {checkHealthStatus(isLDNLoading, isLDNBotHealthy)}
             </Stack>
           </Stack>
         </Paper>
       </Box>
+      <Stack direction="row" justifyContent="center" alignItems="center" marginTop={10}>{!isSSALoading && <Alert severity="info">
+        <Typography variant="body1">The last time SSA bot ran: <span>{moment(lastSSATime).fromNow()}</span></Typography>
+      </Alert>}
+      </Stack>
     </Box>
   );
 };
