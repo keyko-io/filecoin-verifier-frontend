@@ -596,8 +596,8 @@ export default class DataProvider extends React.Component<
 
           const requestsAndCommentsProm: any = await Promise.allSettled(
             msigRequests.map((issue: any) => new Promise<any>(async (resolve) => {
-                    const comments = await  this?.props?.github?.githubOctoGeneric?.octokit?.paginate(
-                 this?.props?.github?.githubOctoGeneric?.octokit?.issues?.listComments,
+              const comments = await this?.props?.github?.githubOctoGeneric?.octokit?.paginate(
+                this?.props?.github?.githubOctoGeneric?.octokit?.issues?.listComments,
                 {
                   owner:
                     config.lotusNodes[this.props.wallet.networkIndex].notaryOwner,
@@ -736,18 +736,23 @@ export default class DataProvider extends React.Component<
         }
       },
       getLastUniqueId: async (issueNumber: number) => {
-        const data = await this.props.github.githubOcto.paginate(
-          this.props.github.githubOcto.issues.listComments,
-          {
-            owner: config.onboardingLargeOwner,
-            repo: config.onboardingLargeClientRepo,
-            issue_number: issueNumber,
-          })
+        try {
+          const data = await this.props.github.githubOcto.paginate(
+            this.props.github.githubOcto.issues.listComments,
+            {
+              owner: config.onboardingLargeOwner,
+              repo: config.onboardingLargeClientRepo,
+              issue_number: issueNumber,
+            })
 
-        const idPattern = /####\s*Id\s*\n>\s*(.*)/g
-        const comment = data.filter((item: any) => item.body.includes("## DataCap Allocation requested")).reverse()
-        const Id = commonUtils.matchGroupLargeNotary(idPattern, comment[0].body)
-        return Id
+          const idPattern = /####\s*Id\s*\n>\s*(.*)/g
+          const comment = data.filter((item: any) => item.body.includes("## DataCap Allocation requested")).reverse()
+          const Id = commonUtils.matchGroupLargeNotary(idPattern, comment[0].body)
+          return Id
+        } catch (error) {
+          console.log(error)
+        }
+
       },
       updateGithubVerified: async (
         requestNumber: any,

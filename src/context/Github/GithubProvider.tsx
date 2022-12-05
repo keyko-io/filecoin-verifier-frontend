@@ -20,7 +20,7 @@ interface WalletProviderStates {
 
 export default class WalletProvider extends React.Component<{}, WalletProviderStates> {
     setStateAsync(state: any) {
-        return new Promise((resolve:any) => {
+        return new Promise((resolve: any) => {
             this.setState(state, resolve)
         });
     }
@@ -62,7 +62,7 @@ export default class WalletProvider extends React.Component<{}, WalletProviderSt
                 localStorage.setItem("avatar", avatar_url)
                 this.setState({ loggedUser: login, avatarUrl: avatar_url })
 
-            } catch (e:any) {
+            } catch (e: any) {
                 // this.state.dispatchNotification('Failed to login. Try again later.')
             }
         },
@@ -70,10 +70,15 @@ export default class WalletProvider extends React.Component<{}, WalletProviderSt
             const octokit = new Octokit({
                 auth: token
             })
-            await this.setStateAsync({
-                githubLogged: true,
-                githubOcto: octokit
-            })
+            try {
+                await this.setStateAsync({
+                    githubLogged: true,
+                    githubOcto: octokit
+                })
+            } catch (error) {
+                console.log(error)
+            }
+
         },
         logoutGithub: async () => {
             localStorage.removeItem('githubToken')
@@ -94,7 +99,7 @@ export default class WalletProvider extends React.Component<{}, WalletProviderSt
         },
         githubOctoGenericLogin: async () => {
             if (this.state.githubOctoGeneric.logged === false) {
-                const octokit = await new Octokit({
+                const octokit = new Octokit({
                     auth: config.githubGenericToken,
                 });
                 this.setState({ githubOctoGeneric: { logged: true, octokit } })
@@ -113,15 +118,19 @@ export default class WalletProvider extends React.Component<{}, WalletProviderSt
             return rawIssues
         },
         fetchGithubComments: async (owner: any, repo: any, issueNumber: any) => {
-            const rawComments = await this.state.githubOcto.paginate(
-                this.state.githubOcto.issues.listComments,
-                {
-                    owner,
-                    repo,
-                    issue_number: issueNumber
-                }
-            );
-            return rawComments
+            try {
+                const rawComments = await this.state.githubOcto.paginate(
+                    this.state.githubOcto.issues.listComments,
+                    {
+                        owner,
+                        repo,
+                        issue_number: issueNumber
+                    }
+                );
+                return rawComments
+            } catch (error) {
+                console.log(error)
+            }
         },
     }
 

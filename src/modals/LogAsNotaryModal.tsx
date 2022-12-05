@@ -40,20 +40,24 @@ class LogAsNotaryModal extends Component<ModalProps, ModalStates> {
 
 
     loadWallet = async (type: any) => {
-        const logged = await this.context.wallet.loadWallet(type, {
-            multisig: true,
-            multisigAddress: this.state.address
-        })
-        if (logged) {
-            if (this.context.viewroot === false && this.props.type == '0') {
-                this.context.switchview()
-            }
-            dispatchCustomEvent({ name: "delete-modal", detail: {} })
-            
-            
-            history.push({
-                pathname: "/app"
+        try {
+            const logged = await this.context.wallet.loadWallet(type, {
+                multisig: true,
+                multisigAddress: this.state.address
             })
+            if (logged) {
+                if (this.context.viewroot === false && this.props.type == '0') {
+                    this.context.switchview()
+                }
+                dispatchCustomEvent({ name: "delete-modal", detail: {} })
+
+
+                history.push({
+                    pathname: "/app"
+                })
+            }
+        } catch (error) {
+            console.log(error)
         }
     }
 
