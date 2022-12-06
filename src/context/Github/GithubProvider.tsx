@@ -94,7 +94,7 @@ export default class WalletProvider extends React.Component<{}, WalletProviderSt
         },
         githubOctoGenericLogin: async () => {
             if (this.state.githubOctoGeneric.logged === false) {
-                const octokit = await new Octokit({
+                const octokit =  new Octokit({
                     auth: config.githubGenericToken,
                 });
                 this.setState({ githubOctoGeneric: { logged: true, octokit } })
