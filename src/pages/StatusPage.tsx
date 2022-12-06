@@ -23,7 +23,7 @@ const wait5Seconds = () => {
   });
 };
 
-const testIssueNumber = Number(process.env.REACT_APP_TEST_ISSUE_NUMBER)
+const testIssueNumber = Number(process.env.REACT_APP_STATUS_ISSUE_NUMBER)
 const owner = config.onboardingOwner;
 const repo = config.onboardingLargeClientRepo;
 
@@ -96,13 +96,13 @@ const StatusPage = () => {
     };
 
     handler();
-  }, [github]);
+  },[github]);
 
   const getComments = async () => {
     setIsSSALoading(true)
     try {
-      const comments = await github?.githubOcto?.paginate(
-        github?.githubOcto?.issues?.listComments,
+      const comments = await github?.githubOctoGeneric?.octokit?.paginate(
+        github?.githubOctoGeneric?.octokit?.issues?.listComments,
         {
           owner,
           repo,

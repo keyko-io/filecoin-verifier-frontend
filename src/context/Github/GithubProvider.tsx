@@ -20,7 +20,7 @@ interface WalletProviderStates {
 
 export default class WalletProvider extends React.Component<{}, WalletProviderStates> {
     setStateAsync(state: any) {
-        return new Promise((resolve:any) => {
+        return new Promise((resolve: any) => {
             this.setState(state, resolve)
         });
     }
@@ -32,6 +32,10 @@ export default class WalletProvider extends React.Component<{}, WalletProviderSt
             .filter((node: any, index: number) => config.networks.includes(node.name))
 
         return activeIndex[0].index
+    }
+
+    async componentDidMount() {
+        this.loadGithub()
     }
 
     state = {
@@ -62,7 +66,7 @@ export default class WalletProvider extends React.Component<{}, WalletProviderSt
                 localStorage.setItem("avatar", avatar_url)
                 this.setState({ loggedUser: login, avatarUrl: avatar_url })
 
-            } catch (e:any) {
+            } catch (e: any) {
                 // this.state.dispatchNotification('Failed to login. Try again later.')
             }
         },
@@ -94,10 +98,14 @@ export default class WalletProvider extends React.Component<{}, WalletProviderSt
         },
         githubOctoGenericLogin: async () => {
             if (this.state.githubOctoGeneric.logged === false) {
-                const octokit =  new Octokit({
+                const octokit = new Octokit({
                     auth: config.githubGenericToken,
                 });
-                this.setState({ githubOctoGeneric: { logged: true, octokit } })
+                this.setState(
+                    {
+                        githubOctoGeneric:
+                            { logged: true, octokit }
+                    })
             }
         },
         fetchGithubIssues: async (owner: any, repo: any, state: any, labels: any) => {
@@ -130,11 +138,9 @@ export default class WalletProvider extends React.Component<{}, WalletProviderSt
         if (githubToken) {
             this.state.initGithubOcto(githubToken)
         }
+        this.state.githubOctoGenericLogin()
     }
 
-    async componentDidMount() {
-        this.loadGithub()
-    }
 
 
 
