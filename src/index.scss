@@ -156,47 +156,48 @@ $theme_pageText: $system_black;
   }
 }
 
-// @font-face {
-//   font-family: 'mono';
-//   src: url('/public/SFMono-Medium.woff');
-// }
-// @font-face {
-//   font-family: 'mono-bold';
-//   src: url('/public/SFMono-Bold.woff');
-// }
-// @font-face {
-//   font-family: 'inter-regular';
-//   src: url('/public/Inter-Regular.woff');
-// }
-// @font-face {
-//   font-family: 'inter-semi-bold';
-//   src: url('/public/Inter-SemiBold.woff');
-// }
-// @font-face {
-//   font-family: 'inter-medium';
-//   src: url('/public/Inter-Medium.woff');
-// }
-// @font-face {
-//   font-family: 'fira-code-regular';
-//   src: url('/public/FiraCode-Regular.woff');
-// }
-// @font-face {
-//   font-family: 'fira-code-bold';
-//   src: url('/public/FiraCode-Bold.woff');
-// }
-// @font-face {
-//   font-family: 'jet-brains-regular';
-//   src: url('/public/JetBrainsMono-Regular.woff');
-// }
-// @font-face {
-//   font-family: 'jet-brains-bold';
-//   src: url('/public/JetBrainsMono-Bold.woff');
-// }
+@font-face {
+  font-family: 'mono';
+  src: url('./fonts/SFMono-Medium.woff');
+}
+@font-face {
+  font-family: 'mono-bold';
+  src: url('./fonts/SFMono-Bold.woff');
+}
+@font-face {
+  font-family: 'inter-regular';
+  src: url('./fonts/Inter-Regular.woff');
+}
+@font-face {
+  font-family: 'inter-semi-bold';
+  src: url('./fonts/Inter-SemiBold.woff');
+}
+@font-face {
+  font-family: 'inter-medium';
+  src: url('./fonts/Inter-Medium.woff');
+}
+@font-face {
+  font-family: 'fira-code-regular';
+  src: url('./fonts/FiraCode-Regular.woff');
+}
+@font-face {
+  font-family: 'fira-code-bold';
+  src: url('./fonts/FiraCode-Bold.woff');
+}
+@font-face {
+  font-family: 'jet-brains-regular';
+  src: url('./fonts/JetBrainsMono-Regular.woff');
+}
+@font-face {
+  font-family: 'jet-brains-bold';
+  src: url('./fonts/JetBrainsMono-Bold.woff');
+}
 
-// @font-face {
-//   font-family: "suisseintl";
-//   src: url("./fonts/SuisseIntl-Regular.woff");
-// }
+@font-face {
+  font-family: "suisseintl";
+  src: url("./fonts/SuisseIntl-Regular.woff");
+}
+
 html, body, div, span, applet, object, iframe,
 h1, h2, h3, h4, h5, h6, p, blockquote, pre,
 a, abbr, acronym, address, big, cite, code,
