@@ -13,66 +13,10 @@ import { config } from "../config";
 import moment from "moment"
 import Alert from '@mui/material/Alert';
 
-// The main goal of this function is just to wait for 5 seconds before
-// executing the next line of code after it
-const wait5Seconds = () => {
-  return new Promise((resolve, reject) => {
-    setTimeout(() => {
-      resolve('ok');
-    }, 5000);
-  });
-};
-
 const testIssueNumber = Number(process.env.REACT_APP_STATUS_ISSUE_NUMBER)
 const owner = config.onboardingOwner;
 const repo = config.onboardingLargeClientRepo;
 
-const LDNBotHealthCheck = async (gh: any): Promise<boolean> => {
-  let result;
-  try {
-    if (!gh || Object.keys(gh).length < 1) {
-      console.log("NO GH INSTANCE AVAILABLE!!");
-      return false;
-    }
-    const initialBody = "### LDN HEALTH CHECK";
-    // Update issue body
-    await gh?.githubOcto?.rest?.issues?.update({
-      owner,
-      repo,
-      issue_number: testIssueNumber,
-      body: initialBody,
-    });
-    // Wait for 5 seconds to give the bot time to update the
-    // issue
-    await wait5Seconds();
-    // Get Issue after bot have updated it
-    const issueAfterChange =
-      await gh?.githubOcto?.rest?.issues.get({
-        owner,
-        repo,
-        issue_number: testIssueNumber,
-      });
-
-
-    if (issueAfterChange?.data?.body !== initialBody) {
-      result = true;
-    } else {
-      result = false;
-      await gh?.githubOcto?.rest?.issues?.update({
-        owner,
-        repo,
-        issue_number: testIssueNumber,
-        body: "LDN ready for testing",
-      });
-    }
-
-    return result;
-
-  } catch (err) {
-    console.log(err);
-    return false;
-  }
-};
 
 const StatusPage = () => {
   const context: any = useContext(Data);
@@ -86,19 +30,38 @@ const StatusPage = () => {
   const [isSSALoading, setIsSSALoading] = useState(false)
 
   useEffect(() => {
-    getComments()
+    checkSSAStatus()
+    checkLDNStatus()
 
-    const handler = async () => {
-      setIsLDNLoading(true);
-      let res = await LDNBotHealthCheck(github);
-      setIsLDNLoading(false);
-      setIsLDNBotHealthy(Boolean(res));
-    };
+  }, [github]);
 
-    handler();
-  },[github]);
+  const checkLDNStatus = async () => {
+    try {
+      setIsLDNLoading(true)
+      const statusIssue =
+        await github?.githubOctoGeneric?.octokit?.rest?.issues.get({
+          owner,
+          repo,
+          issue_number: testIssueNumber,
+        });
 
-  const getComments = async () => {
+      if (!statusIssue) return
+
+      //if body == ### Healthcheck... --> loading
+      if (statusIssue.data.body === "### LDN HEALTH CHECK") setIsLDNLoading(true)
+      //if body != bot is up....  --> ok
+      if (statusIssue.data.body.startsWith("### Updated By LDN Bot at ")) {
+        setIsLDNLoading(false)
+        setIsLDNBotHealthy(true)
+      } else {
+        setIsLDNBotHealthy(false)
+      }
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  const checkSSAStatus = async () => {
     setIsSSALoading(true)
     try {
       const comments = await github?.githubOctoGeneric?.octokit?.paginate(
@@ -110,7 +73,8 @@ const StatusPage = () => {
         })
 
       // getting last SSA and its time. 
-      const last_SSA = comments.reverse().find((issue: any) => issue.body.includes("SSA bot ran")).created_at
+      const ssaComments = comments.filter((issue: any) => issue.body.includes("bot ran at"))
+      const last_SSA = ssaComments[ssaComments.length - 1].created_at
       setLastSSAtime(last_SSA)
       // check if it is less than 3 hours.
       const is_Ssa_Healhty = moment.duration(moment(new Date()).diff(moment(last_SSA))).asHours() < 3.2
@@ -140,7 +104,7 @@ const StatusPage = () => {
   return (
     <Box m="0 auto" marginTop="6rem" sx={{ minHeight: "30rem" }}>
       <Typography variant="h4" mb="2rem" textAlign="center">
-        Service Status
+        Fil+ Services Status
       </Typography>
       <Box sx={{ width: "60rem" }}>
         <Paper elevation={4}>
@@ -206,6 +170,7 @@ const StatusPage = () => {
         </Paper>
       </Box>
       <Stack direction="row" justifyContent="center" alignItems="center" marginTop={10}>{!isSSALoading && <Alert severity="info">
+        <Typography variant="body1">The SSA bot run every 3 hours</Typography>
         <Typography variant="body1">The last time SSA bot ran: <span>{moment(lastSSATime).fromNow()}</span></Typography>
       </Alert>}
       </Stack>
