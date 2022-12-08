@@ -5,6 +5,12 @@ const LDNOwnerAndRepo = {
     repo: config.onboardingLargeClientRepo
 }
 
+// I think we can use this api calls in the application , 
+// we are using this calls many place in the app, we can replace them with this ones. 
+// so it can be more clean. 
+// Also if we want to change something , we can change it only here one times.
+// i think we can improve and extends the parameters and it become more useful.
+
 // Return all the comments for one issue
 export const getAllComments = async (github: any, issue_number: number) => {
     try {
