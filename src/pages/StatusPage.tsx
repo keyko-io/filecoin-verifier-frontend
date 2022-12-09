@@ -13,7 +13,7 @@ import { config } from "../config";
 import moment from "moment"
 import Alert from '@mui/material/Alert';
 
-const testIssueNumber = Number(process.env.REACT_APP_STATUS_ISSUE_NUMBER)
+const testIssueNumber = Number(config.status_issue_number)
 const owner = config.onboardingOwner;
 const repo = config.onboardingLargeClientRepo;
 
@@ -54,9 +54,12 @@ const StatusPage = () => {
         setIsLDNLoading(false)
         setIsLDNBotHealthy(true)
       } else {
+        setIsLDNLoading(false)
         setIsLDNBotHealthy(false)
       }
     } catch (error) {
+        setIsLDNBotHealthy(false)
+        setIsLDNLoading(false)
       console.log(error)
     }
   }
@@ -151,7 +154,7 @@ const StatusPage = () => {
               justifyContent="space-between"
             >
               <Typography variant="body1">
-                SSA BOT
+               SSA bot: datacap request trigger bot 
               </Typography>
               {checkHealthStatus(isSSALoading, isSSAHealhty)}
             </Stack>
@@ -162,7 +165,7 @@ const StatusPage = () => {
               justifyContent="space-between"
             >
               <Typography variant="body1">
-                LDN BOT
+                LDN bot: filecoin-plus-large-datasets repository bot 
               </Typography>
               {checkHealthStatus(isLDNLoading, isLDNBotHealthy)}
             </Stack>
@@ -170,8 +173,11 @@ const StatusPage = () => {
         </Paper>
       </Box>
       <Stack direction="row" justifyContent="center" alignItems="center" marginTop={10}>{!isSSALoading && <Alert severity="info">
-        <Typography variant="body1">The SSA bot run every 3 hours</Typography>
-        <Typography variant="body1">The last time SSA bot ran: <span>{moment(lastSSATime).fromNow()}</span></Typography>
+        <Typography variant="body1">The SSA bot runs every 3 hours and triggers new datacap requests if needed.</Typography>
+        <Typography variant="body1">The LDN bot is always active and listens to events happening on the repository.</Typography>
+        {/* <Typography variant="body1">The last time SSA bot ran: <span>{moment(lastSSATime).fromNow()}</span></Typography> */}
+        <Typography variant="body1">Health check is updated through this issue: 
+        <a href={config.status_issue_url} > {config.status_issue_number}</a>. Last time active was: <span>{moment(lastSSATime).fromNow()}</span></Typography>
       </Alert>}
       </Stack>
     </Box>
