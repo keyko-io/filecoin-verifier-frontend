@@ -154,7 +154,7 @@ const StatusPage = () => {
               justifyContent="space-between"
             >
               <Typography variant="body1">
-               SSA bot: datacap request trigger bot 
+               SSA Bot 
               </Typography>
               {checkHealthStatus(isSSALoading, isSSAHealhty)}
             </Stack>
@@ -165,7 +165,7 @@ const StatusPage = () => {
               justifyContent="space-between"
             >
               <Typography variant="body1">
-                LDN bot: filecoin-plus-large-datasets repository bot 
+                Health Check Bot
               </Typography>
               {checkHealthStatus(isLDNLoading, isLDNBotHealthy)}
             </Stack>
@@ -174,10 +174,12 @@ const StatusPage = () => {
       </Box>
       <Stack direction="row" justifyContent="center" alignItems="center" marginTop={10}>{!isSSALoading && <Alert severity="info">
         <Typography variant="body1">The SSA bot runs every 3 hours and triggers new datacap requests if needed.</Typography>
-        <Typography variant="body1">The LDN bot is always active and listens to events happening on the repository.</Typography>
+        <Typography variant="body1">Last time active was: <span>{moment(lastSSATime).fromNow()}</span></Typography>
+        <Typography variant="body1">The health check is always active and listens to events happening on the repository.</Typography>
         {/* <Typography variant="body1">The last time SSA bot ran: <span>{moment(lastSSATime).fromNow()}</span></Typography> */}
         <Typography variant="body1">Health check is updated through this issue: 
-        <a href={config.status_issue_url} > {config.status_issue_number}</a>. Last time active was: <span>{moment(lastSSATime).fromNow()}</span></Typography>
+        <a href={config.status_issue_url} > {config.status_issue_number}</a>. 
+        </Typography>
       </Alert>}
       </Stack>
     </Box>
