@@ -1,5 +1,5 @@
 import React from "react";
-import ReactDOM from "react-dom";
+import ReactDOM from 'react-dom/client';
 import "./index.scss";
 import { config } from "./config";
 import App from "./App";
@@ -29,6 +29,7 @@ import * as Sentry from "@sentry/react";
 import { Integrations } from "@sentry/tracing";
 import Verifiers from "./pages/Verifiers";
 import Miners from "./pages/Miners";
+import StatusPage from "./pages/StatusPage";
 
 
 // redirect to domain if user access fleek url
@@ -46,7 +47,9 @@ Sentry.init({
   tracesSampleRate: 1.0,
 });
 
-ReactDOM.render(
+const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement);
+
+root.render(
   <React.StrictMode>
     <CookiesProvider>
       <WalletProvider>
@@ -80,6 +83,7 @@ ReactDOM.render(
                             component={ClientDetails}
                           ></Route>
                           <Route path={"/logs"} component={LogExplorer}></Route>
+                          <Route path={"/status"} component={StatusPage}></Route>
                         </Switch>
                       </Layout >
                     </Router>
@@ -94,7 +98,6 @@ ReactDOM.render(
       </WalletProvider>
     </CookiesProvider>
   </React.StrictMode>,
-  document.getElementById("root")
 );
 
 // If you want your app to work offline and load faster, you can change

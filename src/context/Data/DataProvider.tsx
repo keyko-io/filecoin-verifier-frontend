@@ -596,8 +596,8 @@ export default class DataProvider extends React.Component<
 
           const requestsAndCommentsProm: any = await Promise.allSettled(
             msigRequests.map((issue: any) => new Promise<any>(async (resolve) => {
-              const comments = await  this.props.github.githubOctoGeneric.octokit.paginate(
-                 this.props.github.githubOctoGeneric.octokit.issues.listComments,
+                    const comments = await  this?.props?.github?.githubOctoGeneric?.octokit?.paginate(
+                 this?.props?.github?.githubOctoGeneric?.octokit?.issues?.listComments,
                 {
                   owner:
                     config.lotusNodes[this.props.wallet.networkIndex].notaryOwner,
@@ -626,13 +626,12 @@ export default class DataProvider extends React.Component<
           const requestsAndComments = requestsAndCommentsProm
             .filter((r: any) => r.status == "fulfilled")
             .map((r: any) => r.value)
-          console.log(requestsAndComments)
 
 
           const verifierAndPendingRequests = requestsAndComments.map(
             (r: any) => {
-              const datacap = r.tx ? bytesToiB(Number(r.tx.parsed.params.cap)) : r.lastRequest.datacap
-              const proposedBy = r.tx ? r.tx.signers[0] : ""
+              const datacap = r.tx ? bytesToiB(Number(r.tx?.parsed?.params?.cap)) : r?.lastRequest?.datacap
+              const proposedBy = r.tx ? r?.tx?.signers[0] : ""
               const txs = r.tx ? [r.tx] : []
 
               return {
@@ -924,8 +923,8 @@ export default class DataProvider extends React.Component<
           this.setState({ clientsGithub: [] });
           return;
         }
-        const rawIssues = await this.props.github.githubOcto.paginate(
-          this.props.github.githubOcto.issues.listForRepo,
+        const rawIssues = await this.props.github.githubOctoGeneric.octokit.paginate(
+          this.props.github.githubOctoGeneric.octokit.issues.listForRepo,
           {
             owner: config.onboardingOwner,
             repo: config.onboardingClientRepo,
@@ -946,7 +945,7 @@ export default class DataProvider extends React.Component<
                 data,
               };
             }
-          } catch (e: any) {
+          } catch (e) {
             // console.log(e)
           }
         }
