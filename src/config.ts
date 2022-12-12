@@ -64,7 +64,7 @@ const localConfig = {
     largeClientRequest: 5497558000000000000000000,
     metrics_api_environment: process.env.REACT_APP_METRICS_API_ENVIRONMENT || "test",
     loggerApiKey: process.env.REACT_APP_X_API_KEY || '',
-    secretRecieverAddress:'t0100',
+    secretRecieverAddress: 't0100',
     lotusNodes: [{
         name: 'Localhost',
         code: 1,
@@ -80,7 +80,10 @@ const localConfig = {
     datacapExtName,
     datacapExtOptions,
     regions,
-    dev_mode: process.env.REACT_APP_MODE
+    dev_mode: process.env.REACT_APP_MODE,
+    status_issue_number: 1419,
+    status_issue_url: "https://github.com/keyko-io/filecoin-large-clients-onboarding/issues/1419"
+
 }
 
 const prodConfig = {
@@ -120,7 +123,10 @@ const prodConfig = {
     datacapExtName,
     datacapExtOptions,
     regions,
-    dev_mode: process.env.REACT_APP_MODE
+    dev_mode: process.env.REACT_APP_MODE,
+    status_issue_number: 1427,
+    status_issue_url: "https://github.com/filecoin-project/filecoin-plus-large-datasets/issues/1427"
+
 }
 
 export const config =

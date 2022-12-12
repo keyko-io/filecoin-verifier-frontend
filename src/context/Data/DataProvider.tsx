@@ -626,7 +626,6 @@ export default class DataProvider extends React.Component<
           const requestsAndComments = requestsAndCommentsProm
             .filter((r: any) => r.status == "fulfilled")
             .map((r: any) => r.value)
-          console.log(requestsAndComments)
 
 
           const verifierAndPendingRequests = requestsAndComments.map(
@@ -924,8 +923,8 @@ export default class DataProvider extends React.Component<
           this.setState({ clientsGithub: [] });
           return;
         }
-        const rawIssues = await this.props.github.githubOcto.paginate(
-          this.props.github.githubOcto.issues.listForRepo,
+        const rawIssues = await this.props.github.githubOctoGeneric.octokit.paginate(
+          this.props.github.githubOctoGeneric.octokit.issues.listForRepo,
           {
             owner: config.onboardingOwner,
             repo: config.onboardingClientRepo,
