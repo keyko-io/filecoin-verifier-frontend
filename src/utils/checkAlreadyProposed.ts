@@ -19,7 +19,6 @@ export const checkAlreadyProposed = async (issueNumber: number, context: any) =>
     const proposedComms = comments.filter((comment: any) => rgxProposed.test(comment.body))
     const approvedComms = comments.filter((comment: any) => rgxApproved.test(comment.body))
     const requestComms = comments.filter((comment: any) => regexRequest.test(comment.body))
-    debugger
     //if there are any poposal --> return false
     if (!proposedComms.length) return false
 
