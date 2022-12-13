@@ -48,7 +48,7 @@ const StatusPage = () => {
       if (!statusIssue) return
 
       //if body == ### Healthcheck... --> loading
-      if (statusIssue.data.body === "### LDN HEALTH CHECK") setIsLDNLoading(true)
+      if (statusIssue.data.body.startsWith("### LDN HEALTH CHECK")) setIsLDNLoading(true)
       //if body != bot is up....  --> ok
       if (statusIssue.data.body.startsWith("### Updated By LDN Bot at ")) {
         setIsLDNLoading(false)
@@ -165,7 +165,7 @@ const StatusPage = () => {
               justifyContent="space-between"
             >
               <Typography variant="body1">
-                Health Check Bot
+                LDN Validation Bot
               </Typography>
               {checkHealthStatus(isLDNLoading, isLDNBotHealthy)}
             </Stack>
@@ -175,9 +175,9 @@ const StatusPage = () => {
       <Stack direction="row" justifyContent="center" alignItems="center" marginTop={10}>{!isSSALoading && <Alert severity="info">
         <Typography variant="body1">The SSA bot runs every 3 hours and triggers new datacap requests if needed.</Typography>
         <Typography variant="body1">Last time active was: <span>{moment(lastSSATime).fromNow()}</span></Typography>
-        <Typography variant="body1">The health check is always active and listens to events happening on the repository.</Typography>
+        <Typography variant="body1">LDN Validation Bot is always active and listens to events happening on the repository.</Typography>
         {/* <Typography variant="body1">The last time SSA bot ran: <span>{moment(lastSSATime).fromNow()}</span></Typography> */}
-        <Typography variant="body1">Health check is updated through this issue: 
+        <Typography variant="body1">Both bots update this issue: 
         <a href={config.status_issue_url} > {config.status_issue_number}</a>. 
         </Typography>
       </Alert>}
