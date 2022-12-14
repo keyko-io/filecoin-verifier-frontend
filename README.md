@@ -17,6 +17,8 @@ This way also the back-end is automatically started
 
 > Since the volume mounted is the local src folder, any change in the application triggers yarn to recompile it, that way, there is no need to rebuild the app for each change
 
+> You need to rebuild it if you add some package 
+
 > It may take a few minutes to start the application at the first docker compose up
 
 ## Run using yarn
