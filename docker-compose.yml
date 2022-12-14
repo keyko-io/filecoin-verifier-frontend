@@ -2,7 +2,7 @@ version: '3.7'
 services:
 
   front-end:
-    image: keykoio/filecoin-verifier-frontend
+    image: keykoio/filecoin-verifier-frontend:latest
     ports:
       - "3000:3000"
     volumes:
