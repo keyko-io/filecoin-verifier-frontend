@@ -1,0 +1,20 @@
+version: '3.7'
+services:
+
+  front-end:
+    image: keykoio/filecoin-verifier-frontend:v1.4.3
+    ports:
+      - "3000:3000"
+    volumes:
+      - "./src:/app/src"
+    env_file:
+      - .env
+
+  back-end:
+    image: keykoio/filecoin-verifier-backend
+    ports:
+      - "4000:4000"
+    env_file:
+      - .env
+     
+    
