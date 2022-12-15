@@ -9,15 +9,8 @@ class VerificationOptionsModal extends Component<{}> {
     onClick = (e: any) => {
         if (e.currentTarget.id === 'automatic') {
             window.open('https://verify.glif.io/', '_blank')
-        } else if (e.currentTarget.id === 'general') {
-            history.push({
-                pathname: "/verifiers"
-            })
-        }
-        else if (e.currentTarget.id === 'ldn') {
-            history.push({
-                pathname: "/ldn-application"
-            })
+        } else  {
+            window.open('https://github.com/filecoin-project/filecoin-plus-large-datasets', '_blank')
         }
         dispatchCustomEvent({ name: "delete-modal", detail: {} })
     }
