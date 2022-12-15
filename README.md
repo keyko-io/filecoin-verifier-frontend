@@ -50,5 +50,9 @@ REACT_APP_STATUS_ISSUE_NUMBER=
 GITHUB_CLIENT=
 GITHUB_SECRET=
 ```
+## Tagging
+To update the tag just run `sh new_tag.sh`
 
+this will create an annotated tag in github and trigger a new build in docker hub.
 
+Then, in order to work with a specific version of the app, just need to update `keykoio/filecoin-verifier-frontend:vx.x.x` image using the new tag
