@@ -75,6 +75,7 @@ const LogExplorer = () => {
       })
     } catch (error) {
       setIsLogsLoading(false)
+      console.log(error)
     }
   }
 

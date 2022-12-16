@@ -26,7 +26,7 @@ type LdnApplicationProps = {
 
 
 class LdnApplication extends Component<LdnApplicationProps> {
-  public static contextType : typeof Data = Data
+  public static contextType: typeof Data = Data
 
 
   state = {
@@ -47,47 +47,59 @@ class LdnApplication extends Component<LdnApplicationProps> {
 
 
   async componentDidMount() {
-    await this.context.github.checkToken()
-    if (!this.context.github.githubLogged) {
-      this.setState({ view: 0 })
-      return
+    try {
+      await this.context.github.checkToken()
+      if (!this.context.github.githubLogged) {
+        this.setState({ view: 0 })
+        return
+      }
+
+      await this.fetchIssuesAndSelectView()
+
+      if (this.props.location?.state) {
+        const { organization, website, address, region } = this.props.location.state
+        const newCoreInfo = [...coreInfo]
+        newCoreInfo[1].value = organization
+        newCoreInfo[2].value = region
+        newCoreInfo[3].value = website
+        newCoreInfo[6].value = address
+        this.setState({ coreInfo: [...newCoreInfo] })
+      }
+    } catch (error) {
+      console.log(error)
     }
 
-    await this.fetchIssuesAndSelectView()
-
-    if (this.props.location?.state) {
-      const { organization, website, address, region } = this.props.location.state
-      const newCoreInfo = [...coreInfo]
-      newCoreInfo[1].value = organization
-      newCoreInfo[2].value = region
-      newCoreInfo[3].value = website
-      newCoreInfo[6].value = address
-      this.setState({ coreInfo: [...newCoreInfo] })
-    }
   }
 
 
   async fetchIssuesAndSelectView() {
     // fetch issues to get addresses
+    try {
+      const issues = (await this.context.github.githubOcto.issues.list(
+        {
+          filter: 'created',
+          labels: [labelsIssueCreation.WIP_ISSUE]
+        }
+      )).data
 
-    const issues = (await this.context.github.githubOcto.issues.list(
-      {
-        filter: 'created',
-        labels: [labelsIssueCreation.WIP_ISSUE]
+      let addressList = []
+
+      for (let issue of issues) {
+        const psiAddress = utils.parseIssue(issue.body).address
+        addressList.push(psiAddress)
       }
-    )).data
 
+      this.setState({
+        addressList,
+        issueList: issues,
+        view: issues.length ? 1 : 3
+      })
 
-    let addressList = []
-    for (let issue of issues) {
-      const psiAddress = utils.parseIssue(issue.body).address
-      addressList.push(psiAddress)
+    } catch (error) {
+      console.log(error)
     }
-    this.setState({
-      addressList,
-      issueList: issues,
-      view: issues.length ? 1 : 3
-    })
+
+
   }
 
   continueEditingPreviousIssue(issue: any) {
@@ -246,47 +258,58 @@ class LdnApplication extends Component<LdnApplicationProps> {
   }
 
   async createUpdateIssue() {
-    if (this.validateIssue()) {
-      alert('application contain errors...')
-      return
+    try {
+      if (this.validateIssue()) {
+        alert('application contain errors...')
+        return
+      }
+
+      if (this.state.isNewIssue) {
+        if (this.addressListIncludesAddressInput(coreInfo[6].value)) return
+        await this.createIssueStepOne()
+        this.setState({ isNewIssue: false })
+
+      } else {
+        //todo make sure that the relevnt state fields are cleared
+        await this.updateIssueAndContinue()
+      }
+      this.setState({ view: 4, stepViewFour: 0 })
+    } catch (error) {
+      console.log(error)
     }
-
-
-    if (this.state.isNewIssue) {
-      if (this.addressListIncludesAddressInput(coreInfo[6].value)) return
-      await this.createIssueStepOne()
-      this.setState({ isNewIssue: false })
-
-    } else {
-      //todo make sure that the relevnt state fields are cleared
-      await this.updateIssueAndContinue()
-    }
-    this.setState({ view: 4, stepViewFour: 0 })
-
   }
 
   async createIssueStepOne() {
+    try {
 
-    const coreInfo = this.createObjectForCoreInfoTemplate()
+      const coreInfo = this.createObjectForCoreInfoTemplate()
 
-    const res = await this.context.github.githubOcto.issues.create({
-      owner: config.onboardingOwner,
-      repo: config.onboardingLargeClientRepo,
-      title: '[DataCap Allocation] - ' + coreInfo.title, //todo get title differently
-      body: createParentComment(coreInfo),
-      labels: [labelsIssueCreation.WIP_ISSUE]
-    })
+      const res = await this.context.github.githubOcto.issues.create({
+        owner: config.onboardingOwner,
+        repo: config.onboardingLargeClientRepo,
+        title: '[DataCap Allocation] - ' + coreInfo.title, //todo get title differently
+        body: createParentComment(coreInfo),
+        labels: [labelsIssueCreation.WIP_ISSUE]
+      })
 
 
-    alert(`issue created with n ${res.data.number}`)
-    this.setState({ issueNumber: res.data.number })
-    return res.data.number
+      alert(`issue created with n ${res.data.number}`)
+      this.setState({ issueNumber: res.data.number })
+      return res.data.number
+    } catch (error) {
+      console.log(error)
+    }
   }
 
   async updateIssueAndContinue() {
-    const coreInfo = this.createObjectForCoreInfoTemplate()
-    const otherInfo = this.createObjectForOtherInfoTemplate()
-    await this.updateExistingIssue(coreInfo, otherInfo)
+    try {
+      const coreInfo = this.createObjectForCoreInfoTemplate()
+      const otherInfo = this.createObjectForOtherInfoTemplate()
+      await this.updateExistingIssue(coreInfo, otherInfo)
+    } catch (error) {
+      console.log(error)
+    }
+
   }
 
   isIssueCompleted() {
@@ -301,34 +324,38 @@ class LdnApplication extends Component<LdnApplicationProps> {
   }
 
   async updateExistingIssue(coreInfo: any, otherInfo: any) {
-    // retrieve issue
-    const issue = await this.context.github.githubOcto.issues.get({
-      owner: config.onboardingOwner,
-      repo: config.onboardingLargeClientRepo,
-      issue_number: this.state.issueNumber
-    })
-
-    const temp = updateTemplate(issue.data.body, otherInfo, coreInfo)
-    if (this.state.stepViewFour === 2) {
-      await this.context.github.githubOcto.issues.update({
+    try {
+      // retrieve issue
+      const issue = await this.context.github.githubOcto.issues.get({
         owner: config.onboardingOwner,
         repo: config.onboardingLargeClientRepo,
-        issue_number: this.state.issueNumber,
-        body: temp,
-        labels: this.isIssueCompleted() ? [labelsIssueCreation.ISSUE_COMPLETED] : [labelsIssueCreation.WIP_ISSUE]
+        issue_number: this.state.issueNumber
       })
-      this.setState({ view: 5 })
-    }
-    else {
-      await this.context.github.githubOcto.issues.update({
-        owner: config.onboardingOwner,
-        repo: config.onboardingLargeClientRepo,
-        issue_number: this.state.issueNumber,
-        body: temp,
-      })
-    }
 
-    this.nextStep()
+      const temp = updateTemplate(issue.data.body, otherInfo, coreInfo)
+      if (this.state.stepViewFour === 2) {
+        await this.context.github.githubOcto.issues.update({
+          owner: config.onboardingOwner,
+          repo: config.onboardingLargeClientRepo,
+          issue_number: this.state.issueNumber,
+          body: temp,
+          labels: this.isIssueCompleted() ? [labelsIssueCreation.ISSUE_COMPLETED] : [labelsIssueCreation.WIP_ISSUE]
+        })
+        this.setState({ view: 5 })
+      }
+      else {
+        await this.context.github.githubOcto.issues.update({
+          owner: config.onboardingOwner,
+          repo: config.onboardingLargeClientRepo,
+          issue_number: this.state.issueNumber,
+          body: temp,
+        })
+      }
+
+      this.nextStep()
+    } catch (error) {
+      console.log(error)
+    }
   }
 
   createObjectForOtherInfoTemplate() {

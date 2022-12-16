@@ -74,10 +74,15 @@ export default class WalletProvider extends React.Component<{}, WalletProviderSt
             const octokit = new Octokit({
                 auth: token
             })
-            await this.setStateAsync({
-                githubLogged: true,
-                githubOcto: octokit
-            })
+            try {
+                await this.setStateAsync({
+                    githubLogged: true,
+                    githubOcto: octokit
+                })
+            } catch (error) {
+                console.log(error)
+            }
+
         },
         logoutGithub: async () => {
             localStorage.removeItem('githubToken')
@@ -121,15 +126,19 @@ export default class WalletProvider extends React.Component<{}, WalletProviderSt
             return rawIssues
         },
         fetchGithubComments: async (owner: any, repo: any, issueNumber: any) => {
-            const rawComments = await this.state.githubOcto.paginate(
-                this.state.githubOcto.issues.listComments,
-                {
-                    owner,
-                    repo,
-                    issue_number: issueNumber
-                }
-            );
-            return rawComments
+            try {
+                const rawComments = await this.state.githubOcto.paginate(
+                    this.state.githubOcto.issues.listComments,
+                    {
+                        owner,
+                        repo,
+                        issue_number: issueNumber
+                    }
+                );
+                return rawComments
+            } catch (error) {
+                console.log(error)
+            }
         },
     }
 
