@@ -34,6 +34,10 @@ export default class WalletProvider extends React.Component<{}, WalletProviderSt
         return activeIndex[0].index
     }
 
+    async componentDidMount() {
+        this.loadGithub()
+    }
+
     state = {
         loggedUser: '',
         avatarUrl: '',
@@ -102,7 +106,11 @@ export default class WalletProvider extends React.Component<{}, WalletProviderSt
                 const octokit = new Octokit({
                     auth: config.githubGenericToken,
                 });
-                this.setState({ githubOctoGeneric: { logged: true, octokit } })
+                this.setState(
+                    {
+                        githubOctoGeneric:
+                            { logged: true, octokit }
+                    })
             }
         },
         fetchGithubIssues: async (owner: any, repo: any, state: any, labels: any) => {
@@ -139,11 +147,9 @@ export default class WalletProvider extends React.Component<{}, WalletProviderSt
         if (githubToken) {
             this.state.initGithubOcto(githubToken)
         }
+        this.state.githubOctoGenericLogin()
     }
 
-    async componentDidMount() {
-        this.loadGithub()
-    }
 
 
 

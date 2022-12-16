@@ -12,9 +12,9 @@ const LearnMore = () => {
         window.open('https://verify.glif.io/', '_blank')
     }
 
-    const goToLogs = () => {
+    const goTo = (params: string) => {
         history.push({
-            pathname: "/logs"
+            pathname: `/${params}`
         })
     }
 
@@ -24,8 +24,9 @@ const LearnMore = () => {
 
     return (
         <div className="learnmore">
-            {pathname !== "/" ? <ButtonPrimary style={{ marginRight: "30px" }} onClick={checkDatacap}>Check Remaining DataCap</ButtonPrimary> : <ButtonPrimary style={{ marginRight: "30px" }} onClick={goToLogs}>See the logs</ButtonPrimary>}
-            <ButtonPrimary style={{ marginLeft: "30px" }} onClick={navigate}>Learn More</ButtonPrimary>
+            {pathname !== "/" ? <ButtonPrimary onClick={checkDatacap}>Check Remaining DataCap</ButtonPrimary> : <ButtonPrimary style={{ marginRight: "30px" }} onClick={() => goTo("logs")}>See the logs</ButtonPrimary>}
+            <ButtonPrimary style={{ margin: "0px 30px", }} onClick={navigate}>Learn More</ButtonPrimary>
+            <ButtonPrimary onClick={() => goTo("status")}>Status Page</ButtonPrimary>
         </div >
     )
 
