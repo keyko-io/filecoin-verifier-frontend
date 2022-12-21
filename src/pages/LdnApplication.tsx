@@ -10,7 +10,7 @@ import { createParentComment, updateTemplate } from './issueUtils/templates';
 import { coreInfo, otherInfo, guidelines, regionOptions, labelsIssueCreation, steps, URL_README } from './issueUtils/constants';
 
 
-const utils = require('@keyko-io/filecoin-verifier-tools/utils/large-issue-parser')
+import utils from '@keyko-io/filecoin-verifier-tools/utils/large-issue-parser';
 
 //view 0: log in with github 
 //view 1: choose between create a new issue or continue a previous

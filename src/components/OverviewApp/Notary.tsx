@@ -16,7 +16,7 @@ import WarnModalNotaryVerified from "../../modals/WarnModalNotaryVeried";
 import { LargeRequestTable, CancelProposalTable, NotaryTabs, PublicRequestTable, VerifiedClientsTable } from "./Notary/index";
 import { checkAlreadyProposed } from "../../utils/checkAlreadyProposed";
 import toast from 'react-hot-toast';
-const largeUtils = require("@keyko-io/filecoin-verifier-tools/utils/large-issue-parser");
+import largeUtils from "@keyko-io/filecoin-verifier-tools/utils/large-issue-parser";
 
 type NotaryProps = {
   clients: any[];

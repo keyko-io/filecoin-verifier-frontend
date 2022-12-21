@@ -12,11 +12,9 @@ import { EVENT_TYPE, MetricsApiParams } from "../../utils/Metrics";
 import DataTable from "react-data-table-component";
 import { CircularProgress } from "@material-ui/core";
 
-const {
-  callMetricsApi,
-} = require("@keyko-io/filecoin-verifier-tools/metrics/metrics");
-const parser = require("@keyko-io/filecoin-verifier-tools/utils/notary-issue-parser");
-const largeutils = require("@keyko-io/filecoin-verifier-tools/utils/large-issue-parser");
+import { callMetricsApi } from "@keyko-io/filecoin-verifier-tools/metrics/metrics";
+import parser from "@keyko-io/filecoin-verifier-tools/utils/notary-issue-parser";
+import largeutils from "@keyko-io/filecoin-verifier-tools/utils/large-issue-parser";
 
 type RootKeyHolderState = {
   tabs: string;
