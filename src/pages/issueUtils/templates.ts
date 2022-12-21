@@ -1,4 +1,4 @@
-const utils = require('@keyko-io/filecoin-verifier-tools/utils/large-issue-parser')
+import utils from '@keyko-io/filecoin-verifier-tools/utils/large-issue-parser'
 
 export const createParentComment = (coreInfo: any) => {
     return `---

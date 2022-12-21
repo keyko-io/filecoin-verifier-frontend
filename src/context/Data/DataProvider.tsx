@@ -9,11 +9,11 @@ import { v4 as uuidv4 } from "uuid";
 import { anyToBytes, bytesToiB } from "../../utils/Filters";
 import * as Sentry from "@sentry/react";
 import { notaryLedgerVerifiedComment } from './comments'
-const utils = require("@keyko-io/filecoin-verifier-tools/utils/issue-parser");
-const largeutils = require("@keyko-io/filecoin-verifier-tools/utils/large-issue-parser");
-const commonUtils = require("@keyko-io/filecoin-verifier-tools/utils/common-utils")
-const parser = require("@keyko-io/filecoin-verifier-tools/utils/notary-issue-parser");
-const verifierRegistry = require("../../data/verifiers-registry.json");
+import utils from "@keyko-io/filecoin-verifier-tools/utils/issue-parser";
+import largeutils from "@keyko-io/filecoin-verifier-tools/utils/large-issue-parser";
+import commonUtils from "@keyko-io/filecoin-verifier-tools/utils/common-utils";
+import parser from "@keyko-io/filecoin-verifier-tools/utils/notary-issue-parser";
+import verifierRegistry from "../../data/verifiers-registry.json";
 
 interface DataProviderStates {
   loadClientRequests: any;
@@ -498,7 +498,7 @@ export default class DataProvider extends React.Component<
                       tx: elem.tx ? elem.tx[0] : null,
                       proposer: {
                         signeraddress: signerAddress,
-                        signerGitHandle
+                        signerGitHandle: signerGitHandle as string
                       },
                       labels: elem.issue[0].issueInfo
                         .issue.labels.map((i: any) => i.name),
