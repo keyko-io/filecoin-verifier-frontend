@@ -182,6 +182,7 @@ export default class DataProvider extends React.Component<
         Sentry.captureMessage(breadCrumb.message);
       },
       getLDNIssuesAndTransactions: async () => {
+        console.log("getLDNIssuesAndTransactions")
 
         //GETTING ISSUES
         const rawLargeIssuesAll = await this.props.github.githubOcto.paginate(
@@ -209,6 +210,7 @@ export default class DataProvider extends React.Component<
               (rawLargeIssue: any) =>
                 new Promise<any>(async (resolve, reject) => {
                   try {
+                    // console.log("getting comments", rawLargeIssue.number)
                     const data = largeutils.parseIssue(rawLargeIssue.body);
                     if (data.correct) {
                       const rawLargeClientComments =
@@ -370,7 +372,7 @@ export default class DataProvider extends React.Component<
 
       },
       loadClientRequests: async () => {
-
+        console.log("loadClientRequests")
         try {
           if (this.props.github.githubLogged === false) {
             this.setState({
@@ -410,6 +412,7 @@ export default class DataProvider extends React.Component<
                 const address = await this.props.wallet.api.actorKey(
                   tx.parsed.params.address
                 );
+                // const address = "t01012"
 
                 return {
                   address,
@@ -675,7 +678,7 @@ export default class DataProvider extends React.Component<
       loadVerified: async () => {
         try {
           const approvedVerifiers = await this.props.wallet.api.listVerifiers();
-
+          console.log("approvedVerifiers.lenght", approvedVerifiers.length)
           let verified: any = [];
           await Promise.all(
             approvedVerifiers.map(
@@ -685,6 +688,7 @@ export default class DataProvider extends React.Component<
                     let verifierAccount = await this.props.wallet.api.actorKey(
                       verifiedAddress.verifier
                     );
+
                     if (verifierAccount == verifiedAddress.verifier) {
                       verifierAccount =
                         await this.props.wallet.api.actorAddress(
@@ -724,6 +728,7 @@ export default class DataProvider extends React.Component<
 
           // this is making more 1400 calls, commenting for now
           // await Promise.all(
+          // TODO use promise allsettled
           //   clients.map(async (txs: any) => {
           //     txs["key"] = await this.props.wallet.api.actorKey(txs.verified);
           //   })
@@ -939,21 +944,62 @@ export default class DataProvider extends React.Component<
         );
 
         const issues: any = {};
-        for (const rawIssue of rawIssues) {
-          const data = utils.parseIssue(rawIssue.body);
-          try {
-            const address = await this.props.wallet.api.actorKey(data.address);
-            if (data.correct && address) {
-              issues[address] = {
-                number: rawIssue.number,
-                url: rawIssue.html_url,
-                data,
-              };
-            }
-          } catch (e) {
-            // console.log(e)
-          }
-        }
+
+
+
+
+
+        await Promise.allSettled(
+          rawIssues.map(
+            (rawIssue: any) => new Promise<any>(async (resolve, reject) => {
+              const data = utils.parseIssue(rawIssue.body);
+              try {
+                console.log("loadClientsGithub")
+                const address = await this.props.wallet.api.actorKey(data.address);
+
+                if (data.correct && address) {
+                  issues[address] = {
+                    number: rawIssue.number,
+                    url: rawIssue.html_url,
+                    data,
+                  }
+                }
+
+                resolve(null)
+              } catch (error) {
+                reject(error)
+              }
+            })
+          )
+        )
+        console.log("issues", issues)
+
+
+
+
+
+        // for (const rawIssue of rawIssues) {
+        //   const data = utils.parseIssue(rawIssue.body);
+        //   try {
+        //     //TODO use promise allsettled
+        //     console.log("loadClientsGithub")
+        //     const address = await this.props.wallet.api.actorKey(data.address);
+        //     if (data.correct && address) {
+        //       issues[address] = {
+        //         number: rawIssue.number,
+        //         url: rawIssue.html_url,
+        //         data,
+        //       };
+        //     }
+        //   } catch (e) {
+        //     // console.log(e)
+        //   }
+        // }
+
+
+
+
+
         this.setState({
           clientsGithub: issues,
         });
@@ -963,6 +1009,7 @@ export default class DataProvider extends React.Component<
         this.setState({ searchString: query });
       },
       refreshGithubData: async () => {
+        console.log("refreshGithubData")
         this.state.loadClientRequests();
         this.state.loadClientsGithub();
         this.state.loadVerifierAndPendingRequests();
