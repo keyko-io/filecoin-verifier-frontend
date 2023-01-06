@@ -38,11 +38,12 @@ type Props = {
 
 async function getActiveAccounts(api: any, accounts: any) {
     const accountsActive: any = {};
+    const cids = (await api.chainHead()).Cids
     await Promise.allSettled(
         accounts.map(
             (acc: any) => new Promise<any>(async (resolve, reject) => {
                 try {
-                    const key = await api.actorAddress(acc)
+                    const key = await api.actorAddress(acc,cids)
                     accountsActive[acc] = key
                     resolve(key)
                 } catch (error) {
@@ -51,8 +52,6 @@ async function getActiveAccounts(api: any, accounts: any) {
             })
         )
     )
-
-    console.log("accountsActive", accountsActive)
     return accountsActive
 }
 

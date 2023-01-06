@@ -250,7 +250,6 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
   const getPending = async () => {
 
     //get issue from the context
-    console.log("getPending")
     const LDNIssuesAndTransactions: any = await context.getLDNIssuesAndTransactions()
 
     //get transactionData 
