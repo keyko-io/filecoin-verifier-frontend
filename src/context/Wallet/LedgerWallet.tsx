@@ -6,7 +6,7 @@ import TransportWebUSB from '@ledgerhq/hw-transport-webusb'
 // @ts-ignore
 import FilecoinApp from "@zondax/ledger-filecoin"
 import signer from "@zondax/filecoin-signing-tools/js"
-import VerifyAPI from '@keyko-io/filecoin-verifier-tools/api/api'
+import { VerifyAPI } from '@keyko-io/filecoin-verifier-tools'
 
 export class LedgerWallet {
 
@@ -26,7 +26,7 @@ export class LedgerWallet {
             return this.lotusNode.token
           }
         }
-        )
+      )
       , { sign: this.sign, getAccounts: this.getAccounts }
       , this.lotusNode.name !== "Mainnet" // if node != Mainnet => testnet = true
     )
@@ -35,7 +35,7 @@ export class LedgerWallet {
     let transport
     try {
       transport = await TransportWebUSB.create();
-    } catch (e:any) {
+    } catch (e: any) {
       console.log('TransportWebUSB error', e)
     }
     if (transport) {
@@ -54,7 +54,7 @@ export class LedgerWallet {
         if (version.minor < 18 && version.patch < 2) {
           throw new Error('Please update Filecoin app on Ledger.')
         }
-      } catch (e:any) {
+      } catch (e: any) {
         throw new Error(e.message)
       }
     } else {

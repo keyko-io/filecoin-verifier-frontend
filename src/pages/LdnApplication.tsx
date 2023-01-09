@@ -10,7 +10,10 @@ import { createParentComment, updateTemplate } from './issueUtils/templates';
 import { coreInfo, otherInfo, guidelines, regionOptions, labelsIssueCreation, steps, URL_README } from './issueUtils/constants';
 
 
-import utils from '@keyko-io/filecoin-verifier-tools/utils/large-issue-parser';
+// import ldnParser from '@keyko-io/filecoin-verifier-tools/utils/large-issue-parser';
+
+import {ldnParser} from "@keyko-io/filecoin-verifier-tools";
+
 
 //view 0: log in with github 
 //view 1: choose between create a new issue or continue a previous
@@ -85,7 +88,7 @@ class LdnApplication extends Component<LdnApplicationProps> {
       let addressList = []
 
       for (let issue of issues) {
-        const psiAddress = utils.parseIssue(issue.body).address
+        const psiAddress = ldnParser.parseIssue(issue.body).address
         addressList.push(psiAddress)
       }
 
@@ -104,7 +107,7 @@ class LdnApplication extends Component<LdnApplicationProps> {
 
   continueEditingPreviousIssue(issue: any) {
 
-    const parsedIssue = utils.parseIssue(issue.body)
+    const parsedIssue = ldnParser.parseIssue(issue.body)
     //console.log(parsedIssue)
     this.setState({ view: 3, issue: issue, isNewIssue: false })
     for (let [k, v] of Object.entries(parsedIssue)) {
@@ -129,7 +132,7 @@ class LdnApplication extends Component<LdnApplicationProps> {
   }
 
   updateOtherInfoContent(issue: any) {
-    const parsedOtherInfoIssue = utils.parseOtherInfoIssue(issue.body)
+    const parsedOtherInfoIssue = ldnParser.parseOtherInfoIssue(issue.body)
     let otherInfo = this.state.otherInfo
     for (let info of otherInfo) {
       const value = parsedOtherInfoIssue[info.name]
