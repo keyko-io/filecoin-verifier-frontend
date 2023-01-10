@@ -244,6 +244,7 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
   useEffect(() => {
     if (context.github.githubLogged) {
       getPending()
+      context.loadClientRequests()
     }
   }, [context.wallet.activeAccount])
 
@@ -603,6 +604,7 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
   }
 
   useEffect(() => {
+
     const data = context.largeClientRequests
       .map((item: any) => ({ ...item, data: item.data.name }))
       .map((item: any) => item.tx !== null ? item : { ...item, tx: "", })

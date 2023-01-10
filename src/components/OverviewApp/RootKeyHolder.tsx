@@ -51,7 +51,9 @@ export default class RootKeyHolder extends Component<
   };
 
   componentDidMount() {
+    console.log("runnin rkh view")
     this.context.loadVerifierAndPendingRequests();
+    this.context.loadVerified()
   }
 
   showApproved = async () => {
@@ -155,7 +157,7 @@ export default class RootKeyHolder extends Component<
           }
         }
       }
-    } catch (e:any) {
+    } catch (e: any) {
       this.setState({ approveLoading: false });
       this.context.wallet.dispatchNotification("Cancel failed: " + e.message);
       console.log("error", e.stack);
@@ -424,7 +426,7 @@ export default class RootKeyHolder extends Component<
               PHASE
             );
           }
-        } catch (e:any) {
+        } catch (e: any) {
           this.context.wallet.dispatchNotification("Failed: " + e.message);
 
           this.setState({ approveLoading: false });
@@ -607,6 +609,7 @@ export default class RootKeyHolder extends Component<
                 pagination
                 paginationRowsPerPageOptions={[10, 20, 30]}
                 paginationPerPage={10}
+                onChangePage={(page, totalRows) => console.log(page, totalRows)}
               />
             </div>
           ) : (

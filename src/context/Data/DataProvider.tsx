@@ -370,7 +370,7 @@ export default class DataProvider extends React.Component<
 
       },
       loadClientRequests: async () => {
-
+        console.log("started - loadClientRequests")
         try {
           if (this.props.github.githubLogged === false) {
             this.setState({
@@ -513,13 +513,12 @@ export default class DataProvider extends React.Component<
                 )
               )
             )
-
           const largeClientRequests = largeissues.map((i: any) => i.value)
 
 
           // LARGE ISSUES: filecoin-plus-large-datasets  END /////////////////////
 
-
+          console.log("finished - loadClientRequests")
 
           this.setState({
             clientRequests: issues,
@@ -562,12 +561,12 @@ export default class DataProvider extends React.Component<
       approvedNotariesLoading: true,
       ldnRequestsLoading: true,
       loadVerifierAndPendingRequests: async () => {
+        console.log("loadVerifierAndPendingRequests - rkh")
         this.setState({ isPendingRequestLoading: true })
         try {
           if (this.props.github.githubOctoGeneric.logged === false) {
             await this.props.github.githubOctoGenericLogin();
           }
-
 
           const allIssues = await this.props.github.githubOctoGeneric.octokit.paginate(
             this.props.github.githubOctoGeneric.octokit.issues.listForRepo,
@@ -577,22 +576,17 @@ export default class DataProvider extends React.Component<
               repo: config.lotusNodes[this.props.wallet.networkIndex]
                 .notaryRepo,
               state: "open",
+              labels: ["Notary Application"]
             }
           )
 
-          const msigTitle = "large dataset multisig request"
           const msigRequests = allIssues
-            .filter((issue: any) => issue.title.toLowerCase().includes(msigTitle))
             .filter((issue: any) => !issue.labels.find((l: any) => l.name === 'status:AddedOnchain'))
             .filter((issue: any) => issue.labels.find((l: any) => l.name === 'status:Approved' || l.name === "status:StartSignOnchain"))
 
-
-
           const pendingTxs =
             (await this.props.wallet.api.pendingRootTransactions())
-              .filter((ptx: any) => ptx.parsed.name == "addVerifier" || ptx.parsed.name == "removeVerifier")
-
-
+              .filter((ptx: any) => ptx.parsed.name === "addVerifier" || ptx.parsed.name === "removeVerifier")
 
           const requestsAndCommentsProm: any = await Promise.allSettled(
             msigRequests.map((issue: any) => new Promise<any>(async (resolve) => {
@@ -609,6 +603,7 @@ export default class DataProvider extends React.Component<
 
               const lastRequest = comments.map((c: any) => parser.parseApproveComment(c.body))
                 .filter((o: any) => o.correct).reverse()[0] || null
+
               const msigAddress = lastRequest?.address || null
 
               const tx = pendingTxs.find((ptx: any) => ptx.parsed.params.verifier === msigAddress)
@@ -619,14 +614,11 @@ export default class DataProvider extends React.Component<
                 msigAddress,
                 tx
               })
-
-
             }))
           )
           const requestsAndComments = requestsAndCommentsProm
-            .filter((r: any) => r.status == "fulfilled")
+            .filter((r: any) => r.status === "fulfilled")
             .map((r: any) => r.value)
-
 
           const verifierAndPendingRequests = requestsAndComments.map(
             (r: any) => {
@@ -643,10 +635,10 @@ export default class DataProvider extends React.Component<
                 txs,
                 proposedBy,
                 proposed: proposedBy ? true : false
-
               }
             })
 
+          console.log("loadVerifierAndPendingRequests - finished")
 
           this.setState({
             verifierAndPendingRequests,
@@ -675,9 +667,8 @@ export default class DataProvider extends React.Component<
       loadVerified: async () => {
         try {
           const approvedVerifiers = await this.props.wallet.api.listVerifiers();
-
           let verified: any = [];
-          await Promise.all(
+          await Promise.allSettled(
             approvedVerifiers.map(
               (verifiedAddress: any) =>
                 new Promise<any>(async (resolve, reject) => {
@@ -685,18 +676,21 @@ export default class DataProvider extends React.Component<
                     let verifierAccount = await this.props.wallet.api.actorKey(
                       verifiedAddress.verifier
                     );
-                    if (verifierAccount == verifiedAddress.verifier) {
+
+                    if (verifierAccount === verifiedAddress.verifier) {
+                      console.log("yes")
                       verifierAccount =
                         await this.props.wallet.api.actorAddress(
                           verifiedAddress.verifier
                         );
                     }
+
                     verified.push({
                       verifier: verifiedAddress.verifier,
                       verifierAccount,
                       datacap: verifiedAddress.datacap,
                     });
-                    resolve(verified);
+                    resolve("ok")
                   } catch (error) {
                     reject(error);
                   }
@@ -704,6 +698,7 @@ export default class DataProvider extends React.Component<
             )
           );
 
+          console.log("finished")
           this.setState({ verified });
         } catch (error) {
           console.error("error in resolving promises", error);
@@ -924,6 +919,7 @@ export default class DataProvider extends React.Component<
       clientsAmount: "",
       clientsGithub: {},
       loadClientsGithub: async () => {
+        console.log("running -- loadClientsGithub")
         if (this.props.github.githubLogged === false) {
           this.setState({ clientsGithub: [] });
           return;
@@ -963,9 +959,8 @@ export default class DataProvider extends React.Component<
         this.setState({ searchString: query });
       },
       refreshGithubData: async () => {
-        this.state.loadClientRequests();
+        //this.state.loadClientRequests();
         this.state.loadClientsGithub();
-        this.state.loadVerifierAndPendingRequests();
       },
       isAddressVerified: false,
       isPendingRequestLoading: false,

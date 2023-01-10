@@ -26,11 +26,8 @@ class Overview extends Component<{}, OverviewStates> {
     }
 
     componentDidMount() {
-
         this.context.github.checkToken()
         this.loadData()
-        this.interval = setInterval(() => { this.loadData() }, 5 * 60 * 1000);
-
     }
 
     componentWillUnmount() {
@@ -41,7 +38,6 @@ class Overview extends Component<{}, OverviewStates> {
     loadData = async () => {
         await this.context.refreshGithubData()
         await this.context.loadClients()
-        await this.context.loadVerified()
     }
 
     public render() {
