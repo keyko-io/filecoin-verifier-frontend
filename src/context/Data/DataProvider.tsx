@@ -399,8 +399,6 @@ export default class DataProvider extends React.Component<
           const issues: any[] = [];
           let pendingLarge: any[] = [];
 
-          const cids = (await this.props.wallet.api.chainHead()).Cids
-
           if (this.props.wallet.multisigID) {
             const pendingLargeTxs =
               await this.props.wallet.api.pendingTransactions(
@@ -409,7 +407,7 @@ export default class DataProvider extends React.Component<
             pendingLarge = await Promise.all(
               pendingLargeTxs.map(async (tx: any) => {
                 const address = await this.props.wallet.api.actorKey(
-                  tx.parsed.params.address, cids
+                  tx.parsed.params.address
                 );
                 // const address = "t01012"
 
@@ -469,7 +467,7 @@ export default class DataProvider extends React.Component<
                     let signerAddress: any;
                     let signerGitHandle;
                     if (elem.tx) {
-                      signerAddress = await this.props.wallet.api.actorKey(elem.tx[0].signers[0], cids)
+                      signerAddress = await this.props.wallet.api.actorKey(elem.tx[0].signers[0])
                       signerGitHandle =
                         verifierRegistry.notaries.find(
                           (notary: any) =>
@@ -673,11 +671,11 @@ export default class DataProvider extends React.Component<
         }
       },
 
-     
+
       verified: [],
-      loadVerified: async () => {   
+      loadVerified: async () => {
         try {
-          const cids = (await this.props.wallet.api.chainHead()).Cids
+
           const approvedVerifiers = await this.props.wallet.api.listVerifiers();
           let verified: any = [];
           await Promise.all(
@@ -686,12 +684,12 @@ export default class DataProvider extends React.Component<
                 new Promise<any>(async (resolve, reject) => {
                   try {
                     let verifierAccount = await this.props.wallet.api.actorKey(
-                      verifiedAddress.verifier, cids
+                      verifiedAddress.verifier
                     );
                     if (verifierAccount === verifiedAddress.verifier) {
                       verifierAccount =
                         await this.props.wallet.api.actorAddress(
-                          verifiedAddress.verifier, cids
+                          verifiedAddress.verifier
                         );
                     }
                     verified.push({
@@ -942,9 +940,6 @@ export default class DataProvider extends React.Component<
             labels: "state:Granted",
           }
         );
-    
-
-        const cids = (await this.props.wallet.api.chainHead()).Cids
 
         const issues: any = {};
 
@@ -953,7 +948,7 @@ export default class DataProvider extends React.Component<
             (rawIssue: any) => new Promise<any>(async (resolve, reject) => {
               const data = utils.parseIssue(rawIssue.body);
               try {
-                const address = await this.props.wallet.api.actorKey(data.address, cids);
+                const address = await this.props.wallet.api.actorKey(data.address);
 
                 if (data.correct && address) {
                   issues[address] = {
