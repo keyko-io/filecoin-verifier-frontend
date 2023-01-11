@@ -417,6 +417,7 @@ export default class DataProvider extends React.Component<
           }
 
 
+
           for (const rawIssue of rawIssues) {
             //TODO TEST
             const data = simpleClientParser.parseIssue(rawIssue.body);
