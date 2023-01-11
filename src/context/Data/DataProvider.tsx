@@ -4,7 +4,7 @@ import { config } from "../../config";
 // @ts-ignore
 import { IssueBody } from "../../utils/IssueBody";
 import BigNumber from "bignumber.js";
-import _ from 'lodash'
+import _, { slice } from 'lodash'
 import { v4 as uuidv4 } from "uuid";
 import { anyToBytes, bytesToiB } from "../../utils/Filters";
 import * as Sentry from "@sentry/react";
@@ -661,14 +661,16 @@ export default class DataProvider extends React.Component<
       },
 
       verified: [],
-      loadVerified: async () => {
+      loadVerified: async (page: any) => {
         console.log("loadVerified - rkh")
         try {
           const approvedVerifiers = (await this.props.wallet.api.listVerifiers())
 
+          const paginate = approvedVerifiers.slice((page - 1) * 10, page * 10)
+
           let verified: any = [];
           await Promise.allSettled(
-            approvedVerifiers.map(
+            paginate.map(
               (verifiedAddress: any) =>
                 new Promise<any>(async (resolve, reject) => {
                   try {

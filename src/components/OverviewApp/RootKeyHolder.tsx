@@ -53,7 +53,7 @@ export default class RootKeyHolder extends Component<
   componentDidMount() {
     console.log("running rkh view")
     this.context.loadVerifierAndPendingRequests();
-    this.context.loadVerified()
+    this.context.loadVerified(1)
   }
 
   showApproved = async () => {
@@ -607,8 +607,10 @@ export default class RootKeyHolder extends Component<
                 ]}
                 data={this.context.verified}
                 pagination
-                paginationRowsPerPageOptions={[10, 20, 30]}
-                paginationPerPage={10}
+                paginationServer
+                paginationTotalRows={81}
+                onChangePage={(page) => this.context.loadVerified(page)}
+                paginationRowsPerPageOptions={[10]}
               />
             </div>
           ) : (
