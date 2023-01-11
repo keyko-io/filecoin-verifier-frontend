@@ -6,13 +6,10 @@ import { IssueBody } from "../../utils/IssueBody";
 import BigNumber from "bignumber.js";
 import _ from 'lodash'
 import { v4 as uuidv4 } from "uuid";
-import { anyToBytes, bytesToiB } from "../../utils/Filters";
+import {bytesToiB } from "../../utils/Filters";
 import * as Sentry from "@sentry/react";
 import { notaryLedgerVerifiedComment } from './comments'
-import utils from "@keyko-io/filecoin-verifier-tools/utils/issue-parser";
-import largeutils from "@keyko-io/filecoin-verifier-tools/utils/large-issue-parser";
-import commonUtils from "@keyko-io/filecoin-verifier-tools/utils/common-utils";
-import parser from "@keyko-io/filecoin-verifier-tools/utils/notary-issue-parser";
+import {ldnParser, notaryParser, commonUtils, simpleClientParser} from "@keyko-io/filecoin-verifier-tools";
 import verifierRegistry from "../../data/verifiers-registry.json";
 
 interface DataProviderStates {
@@ -209,7 +206,7 @@ export default class DataProvider extends React.Component<
               (rawLargeIssue: any) =>
                 new Promise<any>(async (resolve, reject) => {
                   try {
-                    const data = largeutils.parseIssue(rawLargeIssue.body);
+                    const data = ldnParser.parseIssue(rawLargeIssue.body);
                     if (data.correct) {
                       const rawLargeClientComments =
                         await this.props.github.githubOcto.paginate(
@@ -244,7 +241,7 @@ export default class DataProvider extends React.Component<
           const cmtsLength = resProm.value.comments.length
 
           for (let i = cmtsLength - 1; i >= 0; i--) {
-            const commentParsed = largeutils.parseReleaseRequest(comms[i].body)
+            const commentParsed = ldnParser.parseReleaseRequest(comms[i].body)
             if (commentParsed.correct) {
               const issueInMsig = issuesByMsig.find((item: any) => item.multisigAddress === commentParsed.notaryAddress)
               if (issueInMsig) {
@@ -421,7 +418,8 @@ export default class DataProvider extends React.Component<
 
 
           for (const rawIssue of rawIssues) {
-            const data = utils.parseIssue(rawIssue.body);
+            //TODO TEST
+            const data = simpleClientParser.parseIssue(rawIssue.body);
             if (
               data.correct &&
               rawIssue.assignees.find(
@@ -502,7 +500,7 @@ export default class DataProvider extends React.Component<
                       },
                       labels: elem.issue[0].issueInfo
                         .issue.labels.map((i: any) => i.name),
-                      data: largeutils.parseIssue(elem.issue[0].issueInfo.issue.body),
+                      data: ldnParser.parseIssue(elem.issue[0].issueInfo.issue.body),
                       signable: signable
                     }
                     resolve(obj)
@@ -542,7 +540,8 @@ export default class DataProvider extends React.Component<
           });
         const issues: any[] = [];
         for (const rawIssue of rawIssues.data.items) {
-          const data = utils.parseIssue(rawIssue.body);
+          // TODO TEST
+          const data = simpleClientParser.parseIssue(rawIssue.body);
           if (data.correct) {
             issues.push({
               number: rawIssue.number,
@@ -607,7 +606,7 @@ export default class DataProvider extends React.Component<
                 }
               )
 
-              const lastRequest = comments.map((c: any) => parser.parseApproveComment(c.body))
+              const lastRequest = comments.map((c: any) => notaryParser.parseApproveComment(c.body))
                 .filter((o: any) => o.correct).reverse()[0] || null
               const msigAddress = lastRequest?.address || null
 
@@ -746,6 +745,7 @@ export default class DataProvider extends React.Component<
 
           const idPattern = /####\s*Id\s*\n>\s*(.*)/g
           const comment = data.filter((item: any) => item.body.includes("## DataCap Allocation requested")).reverse()
+          // TODO TEST
           const Id = commonUtils.matchGroupLargeNotary(idPattern, comment[0].body)
           return Id
         } catch (error) {
@@ -940,7 +940,8 @@ export default class DataProvider extends React.Component<
 
         const issues: any = {};
         for (const rawIssue of rawIssues) {
-          const data = utils.parseIssue(rawIssue.body);
+          // TODO TEST
+          const data = simpleClientParser.parseIssue(rawIssue.body);
           try {
             const address = await this.props.wallet.api.actorKey(data.address);
             if (data.correct && address) {
@@ -999,7 +1000,7 @@ export default class DataProvider extends React.Component<
             let issueNumber = ''
             for (let issue of rawIssues) {
               //parse each issue
-              let parsedNotaryAddress = parser.parseNotaryAddress(issue.body)
+              let parsedNotaryAddress = notaryParser.parseNotaryAddress(issue.body)
               let address = parsedNotaryAddress ? parsedNotaryAddress.split(' ')[0] : ''
 
               // if the address is the one selected by user, set issue number 
@@ -1041,7 +1042,7 @@ export default class DataProvider extends React.Component<
           let issueNumber = ''
           for (let issue of rawIssues) {
             // parse each issue
-            let parsedNotaryAddress = parser.parseNotaryAddress(issue.body)
+            let parsedNotaryAddress = notaryParser.parseNotaryAddress(issue.body)
             let address = parsedNotaryAddress ? parsedNotaryAddress.split(' ')[0] : ''
 
             // if the address is the one selected by user, set issue number 
@@ -1061,7 +1062,7 @@ export default class DataProvider extends React.Component<
           for (let comment of rawComments) {
             // return true if the verified notary comment is present
             // return false if not
-            const parsedComment = parser.parseNotaryLedgerVerifiedComment(comment.body)
+            const parsedComment = notaryParser.parseNotaryLedgerVerifiedComment(comment.body)
             if (parsedComment.correct) {
               return true
             }

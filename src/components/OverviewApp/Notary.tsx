@@ -1,5 +1,5 @@
 
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Data } from "../../context/Data/Index";
 import AddClientModal from "../../modals/AddClientModal";
 // @ts-ignore

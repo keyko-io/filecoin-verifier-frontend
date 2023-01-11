@@ -8,10 +8,6 @@ import { Data } from '../context/Data/Index';
 import { config } from '../config';
 import { createParentComment, updateTemplate } from './issueUtils/templates';
 import { coreInfo, otherInfo, guidelines, regionOptions, labelsIssueCreation, steps, URL_README } from './issueUtils/constants';
-
-
-// import ldnParser from '@keyko-io/filecoin-verifier-tools/utils/large-issue-parser';
-
 import {ldnParser} from "@keyko-io/filecoin-verifier-tools";
 
 
