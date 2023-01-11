@@ -36,7 +36,6 @@ class Overview extends Component<{}, OverviewStates> {
 
 
     loadData = async () => {
-        await this.context.refreshGithubData()
         await this.context.loadClients()
     }
 

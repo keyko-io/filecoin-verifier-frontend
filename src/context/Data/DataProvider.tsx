@@ -30,15 +30,12 @@ interface DataProviderStates {
   createRequest: any;
   selectedNotaryRequests: any[];
   selectNotaryRequest: any;
-  clientsGithub: any;
-  loadClientsGithub: any;
   loadClients: any;
   assignToIssue: any;
   clients: any[];
   clientsAmount: string;
   search: any;
   searchString: string;
-  refreshGithubData: any;
   searchUserIssues: any;
   logToSentry: any;
   fetchLogs: any;
@@ -665,8 +662,10 @@ export default class DataProvider extends React.Component<
 
       verified: [],
       loadVerified: async () => {
+        console.log("loadVerified - rkh")
         try {
-          const approvedVerifiers = await this.props.wallet.api.listVerifiers();
+          const approvedVerifiers = (await this.props.wallet.api.listVerifiers())
+
           let verified: any = [];
           await Promise.allSettled(
             approvedVerifiers.map(
@@ -917,50 +916,9 @@ export default class DataProvider extends React.Component<
       },
       clients: [],
       clientsAmount: "",
-      clientsGithub: {},
-      loadClientsGithub: async () => {
-        console.log("running -- loadClientsGithub")
-        if (this.props.github.githubLogged === false) {
-          this.setState({ clientsGithub: [] });
-          return;
-        }
-        const rawIssues = await this.props.github.githubOctoGeneric.octokit.paginate(
-          this.props.github.githubOctoGeneric.octokit.issues.listForRepo,
-          {
-            owner: config.onboardingOwner,
-            repo: config.onboardingClientRepo,
-            state: "closed",
-            labels: "state:Granted",
-          }
-        );
-
-        const issues: any = {};
-        for (const rawIssue of rawIssues) {
-          const data = utils.parseIssue(rawIssue.body);
-          try {
-            const address = await this.props.wallet.api.actorKey(data.address);
-            if (data.correct && address) {
-              issues[address] = {
-                number: rawIssue.number,
-                url: rawIssue.html_url,
-                data,
-              };
-            }
-          } catch (e) {
-            // console.log(e)
-          }
-        }
-        this.setState({
-          clientsGithub: issues,
-        });
-      },
       searchString: "",
       search: async (query: string) => {
         this.setState({ searchString: query });
-      },
-      refreshGithubData: async () => {
-        //this.state.loadClientRequests();
-        this.state.loadClientsGithub();
       },
       isAddressVerified: false,
       isPendingRequestLoading: false,

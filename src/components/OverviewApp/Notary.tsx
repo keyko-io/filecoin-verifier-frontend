@@ -668,7 +668,6 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
               scope="repo"
               onSuccess={async (response: any) => {
                 await context.github.loginGithub(response.code);
-                await context.refreshGithubData();
               }}
               onFailure={(response: any) => {
                 console.log("failure", response);
@@ -680,7 +679,6 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
             className="buttonsecondary"
             onClick={async () => {
               await context.github.logoutGithub();
-              await context.refreshGithubData();
             }}
           >
             Logout GitHub

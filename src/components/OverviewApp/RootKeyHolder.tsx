@@ -51,7 +51,7 @@ export default class RootKeyHolder extends Component<
   };
 
   componentDidMount() {
-    console.log("runnin rkh view")
+    console.log("running rkh view")
     this.context.loadVerifierAndPendingRequests();
     this.context.loadVerified()
   }
@@ -609,7 +609,6 @@ export default class RootKeyHolder extends Component<
                 pagination
                 paginationRowsPerPageOptions={[10, 20, 30]}
                 paginationPerPage={10}
-                onChangePage={(page, totalRows) => console.log(page, totalRows)}
               />
             </div>
           ) : (
