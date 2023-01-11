@@ -485,7 +485,7 @@ export default class RootKeyHolder extends Component<
                 this.showApproved();
               }}
             >
-              Accepted Notaries ({this.context.verified.length})
+              Accepted Notaries ({this.context?.approvedVerifiersData?.length})
             </div>
           </div>
           <div className="tabssadd">
@@ -583,41 +583,37 @@ export default class RootKeyHolder extends Component<
         ) : null}
 
         {this.state.tabs === "2" &&
-          (this.context.verified.length > 0 ? (
-            <div style={{ minHeight: "500px" }}>
-              <DataTable
-                columns={[
-                  {
-                    name: "Notary",
-                    selector: (row: any) => row.verifier,
-                    sortable: true,
-                  },
-                  {
-                    name: "Address",
-                    selector: (row: any) => row.verifierAccount,
-                    sortable: true,
-                    grow: 2,
-                  },
-                  {
-                    name: "Datacap",
-                    selector: (row: any) => row.datacap,
-                    sortable: true,
-                    cell: (row: any) => <span>{bytesToiB(row.datacap)}</span>,
-                  },
-                ]}
-                data={this.context.verified}
-                pagination
-                paginationServer
-                paginationTotalRows={81}
-                onChangePage={(page) => this.context.loadVerified(page)}
-                paginationRowsPerPageOptions={[10]}
-              />
-            </div>
-          ) : (
-            <CircularProgress
-              style={{ margin: "200px 50%", color: "rgb(0, 144, 255)" }}
+          <div style={{ minHeight: "500px" }}>
+            <DataTable
+              columns={[
+                {
+                  name: "Notary",
+                  selector: (row: any) => row.verifier,
+                  sortable: true,
+                },
+                {
+                  name: "Address",
+                  selector: (row: any) => row.verifierAccount,
+                  sortable: true,
+                  grow: 2,
+                },
+                {
+                  name: "Datacap",
+                  selector: (row: any) => row.datacap,
+                  sortable: true,
+                  cell: (row: any) => <span>{bytesToiB(row.datacap)}</span>,
+                },
+              ]}
+              data={this.context.verified}
+              pagination
+              paginationServer
+              paginationTotalRows={this.context?.approvedVerifiersData?.length}
+              onChangePage={(page) => this.context.loadVerified(page)}
+              progressPending={this.context.acceptedNotariesLoading}
+              paginationRowsPerPageOptions={[10]}
             />
-          ))}
+          </div>
+        }
       </div>
     );
   }

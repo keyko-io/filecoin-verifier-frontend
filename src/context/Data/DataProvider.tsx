@@ -25,6 +25,7 @@ interface DataProviderStates {
   switchview: any;
   verified: any[];
   loadVerified: any;
+  acceptedNotariesLoading: boolean;
   updateGithubVerified: any;
   updateGithubVerifiedLarge: any;
   createRequest: any;
@@ -54,6 +55,7 @@ interface DataProviderStates {
   setIsVerifyWalletLoading: any;
   getLDNIssuesAndTransactions: any;
   getLastUniqueId: any;
+  approvedVerifiersData: any;
 }
 
 interface DataProviderProps {
@@ -659,12 +661,22 @@ export default class DataProvider extends React.Component<
           this.setState({ viewroot: true });
         }
       },
-
       verified: [],
+      acceptedNotariesLoading: false,
+      approvedVerifiersData: null,
       loadVerified: async (page: any) => {
         console.log("loadVerified - rkh")
         try {
-          const approvedVerifiers = (await this.props.wallet.api.listVerifiers())
+          this.setState({ acceptedNotariesLoading: true })
+
+          let approvedVerifiers
+          if (this.state.approvedVerifiersData === null) {
+            approvedVerifiers = (await this.props.wallet.api.listVerifiers())
+            this.setState({ approvedVerifiersData: approvedVerifiers })
+            console.log("running ---- if block inside")
+          } else {
+            approvedVerifiers = this.state.approvedVerifiersData
+          }
 
           const paginate = approvedVerifiers.slice((page - 1) * 10, page * 10)
 
@@ -700,15 +712,20 @@ export default class DataProvider extends React.Component<
           );
 
           console.log("finished")
+          this.setState({ acceptedNotariesLoading: false })
           this.setState({ verified });
         } catch (error) {
           console.error("error in resolving promises", error);
         }
       },
-
       loadClients: async () => {
+        console.log("running - loadClients")
         try {
+
           const clients = await this.props.wallet.api.listVerifiedClients();
+
+          console.log(clients, "clients")
+
           let clientsAmount = clients
             .reduce(
               (tot: any, el: any) =>
@@ -718,14 +735,7 @@ export default class DataProvider extends React.Component<
             .toString();
           this.setState({ clients, clientsAmount });
 
-          // this is making more 1400 calls, commenting for now
-          // await Promise.all(
-          //   clients.map(async (txs: any) => {
-          //     txs["key"] = await this.props.wallet.api.actorKey(txs.verified);
-          //   })
-          // );
-
-          // this.setState({ clients });
+          console.log("finished - loadClients")
         } catch (error) {
           console.error("error in resolving promises", error);
         }
