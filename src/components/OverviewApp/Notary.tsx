@@ -311,6 +311,7 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
   }, [context.isAddressVerified])
 
   const verifyClients = async () => {
+    console.log("verifyClients")
     dispatchCustomEvent({ name: "delete-modal", detail: {} });
     setApproveLoading(true)
     for (const request of context.clientRequests) {
@@ -376,7 +377,17 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
           context.wallet.dispatchNotification(
             "Verify Client Message sent with ID: " + messageID
           );
+
+
+
+
           context.loadClientRequests();
+
+
+
+
+
+
           sentryData = {
             requestNumber: request.issue_number,
             messageID: messageID,
