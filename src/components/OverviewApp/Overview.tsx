@@ -16,7 +16,6 @@ type OverviewStates = {
 
 class Overview extends Component<{}, OverviewStates> {
     public static contextType = Data
-    interval: any
 
     state = {
         tabs: '1',
@@ -30,12 +29,8 @@ class Overview extends Component<{}, OverviewStates> {
         this.loadData()
     }
 
-    componentWillUnmount() {
-        clearInterval(this.interval)
-    }
-
-
     loadData = async () => {
+        console.log("running loadData")
         await this.context.loadClients()
     }
 
