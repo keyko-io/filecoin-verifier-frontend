@@ -1,5 +1,5 @@
 
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Data } from "../../context/Data/Index";
 import AddClientModal from "../../modals/AddClientModal";
 // @ts-ignore
@@ -16,7 +16,8 @@ import WarnModalNotaryVerified from "../../modals/WarnModalNotaryVeried";
 import { LargeRequestTable, CancelProposalTable, NotaryTabs, PublicRequestTable, VerifiedClientsTable } from "./Notary/index";
 import { checkAlreadyProposed } from "../../utils/checkAlreadyProposed";
 import toast from 'react-hot-toast';
-import largeUtils from "@keyko-io/filecoin-verifier-tools/utils/large-issue-parser";
+import {ldnParser} from "@keyko-io/filecoin-verifier-tools";
+
 
 type NotaryProps = {
   clients: any[];
@@ -193,7 +194,7 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
         return;
       }
 
-      const parsedBody: ProposedRequestBody = largeUtils.parseApprovedRequestWithSignerAddress(cancelProposalData.comment.body)
+      const parsedBody: ProposedRequestBody = ldnParser.parseApprovedRequestWithSignerAddress(cancelProposalData.comment.body)
 
       const cancelRequestBody = (proposedCommentBody: ProposedRequestBody) => {
 
@@ -281,7 +282,7 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
     const DataCancel = dataByActiveAccount.map((item: any) => {
 
       //getting client name
-      const { name } = largeUtils.parseIssue(item.issue[0].issueInfo.issue.body)
+      const { name } = ldnParser.parseIssue(item.issue[0].issueInfo.issue.body)
 
       //getting comment with the signer id
       const comment = item.issue[0].issueInfo.comments.filter((c: any) => c.body.includes(context.wallet.activeAccount)).reverse()

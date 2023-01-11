@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import { Component } from "react";
 import { Data } from "../../context/Data/Index";
 import AddVerifierModal from "../../modals/AddVerifierModal";
 import RequestVerifierModal from "../../modals/RequestVerifierModal";
@@ -11,10 +11,12 @@ import { BeatLoader } from "react-spinners";
 import { EVENT_TYPE, MetricsApiParams } from "../../utils/Metrics";
 import DataTable from "react-data-table-component";
 import { CircularProgress } from "@material-ui/core";
+import {ldnParser, notaryParser, metrics} from "@keyko-io/filecoin-verifier-tools";
 
-import { callMetricsApi } from "@keyko-io/filecoin-verifier-tools/metrics/metrics";
-import parser from "@keyko-io/filecoin-verifier-tools/utils/notary-issue-parser";
-import largeutils from "@keyko-io/filecoin-verifier-tools/utils/large-issue-parser";
+
+
+
+
 
 type RootKeyHolderState = {
   tabs: string;
@@ -380,7 +382,7 @@ export default class RootKeyHolder extends Component<
               }
             );
           }
-          //METRICS
+          //metrics
           if (label === "status:AddedOnchain") {
             const notaryGovissue =
               await this.context.github.githubOctoGeneric.octokit.issues.get({
@@ -391,9 +393,12 @@ export default class RootKeyHolder extends Component<
                   .notaryRepo,
                 issue_number: request.issue_number,
               });
-            const ldnIssueNameSplitted = parser
+              debugger
+          
+            const ldnIssueNameSplitted = notaryParser
               .parseIssue(notaryGovissue.data.body)
               .name.split(" ");
+
             const ldnIssueNumber =
               ldnIssueNameSplitted[ldnIssueNameSplitted.length - 1];
             const ldnIssue =
@@ -403,14 +408,14 @@ export default class RootKeyHolder extends Component<
                 issue_number: ldnIssueNumber,
               });
 
-            const issueParsed = largeutils.parseIssue(ldnIssue.data.body);
+            const issueParsed = ldnParser.parseIssue(ldnIssue.data.body);
             const params: MetricsApiParams = {
               name: issueParsed.name,
               clientAddress: issueParsed.address,
               msigAddress: request.addresses[0] ? request.addresses[0] : "",
               messageCid: messageIds[0] ? messageIds[0] : "",
             };
-            callMetricsApi(
+            metrics(
               request.issue_number,
               EVENT_TYPE.MULTISIG_APPROVED,
               params,
