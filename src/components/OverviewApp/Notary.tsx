@@ -20,7 +20,6 @@ import largeUtils from "@keyko-io/filecoin-verifier-tools/utils/large-issue-pars
 
 type NotaryProps = {
   clients: any[];
-  searchString: string;
 };
 
 type CancelProposalData = {
@@ -593,7 +592,6 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
       "2": <VerifiedClientsTable verifiedClients={props.notaryProps.clients} />,
       "3": < LargeRequestTable largeRequestListLoading={largeRequestListLoading}
         setSelectedLargeClientRequests={setSelectedLargeClientRequests}
-        searchInput={props.notaryProps.searchString}
         dataForLargeRequestTable={dataForLargeRequestTable} />,
       "4": <CancelProposalTable dataCancel={dataCancel}
         dataCancelLoading={dataCancelLoading}

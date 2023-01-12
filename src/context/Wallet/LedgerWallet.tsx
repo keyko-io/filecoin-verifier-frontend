@@ -26,7 +26,7 @@ export class LedgerWallet {
             return this.lotusNode.token
           }
         }
-        )
+      )
       , { sign: this.sign, getAccounts: this.getAccounts }
       , this.lotusNode.name !== "Mainnet" // if node != Mainnet => testnet = true
     )
@@ -35,7 +35,7 @@ export class LedgerWallet {
     let transport
     try {
       transport = await TransportWebUSB.create();
-    } catch (e:any) {
+    } catch (e: any) {
       console.log('TransportWebUSB error', e)
     }
     if (transport) {
@@ -54,7 +54,7 @@ export class LedgerWallet {
         if (version.minor < 18 && version.patch < 2) {
           throw new Error('Please update Filecoin app on Ledger.')
         }
-      } catch (e:any) {
+      } catch (e: any) {
         throw new Error(e.message)
       }
     } else {
@@ -68,7 +68,7 @@ export class LedgerWallet {
     return this
   }
 
-  public getAccounts = async (nStart = 0, nEnd = 15) => {
+  public getAccounts = async (nStart = 0, nEnd = 10) => {
     const paths = []
     for (let i = nStart; i < nEnd; i += 1) {
       paths.push(`m/44'/${this.lotusNode.code}'/0'/0/${i}`)

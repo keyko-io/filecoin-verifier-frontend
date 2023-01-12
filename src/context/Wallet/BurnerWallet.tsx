@@ -24,8 +24,8 @@ export class BurnerWallet {
                     token: async () => {
                         return this.lotusNode.token
                     }
-                }: null
-                )
+                } : null
+            )
             , { sign: this.sign, getAccounts: this.getAccounts }
             , this.lotusNode.name !== "Mainnet" // if node != Mainnet => testnet = true
         )
@@ -42,7 +42,7 @@ export class BurnerWallet {
         return this
     }
 
-    public getAccounts = async (nStart = 0, nEnd = 15) => {
+    public getAccounts = async (nStart = 0, nEnd = 10) => {
         const accounts = []
         for (let i = nStart; i < nEnd; i += 1) {
             accounts.push(

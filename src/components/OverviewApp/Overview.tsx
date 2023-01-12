@@ -1,4 +1,4 @@
-import React, { Component, memo } from 'react';
+import { Component, memo } from 'react';
 import { Data } from '../../context/Data/Index';
 import { bytesToiB } from "../../utils/Filters"
 // @ts-ignore
@@ -7,26 +7,12 @@ import Notary from './Notary';
 import { BeatLoader } from "react-spinners";
 import "./Overview.scss"
 
-type OverviewStates = {
-    tabs: string
-    dcGrantedLoading: boolean
-    pendingNotariesLoading: boolean,
-    approvedNotariesLoading: boolean
-}
-
-class Overview extends Component<{}, OverviewStates> {
+class Overview extends Component<{}> {
     public static contextType = Data
-
-    state = {
-        tabs: '1',
-        dcGrantedLoading: true,
-        pendingNotariesLoading: true,
-        approvedNotariesLoading: true
-    }
 
     async componentDidMount() {
         this.context.github.checkToken()
-        await this.context.loadClients()
+        this.context.loadClients()
     }
 
     public render() {
@@ -63,25 +49,27 @@ class Overview extends Component<{}, OverviewStates> {
                             </div>
                             <div className="textinfodatablock">
                                 <div className="data">{
-                                    this.context.approvedNotariesLoading ?
+                                    this.context?.approvedVerifiersData?.length ?
+                                        this.context.approvedVerifiersData.length
+
+                                        :
                                         <div>
                                             <span className="zeroOpaque">0</span>
                                             <BeatLoader size={15} color={"rgb(24,160,237)"} />
                                         </div>
-                                        :
-                                        this.context.verified.length}</div>
+
+                                }</div>
                                 <div className="text">Approved Notaries</div>
                             </div>
                         </div>
                     </div>
                 </div>
                 {this.context.viewroot ?
-                    <RootKeyHolder searchString={this.context.searchString} />
+                    <RootKeyHolder />
                     :
                     <Notary
                         notaryProps={{
                             clients: this.context.clients,
-                            searchString: this.context.searchString
                         }}
                     />
                 }

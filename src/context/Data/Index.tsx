@@ -9,6 +9,7 @@ export const Data = React.createContext({
   loadVerifierAndPendingRequests: any,
   verifierAndPendingRequests: [] as any,
   viewroot: false,
+  approvedVerifiersData: null,
   switchview: async () => { },
   verified: [] as any,
   loadVerified: async () => { },
