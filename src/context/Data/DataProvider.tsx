@@ -4,7 +4,7 @@ import { config } from "../../config";
 // @ts-ignore
 import { IssueBody } from "../../utils/IssueBody";
 import BigNumber from "bignumber.js";
-import _, { slice } from 'lodash'
+import _ from 'lodash'
 import { v4 as uuidv4 } from "uuid";
 import { anyToBytes, bytesToiB } from "../../utils/Filters";
 import * as Sentry from "@sentry/react";
@@ -24,6 +24,7 @@ interface DataProviderStates {
   viewroot: boolean;
   switchview: any;
   verified: any[];
+  verifiedCachedData: any;
   loadVerified: any;
   acceptedNotariesLoading: boolean;
   updateGithubVerified: any;
@@ -174,7 +175,7 @@ export default class DataProvider extends React.Component<
         let breadCrumb = {
           category,
           message,
-          level: level == "info" ? Sentry.Severity.Info : Sentry.Severity.Error,
+          level: level === "info" ? Sentry.Severity.Info : Sentry.Severity.Error,
           data,
         };
         Sentry.addBreadcrumb(breadCrumb);
@@ -662,18 +663,24 @@ export default class DataProvider extends React.Component<
         }
       },
       verified: [],
+      verifiedCachedData: null,
       acceptedNotariesLoading: false,
       approvedVerifiersData: null,
       loadVerified: async (page: any) => {
         console.log("loadVerified - rkh")
         try {
+
+          if (this.state.verifiedCachedData && this.state.verifiedCachedData[page]) {
+            this.setState({ verified: this.state.verifiedCachedData[page] })
+            return
+          }
+
           this.setState({ acceptedNotariesLoading: true })
 
           let approvedVerifiers
           if (this.state.approvedVerifiersData === null) {
             approvedVerifiers = (await this.props.wallet.api.listVerifiers())
             this.setState({ approvedVerifiersData: approvedVerifiers })
-            console.log("running ---- if block inside")
           } else {
             approvedVerifiers = this.state.approvedVerifiersData
           }
@@ -691,7 +698,6 @@ export default class DataProvider extends React.Component<
                     );
 
                     if (verifierAccount === verifiedAddress.verifier) {
-                      console.log("yes")
                       verifierAccount =
                         await this.props.wallet.api.actorAddress(
                           verifiedAddress.verifier
@@ -711,7 +717,9 @@ export default class DataProvider extends React.Component<
             )
           );
 
-          console.log("finished")
+          this.setState({ verifiedCachedData: { ...this.state.verifiedCachedData, [page]: verified } })
+
+          console.log("load verified - finished")
           this.setState({ acceptedNotariesLoading: false })
           this.setState({ verified });
         } catch (error) {
