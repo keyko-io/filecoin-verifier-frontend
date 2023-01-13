@@ -397,7 +397,6 @@ export default class DataProvider extends React.Component<
 
 
           for (const rawIssue of rawDirectIssues) {
-            //TODO TEST
             const data = simpleClientParser.parseIssue(rawIssue.body);
             if (
               data.correct &&
@@ -519,7 +518,6 @@ export default class DataProvider extends React.Component<
           });
         const issues: any[] = [];
         for (const rawIssue of rawIssues.data.items) {
-          // TODO TEST
           const data = simpleClientParser.parseIssue(rawIssue.body);
           if (data.correct) {
             issues.push({
@@ -704,7 +702,6 @@ export default class DataProvider extends React.Component<
 
           // this is making more 1400 calls, commenting for now
           // await Promise.all(
-          // TODO use promise allsettled
           //   clients.map(async (txs: any) => {
           //     txs["key"] = await this.props.wallet.api.actorKey(txs.verified);
           //   })
@@ -727,7 +724,6 @@ export default class DataProvider extends React.Component<
 
           const idPattern = /####\s*Id\s*\n>\s*(.*)/g
           const comment = data.filter((item: any) => item.body.includes("## DataCap Allocation requested")).reverse()
-          // TODO TEST
           const Id = commonUtils.matchGroupLargeNotary(idPattern, comment[0].body)
           return Id
         } catch (error) {
@@ -935,7 +931,6 @@ export default class DataProvider extends React.Component<
 
             await this.state.updateIsVerifiedAddress(true)
 
-            console.log("this.state.isAddressVerified in context", this.state.isAddressVerified)
 
             // get issue with that address
             // const rawIssues = await this.props.github.fetchGithubIssues('keyko-io', 'filecoin-notaries-onboarding', 'all', "Notary Application")

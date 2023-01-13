@@ -311,7 +311,6 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
   }, [context.isAddressVerified])
 
   const verifyClients = async () => {
-    console.log("verifyClients")
     dispatchCustomEvent({ name: "delete-modal", detail: {} });
     setApproveLoading(true)
     for (const request of context.clientRequests) {
