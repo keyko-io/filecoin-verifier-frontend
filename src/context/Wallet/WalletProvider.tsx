@@ -38,20 +38,25 @@ type Props = {
 
 async function getActiveAccounts(api: any, accounts: any) {
     const accountsActive: any = {};
-    for (const acc of accounts) {
-        try {
-            const key = await api.actorAddress(acc)
-            accountsActive[acc] = key
-        } catch (e:any) {
-
-        }
-    }
+    await Promise.allSettled(
+        accounts.map(
+            (acc: any) => new Promise<any>(async (resolve, reject) => {
+                try {
+                    const key = await api.actorAddress(acc)
+                    accountsActive[acc] = key
+                    resolve(key)
+                } catch (error) {
+                    reject(error)
+                }
+            })
+        )
+    )
     return accountsActive
 }
 
 class WalletProvider extends React.Component<Props, WalletProviderStates> {
     setStateAsync(state: any) {
-        return new Promise((resolve:any) => {
+        return new Promise((resolve: any) => {
             this.setState(state, resolve)
         });
     }
@@ -59,7 +64,7 @@ class WalletProvider extends React.Component<Props, WalletProviderStates> {
         try {
             const wallet = new LedgerWallet()
             await wallet.loadWallet(this.state.networkIndex)
-            const accounts: any[] = await wallet.getAccounts()
+            const accounts: any = await wallet.getAccounts()
             const accountsActive = await getActiveAccounts(wallet.api, accounts)
             const { cookies } = this.props;
             const walletCookie = cookies.get('wallet')
@@ -90,7 +95,7 @@ class WalletProvider extends React.Component<Props, WalletProviderStates> {
                         const actor = await wallet.api.actorKey(multisigInfo.signers[index])
                         multisigActors.push(actor)
                     }
-                    const index = accounts.findIndex((account) => multisigActors.includes(account))
+                    const index = accounts.findIndex((account: any) => multisigActors.includes(account))
                     if (index !== -1) {
                         lastWallet = accounts[index]
                         walletIndex = index
@@ -98,7 +103,7 @@ class WalletProvider extends React.Component<Props, WalletProviderStates> {
                         this.state.dispatchNotification('Multisig address not found in wallet')
                         return false
                     }
-                } catch (e:any) {
+                } catch (e: any) {
                     this.state.dispatchNotification('Multisig not found')
                     return false
                 }
@@ -113,7 +118,7 @@ class WalletProvider extends React.Component<Props, WalletProviderStates> {
                     try {
                         const ret = await wallet.sign(param1, param2)
                         return ret
-                    } catch (e:any) {
+                    } catch (e: any) {
                         this.state.dispatchNotification(e.toString())
                     }
                 },
@@ -121,7 +126,7 @@ class WalletProvider extends React.Component<Props, WalletProviderStates> {
                     try {
                         const accounts = await wallet.getAccounts()
                         return accounts
-                    } catch (e:any) {
+                    } catch (e: any) {
                         this.state.dispatchNotification(e.toString())
                     }
                 },
@@ -134,7 +139,7 @@ class WalletProvider extends React.Component<Props, WalletProviderStates> {
             })
             // this.loadGithub()
             return true
-        } catch (e:any) {
+        } catch (e: any) {
             this.setState({
                 isLogged: false,
                 isLoading: false
@@ -187,7 +192,7 @@ class WalletProvider extends React.Component<Props, WalletProviderStates> {
                         this.state.dispatchNotification('Multisig address not found in wallet')
                         return false
                     }
-                } catch (e:any) {
+                } catch (e: any) {
                     this.state.dispatchNotification('Multisig not found')
                     return false
                 }
@@ -209,7 +214,7 @@ class WalletProvider extends React.Component<Props, WalletProviderStates> {
             })
             return true
             // this.loadGithub()
-        } catch (e:any) {
+        } catch (e: any) {
             return false
         }
     }
@@ -238,21 +243,25 @@ class WalletProvider extends React.Component<Props, WalletProviderStates> {
         accountsActive: {},
         activeAccount: '',
         importSeed: async (seedphrase: string) => {
-            const wallet = new BurnerWallet()
-            await wallet.loadWallet(this.state.networkIndex)
-            await wallet.importSeed(seedphrase)
-            const accounts: any[] = await wallet.getAccounts()
-            const accountsActive = await getActiveAccounts(wallet.api, accounts)
-            this.setState({
-                isLogged: true,
-                wallet: 'burner',
-                api: wallet.api,
-                sign: wallet.sign,
-                getAccounts: wallet.getAccounts,
-                activeAccount: accounts[this.state.walletIndex],
-                accounts,
-                accountsActive
-            })
+            try {
+                const wallet = new BurnerWallet()
+                await wallet.loadWallet(this.state.networkIndex)
+                await wallet.importSeed(seedphrase)
+                const accounts: any[] = await wallet.getAccounts()
+                const accountsActive = await getActiveAccounts(wallet.api, accounts)
+                this.setState({
+                    isLogged: true,
+                    wallet: 'burner',
+                    api: wallet.api,
+                    sign: wallet.sign,
+                    getAccounts: wallet.getAccounts,
+                    activeAccount: accounts[this.state.walletIndex],
+                    accounts,
+                    accountsActive
+                })
+            } catch (error) {
+                console.log(error)
+            }
         },
         selectNetwork: async (networkIndex: number) => {
             this.setState({ networkIndex }, async () => {
@@ -274,7 +283,7 @@ class WalletProvider extends React.Component<Props, WalletProviderStates> {
                 const { cookies } = this.props;
 
                 cookies.set('wallet', accounts[index], { path: '/' });
-            } catch (e:any) {
+            } catch (e: any) {
                 // console.log('select account', e)
             }
         },

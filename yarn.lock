@@ -1648,8 +1648,10 @@
     "@jridgewell/resolve-uri" "3.1.0"
     "@jridgewell/sourcemap-codec" "1.4.14"
 
-"@keyko-io/filecoin-verifier-tools@./deps/filecoin-verifier-tools":
-  version "1.4.3"
+"@keyko-io/filecoin-verifier-tools@^1.5.0":
+  version "1.5.0"
+  resolved "https://registry.yarnpkg.com/@keyko-io/filecoin-verifier-tools/-/filecoin-verifier-tools-1.5.0.tgz#a020a62abd0fda4077416905f994f5aa23e1baf2"
+  integrity sha512-siNfvi22l1z2rRxwe3r9VgP8Syp0Jl94O2lUJljbnTAS8tN+QfjXyEm3VfzLa+pelwCGcdiT7SwEtiuuqFvNMg==
   dependencies:
     "@filecoin-shipyard/lotus-client-provider-nodejs" "0.0.5"
     "@filecoin-shipyard/lotus-client-rpc" "0.0.14"

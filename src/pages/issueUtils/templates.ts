@@ -1,4 +1,5 @@
-const utils = require('@keyko-io/filecoin-verifier-tools/utils/large-issue-parser')
+import {ldnParser} from "@keyko-io/filecoin-verifier-tools";
+
 
 export const createParentComment = (coreInfo: any) => {
     return `---
@@ -108,7 +109,7 @@ export const updateTemplate = (issueBody: any, otherInfo: any, coreInfo: any) =>
     return `---
 name: Large Dataset Notary application
 about: Clients should use this application form to request a DataCap allocation via a LDN for a dataset
-title: "${coreInfo.title ? coreInfo.title : utils.parseIssue(issueBody).title}"
+title: "${coreInfo.title ? coreInfo.title : ldnParser.parseIssue(issueBody).title}"
 labels: 'application, Phase: Diligence'
 assignees: ''
 
@@ -118,12 +119,12 @@ assignees: ''
 To apply for DataCap to onboard your dataset to Filecoin, please fill out the following.
 
 ## Core Information
-- Organization Name: ${coreInfo.name ? coreInfo.name : utils.parseIssue(issueBody).name}
-- Website / Social Media: ${coreInfo.website ? coreInfo.website : utils.parseIssue(issueBody).website}
-- Total amount of DataCap being requested (between 500 TiB and 5 PiB): ${coreInfo.datacapRequested ? coreInfo.datacapRequested : utils.parseIssue(issueBody).datacapRequested}
-- Weekly allocation of DataCap requested (usually between 1-100TiB): ${coreInfo.dataCapWeeklyAllocation ? coreInfo.dataCapWeeklyAllocation : utils.parseIssue(issueBody).dataCapWeeklyAllocation}
-- On-chain address for first allocation: ${coreInfo.address ? coreInfo.address : utils.parseIssue(issueBody).address}
-- Region: ${coreInfo.region ? coreInfo.region : utils.parseIssue(issueBody).region}
+- Organization Name: ${coreInfo.name ? coreInfo.name : ldnParser.parseIssue(issueBody).name}
+- Website / Social Media: ${coreInfo.website ? coreInfo.website : ldnParser.parseIssue(issueBody).website}
+- Total amount of DataCap being requested (between 500 TiB and 5 PiB): ${coreInfo.datacapRequested ? coreInfo.datacapRequested : ldnParser.parseIssue(issueBody).datacapRequested}
+- Weekly allocation of DataCap requested (usually between 1-100TiB): ${coreInfo.dataCapWeeklyAllocation ? coreInfo.dataCapWeeklyAllocation : ldnParser.parseIssue(issueBody).dataCapWeeklyAllocation}
+- On-chain address for first allocation: ${coreInfo.address ? coreInfo.address : ldnParser.parseIssue(issueBody).address}
+- Region: ${coreInfo.region ? coreInfo.region : ldnParser.parseIssue(issueBody).region}
 
 _Please respond to the questions below by replacing the text saying "Please answer here". Include as much detail as you can in your answer._
 
@@ -131,49 +132,49 @@ _Please respond to the questions below by replacing the text saying "Please answ
 
 Share a brief history of your project and organization.
 \`\`\`
-${otherInfo.detailsHistory ? otherInfo.detailsHistory : utils.parseOtherInfoIssue(issueBody).detailsHistory}
+${otherInfo.detailsHistory ? otherInfo.detailsHistory : ldnParser.parseOtherInfoIssue(issueBody).detailsHistory}
 \`\`\`
 
 What is the primary source of funding for this project?
 \`\`\`
-${otherInfo.detailsSrcFunding ? otherInfo.detailsSrcFunding : utils.parseOtherInfoIssue(issueBody).detailsSrcFunding}
+${otherInfo.detailsSrcFunding ? otherInfo.detailsSrcFunding : ldnParser.parseOtherInfoIssue(issueBody).detailsSrcFunding}
 \`\`\`
 
 What other projects/ecosystem stakeholders is this project associated with?
 \`\`\`
-${otherInfo.detailsSrcOtherProjects ? otherInfo.detailsSrcOtherProjects : utils.parseOtherInfoIssue(issueBody).detailsSrcOtherProjects}
+${otherInfo.detailsSrcOtherProjects ? otherInfo.detailsSrcOtherProjects : ldnParser.parseOtherInfoIssue(issueBody).detailsSrcOtherProjects}
 \`\`\`
 
 ## Use-case details
 
 Describe the data being stored onto Filecoin
 \`\`\`
-${otherInfo.useCaseDescribeData ? otherInfo.useCaseDescribeData : utils.parseOtherInfoIssue(issueBody).useCaseDescribeData}
+${otherInfo.useCaseDescribeData ? otherInfo.useCaseDescribeData : ldnParser.parseOtherInfoIssue(issueBody).useCaseDescribeData}
 \`\`\`
 
 Where was the data in this dataset sourced from?
 \`\`\`
-${otherInfo.useCaseWhereDataIsStored ? otherInfo.useCaseWhereDataIsStored : utils.parseOtherInfoIssue(issueBody).useCaseWhereDataIsStored}
+${otherInfo.useCaseWhereDataIsStored ? otherInfo.useCaseWhereDataIsStored : ldnParser.parseOtherInfoIssue(issueBody).useCaseWhereDataIsStored}
 \`\`\`
 
 Can you share a sample of the data? A link to a file, an image, a table, etc., are good ways to do this. 
 \`\`\`
-${otherInfo.useCaseDataSample ? otherInfo.useCaseDataSample : utils.parseOtherInfoIssue(issueBody).useCaseDataSample}
+${otherInfo.useCaseDataSample ? otherInfo.useCaseDataSample : ldnParser.parseOtherInfoIssue(issueBody).useCaseDataSample}
 \`\`\`
         
 Confirm that this is a public dataset that can be retrieved by anyone on the Network (i.e., no specific permissions or access rights are required to view the data).
 \`\`\`
-${otherInfo.useCaseIsPublicDataSet ? otherInfo.useCaseIsPublicDataSet : utils.parseOtherInfoIssue(issueBody).useCaseIsPublicDataSet}
+${otherInfo.useCaseIsPublicDataSet ? otherInfo.useCaseIsPublicDataSet : ldnParser.parseOtherInfoIssue(issueBody).useCaseIsPublicDataSet}
 \`\`\`
 
 What is the expected retrieval frequency for this data?
 \`\`\`
-${otherInfo.useCaseExpectedRetrievalFrequency ? otherInfo.useCaseExpectedRetrievalFrequency : utils.parseOtherInfoIssue(issueBody).useCaseExpectedRetrievalFrequency}
+${otherInfo.useCaseExpectedRetrievalFrequency ? otherInfo.useCaseExpectedRetrievalFrequency : ldnParser.parseOtherInfoIssue(issueBody).useCaseExpectedRetrievalFrequency}
 \`\`\`
 
 For how long do you plan to keep this dataset stored on Filecoin?
 \`\`\`
-${otherInfo.useCaseHowLongStoredInFilecoin ? otherInfo.useCaseHowLongStoredInFilecoin : utils.parseOtherInfoIssue(issueBody).useCaseHowLongStoredInFilecoin}
+${otherInfo.useCaseHowLongStoredInFilecoin ? otherInfo.useCaseHowLongStoredInFilecoin : ldnParser.parseOtherInfoIssue(issueBody).useCaseHowLongStoredInFilecoin}
 \`\`\`
 
 
@@ -181,27 +182,27 @@ ${otherInfo.useCaseHowLongStoredInFilecoin ? otherInfo.useCaseHowLongStoredInFil
 
 In which geographies (countries, regions) do you plan on making storage deals?
 \`\`\`
-${otherInfo.dataCapAllocationPlanRegion ? otherInfo.dataCapAllocationPlanRegion : utils.parseOtherInfoIssue(issueBody).dataCapAllocationPlanRegion}
+${otherInfo.dataCapAllocationPlanRegion ? otherInfo.dataCapAllocationPlanRegion : ldnParser.parseOtherInfoIssue(issueBody).dataCapAllocationPlanRegion}
 \`\`\`
 
 How will you be distributing your data to storage providers? Is there an offline data transfer process?
 \`\`\`
-${otherInfo.dataCapAllocationPlanDistribute ? otherInfo.dataCapAllocationPlanDistribute : utils.parseOtherInfoIssue(issueBody).dataCapAllocationPlanDistribute}
+${otherInfo.dataCapAllocationPlanDistribute ? otherInfo.dataCapAllocationPlanDistribute : ldnParser.parseOtherInfoIssue(issueBody).dataCapAllocationPlanDistribute}
 \`\`\`
 
 How do you plan on choosing the storage providers with whom you will be making deals? This should include a plan to ensure the data is retrievable in the future both by you and others.
 \`\`\`
-${otherInfo.dataCapAllocationPlanChooseSp ? otherInfo.dataCapAllocationPlanChooseSp : utils.parseOtherInfoIssue(issueBody).dataCapAllocationPlanChooseSp}
+${otherInfo.dataCapAllocationPlanChooseSp ? otherInfo.dataCapAllocationPlanChooseSp : ldnParser.parseOtherInfoIssue(issueBody).dataCapAllocationPlanChooseSp}
 \`\`\`
 
 How will you be distributing deals across storage providers?
 \`\`\`
-${otherInfo.dataCapAllocationPlanDeals ? otherInfo.dataCapAllocationPlanDeals : utils.parseOtherInfoIssue(issueBody).dataCapAllocationPlanDeals}
+${otherInfo.dataCapAllocationPlanDeals ? otherInfo.dataCapAllocationPlanDeals : ldnParser.parseOtherInfoIssue(issueBody).dataCapAllocationPlanDeals}
 \`\`\`
 
 Do you have the resources/funding to start making deals as soon as you receive DataCap? What support from the community would help you onboard onto Filecoin?
 \`\`\`
-${otherInfo.dataCapAllocationPlanHasResources ? otherInfo.dataCapAllocationPlanHasResources : utils.parseOtherInfoIssue(issueBody).dataCapAllocationPlanHasResources}
+${otherInfo.dataCapAllocationPlanHasResources ? otherInfo.dataCapAllocationPlanHasResources : ldnParser.parseOtherInfoIssue(issueBody).dataCapAllocationPlanHasResources}
 \`\`\`
 `
 
