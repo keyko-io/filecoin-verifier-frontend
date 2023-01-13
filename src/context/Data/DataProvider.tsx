@@ -57,6 +57,7 @@ interface DataProviderStates {
   getLDNIssuesAndTransactions: any;
   getLastUniqueId: any;
   approvedVerifiersData: any;
+  txsIssueGitHub: any;
 }
 
 interface DataProviderProps {
@@ -370,7 +371,6 @@ export default class DataProvider extends React.Component<
 
       },
       loadClientRequests: async () => {
-        console.log("started - loadClientRequests")
         try {
           if (this.props.github.githubLogged === false) {
             this.setState({
@@ -444,6 +444,7 @@ export default class DataProvider extends React.Component<
           const ldnIssueTxs = await this.state.getLDNIssuesAndTransactions()
           const txsIssueGitHub = ldnIssueTxs.filteredTxsIssue
 
+          this.setState({ txsIssueGitHub })
 
           const largeissues: any =
 
@@ -518,8 +519,6 @@ export default class DataProvider extends React.Component<
 
           // LARGE ISSUES: filecoin-plus-large-datasets  END /////////////////////
 
-          console.log("finished - loadClientRequests")
-
           this.setState({
             clientRequests: issues,
             largeClientRequests,
@@ -561,7 +560,6 @@ export default class DataProvider extends React.Component<
       approvedNotariesLoading: true,
       ldnRequestsLoading: true,
       loadVerifierAndPendingRequests: async () => {
-        console.log("loadVerifierAndPendingRequests - rkh")
         this.setState({ isPendingRequestLoading: true })
         try {
           if (this.props.github.githubOctoGeneric.logged === false) {
@@ -638,8 +636,6 @@ export default class DataProvider extends React.Component<
               }
             })
 
-          console.log("loadVerifierAndPendingRequests - finished")
-
           this.setState({
             verifierAndPendingRequests,
             approvedNotariesLoading: false,
@@ -666,8 +662,8 @@ export default class DataProvider extends React.Component<
       verifiedCachedData: null,
       acceptedNotariesLoading: false,
       approvedVerifiersData: null,
+      txsIssueGitHub: null,
       loadVerified: async (page: any) => {
-        console.log("loadVerified - rkh")
         try {
 
           if (this.state.verifiedCachedData && this.state.verifiedCachedData[page]) {
@@ -719,7 +715,6 @@ export default class DataProvider extends React.Component<
 
           this.setState({ verifiedCachedData: { ...this.state.verifiedCachedData, [page]: verified } })
 
-          console.log("load verified - finished")
           this.setState({ acceptedNotariesLoading: false })
           this.setState({ verified });
         } catch (error) {
@@ -727,12 +722,8 @@ export default class DataProvider extends React.Component<
         }
       },
       loadClients: async () => {
-        console.log("running - loadClients")
         try {
-
           const clients = await this.props.wallet.api.listVerifiedClients();
-
-          console.log(clients, "clients")
 
           let clientsAmount = clients
             .reduce(
@@ -742,8 +733,6 @@ export default class DataProvider extends React.Component<
             )
             .toString();
           this.setState({ clients, clientsAmount });
-
-          console.log("finished - loadClients")
         } catch (error) {
           console.error("error in resolving promises", error);
         }

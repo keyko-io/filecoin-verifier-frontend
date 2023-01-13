@@ -10,9 +10,19 @@ import "./Overview.scss"
 class Overview extends Component<{}> {
     public static contextType = Data
 
+    state = {
+        approvedNotariesLoading: false,
+        approvedNotariesLength: null
+    }
+
     async componentDidMount() {
         this.context.github.checkToken()
+
         this.context.loadClients()
+
+        this.setState({ approvedNotariesLoading: true })
+        const approvedNotariesLength = (await this.context.wallet.api.listVerifiers()).length
+        this.setState({ approvedNotariesLoading: false, approvedNotariesLength })
     }
 
     public render() {
@@ -49,14 +59,12 @@ class Overview extends Component<{}> {
                             </div>
                             <div className="textinfodatablock">
                                 <div className="data">{
-                                    this.context?.approvedVerifiersData?.length ?
-                                        this.context.approvedVerifiersData.length
-
-                                        :
+                                    this.state.approvedNotariesLoading ?
                                         <div>
                                             <span className="zeroOpaque">0</span>
                                             <BeatLoader size={15} color={"rgb(24,160,237)"} />
                                         </div>
+                                        : this.state.approvedNotariesLength
 
                                 }</div>
                                 <div className="text">Approved Notaries</div>

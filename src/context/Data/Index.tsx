@@ -3,6 +3,7 @@ import React from 'react'
 
 export const Data = React.createContext({
   getLastUniqueId: any,
+  txsIssueGitHub: [] as any,
   loadClientRequests: async () => { },
   clientRequests: [] as any,
   largeClientRequests: [] as any,

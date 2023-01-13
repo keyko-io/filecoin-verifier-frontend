@@ -46,7 +46,6 @@ export default class RootKeyHolder extends Component<{},
   };
 
   componentDidMount() {
-    console.log("running rkh view")
     this.context.loadVerifierAndPendingRequests();
     this.context.loadVerified(1)
   }
