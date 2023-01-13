@@ -315,7 +315,7 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
     dispatchCustomEvent({ name: "delete-modal", detail: {} });
     setApproveLoading(true)
     for (const request of context.clientRequests) {
-      if (selectedClientRequests.includes(request.issue_number)) {
+      if (selectedClientRequests.includes(request.number)) {
         let messageID = "";
         let address = "";
         let dc = request.data.datacap;
@@ -486,13 +486,13 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
             );
             action = "Approved";
           } else {
-            //it's a doublecheck
-            const isProposed = await checkAlreadyProposed(request.issue_number, context)
+            //it's a doublecheck //TODO redo it better, not really working
+            // const isProposed = await checkAlreadyProposed(request.issue_number, context)
 
-            if (isProposed) {
-              alert("Something is wrong. There is already one pending proposal for this issue. Please, contact the governance team.")
-              return
-            }
+            // if (isProposed) {
+            //   alert("Something is wrong. There is already one pending proposal for this issue. Please, contact the governance team.")
+            //   return
+            // }
 
             messageID = await context.wallet.api.multisigVerifyClient(
               request.multisig,

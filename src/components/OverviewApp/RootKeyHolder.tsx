@@ -11,7 +11,7 @@ import { BeatLoader } from "react-spinners";
 import { EVENT_TYPE, MetricsApiParams } from "../../utils/Metrics";
 import DataTable from "react-data-table-component";
 import { CircularProgress } from "@material-ui/core";
-import {ldnParser, notaryParser, metrics} from "@keyko-io/filecoin-verifier-tools";
+import { notaryParser, metrics } from "@keyko-io/filecoin-verifier-tools";
 
 
 
@@ -157,7 +157,7 @@ export default class RootKeyHolder extends Component<
           }
         }
       }
-    } catch (e:any) {
+    } catch (e: any) {
       this.setState({ approveLoading: false });
       this.context.wallet.dispatchNotification("Cancel failed: " + e.message);
       console.log("error", e.stack);
@@ -393,31 +393,19 @@ export default class RootKeyHolder extends Component<
                   .notaryRepo,
                 issue_number: request.issue_number,
               });
-              debugger
-          
-            const ldnIssueNameSplitted = notaryParser
-              .parseIssue(notaryGovissue.data.body)
-              .name.split(" ");
+            const notaryData = notaryParser.parseIssue(notaryGovissue.data.body)
+            const applicationName = notaryData.name
+            const applicationAddress = notaryData.address
 
-            const ldnIssueNumber =
-              ldnIssueNameSplitted[ldnIssueNameSplitted.length - 1];
-            const ldnIssue =
-              await this.context.github.githubOctoGeneric.octokit.issues.get({
-                owner: config.onboardingLargeOwner,
-                repo: config.onboardingLargeClientRepo,
-                issue_number: ldnIssueNumber,
-              });
-
-            const issueParsed = ldnParser.parseIssue(ldnIssue.data.body);
             const params: MetricsApiParams = {
-              name: issueParsed.name,
-              clientAddress: issueParsed.address,
+              name: applicationName || "not found",
+              clientAddress: applicationAddress || "not found",
               msigAddress: request.addresses[0] ? request.addresses[0] : "",
               messageCid: messageIds[0] ? messageIds[0] : "",
             };
-            metrics(
+            metrics.callMetricsApi(
               request.issue_number,
-              EVENT_TYPE.MULTISIG_APPROVED,
+              EVENT_TYPE.MULTISIG_CREATION,
               params,
               config.metrics_api_environment
             );
@@ -429,7 +417,7 @@ export default class RootKeyHolder extends Component<
               PHASE
             );
           }
-        } catch (e:any) {
+        } catch (e: any) {
           this.context.wallet.dispatchNotification("Failed: " + e.message);
 
           this.setState({ approveLoading: false });

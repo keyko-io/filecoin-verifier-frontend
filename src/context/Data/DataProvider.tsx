@@ -6,10 +6,10 @@ import { IssueBody } from "../../utils/IssueBody";
 import BigNumber from "bignumber.js";
 import _ from 'lodash'
 import { v4 as uuidv4 } from "uuid";
-import {bytesToiB } from "../../utils/Filters";
+import { bytesToiB } from "../../utils/Filters";
 import * as Sentry from "@sentry/react";
 import { notaryLedgerVerifiedComment } from './comments'
-import {ldnParser, notaryParser, commonUtils, simpleClientParser} from "@keyko-io/filecoin-verifier-tools";
+import { ldnParser, notaryParser, commonUtils, simpleClientParser } from "@keyko-io/filecoin-verifier-tools";
 import verifierRegistry from "../../data/verifiers-registry.json";
 
 interface DataProviderStates {
@@ -27,8 +27,6 @@ interface DataProviderStates {
   createRequest: any;
   selectedNotaryRequests: any[];
   selectNotaryRequest: any;
-  clientsGithub: any;
-  loadClientsGithub: any;
   loadClients: any;
   assignToIssue: any;
   clients: any[];
@@ -206,7 +204,7 @@ export default class DataProvider extends React.Component<
                 new Promise<any>(async (resolve, reject) => {
                   try {
                     const data = ldnParser.parseIssue(rawLargeIssue.body);
-                    if (data.correct) {
+                    if (data) {
                       const rawLargeClientComments =
                         await this.props.github.githubOcto.paginate(
                           this.props.github.githubOcto.issues.listComments,
@@ -221,6 +219,8 @@ export default class DataProvider extends React.Component<
                         issue: rawLargeIssue,
                         comments: rawLargeClientComments,
                       })
+                    } else {
+                      resolve({})
                     }
                   } catch (err) {
                     reject(err)
@@ -380,8 +380,8 @@ export default class DataProvider extends React.Component<
 
 
           // DIRECT ISSUES /////////////////////
-          //'filecoin-plus-client-onboarding
-          const rawIssues = await this.props.github.githubOcto.paginate(
+          // 'filecoin-plus-client-onboarding
+          const rawDirectIssues = await this.props.github.githubOcto.paginate(
             this.props.github.githubOcto.issues.listForRepo,
             {
               owner: config.onboardingOwner,
@@ -393,37 +393,16 @@ export default class DataProvider extends React.Component<
           );
 
           const issues: any[] = [];
-          let pendingLarge: any[] = [];
-
-          if (this.props.wallet.multisigID) {
-            const pendingLargeTxs =
-              await this.props.wallet.api.pendingTransactions(
-                this.props.wallet.multisigID
-              );
-            pendingLarge = await Promise.all(
-              pendingLargeTxs.map(async (tx: any) => {
-                const address = await this.props.wallet.api.actorKey(
-                  tx.parsed.params.address
-                );
-                // const address = "t01012"
-
-                return {
-                  address,
-                  tx,
-                };
-              })
-            );
-          }
 
 
 
-          for (const rawIssue of rawIssues) {
+          for (const rawIssue of rawDirectIssues) {
             //TODO TEST
             const data = simpleClientParser.parseIssue(rawIssue.body);
             if (
               data.correct &&
               rawIssue.assignees.find(
-                (a: any) => a.login === user.data.login
+                (a: any) => a.login === user.data.    login
               ) !== undefined
             ) {
               issues.push({
@@ -925,57 +904,12 @@ export default class DataProvider extends React.Component<
       },
       clients: [],
       clientsAmount: "",
-      clientsGithub: {},
-      loadClientsGithub: async () => {
-        if (this.props.github.githubLogged === false) {
-          this.setState({ clientsGithub: [] });
-          return;
-        }
-        const rawIssues = await this.props.github.githubOctoGeneric.octokit.paginate(
-          this.props.github.githubOctoGeneric.octokit.issues.listForRepo,
-          {
-            owner: config.onboardingOwner,
-            repo: config.onboardingClientRepo,
-            state: "closed",
-            labels: "state:Granted",
-          }
-        );
-
-        const issues: any = {};
-
-        await Promise.allSettled(
-          rawIssues.map(
-            (rawIssue: any) => new Promise<any>(async (resolve, reject) => {
-              const data = simpleClientParser.parseIssue(rawIssue.body);
-              try {
-                const address = await this.props.wallet.api.actorKey(data.address);
-
-                if (data.correct && address) {
-                  issues[address] = {
-                    number: rawIssue.number,
-                    url: rawIssue.html_url,
-                    data,
-                  }
-                }
-
-                resolve(null)
-              } catch (error) {
-                reject(error)
-              }
-            })
-          )
-        )
-        this.setState({
-          clientsGithub: issues,
-        });
-      },
       searchString: "",
       search: async (query: string) => {
         this.setState({ searchString: query });
       },
       refreshGithubData: async () => {
         this.state.loadClientRequests();
-        this.state.loadClientsGithub();
         this.state.loadVerifierAndPendingRequests();
       },
       isAddressVerified: false,

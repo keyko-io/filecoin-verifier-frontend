@@ -16,8 +16,6 @@ export const Data = React.createContext({
   createRequest: async (data: any) => { },
   selectedNotaryRequests: [] as any,
   selectNotaryRequest: any,
-  clientsGithub: any,
-  loadClientsGithub: any,
   search: any,
   searchUserIssues: any,
   refreshGithubData: async () => { },
@@ -31,13 +29,6 @@ export const Data = React.createContext({
   verifyWalletAddress: async () => { },
   checkVerifyWallet: async () => { },
   setIsVerifyWalletLoading: () => { },
-  // getLDNIssuesAndTransactions
-  // return value:
-  // both fields contain tx and associated issue
-  // some of them can have tx but no issue
-  // some of them can have issue but no tx
-  // transactionAndIssue is all the array no matter if issue is null
-  // filteredTxsIssue is the slice of transactionAndIssue where issues != null
   getLDNIssuesAndTransactions: () => { },
 
   postLogs: async (
