@@ -21,7 +21,6 @@ import Onboarding from './pages/Onboarding';
 import Landing from './pages/Landing';
 import history from './context/History';
 import LogExplorer from './pages/LogExplorer';
-import SecretTestPage from './pages/SecretTestPage';
 import './fonts/SuisseIntl-Regular.woff'
 import ClientDetails from './pages/ClientDetails'
 import { CookiesProvider } from 'react-cookie';
@@ -50,7 +49,7 @@ Sentry.init({
 const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement);
 
 root.render(
-  <React.StrictMode>
+  <>
     <CookiesProvider>
       <WalletProvider>
         <GithubProvider>
@@ -97,7 +96,7 @@ root.render(
         </GithubProvider>
       </WalletProvider>
     </CookiesProvider>
-  </React.StrictMode>,
+  </>,
 );
 
 // If you want your app to work offline and load faster, you can change
