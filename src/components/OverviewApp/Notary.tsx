@@ -14,7 +14,6 @@ import { BeatLoader } from "react-spinners";
 import { useContext } from "react";
 import WarnModalNotaryVerified from "../../modals/WarnModalNotaryVeried";
 import { LargeRequestTable, CancelProposalTable, NotaryTabs, PublicRequestTable, VerifiedClientsTable } from "./Notary/index";
-import { checkAlreadyProposed } from "../../utils/checkAlreadyProposed";
 import toast from 'react-hot-toast';
 import { ldnParser } from "@keyko-io/filecoin-verifier-tools";
 
@@ -323,15 +322,7 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
             "Verify Client Message sent with ID: " + messageID
           );
 
-
-
-
           context.loadClientRequests();
-
-
-
-
-
 
           sentryData = {
             requestNumber: request.issue_number,

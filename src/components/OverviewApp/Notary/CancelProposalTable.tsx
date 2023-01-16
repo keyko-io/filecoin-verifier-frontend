@@ -2,7 +2,8 @@ import { CircularProgress } from "@material-ui/core"
 import React, { useContext, useEffect, useState } from "react"
 import DataTable from "react-data-table-component"
 import { Data } from "../../../context/Data/Index"
-import largeUtils from "@keyko-io/filecoin-verifier-tools/utils/large-issue-parser";
+import { ldnParser } from "@keyko-io/filecoin-verifier-tools";
+
 
 export const cancelColumns: any = [
   {
@@ -91,7 +92,7 @@ const CancelProposalTable = ({ setCancelProposalData, dataCancel, dataCancelLoad
     const DataCancel = dataByActiveAccount.map((item: any) => {
 
       //getting client name
-      const { name } = largeUtils.parseIssue(item.issue[0].issueInfo.issue.body)
+      const { name } = ldnParser.parseIssue(item.issue[0].issueInfo.issue.body)
 
       //getting comment with the signer id
       const comment = item.issue[0].issueInfo.comments.filter((c: any) => c.body.includes(context.wallet.activeAccount)).reverse()
