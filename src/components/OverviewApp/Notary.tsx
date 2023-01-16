@@ -1,5 +1,5 @@
 
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Data } from "../../context/Data/Index";
 import AddClientModal from "../../modals/AddClientModal";
 // @ts-ignore
@@ -16,7 +16,8 @@ import WarnModalNotaryVerified from "../../modals/WarnModalNotaryVeried";
 import { LargeRequestTable, CancelProposalTable, NotaryTabs, PublicRequestTable, VerifiedClientsTable } from "./Notary/index";
 import { checkAlreadyProposed } from "../../utils/checkAlreadyProposed";
 import toast from 'react-hot-toast';
-import largeUtils from "@keyko-io/filecoin-verifier-tools/utils/large-issue-parser";
+import { ldnParser } from "@keyko-io/filecoin-verifier-tools";
+
 
 type NotaryProps = {
   clients: any[];
@@ -192,7 +193,7 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
         return;
       }
 
-      const parsedBody: ProposedRequestBody = largeUtils.parseApprovedRequestWithSignerAddress(cancelProposalData.comment.body)
+      const parsedBody: ProposedRequestBody = ldnParser.parseApprovedRequestWithSignerAddress(cancelProposalData.comment.body)
 
       const cancelRequestBody = (proposedCommentBody: ProposedRequestBody) => {
 
@@ -259,7 +260,7 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
     dispatchCustomEvent({ name: "delete-modal", detail: {} });
     setApproveLoading(true)
     for (const request of context.clientRequests) {
-      if (selectedClientRequests.includes(request.issue_number)) {
+      if (selectedClientRequests.includes(request.number)) {
         let messageID = "";
         let address = "";
         let dc = request.data.datacap;
@@ -321,7 +322,17 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
           context.wallet.dispatchNotification(
             "Verify Client Message sent with ID: " + messageID
           );
+
+
+
+
           context.loadClientRequests();
+
+
+
+
+
+
           sentryData = {
             requestNumber: request.issue_number,
             messageID: messageID,
@@ -420,13 +431,13 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
             );
             action = "Approved";
           } else {
-            //it's a doublecheck
-            const isProposed = await checkAlreadyProposed(request.issue_number, context)
+            //it's a doublecheck //TODO redo it better, not really working
+            // const isProposed = await checkAlreadyProposed(request.issue_number, context)
 
-            if (isProposed) {
-              alert("Something is wrong. There is already one pending proposal for this issue. Please, contact the governance team.")
-              return
-            }
+            // if (isProposed) {
+            //   alert("Something is wrong. There is already one pending proposal for this issue. Please, contact the governance team.")
+            //   return
+            // }
 
             messageID = await context.wallet.api.multisigVerifyClient(
               request.multisig,

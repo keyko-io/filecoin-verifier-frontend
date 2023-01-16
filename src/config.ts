@@ -46,7 +46,7 @@ const regions = [
 const localConfig = {
     apiUri: process.env.REACT_APP_API_URI || 'http://localhost:4000',
     apiToken: process.env.REACT_APP_API_TOKEN || '',
-    onboardingClientRepo: 'filecoin-clients-onboarding-test',
+    onboardingClientRepo: 'filecoin-clients-onboarding',
     onboardingOwner: 'keyko-io',
     onboardingLargeClientRepo: 'filecoin-large-clients-onboarding',
     onboardingLargeOwner: 'keyko-io',

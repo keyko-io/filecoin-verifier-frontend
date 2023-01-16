@@ -6,13 +6,10 @@ import { IssueBody } from "../../utils/IssueBody";
 import BigNumber from "bignumber.js";
 import _ from 'lodash'
 import { v4 as uuidv4 } from "uuid";
-import { anyToBytes, bytesToiB } from "../../utils/Filters";
+import { bytesToiB } from "../../utils/Filters";
 import * as Sentry from "@sentry/react";
 import { notaryLedgerVerifiedComment } from './comments'
-import utils from "@keyko-io/filecoin-verifier-tools/utils/issue-parser";
-import largeutils from "@keyko-io/filecoin-verifier-tools/utils/large-issue-parser";
-import commonUtils from "@keyko-io/filecoin-verifier-tools/utils/common-utils";
-import parser from "@keyko-io/filecoin-verifier-tools/utils/notary-issue-parser";
+import { ldnParser, notaryParser, commonUtils, simpleClientParser } from "@keyko-io/filecoin-verifier-tools";
 import verifierRegistry from "../../data/verifiers-registry.json";
 
 interface DataProviderStates {
@@ -183,7 +180,6 @@ export default class DataProvider extends React.Component<
         Sentry.captureMessage(breadCrumb.message);
       },
       getLDNIssuesAndTransactions: async () => {
-
         //GETTING ISSUES
         const rawLargeIssuesAll = await this.props.github.githubOcto.paginate(
           this.props.github.githubOcto.issues.listForRepo,
@@ -210,8 +206,8 @@ export default class DataProvider extends React.Component<
               (rawLargeIssue: any) =>
                 new Promise<any>(async (resolve, reject) => {
                   try {
-                    const data = largeutils.parseIssue(rawLargeIssue.body);
-                    if (data.correct) {
+                    const data = ldnParser.parseIssue(rawLargeIssue.body);
+                    if (data) {
                       const rawLargeClientComments =
                         await this.props.github.githubOcto.paginate(
                           this.props.github.githubOcto.issues.listComments,
@@ -226,6 +222,8 @@ export default class DataProvider extends React.Component<
                         issue: rawLargeIssue,
                         comments: rawLargeClientComments,
                       })
+                    } else {
+                      resolve({})
                     }
                   } catch (err) {
                     reject(err)
@@ -245,7 +243,7 @@ export default class DataProvider extends React.Component<
           const cmtsLength = resProm.value.comments.length
 
           for (let i = cmtsLength - 1; i >= 0; i--) {
-            const commentParsed = largeutils.parseReleaseRequest(comms[i].body)
+            const commentParsed = ldnParser.parseReleaseRequest(comms[i].body)
             if (commentParsed.correct) {
               const issueInMsig = issuesByMsig.find((item: any) => item.multisigAddress === commentParsed.notaryAddress)
               if (issueInMsig) {
@@ -385,8 +383,8 @@ export default class DataProvider extends React.Component<
 
 
           // DIRECT ISSUES /////////////////////
-          //'filecoin-plus-client-onboarding
-          const rawIssues = await this.props.github.githubOcto.paginate(
+          // 'filecoin-plus-client-onboarding
+          const rawDirectIssues = await this.props.github.githubOcto.paginate(
             this.props.github.githubOcto.issues.listForRepo,
             {
               owner: config.onboardingOwner,
@@ -398,30 +396,11 @@ export default class DataProvider extends React.Component<
           );
 
           const issues: any[] = [];
-          let pendingLarge: any[] = [];
-
-          if (this.props.wallet.multisigID) {
-            const pendingLargeTxs =
-              await this.props.wallet.api.pendingTransactions(
-                this.props.wallet.multisigID
-              );
-            pendingLarge = await Promise.all(
-              pendingLargeTxs.map(async (tx: any) => {
-                const address = await this.props.wallet.api.actorKey(
-                  tx.parsed.params.address
-                );
-
-                return {
-                  address,
-                  tx,
-                };
-              })
-            );
-          }
 
 
-          for (const rawIssue of rawIssues) {
-            const data = utils.parseIssue(rawIssue.body);
+
+          for (const rawIssue of rawDirectIssues) {
+            const data = simpleClientParser.parseIssue(rawIssue.body);
             if (
               data.correct &&
               rawIssue.assignees.find(
@@ -503,7 +482,7 @@ export default class DataProvider extends React.Component<
                       },
                       labels: elem.issue[0].issueInfo
                         .issue.labels.map((i: any) => i.name),
-                      data: largeutils.parseIssue(elem.issue[0].issueInfo.issue.body),
+                      data: ldnParser.parseIssue(elem.issue[0].issueInfo.issue.body),
                       signable: signable
                     }
                     resolve(obj)
@@ -540,7 +519,7 @@ export default class DataProvider extends React.Component<
           });
         const issues: any[] = [];
         for (const rawIssue of rawIssues.data.items) {
-          const data = utils.parseIssue(rawIssue.body);
+          const data = simpleClientParser.parseIssue(rawIssue.body);
           if (data.correct) {
             issues.push({
               number: rawIssue.number,
@@ -599,7 +578,7 @@ export default class DataProvider extends React.Component<
                 }
               )
 
-              const lastRequest = comments.map((c: any) => parser.parseApproveComment(c.body))
+              const lastRequest = comments.map((c: any) => notaryParser.parseApproveComment(c.body))
                 .filter((o: any) => o.correct).reverse()[0] || null
 
               const msigAddress = lastRequest?.address || null
@@ -665,7 +644,6 @@ export default class DataProvider extends React.Component<
       txsIssueGitHub: null,
       loadVerified: async (page: any) => {
         try {
-
           if (this.state.verifiedCachedData && this.state.verifiedCachedData[page]) {
             this.setState({ verified: this.state.verifiedCachedData[page] })
             return
@@ -692,7 +670,6 @@ export default class DataProvider extends React.Component<
                     let verifierAccount = await this.props.wallet.api.actorKey(
                       verifiedAddress.verifier
                     );
-
                     if (verifierAccount === verifiedAddress.verifier) {
                       verifierAccount =
                         await this.props.wallet.api.actorAddress(
@@ -732,6 +709,7 @@ export default class DataProvider extends React.Component<
               0
             )
             .toString();
+
           this.setState({ clients, clientsAmount });
         } catch (error) {
           console.error("error in resolving promises", error);
@@ -952,7 +930,6 @@ export default class DataProvider extends React.Component<
 
             await this.state.updateIsVerifiedAddress(true)
 
-            console.log("this.state.isAddressVerified in context", this.state.isAddressVerified)
 
             // get issue with that address
             // const rawIssues = await this.props.github.fetchGithubIssues('keyko-io', 'filecoin-notaries-onboarding', 'all', "Notary Application")
@@ -961,7 +938,7 @@ export default class DataProvider extends React.Component<
             let issueNumber = ''
             for (let issue of rawIssues) {
               //parse each issue
-              let parsedNotaryAddress = parser.parseNotaryAddress(issue.body)
+              let parsedNotaryAddress = notaryParser.parseNotaryAddress(issue.body)
               let address = parsedNotaryAddress ? parsedNotaryAddress.split(' ')[0] : ''
 
               // if the address is the one selected by user, set issue number 
@@ -1003,7 +980,7 @@ export default class DataProvider extends React.Component<
           let issueNumber = ''
           for (let issue of rawIssues) {
             // parse each issue
-            let parsedNotaryAddress = parser.parseNotaryAddress(issue.body)
+            let parsedNotaryAddress = notaryParser.parseNotaryAddress(issue.body)
             let address = parsedNotaryAddress ? parsedNotaryAddress.split(' ')[0] : ''
 
             // if the address is the one selected by user, set issue number 
@@ -1023,7 +1000,7 @@ export default class DataProvider extends React.Component<
           for (let comment of rawComments) {
             // return true if the verified notary comment is present
             // return false if not
-            const parsedComment = parser.parseNotaryLedgerVerifiedComment(comment.body)
+            const parsedComment = notaryParser.parseNotaryLedgerVerifiedComment(comment.body)
             if (parsedComment.correct) {
               return true
             }

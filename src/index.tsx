@@ -21,7 +21,6 @@ import Onboarding from './pages/Onboarding';
 import Landing from './pages/Landing';
 import history from './context/History';
 import LogExplorer from './pages/LogExplorer';
-import SecretTestPage from './pages/SecretTestPage';
 import './fonts/SuisseIntl-Regular.woff'
 import ClientDetails from './pages/ClientDetails'
 import { CookiesProvider } from 'react-cookie';

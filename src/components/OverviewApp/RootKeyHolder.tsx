@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import { Component } from "react";
 import { Data } from "../../context/Data/Index";
 import AddVerifierModal from "../../modals/AddVerifierModal";
 import RequestVerifierModal from "../../modals/RequestVerifierModal";
@@ -11,10 +11,12 @@ import { BeatLoader } from "react-spinners";
 import { EVENT_TYPE, MetricsApiParams } from "../../utils/Metrics";
 import DataTable from "react-data-table-component";
 import { CircularProgress } from "@material-ui/core";
+import { notaryParser, metrics } from "@keyko-io/filecoin-verifier-tools";
 
-import { callMetricsApi } from "@keyko-io/filecoin-verifier-tools/metrics/metrics";
-import parser from "@keyko-io/filecoin-verifier-tools/utils/notary-issue-parser";
-import largeutils from "@keyko-io/filecoin-verifier-tools/utils/large-issue-parser";
+
+
+
+
 
 type RootKeyHolderState = {
   tabs: string;
@@ -376,7 +378,7 @@ export default class RootKeyHolder extends Component<{},
               }
             );
           }
-          //METRICS
+          //metrics
           if (label === "status:AddedOnchain") {
             const notaryGovissue =
               await this.context.github.githubOctoGeneric.octokit.issues.get({
@@ -387,28 +389,19 @@ export default class RootKeyHolder extends Component<{},
                   .notaryRepo,
                 issue_number: request.issue_number,
               });
-            const ldnIssueNameSplitted = parser
-              .parseIssue(notaryGovissue.data.body)
-              .name.split(" ");
-            const ldnIssueNumber =
-              ldnIssueNameSplitted[ldnIssueNameSplitted.length - 1];
-            const ldnIssue =
-              await this.context.github.githubOctoGeneric.octokit.issues.get({
-                owner: config.onboardingLargeOwner,
-                repo: config.onboardingLargeClientRepo,
-                issue_number: ldnIssueNumber,
-              });
+            const notaryData = notaryParser.parseIssue(notaryGovissue.data.body)
+            const applicationName = notaryData.name
+            const applicationAddress = notaryData.address
 
-            const issueParsed = largeutils.parseIssue(ldnIssue.data.body);
             const params: MetricsApiParams = {
-              name: issueParsed.name,
-              clientAddress: issueParsed.address,
+              name: applicationName || "not found",
+              clientAddress: applicationAddress || "not found",
               msigAddress: request.addresses[0] ? request.addresses[0] : "",
               messageCid: messageIds[0] ? messageIds[0] : "",
             };
-            callMetricsApi(
+            metrics.callMetricsApi(
               request.issue_number,
-              EVENT_TYPE.MULTISIG_APPROVED,
+              EVENT_TYPE.MULTISIG_CREATION,
               params,
               config.metrics_api_environment
             );

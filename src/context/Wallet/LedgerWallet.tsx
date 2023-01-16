@@ -6,7 +6,7 @@ import TransportWebUSB from '@ledgerhq/hw-transport-webusb'
 // @ts-ignore
 import FilecoinApp from "@zondax/ledger-filecoin"
 import signer from "@zondax/filecoin-signing-tools/js"
-import VerifyAPI from '@keyko-io/filecoin-verifier-tools/api/api'
+import { VerifyAPI } from '@keyko-io/filecoin-verifier-tools'
 
 export class LedgerWallet {
 
