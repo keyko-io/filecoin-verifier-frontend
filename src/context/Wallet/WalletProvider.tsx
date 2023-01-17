@@ -213,7 +213,6 @@ class WalletProvider extends React.Component<Props, WalletProviderStates> {
                 multisigID: multisigID
             })
             return true
-            // this.loadGithub()
         } catch (e: any) {
             return false
         }

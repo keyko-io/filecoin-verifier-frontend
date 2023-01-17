@@ -14,17 +14,15 @@ import { BeatLoader } from "react-spinners";
 import { useContext } from "react";
 import WarnModalNotaryVerified from "../../modals/WarnModalNotaryVeried";
 import { LargeRequestTable, CancelProposalTable, NotaryTabs, PublicRequestTable, VerifiedClientsTable } from "./Notary/index";
-import { checkAlreadyProposed } from "../../utils/checkAlreadyProposed";
 import toast from 'react-hot-toast';
-import {ldnParser} from "@keyko-io/filecoin-verifier-tools";
+import { ldnParser } from "@keyko-io/filecoin-verifier-tools";
 
 
 type NotaryProps = {
   clients: any[];
-  searchString: string;
 };
 
-type CancelProposalData = {
+type CancelProposalDataType = {
   clientName: string,
   clientAddress: string,
   issueNumber: number,
@@ -49,13 +47,13 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
 
   const [selectedClientRequests, setSelectedClientRequests] = useState([] as any)
   const [selectedLargeClientRequests, setSelectedLargeClientRequests] = useState([] as any)
-  const [tabs, setTabs] = useState('1')
+  const [tabs, setTabs] = useState('3')
   const [approveLoading, setApproveLoading] = useState(false)
   const [approvedDcRequests, setApprovedDcRequests] = useState([] as any)
   const [dataForLargeRequestTable, setDataForLargeRequestTable] = useState([])
   const [largeRequestListLoading, setLargeRequestListLoading] = useState(false)
-  const [cancelProposalData, setCancelProposalData] = useState<CancelProposalData | null>(null)
-  const [dataCancel, setDataCancel] = useState<CancelProposalData[]>([])
+  const [cancelProposalData, setCancelProposalData] = useState<CancelProposalDataType | null>(null)
+  const [dataCancel, setDataCancel] = useState<CancelProposalDataType[]>([])
   const [dataCancelLoading, setDataCancelLoading] = useState(false)
 
   const changeStateTabs = (indexTab: string) => {
@@ -244,63 +242,10 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
 
   useEffect(() => {
     if (context.github.githubLogged) {
-      getPending()
+      context.loadClientRequests()
     }
   }, [context.wallet.activeAccount])
 
-  const getPending = async () => {
-
-    //get issue from the context
-    const LDNIssuesAndTransactions: any = await context.getLDNIssuesAndTransactions()
-
-    //get transactionData 
-    const transactionsData = LDNIssuesAndTransactions.transactionAndIssue.filter((item: any) => item.issue)
-
-    //this is converting id with the short version because we have short version in the array of signers
-    // let id = await context.wallet.api.actorAddress(context.wallet.activeAccount) ?  await context.wallet.api.actorAddress(context.wallet.activeAccount) : context.wallet.activeAccount
-    let id;
-    try {
-      id = await context.wallet.api.actorAddress(context.wallet.activeAccount)
-    } catch (error) {
-      id = context.wallet.activeAccount
-    }
-
-    const dataByActiveAccount: any = []
-
-    //check if the activeAccount id is in the array
-    for (let transaction of transactionsData) {
-      if (Array.isArray(transaction.tx)) {
-        for (let txId of transaction.tx) {
-          if (txId.signers.includes(id)) {
-            dataByActiveAccount.push(transaction)
-          }
-        }
-      }
-    }
-
-    //manipulate the data for the table and also the cancel function usage
-    const DataCancel = dataByActiveAccount.map((item: any) => {
-
-      //getting client name
-      const { name } = ldnParser.parseIssue(item.issue[0].issueInfo.issue.body)
-
-      //getting comment with the signer id
-      const comment = item.issue[0].issueInfo.comments.filter((c: any) => c.body.includes(context.wallet.activeAccount)).reverse()
-
-      return {
-        clientName: name,
-        clientAddress: item.clientAddress,
-        issueNumber: item.issue[0].issueInfo.issue_number,
-        datacap: item.issue[0].datacap,
-        url: item.issue[0].issueInfo.issue.html_url,
-        tx: item.tx[0],
-        comment: comment[0],
-        msig: item.multisigAddress
-      }
-    })
-
-    setDataCancel(DataCancel)
-  }
 
   useEffect(() => {
     const selectedTab = tabs === '1' ? 'Notary' : 'Large'
@@ -377,15 +322,7 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
             "Verify Client Message sent with ID: " + messageID
           );
 
-
-
-
           context.loadClientRequests();
-
-
-
-
-
 
           sentryData = {
             requestNumber: request.issue_number,
@@ -593,7 +530,6 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
 
     setLargeRequestListLoading(true)
     context.loadClientRequests()
-    getPending()
     setLargeRequestListLoading(false)
   };
 
@@ -603,9 +539,9 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
       "2": <VerifiedClientsTable verifiedClients={props.notaryProps.clients} />,
       "3": < LargeRequestTable largeRequestListLoading={largeRequestListLoading}
         setSelectedLargeClientRequests={setSelectedLargeClientRequests}
-        searchInput={props.notaryProps.searchString}
         dataForLargeRequestTable={dataForLargeRequestTable} />,
       "4": <CancelProposalTable dataCancel={dataCancel}
+        setDataCancel={setDataCancel}
         dataCancelLoading={dataCancelLoading}
         setCancelProposalData={setCancelProposalData} />
     }
@@ -614,6 +550,7 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
   }
 
   useEffect(() => {
+
     const data = context.largeClientRequests
       .map((item: any) => ({ ...item, data: item.data.name }))
       .map((item: any) => item.tx !== null ? item : { ...item, tx: "", })
@@ -677,7 +614,6 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
               scope="repo"
               onSuccess={async (response: any) => {
                 await context.github.loginGithub(response.code);
-                await context.refreshGithubData();
               }}
               onFailure={(response: any) => {
                 console.log("failure", response);
@@ -689,7 +625,6 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
             className="buttonsecondary"
             onClick={async () => {
               await context.github.logoutGithub();
-              await context.refreshGithubData();
             }}
           >
             Logout GitHub

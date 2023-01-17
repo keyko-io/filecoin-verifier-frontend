@@ -2,7 +2,6 @@ import { CircularProgress } from "@material-ui/core"
 import React, { useContext } from "react"
 import DataTable from "react-data-table-component"
 import { Data } from "../../../context/Data/Index"
-import { searchAllColumnsFromTable } from "../../../pages/tableUtils/searchAllColumnsFromTable"
 
 export const largeReqColumns: any = [
     {
@@ -61,11 +60,10 @@ export const largeReqColumns: any = [
 type LargeRequestTableProps = {
     setSelectedLargeClientRequests: any
     dataForLargeRequestTable: any
-    searchInput: any
     largeRequestListLoading: boolean
 }
 
-const LargeRequestTable = ({ setSelectedLargeClientRequests, largeRequestListLoading, dataForLargeRequestTable, searchInput }: LargeRequestTableProps) => {
+const LargeRequestTable = ({ setSelectedLargeClientRequests, largeRequestListLoading, dataForLargeRequestTable }: LargeRequestTableProps) => {
 
     const context = useContext(Data)
 
@@ -73,31 +71,36 @@ const LargeRequestTable = ({ setSelectedLargeClientRequests, largeRequestListLoa
 
     return (
         <div className="large-request-table" style={{ minHeight: "500px" }}>
-            <DataTable
-                columns={largeReqColumns}
-                selectableRowDisabled={(row) => !row.signable}
-                selectableRowsHighlight
-                selectableRows
-                selectableRowsNoSelectAll={true}
-                pagination
-                paginationRowsPerPageOptions={[10, 20, 30]}
-                paginationPerPage={10}
-                defaultSortFieldId={1}
-                noDataComponent="No large client requests yet"
-                onSelectedRowsChange={({ selectedRows }) => {
-                    const rowNumbers = selectedRows.map((row: any) => row.issue_number)
-                    setSelectedLargeClientRequests(rowNumbers)
-                }}
-                onRowClicked={(row: any) => {
-                    if (!row.signable) {
-                        context.wallet.dispatchNotification(CANT_SIGN_MESSAGE)
-                    }
-                }}
-                noContextMenu={true}
-                data={searchAllColumnsFromTable({ rows: dataForLargeRequestTable, query: searchInput })}
-                progressPending={largeRequestListLoading}
-                progressComponent={<CircularProgress style={{ marginTop: "100px", color: "#0090ff" }} />}
-            />
+            {context.ldnRequestsLoading ?
+                <div style={{ width: "100%" }} >
+                    <CircularProgress style={{ margin: "8rem auto", color: "#0090ff" }} />
+                </div>
+                :
+                <DataTable
+                    columns={largeReqColumns}
+                    selectableRowDisabled={(row) => !row.signable}
+                    selectableRowsHighlight
+                    selectableRows
+                    selectableRowsNoSelectAll={true}
+                    pagination
+                    paginationRowsPerPageOptions={[10, 20, 30]}
+                    paginationPerPage={10}
+                    defaultSortFieldId={1}
+                    noDataComponent="No large client requests yet"
+                    onSelectedRowsChange={({ selectedRows }) => {
+                        const rowNumbers = selectedRows.map((row: any) => row.issue_number)
+                        setSelectedLargeClientRequests(rowNumbers)
+                    }}
+                    onRowClicked={(row: any) => {
+                        if (!row.signable) {
+                            context.wallet.dispatchNotification(CANT_SIGN_MESSAGE)
+                        }
+                    }}
+                    noContextMenu={true}
+                    data={dataForLargeRequestTable}
+                    progressPending={largeRequestListLoading || context.ldnRequestsLoading}
+                    progressComponent={<CircularProgress style={{ margin: "4rem auto", color: "#0090ff" }} />}
+                />}
         </div>
 
     )

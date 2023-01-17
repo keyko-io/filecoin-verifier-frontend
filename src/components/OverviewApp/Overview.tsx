@@ -1,4 +1,4 @@
-import React, { Component, memo } from 'react';
+import { Component, memo } from 'react';
 import { Data } from '../../context/Data/Index';
 import { bytesToiB } from "../../utils/Filters"
 // @ts-ignore
@@ -7,40 +7,22 @@ import Notary from './Notary';
 import { BeatLoader } from "react-spinners";
 import "./Overview.scss"
 
-type OverviewStates = {
-    tabs: string
-    dcGrantedLoading: boolean
-    pendingNotariesLoading: boolean,
-    approvedNotariesLoading: boolean
-}
-
-class Overview extends Component<{}, OverviewStates> {
+class Overview extends Component<{}> {
     public static contextType = Data
-    interval: any
 
     state = {
-        tabs: '1',
-        dcGrantedLoading: true,
-        pendingNotariesLoading: true,
-        approvedNotariesLoading: true
+        approvedNotariesLoading: false,
+        approvedNotariesLength: null
     }
 
-    componentDidMount() {
-
+    async componentDidMount() {
         this.context.github.checkToken()
-        this.loadData()
 
-    }
+        this.context.loadClients()
 
-    componentWillUnmount() {
-        clearInterval(this.interval)
-    }
-
-
-    loadData = async () => {
-        await this.context.refreshGithubData()
-        await this.context.loadClients()
-        await this.context.loadVerified()
+        this.setState({ approvedNotariesLoading: true })
+        const approvedNotariesLength = (await this.context.wallet.api.listVerifiers()).length
+        this.setState({ approvedNotariesLoading: false, approvedNotariesLength })
     }
 
     public render() {
@@ -77,25 +59,25 @@ class Overview extends Component<{}, OverviewStates> {
                             </div>
                             <div className="textinfodatablock">
                                 <div className="data">{
-                                    this.context.approvedNotariesLoading ?
+                                    this.state.approvedNotariesLoading ?
                                         <div>
                                             <span className="zeroOpaque">0</span>
                                             <BeatLoader size={15} color={"rgb(24,160,237)"} />
                                         </div>
-                                        :
-                                        this.context.verified.length}</div>
+                                        : this.state.approvedNotariesLength
+
+                                }</div>
                                 <div className="text">Approved Notaries</div>
                             </div>
                         </div>
                     </div>
                 </div>
                 {this.context.viewroot ?
-                    <RootKeyHolder searchString={this.context.searchString} />
+                    <RootKeyHolder />
                     :
                     <Notary
                         notaryProps={{
                             clients: this.context.clients,
-                            searchString: this.context.searchString
                         }}
                     />
                 }

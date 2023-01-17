@@ -14,7 +14,7 @@ type WarnModalNotaryVerifiedProps = {
 }
 
 const WarnModalNotaryVerified = ({ onClick }: WarnModalNotaryVerifiedProps) => {
-    const { isVerifyWalletLoading, github, refreshGithubData } = useContext(Data)
+    const { isVerifyWalletLoading, github } = useContext(Data)
 
     const { oauthUri, githubApp } = config
 
@@ -40,7 +40,6 @@ const WarnModalNotaryVerified = ({ onClick }: WarnModalNotaryVerifiedProps) => {
                         scope="repo"
                         onSuccess={async (response: any) => {
                             await github.loginGithub(response.code);
-                            await refreshGithubData();
                         }}
                         onFailure={(response: any) => {
                             console.log("failure", response);
