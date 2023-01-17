@@ -21,7 +21,9 @@ interface DataProviderStates {
   viewroot: boolean;
   switchview: any;
   verified: any[];
+  verifiedCachedData: any;
   loadVerified: any;
+  acceptedNotariesLoading: boolean;
   updateGithubVerified: any;
   updateGithubVerifiedLarge: any;
   createRequest: any;
@@ -33,7 +35,6 @@ interface DataProviderStates {
   clientsAmount: string;
   search: any;
   searchString: string;
-  refreshGithubData: any;
   searchUserIssues: any;
   logToSentry: any;
   fetchLogs: any;
@@ -52,6 +53,8 @@ interface DataProviderStates {
   setIsVerifyWalletLoading: any;
   getLDNIssuesAndTransactions: any;
   getLastUniqueId: any;
+  approvedVerifiersData: any;
+  txsIssueGitHub: any;
 }
 
 interface DataProviderProps {
@@ -170,7 +173,7 @@ export default class DataProvider extends React.Component<
         let breadCrumb = {
           category,
           message,
-          level: level == "info" ? Sentry.Severity.Info : Sentry.Severity.Error,
+          level: level === "info" ? Sentry.Severity.Info : Sentry.Severity.Error,
           data,
         };
         Sentry.addBreadcrumb(breadCrumb);
@@ -401,7 +404,7 @@ export default class DataProvider extends React.Component<
             if (
               data.correct &&
               rawIssue.assignees.find(
-                (a: any) => a.login === user.data.    login
+                (a: any) => a.login === user.data.login
               ) !== undefined
             ) {
               issues.push({
@@ -420,6 +423,7 @@ export default class DataProvider extends React.Component<
           const ldnIssueTxs = await this.state.getLDNIssuesAndTransactions()
           const txsIssueGitHub = ldnIssueTxs.filteredTxsIssue
 
+          this.setState({ txsIssueGitHub })
 
           const largeissues: any =
 
@@ -489,13 +493,10 @@ export default class DataProvider extends React.Component<
                 )
               )
             )
-
           const largeClientRequests = largeissues.map((i: any) => i.value)
 
 
           // LARGE ISSUES: filecoin-plus-large-datasets  END /////////////////////
-
-
 
           this.setState({
             clientRequests: issues,
@@ -544,7 +545,6 @@ export default class DataProvider extends React.Component<
             await this.props.github.githubOctoGenericLogin();
           }
 
-
           const allIssues = await this.props.github.githubOctoGeneric.octokit.paginate(
             this.props.github.githubOctoGeneric.octokit.issues.listForRepo,
             {
@@ -553,22 +553,17 @@ export default class DataProvider extends React.Component<
               repo: config.lotusNodes[this.props.wallet.networkIndex]
                 .notaryRepo,
               state: "open",
+              labels: ["Notary Application"]
             }
           )
 
-          const msigTitle = "large dataset multisig request"
           const msigRequests = allIssues
-            .filter((issue: any) => issue.title.toLowerCase().includes(msigTitle))
             .filter((issue: any) => !issue.labels.find((l: any) => l.name === 'status:AddedOnchain'))
             .filter((issue: any) => issue.labels.find((l: any) => l.name === 'status:Approved' || l.name === "status:StartSignOnchain"))
 
-
-
           const pendingTxs =
             (await this.props.wallet.api.pendingRootTransactions())
-              .filter((ptx: any) => ptx.parsed.name == "addVerifier" || ptx.parsed.name == "removeVerifier")
-
-
+              .filter((ptx: any) => ptx.parsed.name === "addVerifier" || ptx.parsed.name === "removeVerifier")
 
           const requestsAndCommentsProm: any = await Promise.allSettled(
             msigRequests.map((issue: any) => new Promise<any>(async (resolve) => {
@@ -585,6 +580,7 @@ export default class DataProvider extends React.Component<
 
               const lastRequest = comments.map((c: any) => notaryParser.parseApproveComment(c.body))
                 .filter((o: any) => o.correct).reverse()[0] || null
+
               const msigAddress = lastRequest?.address || null
 
               const tx = pendingTxs.find((ptx: any) => ptx.parsed.params.verifier === msigAddress)
@@ -595,14 +591,11 @@ export default class DataProvider extends React.Component<
                 msigAddress,
                 tx
               })
-
-
             }))
           )
           const requestsAndComments = requestsAndCommentsProm
-            .filter((r: any) => r.status == "fulfilled")
+            .filter((r: any) => r.status === "fulfilled")
             .map((r: any) => r.value)
-
 
           const verifierAndPendingRequests = requestsAndComments.map(
             (r: any) => {
@@ -619,10 +612,8 @@ export default class DataProvider extends React.Component<
                 txs,
                 proposedBy,
                 proposed: proposedBy ? true : false
-
               }
             })
-
 
           this.setState({
             verifierAndPendingRequests,
@@ -646,16 +637,33 @@ export default class DataProvider extends React.Component<
           this.setState({ viewroot: true });
         }
       },
-
-
       verified: [],
-      loadVerified: async () => {
+      verifiedCachedData: null,
+      acceptedNotariesLoading: false,
+      approvedVerifiersData: null,
+      txsIssueGitHub: null,
+      loadVerified: async (page: any) => {
         try {
+          if (this.state.verifiedCachedData && this.state.verifiedCachedData[page]) {
+            this.setState({ verified: this.state.verifiedCachedData[page] })
+            return
+          }
 
-          const approvedVerifiers = await this.props.wallet.api.listVerifiers();
+          this.setState({ acceptedNotariesLoading: true })
+
+          let approvedVerifiers
+          if (this.state.approvedVerifiersData === null) {
+            approvedVerifiers = (await this.props.wallet.api.listVerifiers())
+            this.setState({ approvedVerifiersData: approvedVerifiers })
+          } else {
+            approvedVerifiers = this.state.approvedVerifiersData
+          }
+
+          const paginate = approvedVerifiers.slice((page - 1) * 10, page * 10)
+
           let verified: any = [];
-          await Promise.all(
-            approvedVerifiers.map(
+          await Promise.allSettled(
+            paginate.map(
               (verifiedAddress: any) =>
                 new Promise<any>(async (resolve, reject) => {
                   try {
@@ -668,12 +676,13 @@ export default class DataProvider extends React.Component<
                           verifiedAddress.verifier
                         );
                     }
+
                     verified.push({
                       verifier: verifiedAddress.verifier,
                       verifierAccount,
                       datacap: verifiedAddress.datacap,
                     });
-                    resolve(verified);
+                    resolve("ok")
                   } catch (error) {
                     reject(error);
                   }
@@ -681,15 +690,18 @@ export default class DataProvider extends React.Component<
             )
           );
 
+          this.setState({ verifiedCachedData: { ...this.state.verifiedCachedData, [page]: verified } })
+
+          this.setState({ acceptedNotariesLoading: false })
           this.setState({ verified });
         } catch (error) {
           console.error("error in resolving promises", error);
         }
       },
-
       loadClients: async () => {
         try {
           const clients = await this.props.wallet.api.listVerifiedClients();
+
           let clientsAmount = clients
             .reduce(
               (tot: any, el: any) =>
@@ -699,15 +711,6 @@ export default class DataProvider extends React.Component<
             .toString();
 
           this.setState({ clients, clientsAmount });
-
-          // this is making more 1400 calls, commenting for now
-          // await Promise.all(
-          //   clients.map(async (txs: any) => {
-          //     txs["key"] = await this.props.wallet.api.actorKey(txs.verified);
-          //   })
-          // );
-
-          // this.setState({ clients });
         } catch (error) {
           console.error("error in resolving promises", error);
         }
@@ -903,10 +906,6 @@ export default class DataProvider extends React.Component<
       searchString: "",
       search: async (query: string) => {
         this.setState({ searchString: query });
-      },
-      refreshGithubData: async () => {
-        this.state.loadClientRequests();
-        this.state.loadVerifierAndPendingRequests();
       },
       isAddressVerified: false,
       isPendingRequestLoading: false,

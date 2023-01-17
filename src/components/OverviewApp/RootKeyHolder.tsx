@@ -30,12 +30,7 @@ type RootKeyHolderState = {
   orderByRequest: string;
 };
 
-type RootKeyHolderProps = {
-  searchString: string;
-};
-
-export default class RootKeyHolder extends Component<
-  RootKeyHolderProps,
+export default class RootKeyHolder extends Component<{},
   RootKeyHolderState
 > {
   public static contextType = Data;
@@ -54,6 +49,7 @@ export default class RootKeyHolder extends Component<
 
   componentDidMount() {
     this.context.loadVerifierAndPendingRequests();
+    this.context.loadVerified(1)
   }
 
   showApproved = async () => {
@@ -136,7 +132,7 @@ export default class RootKeyHolder extends Component<
       for (const request of this.context.verifierAndPendingRequests) {
         if (request.id === id) {
           if (request.proposed === true) {
-            if (request.proposedBy != this.context.wallet.activeAccount) {
+            if (request.proposedBy !== this.context.wallet.activeAccount) {
               alert("You must be the proposer of the request  to cancel it! ");
               continue;
             }
@@ -332,7 +328,7 @@ export default class RootKeyHolder extends Component<
             );
           }
 
-          if (commentContent != "") {
+          if (commentContent !== "") {
             await this.context.github.githubOctoGeneric.octokit.issues.createComment(
               {
                 owner:
@@ -345,7 +341,7 @@ export default class RootKeyHolder extends Component<
               }
             );
           }
-          if (warningMessage != "") {
+          if (warningMessage !== "") {
             await this.context.github.githubOctoGeneric.octokit.issues.createComment(
               {
                 owner:
@@ -358,7 +354,7 @@ export default class RootKeyHolder extends Component<
               }
             );
           }
-          if (label != "") {
+          if (label !== "") {
             await this.context.github.githubOctoGeneric.octokit.issues.removeAllLabels(
               {
                 owner:
@@ -476,7 +472,7 @@ export default class RootKeyHolder extends Component<
                 this.showApproved();
               }}
             >
-              Accepted Notaries ({this.context.verified.length})
+              Accepted Notaries ({this.context?.approvedVerifiersData?.length})
             </div>
           </div>
           <div className="tabssadd">
@@ -499,114 +495,114 @@ export default class RootKeyHolder extends Component<
             ) : null}
           </div>
         </div>
-        {this.state.tabs === "0" ? (
-          !this.context.isPendingRequestLoading ? (
 
-            <div style={{ minHeight: "500px" }}>
-              <DataTable
-                columns={[
-                  {
-                    name: "Status",
-                    selector: (row: any) => row.proposed,
-                    sortable: true,
-                    cell: (row: any) => (
-                      <span>{row.proposed ? "Proposed" : "Pending"}</span>
-                    ),
-                  },
-                  {
-                    name: "Issue",
-                    selector: (row: any) => row.issue_number,
-                    sortable: true,
-                    cell: (row: any) => (
-                      <a
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        href={row.issue_Url}
-                      >
-                        #{row.issue_number}
-                      </a>
-                    ),
-                  },
-                  {
-                    name: "Address",
-                    selector: (row: any) => row.addresses,
-                    sortable: true,
-                  },
-                  {
-                    name: "Datacap",
-                    selector: (row: any) => row.datacaps,
-                    sortable: true,
-                  },
-                  {
-                    name: "Transaction ID",
-                    selector: (row: any) => row.txs,
-                    grow: 2,
-                    cell: (row: any) => (
-                      <span>{row.txs.length === 0 ? "-" : row.txs[0].id}</span>
-                    ),
-                  },
-                  {
-                    name: "Proposed by",
-                    selector: (row: any) => row.proposedBy,
-                    sortable: true,
-                    grow: 2,
-                  },
-                ]}
-                data={this.context.verifierAndPendingRequests}
-                pagination
-                paginationRowsPerPageOptions={[10, 20, 30]}
-                paginationPerPage={10}
-                selectableRows
-                noDataComponent="No pending requests yet"
-                selectableRowsHighlight={true}
-                selectableRowsNoSelectAll={true}
-                onSelectedRowsChange={({ selectedRows }) => {
-                  this.context.selectNotaryRequest(selectedRows);
-                }}
-              />
-            </div>
-
-          ) : (
-            <CircularProgress
-              style={{ margin: "200px 50%", color: "rgb(0, 144, 255)" }}
+        {this.state.tabs === "0" &&
+          <div style={{ minHeight: "500px" }}>
+            <DataTable
+              columns={[
+                {
+                  name: "Status",
+                  selector: (row: any) => row.proposed,
+                  sortable: true,
+                  cell: (row: any) => (
+                    <span>{row.proposed ? "Proposed" : "Pending"}</span>
+                  ),
+                },
+                {
+                  name: "Issue",
+                  selector: (row: any) => row.issue_number,
+                  sortable: true,
+                  cell: (row: any) => (
+                    <a
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      href={row.issue_Url}
+                    >
+                      #{row.issue_number}
+                    </a>
+                  ),
+                },
+                {
+                  name: "Address",
+                  selector: (row: any) => row.addresses,
+                  sortable: true,
+                },
+                {
+                  name: "Datacap",
+                  selector: (row: any) => row.datacaps,
+                  sortable: true,
+                },
+                {
+                  name: "Transaction ID",
+                  selector: (row: any) => row.txs,
+                  grow: 2,
+                  cell: (row: any) => (
+                    <span>{row.txs.length === 0 ? "-" : row.txs[0].id}</span>
+                  ),
+                },
+                {
+                  name: "Proposed by",
+                  selector: (row: any) => row.proposedBy,
+                  sortable: true,
+                  grow: 2,
+                },
+              ]}
+              data={this.context.verifierAndPendingRequests}
+              pagination
+              paginationRowsPerPageOptions={[10, 20, 30]}
+              paginationPerPage={10}
+              selectableRows
+              noDataComponent="No pending requests yet"
+              selectableRowsHighlight={true}
+              selectableRowsNoSelectAll={true}
+              progressPending={this.context.isPendingRequestLoading}
+              progressComponent={<CircularProgress
+                style={{ marginTop: "4rem", color: "rgb(0, 144, 255)" }}
+              />}
+              onSelectedRowsChange={({ selectedRows }) => {
+                this.context.selectNotaryRequest(selectedRows);
+              }}
             />
-          )
-        ) : null}
+          </div>
+        }
 
         {this.state.tabs === "2" &&
-          (this.context.verified.length > 0 ? (
-            <div style={{ minHeight: "500px" }}>
-              <DataTable
-                columns={[
-                  {
-                    name: "Notary",
-                    selector: (row: any) => row.verifier,
-                    sortable: true,
-                  },
-                  {
-                    name: "Address",
-                    selector: (row: any) => row.verifierAccount,
-                    sortable: true,
-                    grow: 2,
-                  },
-                  {
-                    name: "Datacap",
-                    selector: (row: any) => row.datacap,
-                    sortable: true,
-                    cell: (row: any) => <span>{bytesToiB(row.datacap)}</span>,
-                  },
-                ]}
-                data={this.context.verified}
-                pagination
-                paginationRowsPerPageOptions={[10, 20, 30]}
-                paginationPerPage={10}
-              />
-            </div>
-          ) : (
-            <CircularProgress
-              style={{ margin: "200px 50%", color: "rgb(0, 144, 255)" }}
+          <div style={{ minHeight: "500px" }}>
+            <DataTable
+              columns={[
+                {
+                  name: "Notary",
+                  selector: (row: any) => row.verifier,
+                  sortable: true,
+                },
+                {
+                  name: "Address",
+                  selector: (row: any) => row.verifierAccount,
+                  sortable: true,
+                  grow: 2,
+                },
+                {
+                  name: "Datacap",
+                  selector: (row: any) => row.datacap,
+                  sortable: true,
+                  cell: (row: any) => <span>{bytesToiB(row.datacap)}</span>,
+                },
+              ]}
+              data={this.context.verified}
+              pagination
+              paginationServer
+              paginationTotalRows={this.context?.approvedVerifiersData?.length}
+              onChangePage={(page) => {
+                this.context.loadVerified(page)
+              }}
+              progressPending={this.context.acceptedNotariesLoading}
+              progressComponent={<CircularProgress
+                style={{ marginTop: "4rem", color: "rgb(0, 144, 255)" }}
+              />}
+              paginationRowsPerPageOptions={[10]}
             />
-          ))}
+          </div>
+        }
       </div>
     );
   }

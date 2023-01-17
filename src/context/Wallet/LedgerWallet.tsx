@@ -68,7 +68,7 @@ export class LedgerWallet {
     return this
   }
 
-  public getAccounts = async (nStart = 0, nEnd = 15) => {
+  public getAccounts = async (nStart = 0, nEnd = 10) => {
     const paths = []
     for (let i = nStart; i < nEnd; i += 1) {
       paths.push(`m/44'/${this.lotusNode.code}'/0'/0/${i}`)

@@ -3,12 +3,14 @@ import React from 'react'
 
 export const Data = React.createContext({
   getLastUniqueId: any,
+  txsIssueGitHub: [] as any,
   loadClientRequests: async () => { },
   clientRequests: [] as any,
   largeClientRequests: [] as any,
   loadVerifierAndPendingRequests: any,
   verifierAndPendingRequests: [] as any,
   viewroot: false,
+  approvedVerifiersData: null,
   switchview: async () => { },
   verified: [] as any,
   loadVerified: async () => { },
@@ -18,7 +20,6 @@ export const Data = React.createContext({
   selectNotaryRequest: any,
   search: any,
   searchUserIssues: any,
-  refreshGithubData: async () => { },
   logToSentry: (category: string, message: string, level: "info" | "error", data: Map<string, any>) => { },
   approvedNotariesLoading: true,
   ldnRequestsLoading: true,
