@@ -240,11 +240,13 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
     }
   }
 
+  const isGithubLogged = context.github.githubLogged
+
   useEffect(() => {
-    if (context.github.githubLogged) {
+    if (isGithubLogged) {
       context.loadClientRequests()
     }
-  }, [context.wallet.activeAccount])
+  }, [isGithubLogged])
 
 
   useEffect(() => {
