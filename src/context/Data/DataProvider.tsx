@@ -384,8 +384,6 @@ export default class DataProvider extends React.Component<
           const user =
             await this.props.github.githubOcto.users.getAuthenticated();
 
-          console.log(this.props.github)
-
           // DIRECT ISSUES /////////////////////
           // 'filecoin-plus-client-onboarding
           const rawDirectIssues = await this.props.github.githubOcto.paginate(
@@ -400,8 +398,6 @@ export default class DataProvider extends React.Component<
           );
 
           const issues: any[] = [];
-
-
 
           for (const rawIssue of rawDirectIssues) {
             const data = simpleClientParser.parseIssue(rawIssue.body);

@@ -61,12 +61,14 @@ export default class WalletProvider extends React.Component<{}, WalletProviderSt
                 const expiration = new Date().getTime() + (Number(authjson.data.expires_in) * 1000)
                 localStorage.setItem('tokenExpiration', expiration.toString())
                 localStorage.setItem('githubToken', authjson.data.access_token)
-                this.state.initGithubOcto(authjson.data.access_token)
-                console.log(this.state.githubLogged, "wowwoww", this.state.githubOcto)
+                this.state.initGithubOcto(authjson.data.access_token) //here
+
+                console.log(this.state.githubLogged, this.state.githubOcto)
+
                 const { login, avatar_url } = (await this.state.githubOcto.users.getAuthenticated()).data
+
                 localStorage.setItem("avatar", avatar_url)
                 this.setState({ loggedUser: login, avatarUrl: avatar_url })
-                console.log(this.state.githubLogged, "no where idk", this.state.githubOcto)
             } catch (e: any) {
                 // this.state.dispatchNotification('Failed to login. Try again later.')
                 console.error(e, "error message")

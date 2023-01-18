@@ -244,7 +244,6 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
 
   useEffect(() => {
     if (isGithubLogged) {
-      console.log(isGithubLogged, "yandii -- ** 111 ** 111")
       context.loadClientRequests()
     }
   }, [isGithubLogged])
