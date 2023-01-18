@@ -181,16 +181,22 @@ export default class DataProvider extends React.Component<
       },
       getLDNIssuesAndTransactions: async () => {
         //GETTING ISSUES
-        const rawLargeIssuesAll = await this.props.github.githubOcto.paginate(
-          this.props.github.githubOcto.issues.listForRepo,
-          {
-            owner: config.onboardingLargeOwner,
-            repo: config.onboardingLargeClientRepo,
-            assignee: "*",
-            state: "open",
-            labels: "bot:readyToSign",
-          }
-        );
+
+        const rawLargeIssuesAll = await this.props.github.fetchGithubIssues(
+          config.onboardingLargeOwner,
+          config.onboardingLargeClientRepo,
+          'open',
+          "bot:readyToSign")
+        // const rawLargeIssuesAll = await this.props.github.githubOcto.paginate(
+        //   this.props.github.githubOcto.issues.listForRepo,
+        //   {
+        //     owner: config.onboardingLargeOwner,
+        //     repo: config.onboardingLargeClientRepo,
+        //     assignee: "*",
+        //     state: "open",
+        //     labels: "bot:readyToSign",
+        //   }
+        // );
 
 
         const rawLargeIssues = rawLargeIssuesAll.filter(
@@ -208,15 +214,22 @@ export default class DataProvider extends React.Component<
                   try {
                     const data = ldnParser.parseIssue(rawLargeIssue.body);
                     if (data) {
-                      const rawLargeClientComments =
-                        await this.props.github.githubOcto.paginate(
-                          this.props.github.githubOcto.issues.listComments,
-                          {
-                            owner: config.onboardingLargeOwner,
-                            repo: config.onboardingLargeClientRepo,
-                            issue_number: rawLargeIssue.number,
-                          }
-                        );
+                      const rawLargeClientComments = await this.props.github.fetchGithubComments(
+                        config.onboardingLargeOwner,
+                        config.onboardingLargeClientRepo,
+                        rawLargeIssue.number)
+
+                      // const rawLargeClientComments =
+                      //   await this.props.github.githubOcto.paginate(
+                      //     this.props.github.githubOcto.issues.listComments,
+                      //     {
+                      //       owner: config.onboardingLargeOwner,
+                      //       repo: config.onboardingLargeClientRepo,
+                      //       issue_number: rawLargeIssue.number,
+                      //     }
+                      //   );
+
+
                       resolve({
                         issue_number: rawLargeIssue.number,
                         issue: rawLargeIssue,
@@ -386,16 +399,25 @@ export default class DataProvider extends React.Component<
 
           // DIRECT ISSUES /////////////////////
           // 'filecoin-plus-client-onboarding
-          const rawDirectIssues = await this.props.github.githubOcto.paginate(
-            this.props.github.githubOcto.issues.listForRepo,
-            {
-              owner: config.onboardingOwner,
-              repo: config.onboardingClientRepo,
-              assignee: "*",
-              state: "open",
-              labels: "state:Verifying",
-            }
-          );
+
+
+          const rawDirectIssues = await this.props.github.fetchGithubIssues(
+          config.onboardingOwner,
+          config.onboardingClientRepo,
+          'open',
+          "state:Verifying")
+
+
+          // const rawDirectIssues = await this.props.github.githubOcto.paginate(
+          //   this.props.github.githubOcto.issues.listForRepo,
+          //   {
+          //     owner: config.onboardingOwner,
+          //     repo: config.onboardingClientRepo,
+          //     assignee: "*",
+          //     state: "open",
+          //     labels: "state:Verifying",
+          //   }
+          // );
 
           const issues: any[] = [];
 
@@ -545,17 +567,28 @@ export default class DataProvider extends React.Component<
             await this.props.github.githubOctoGenericLogin();
           }
 
-          const allIssues = await this.props.github.githubOctoGeneric.octokit.paginate(
-            this.props.github.githubOctoGeneric.octokit.issues.listForRepo,
-            {
-              owner:
-                config.lotusNodes[this.props.wallet.networkIndex].notaryOwner,
-              repo: config.lotusNodes[this.props.wallet.networkIndex]
+
+
+          const allIssues = await this.props.github.fetchGithubIssues(
+          config.lotusNodes[this.props.wallet.networkIndex].notaryOwner,
+          config.lotusNodes[this.props.wallet.networkIndex]
                 .notaryRepo,
-              state: "open",
-              labels: ["Notary Application"]
-            }
-          )
+          'open',
+          "Notary Application")
+
+
+
+          // const allIssues = await this.props.github.githubOctoGeneric.octokit.paginate(
+          //   this.props.github.githubOctoGeneric.octokit.issues.listForRepo,
+          //   {
+          //     owner:
+          //       config.lotusNodes[this.props.wallet.networkIndex].notaryOwner,
+          //     repo: config.lotusNodes[this.props.wallet.networkIndex]
+          //       .notaryRepo,
+          //     state: "open",
+          //     labels: ["Notary Application"]
+          //   }
+          // )
 
           const msigRequests = allIssues
             .filter((issue: any) => !issue.labels.find((l: any) => l.name === 'status:AddedOnchain'))
@@ -566,17 +599,22 @@ export default class DataProvider extends React.Component<
               .filter((ptx: any) => ptx.parsed.name === "addVerifier" || ptx.parsed.name === "removeVerifier")
 
           const requestsAndCommentsProm: any = await Promise.allSettled(
-            msigRequests.map((issue: any) => new Promise<any>(async (resolve) => {
-              const comments = await this?.props?.github?.githubOctoGeneric?.octokit?.paginate(
-                this?.props?.github?.githubOctoGeneric?.octokit?.issues?.listComments,
-                {
-                  owner:
-                    config.lotusNodes[this.props.wallet.networkIndex].notaryOwner,
-                  repo: config.lotusNodes[this.props.wallet.networkIndex]
-                    .notaryRepo,
-                  issue_number: issue.number,
-                }
-              )
+            msigRequests.map((issue: any) => new Promise<any>(async (resolve, reject) => {
+              const comments = await this.props.github.fetchGithubComments(
+                config.lotusNodes[this.props.wallet.networkIndex].notaryOwner,
+                config.lotusNodes[this.props.wallet.networkIndex]
+                  .notaryRepo,
+                issue.number)
+              // const comments = await this?.props?.github?.githubOctoGeneric?.octokit?.paginate(
+              //   this?.props?.github?.githubOctoGeneric?.octokit?.issues?.listComments,
+              //   {
+              //     owner:
+              //       config.lotusNodes[this.props.wallet.networkIndex].notaryOwner,
+              //     repo: config.lotusNodes[this.props.wallet.networkIndex]
+              //       .notaryRepo,
+              //     issue_number: issue.number,
+              //   }
+              // )
 
               const lastRequest = comments.map((c: any) => notaryParser.parseApproveComment(c.body))
                 .filter((o: any) => o.correct).reverse()[0] || null
@@ -717,16 +755,20 @@ export default class DataProvider extends React.Component<
       },
       getLastUniqueId: async (issueNumber: number) => {
         try {
-          const data = await this.props.github.githubOcto.paginate(
-            this.props.github.githubOcto.issues.listComments,
-            {
-              owner: config.onboardingLargeOwner,
-              repo: config.onboardingLargeClientRepo,
-              issue_number: issueNumber,
-            })
+          const comments = await this.props.github.fetchGithubComments(
+            config.onboardingLargeOwner,
+            config.onboardingLargeClientRepo,
+            issueNumber)
+          // const data = await this.props.github.githubOcto.paginate(
+          // this.props.github.githubOcto.issues.listComments,
+          // {
+          //   owner: config.onboardingLargeOwner,
+          //   repo: config.onboardingLargeClientRepo,
+          //   issue_number: issueNumber,
+          // })
 
           const idPattern = /####\s*Id\s*\n>\s*(.*)/g
-          const comment = data.filter((item: any) => item.body.includes("## DataCap Allocation requested")).reverse()
+          const comment = comments.filter((item: any) => item.body.includes("## DataCap Allocation requested")).reverse()
           const Id = commonUtils.matchGroupLargeNotary(idPattern, comment[0].body)
           return Id
         } catch (error) {
@@ -932,7 +974,6 @@ export default class DataProvider extends React.Component<
 
 
             // get issue with that address
-            // const rawIssues = await this.props.github.fetchGithubIssues('keyko-io', 'filecoin-notaries-onboarding', 'all', "Notary Application")
             const rawIssues = await this.props.github.fetchGithubIssues(config.onboardingOwner, config.onboardingNotaryOwner, 'all', "Notary Application")
 
             let issueNumber = ''
