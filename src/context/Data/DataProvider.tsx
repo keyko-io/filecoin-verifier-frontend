@@ -239,8 +239,8 @@ export default class DataProvider extends React.Component<
         let issuesByMsig: any[] = []
 
         for (let resProm of comments) {
-          const comms = resProm.value.comments
-          const cmtsLength = resProm.value.comments.length
+          const comms = resProm?.value?.comments
+          const cmtsLength = resProm?.value?.comments?.length
 
           for (let i = cmtsLength - 1; i >= 0; i--) {
             const commentParsed = ldnParser.parseReleaseRequest(comms[i].body)
@@ -384,6 +384,7 @@ export default class DataProvider extends React.Component<
           const user =
             await this.props.github.githubOcto.users.getAuthenticated();
 
+          console.log(this.props.github)
 
           // DIRECT ISSUES /////////////////////
           // 'filecoin-plus-client-onboarding
