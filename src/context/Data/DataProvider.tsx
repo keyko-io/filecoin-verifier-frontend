@@ -247,13 +247,12 @@ export default class DataProvider extends React.Component<
           )
         )
 
-
         //GROUPING ISSUES BY MSIG
         let issuesByMsig: any[] = []
 
         for (let resProm of comments) {
-          const comms = resProm.value.comments
-          const cmtsLength = resProm.value.comments.length
+          const comms = resProm?.value?.comments
+          const cmtsLength = resProm?.value?.comments?.length
 
           for (let i = cmtsLength - 1; i >= 0; i--) {
             const commentParsed = ldnParser.parseReleaseRequest(comms[i].body)
@@ -329,7 +328,6 @@ export default class DataProvider extends React.Component<
         }
         )
 
-
         let transactionAndIssue = []
         for (let msigGroup of issuesByClientAddress) {
           const txsByCientList = txsGroupedByClientAddress
@@ -359,8 +357,6 @@ export default class DataProvider extends React.Component<
             }
           }
         }
-
-
 
         // getLDNIssuesAndTransactions
         // return value:
@@ -397,16 +393,15 @@ export default class DataProvider extends React.Component<
           const user =
             await this.props.github.githubOcto.users.getAuthenticated();
 
-
           // DIRECT ISSUES /////////////////////
           // 'filecoin-plus-client-onboarding
 
 
           const rawDirectIssues = await this.props.github.fetchGithubIssues(
-          config.onboardingOwner,
-          config.onboardingClientRepo,
-          'open',
-          "state:Verifying")
+            config.onboardingOwner,
+            config.onboardingClientRepo,
+            'open',
+            "state:Verifying")
 
 
           // const rawDirectIssues = await this.props.github.githubOcto.paginate(
@@ -421,8 +416,6 @@ export default class DataProvider extends React.Component<
           // );
 
           const issues: any[] = [];
-
-
 
           for (const rawIssue of rawDirectIssues) {
             const data = simpleClientParser.parseIssue(rawIssue.body);
@@ -532,7 +525,7 @@ export default class DataProvider extends React.Component<
           console.error(error);
           this.setState({ ldnRequestsLoading: false });
           this.props.wallet.dispatchNotification(
-            "Something went wrong. please try logging again"
+            "We could not load the data, please try again"
           );
         }
       },
@@ -573,11 +566,11 @@ export default class DataProvider extends React.Component<
 
 
           const allIssues = await this.props.github.fetchGithubIssues(
-          config.lotusNodes[this.props.wallet.networkIndex].notaryOwner,
-          config.lotusNodes[this.props.wallet.networkIndex]
-                .notaryRepo,
-          'open',
-          "Notary Application")
+            config.lotusNodes[this.props.wallet.networkIndex].notaryOwner,
+            config.lotusNodes[this.props.wallet.networkIndex]
+              .notaryRepo,
+            'open',
+            "Notary Application")
 
 
 
