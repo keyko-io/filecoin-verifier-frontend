@@ -109,7 +109,12 @@ class App extends Component<{}, States> {
   }
 
   refresh = () => {
-    this.child.current.loadData();
+    if (this.context.viewroot) {
+      this.context.loadVerifierAndPendingRequests();
+    }
+    if (!this.context.wiewroot && this.context.wallet.isLogged) {
+      this.context.loadClientRequests()
+    }
   }
 
   getVerifierAmount = (account: string) => {
@@ -174,7 +179,7 @@ class App extends Component<{}, States> {
           </div>
           <div className="headerLeftRight">
             <div className="refresh" onClick={this.refresh}>
-              {context.isPendingRequestLoading ? <RefreshIcon className="rotation" /> : <RefreshIcon />}
+              <RefreshIcon />
             </div>
             <div className="accountholder" onClick={(e) => this.openAccountSelect(e)} ref={this.modalRef}>
               {accountSelect ?
@@ -250,13 +255,13 @@ class App extends Component<{}, States> {
             <div>
               {
                 context.github.githubLogged ?
-                <div className="avatarContainer">
-                  <img className="avatarImage" src={localStorage.getItem("avatar") || context.github.avatarUrl} alt="user_profile_photo" />
-                </div>
-              :
-                <div className="avatarContainer">
-                  <img className="avatarImage" src="https://avatars.githubusercontent.com/u/72555788?v=4" alt="user_profile_photo" />
-                </div>}
+                  <div className="avatarContainer">
+                    <img className="avatarImage" src={localStorage.getItem("avatar") || context.github.avatarUrl} alt="user_profile_photo" />
+                  </div>
+                  :
+                  <div className="avatarContainer">
+                    <img className="avatarImage" src="https://avatars.githubusercontent.com/u/72555788?v=4" alt="user_profile_photo" />
+                  </div>}
             </div>
           </div>
         </div>

@@ -378,6 +378,9 @@ export default class DataProvider extends React.Component<
             });
             return;
           }
+
+          this.setState({ ldnRequestsLoading: true })
+
           const user =
             await this.props.github.githubOcto.users.getAuthenticated();
 
