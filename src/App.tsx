@@ -112,9 +112,12 @@ class App extends Component<{}, States> {
     if (this.context.viewroot) {
       this.context.loadVerifierAndPendingRequests();
     }
-    if (!this.context.wiewroot && this.context.wallet.isLogged) {
+
+    if (!this.context.wiewroot && localStorage.getItem("loggedUser")) {
       this.context.loadClientRequests()
     }
+
+    this.context.wallet.dispatchNotification("You should login first for this action!!")
   }
 
   getVerifierAmount = (account: string) => {
