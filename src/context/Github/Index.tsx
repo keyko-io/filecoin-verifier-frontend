@@ -10,5 +10,5 @@ export const Github = React.createContext({
     githubOctoGeneric: {},
     loggedUser:'',
     fetchGithubIssues: async (owner?:any,repo?:any, state?:any, labels?:any)=> {},
-    fetchGithubComments: async (owner?:any,repo?:any, issueNumber?:any)=> {}
+    fetchGithubComments: async (owner?:any,repo?:any, issueNumber?:any, issue?:any)=> {}
 })

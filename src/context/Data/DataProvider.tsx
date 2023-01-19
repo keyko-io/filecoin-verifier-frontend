@@ -217,7 +217,8 @@ export default class DataProvider extends React.Component<
                       const rawLargeClientComments = await this.props.github.fetchGithubComments(
                         config.onboardingLargeOwner,
                         config.onboardingLargeClientRepo,
-                        rawLargeIssue.number)
+                        rawLargeIssue.number,
+                        rawLargeIssue)
 
                       // const rawLargeClientComments =
                       //   await this.props.github.githubOcto.paginate(
@@ -600,7 +601,8 @@ export default class DataProvider extends React.Component<
                 config.lotusNodes[this.props.wallet.networkIndex].notaryOwner,
                 config.lotusNodes[this.props.wallet.networkIndex]
                   .notaryRepo,
-                issue.number)
+                issue.number,
+                issue)
               // const comments = await this?.props?.github?.githubOctoGeneric?.octokit?.paginate(
               //   this?.props?.github?.githubOctoGeneric?.octokit?.issues?.listComments,
               //   {
