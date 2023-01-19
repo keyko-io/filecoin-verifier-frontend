@@ -379,30 +379,16 @@ export default class DataProvider extends React.Component<
       },
       loadClientRequests: async () => {
         try {
-          if (this.props.github.githubLogged === false) {
-            this.setState({
-              clientRequests: [],
-              largeClientRequests: [],
-              ldnRequestsLoading: false,
-            });
-            return;
-          }
-
           this.setState({ ldnRequestsLoading: true })
-
-          const user =
-            await this.props.github.githubOcto.users.getAuthenticated();
 
           // DIRECT ISSUES /////////////////////
           // 'filecoin-plus-client-onboarding
-
 
           const rawDirectIssues = await this.props.github.fetchGithubIssues(
             config.onboardingOwner,
             config.onboardingClientRepo,
             'open',
             "state:Verifying")
-
 
           // const rawDirectIssues = await this.props.github.githubOcto.paginate(
           //   this.props.github.githubOcto.issues.listForRepo,
@@ -422,7 +408,7 @@ export default class DataProvider extends React.Component<
             if (
               data.correct &&
               rawIssue.assignees.find(
-                (a: any) => a.login === user.data.login
+                (a: any) => a.login === this.props.github.loggedUser
               ) !== undefined
             ) {
               issues.push({

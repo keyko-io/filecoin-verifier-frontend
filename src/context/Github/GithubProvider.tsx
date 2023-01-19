@@ -64,6 +64,7 @@ export default class WalletProvider extends React.Component<{}, WalletProviderSt
                 await this.state.initGithubOcto(authjson.data.access_token)
                 const { login, avatar_url } = (await this.state.githubOcto.users.getAuthenticated()).data
                 localStorage.setItem("avatar", avatar_url)
+                localStorage.setItem("loggedUser", login)
                 this.setState({ loggedUser: login, avatarUrl: avatar_url })
             } catch (e: any) {
                 // this.state.dispatchNotification('Failed to login. Try again later.')
@@ -144,13 +145,15 @@ export default class WalletProvider extends React.Component<{}, WalletProviderSt
 
     loadGithub() {
         const githubToken = localStorage.getItem('githubToken')!
+        const loggedUser = localStorage.getItem('loggedUser')!
         if (githubToken) {
             this.state.initGithubOcto(githubToken)
         }
+        if (loggedUser) {
+            this.setState({ loggedUser })
+        }
         this.state.githubOctoGenericLogin()
     }
-
-
 
 
     render() {
