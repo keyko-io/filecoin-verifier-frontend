@@ -87,9 +87,11 @@ export default class WalletProvider extends React.Component<{}, WalletProviderSt
         },
         logoutGithub: async () => {
             localStorage.removeItem('githubToken')
+            localStorage.removeItem('loggedUser')
             await this.setStateAsync({
                 githubLogged: false,
-                githubOcto: undefined
+                githubOcto: undefined,
+                loggedUser: null
             })
         },
         checkToken: async () => {
@@ -148,6 +150,9 @@ export default class WalletProvider extends React.Component<{}, WalletProviderSt
         const loggedUser = localStorage.getItem('loggedUser')!
         if (githubToken) {
             this.state.initGithubOcto(githubToken)
+        }
+        if (!githubToken) {
+            this.setState({ githubLogged: false })
         }
         if (loggedUser) {
             this.setState({ loggedUser })
