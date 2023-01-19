@@ -3,6 +3,7 @@ import { Github } from './Index'
 // @ts-ignore
 import { Octokit } from '@octokit/rest'
 import { config } from '../../config';
+import axios from "axios"
 
 interface WalletProviderStates {
     githubLogged: boolean
@@ -65,6 +66,7 @@ export default class WalletProvider extends React.Component<{}, WalletProviderSt
                 const { login, avatar_url } = (await this.state.githubOcto.users.getAuthenticated()).data
                 localStorage.setItem("avatar", avatar_url)
                 this.setState({ loggedUser: login, avatarUrl: avatar_url })
+                axios.defaults.headers.common['Authorization'] = `Bearer ${authjson.data.access_token}`
             } catch (e: any) {
                 // this.state.dispatchNotification('Failed to login. Try again later.')
                 console.log(e, "login github")
@@ -99,6 +101,7 @@ export default class WalletProvider extends React.Component<{}, WalletProviderSt
                 if (Number(expiration) <= actualTimestamp || expiration === 0) {
                     this.state.logoutGithub()
                 }
+                axios.defaults.headers.common['Authorization'] = `Bearer ${githubToken}` //test -using axios to fetch comments
             }
         },
         githubOctoGenericLogin: async () => {
@@ -125,17 +128,30 @@ export default class WalletProvider extends React.Component<{}, WalletProviderSt
             );
             return rawIssues
         },
-        fetchGithubComments: async (owner: any, repo: any, issueNumber: any) => {
+        fetchGithubComments: async (owner: any, repo: any, issueNumber: any, issue: any) => {
             try {
-                const rawComments = await this.state.githubOcto.paginate(
-                    this.state.githubOcto.issues.listComments,
+
+                // the following is for testing
+                if(!issue){
+                    const rawComments = await this.state.githubOctoGeneric.octokit.paginate(
+                    this.state.githubOctoGeneric.octokit.issues.listComments,
                     {
                         owner,
                         repo,
                         issue_number: issueNumber
                     }
                 );
+                // console.log("rawComments", rawComments)
                 return rawComments
+                }
+
+
+                const axiosComms = await axios.get(issue.comments_url)
+                // console.log("axiosComms", axiosComms.data)
+                return axiosComms.data
+
+
+
             } catch (error) {
                 console.log(error)
             }
