@@ -117,7 +117,9 @@ class App extends Component<{}, States> {
       this.context.loadClientRequests()
     }
 
-    this.context.wallet.dispatchNotification("You should login first for this action!!")
+    if (!this.context.wiewroot && !localStorage.getItem("loggedUser")) {
+      this.context.wallet.dispatchNotification("You should login first for this action!!")
+    }
   }
 
   getVerifierAmount = (account: string) => {
