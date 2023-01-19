@@ -1,4 +1,4 @@
-import React from 'react'
+import {version} from '../../../package.json';
 import logo from "../../svg/filecoin-logo.svg"
 import "./Footer.scss"
 
@@ -29,6 +29,11 @@ const Footer = () => {
           {resourcesLinks.map(resource => (<a key={resource.desc} href={resource.link} target="_blank" rel="noopener noreferrer">{resource.desc}</a>))}
 
         </div>
+      </div>
+      <div className='resources'>
+        <h3>Version</h3>
+        <span>v.{version}</span>
+       
       </div>
     </div >
   )
