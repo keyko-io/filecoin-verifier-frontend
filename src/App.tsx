@@ -47,7 +47,7 @@ class App extends Component<{}, States> {
   }
 
   closeModal = (e: any) => {
-    if (e.path[1] !== this.modalRef.current && !e.path.includes(this.viewSwitch.current)) {
+    if (e.path && e?.path[1] !== this.modalRef.current && !e.path.includes(this.viewSwitch.current)) {
       this.setState({ accountSelect: false })
     }
   }
@@ -112,9 +112,12 @@ class App extends Component<{}, States> {
     if (this.context.viewroot) {
       this.context.loadVerifierAndPendingRequests();
     }
-    if (!this.context.wiewroot && this.context.wallet.isLogged) {
+
+    if (!this.context.wiewroot && localStorage.getItem("loggedUser")) {
       this.context.loadClientRequests()
     }
+
+    this.context.wallet.dispatchNotification("You should login first for this action!!")
   }
 
   getVerifierAmount = (account: string) => {
