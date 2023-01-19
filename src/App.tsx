@@ -47,7 +47,7 @@ class App extends Component<{}, States> {
   }
 
   closeModal = (e: any) => {
-    if (e.path[1] !== this.modalRef.current && !e.path.includes(this.viewSwitch.current)) {
+    if (e.path && e?.path[1] !== this.modalRef.current && !e.path.includes(this.viewSwitch.current)) {
       this.setState({ accountSelect: false })
     }
   }
