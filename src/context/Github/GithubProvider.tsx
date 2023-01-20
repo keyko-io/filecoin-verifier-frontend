@@ -59,6 +59,7 @@ export default class WalletProvider extends React.Component<{}, WalletProviderSt
                     })
                 })
                 const authjson = await authrequest.json()
+                console.log("authrequest,authjson",authrequest,authjson)
                 const expiration = new Date().getTime() + (Number(authjson.data.expires_in) * 1000)
                 localStorage.setItem('tokenExpiration', expiration.toString())
                 localStorage.setItem('githubToken', authjson.data.access_token)
