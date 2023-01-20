@@ -72,7 +72,7 @@ export default class WalletProvider extends React.Component<{}, WalletProviderSt
             } catch (e: any) {
                 toast.error("Failed to login. Try again later.")
                 console.log(e, "login github")
-                this.setState({ loggedUser: null, githubLogged: false })
+                this.state.logoutGithub()
             }
         },
         initGithubOcto: async (token: string) => {
