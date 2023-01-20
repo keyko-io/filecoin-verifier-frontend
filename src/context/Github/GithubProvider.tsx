@@ -62,20 +62,28 @@ export default class WalletProvider extends React.Component<{}, WalletProviderSt
                         code
                     })
                 })
+
                 const authjson = await authrequest.json()
+
                 const expiration = new Date().getTime() + (Number(authjson.data.expires_in) * 1000)
+
                 localStorage.setItem('tokenExpiration', expiration.toString())
                 localStorage.setItem('githubToken', authjson.data.access_token)
+
                 await this.state.initGithubOcto(authjson.data.access_token)
+
                 const { login, avatar_url } = (await this.state.githubOcto.users.getAuthenticated()).data
+
                 localStorage.setItem("avatar", avatar_url)
                 localStorage.setItem("loggedUser", login)
+
                 this.setState({ loggedUser: login, avatarUrl: avatar_url })
                 axios.defaults.headers.common['Authorization'] = `Bearer ${authjson.data.access_token}`
+
             } catch (e: any) {
-                toast.error("Failed to login. Try again later.")
-                console.log(e, "login github")
                 this.state.logoutGithub()
+                toast.error("Failed to login. Try again later.")
+                console.log(e, "error occurred while login github")
             }
         },
         initGithubOcto: async (token: string) => {
