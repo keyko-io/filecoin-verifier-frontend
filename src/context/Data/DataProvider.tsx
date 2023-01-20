@@ -385,6 +385,8 @@ export default class DataProvider extends React.Component<
           // DIRECT ISSUES /////////////////////
           // 'filecoin-plus-client-onboarding
 
+          console.log(this.props.github)
+
           const rawDirectIssues = await this.props.github.fetchGithubIssues(
             config.onboardingOwner,
             config.onboardingClientRepo,
@@ -542,7 +544,7 @@ export default class DataProvider extends React.Component<
       clientRequests: [],
       largeClientRequests: [],
       approvedNotariesLoading: true,
-      ldnRequestsLoading: true,
+      ldnRequestsLoading: false,
       loadVerifierAndPendingRequests: async () => {
         this.setState({ isPendingRequestLoading: true })
         try {
@@ -550,16 +552,12 @@ export default class DataProvider extends React.Component<
             await this.props.github.githubOctoGenericLogin();
           }
 
-
-
           const allIssues = await this.props.github.fetchGithubIssues(
             config.lotusNodes[this.props.wallet.networkIndex].notaryOwner,
             config.lotusNodes[this.props.wallet.networkIndex]
               .notaryRepo,
             'open',
             "Notary Application")
-
-
 
           // const allIssues = await this.props.github.githubOctoGeneric.octokit.paginate(
           //   this.props.github.githubOctoGeneric.octokit.issues.listForRepo,

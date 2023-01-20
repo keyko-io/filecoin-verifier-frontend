@@ -4,6 +4,7 @@ import { Github } from './Index'
 import { Octokit } from '@octokit/rest'
 import { config } from '../../config';
 import axios from "axios"
+import toast from 'react-hot-toast';
 
 interface WalletProviderStates {
     githubLogged: boolean
@@ -69,8 +70,9 @@ export default class WalletProvider extends React.Component<{}, WalletProviderSt
                 this.setState({ loggedUser: login, avatarUrl: avatar_url })
                 axios.defaults.headers.common['Authorization'] = `Bearer ${authjson.data.access_token}`
             } catch (e: any) {
-                // this.state.dispatchNotification('Failed to login. Try again later.')
+                toast.error("Failed to login. Try again later.")
                 console.log(e, "login github")
+                this.setState({ loggedUser: null, githubLogged: false })
             }
         },
         initGithubOcto: async (token: string) => {
@@ -90,6 +92,8 @@ export default class WalletProvider extends React.Component<{}, WalletProviderSt
         logoutGithub: async () => {
             localStorage.removeItem('githubToken')
             localStorage.removeItem('loggedUser')
+            localStorage.removeItem('avatar')
+            localStorage.removeItem('tokenExpiration')
             await this.setStateAsync({
                 githubLogged: false,
                 githubOcto: undefined,
@@ -135,17 +139,17 @@ export default class WalletProvider extends React.Component<{}, WalletProviderSt
             try {
 
                 // the following is for testing
-                if(!issue){
+                if (!issue) {
                     const rawComments = await this.state.githubOctoGeneric.octokit.paginate(
-                    this.state.githubOctoGeneric.octokit.issues.listComments,
-                    {
-                        owner,
-                        repo,
-                        issue_number: issueNumber
-                    }
-                );
-                // console.log("rawComments", rawComments)
-                return rawComments
+                        this.state.githubOctoGeneric.octokit.issues.listComments,
+                        {
+                            owner,
+                            repo,
+                            issue_number: issueNumber
+                        }
+                    );
+                    // console.log("rawComments", rawComments)
+                    return rawComments
                 }
 
 
