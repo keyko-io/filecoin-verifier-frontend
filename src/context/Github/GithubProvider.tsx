@@ -41,6 +41,10 @@ export default class WalletProvider extends React.Component<{}, WalletProviderSt
         if (tokenIs === "not expired") {
             this.loadGithub()
         }
+
+        if (tokenIs === "expired") {
+            this.state.logoutGithub()
+        }
     }
 
     state = {
