@@ -514,7 +514,7 @@ export default class DataProvider extends React.Component<
           console.error(error);
           this.setState({ ldnRequestsLoading: false });
           this.props.wallet.dispatchNotification(
-            "We could not load the data, please try again"
+            "While loading data error happened, please try again"
           );
         }
       },

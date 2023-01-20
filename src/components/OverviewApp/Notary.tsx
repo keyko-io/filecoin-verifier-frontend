@@ -243,8 +243,7 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
   const isGithubLogged = context.github.githubLogged
 
   useEffect(() => {
-    if (isGithubLogged && context.github.loggedUser) {
-      console.log("runninggg...")
+    if (isGithubLogged) {
       context.loadClientRequests()
     }
   }, [isGithubLogged])
