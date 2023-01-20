@@ -28,7 +28,6 @@ export default class WalletProvider extends React.Component<{}, WalletProviderSt
     }
 
     initNetworkIndex = () => {
-
         const activeIndex = config.lotusNodes
             .map((node: any, index: number) => { return { name: node.name, index: index } })
             .filter((node: any, index: number) => config.networks.includes(node.name))
@@ -37,7 +36,11 @@ export default class WalletProvider extends React.Component<{}, WalletProviderSt
     }
 
     async componentDidMount() {
-        this.loadGithub()
+        const tokenIs = await this.state.checkToken()
+
+        if (tokenIs === "not expired") {
+            this.loadGithub()
+        }
     }
 
     state = {
@@ -107,8 +110,12 @@ export default class WalletProvider extends React.Component<{}, WalletProviderSt
                 const expiration = localStorage.getItem('tokenExpiration')! || 0
                 if (Number(expiration) <= actualTimestamp || expiration === 0) {
                     this.state.logoutGithub()
+                    return "expired"
                 }
+
                 axios.defaults.headers.common['Authorization'] = `Bearer ${githubToken}` //test -using axios to fetch comments
+
+                return "not expired"
             }
         },
         githubOctoGenericLogin: async () => {
@@ -166,6 +173,7 @@ export default class WalletProvider extends React.Component<{}, WalletProviderSt
     }
 
     loadGithub() {
+        console.log("running now in load github")
         const githubToken = localStorage.getItem('githubToken')!
         const loggedUser = localStorage.getItem('loggedUser')!
         if (githubToken) {

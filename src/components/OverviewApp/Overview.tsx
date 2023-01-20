@@ -16,8 +16,6 @@ class Overview extends Component<{}> {
     }
 
     async componentDidMount() {
-        this.context.github.checkToken()
-
         this.context.loadClients()
 
         this.setState({ approvedNotariesLoading: true })

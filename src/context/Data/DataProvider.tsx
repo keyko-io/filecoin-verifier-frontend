@@ -385,8 +385,6 @@ export default class DataProvider extends React.Component<
           // DIRECT ISSUES /////////////////////
           // 'filecoin-plus-client-onboarding
 
-          console.log(this.props.github)
-
           const rawDirectIssues = await this.props.github.fetchGithubIssues(
             config.onboardingOwner,
             config.onboardingClientRepo,
