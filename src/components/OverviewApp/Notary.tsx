@@ -541,7 +541,9 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
       "2": <VerifiedClientsTable verifiedClients={props.notaryProps.clients} />,
       "3": < LargeRequestTable largeRequestListLoading={largeRequestListLoading}
         setSelectedLargeClientRequests={setSelectedLargeClientRequests}
-        dataForLargeRequestTable={dataForLargeRequestTable} />,
+        dataForLargeRequestTable={dataForLargeRequestTable}
+        setDataForLargeRequestTable={setDataForLargeRequestTable}
+      />,
       "4": <CancelProposalTable dataCancel={dataCancel}
         setDataCancel={setDataCancel}
         dataCancelLoading={dataCancelLoading}
@@ -550,14 +552,6 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
 
     return tables[tabs]
   }
-
-  useEffect(() => {
-
-    const data = context.largeClientRequests
-      .map((item: any) => ({ ...item, data: item.data.name }))
-      .map((item: any) => item.tx !== null ? item : { ...item, tx: "", })
-    setDataForLargeRequestTable(data)
-  }, [context.largeClientRequests])
 
   return (
     <div className="main">
