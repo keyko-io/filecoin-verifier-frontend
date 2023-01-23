@@ -109,7 +109,11 @@ const LargeRequestTable = ({ setSelectedLargeClientRequests, largeRequestListLoa
                     paginationRowsPerPageOptions={[10, 20, 30]}
                     paginationPerPage={10}
                     defaultSortFieldId={1}
-                    noDataComponent={searched ? "We could not find the data you are looking for" : "No large client requests yet"}
+                    noDataComponent={searched ?
+                        <div style={{ marginTop: "7rem", fontSize: "1.5rem" }}>
+                            We could not find the data you are looking for :(
+                        </div>
+                        : "No large client requests yet"}
                     onSelectedRowsChange={({ selectedRows }) => {
                         const rowNumbers = selectedRows.map((row: any) => row.issue_number)
                         setSelectedLargeClientRequests(rowNumbers)
