@@ -90,7 +90,7 @@ const LargeRequestTable = ({ setSelectedLargeClientRequests, largeRequestListLoa
 
     return (
         <div className="large-request-table" style={{ minHeight: "500px" }}>
-            {!context.ldnRequestsLoading && <p style={{ margin: "0.8rem 1.8rem", color: "#373D3F" }}>
+            {!context.ldnRequestsLoading && <p style={{ margin: "0.8rem  1.2rem", color: "#373D3F" }}>
                 * <i style={{ textDecoration: "underline", textUnderlineOffset: "4px" }}>You can look for specific deals querying by "Client", "Address" and "Audit Trail" fields using the search box.</i>
             </p>}
             {context.ldnRequestsLoading ?
