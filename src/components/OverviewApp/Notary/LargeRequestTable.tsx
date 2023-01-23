@@ -2,7 +2,6 @@ import { CircularProgress } from "@material-ui/core"
 import { useContext, useEffect, useState } from "react"
 import DataTable from "react-data-table-component"
 import { Data } from "../../../context/Data/Index"
-import Tooltip from '@mui/material/Tooltip';
 
 export const largeReqColumns: any = [
     {
@@ -91,8 +90,8 @@ const LargeRequestTable = ({ setSelectedLargeClientRequests, largeRequestListLoa
 
     return (
         <div className="large-request-table" style={{ minHeight: "500px" }}>
-            {!context.ldnRequestsLoading && <p style={{ margin: "1rem 2rem" }}>
-                * <i>You can look for specific deals querying by "Client", "Address" and "Audit Trail" fields using the search box.</i>
+            {!context.ldnRequestsLoading && <p style={{ margin: "0.8rem 1.8rem", color: "#373D3F" }}>
+                * <i style={{ textDecoration: "underline", textUnderlineOffset: "4px" }}>You can look for specific deals querying by "Client", "Address" and "Audit Trail" fields using the search box.</i>
             </p>}
             {context.ldnRequestsLoading ?
                 <div style={{ width: "100%" }} >
