@@ -131,12 +131,9 @@ class App extends Component<{}, States> {
     return '0'
   }
 
-  updateSearch = () => {
-    this.context.search(this.state.search)
-  }
 
   handleChange = (e: any) => {
-    this.setState({ [e.target.name]: e.target.value } as any, this.updateSearch)
+    this.setState({ search: e.target.value })
   }
 
   handleSearch = async (event: any) => {
