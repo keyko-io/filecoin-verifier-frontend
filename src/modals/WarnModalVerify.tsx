@@ -33,7 +33,7 @@ class WarnModalVerify extends Component<ModalProps, ModalState> {
         if (this.props.origin === 'Notary') {
 
             for (const request of this.props.clientRequests) {
-                if (this.props.selectedClientRequests.includes(request.number)) {
+                if (this.props.selectedClientRequests.includes(request.issue_number)) {
                     requestToShow.push({
                         address: this.props.largeAddress ? request.address : request.data.address,
                         datacap: request.data.datacap ? request.data.datacap : request.datacap
