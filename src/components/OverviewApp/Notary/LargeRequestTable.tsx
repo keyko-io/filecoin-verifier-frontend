@@ -81,7 +81,7 @@ const LargeRequestTable = ({ setSelectedLargeClientRequests, largeRequestListLoa
         }
         if (context.searchString === "" && context.largeClientRequests) {
             const data = context.largeClientRequests
-                .map((item: any) => ({ ...item, data: item.data.name, searchBy: `${item.data.name} ${item.issue_number} ${item.address}` }))
+                .map((item: any) => ({ ...item, data: item.data.name, searchBy: `${item?.data?.name} ${item?.issue_number} ${item?.multisig} ${item?.address} ${item?.datacap} ${item?.tx?.id}` }))
                 .map((item: any) => item.tx !== null ? item : { ...item, tx: "", })
             setDataForLargeRequestTable(data)
         }
@@ -91,7 +91,7 @@ const LargeRequestTable = ({ setSelectedLargeClientRequests, largeRequestListLoa
     return (
         <div className="large-request-table" style={{ minHeight: "500px" }}>
             {!context.ldnRequestsLoading && <p style={{ margin: "0.8rem  1.2rem", color: "#373D3F" }}>
-                * <i style={{ textDecoration: "underline", textUnderlineOffset: "4px" }}>You can look for specific deals querying by "Client", "Address" and "Audit Trail" fields using the search box.</i>
+                * <i style={{ textDecoration: "underline", textUnderlineOffset: "4px" }}>You can use the searchbar to find a datacap request</i>
             </p>}
             {context.ldnRequestsLoading ?
                 <div style={{ width: "100%" }} >
