@@ -187,7 +187,7 @@ class App extends Component<{}, States> {
               placeholder="Search"
               onChange={this.handleChange}
             />
-            <IconButton type="button" style={{ marginRight: "10px" }} aria-label="search">
+            <IconButton type="button" aria-label="search">
               <SearchIcon onClick={this.handleSearch} sx={{ color: "rgb(0, 127, 255)", fontSize: "24px" }} />
             </IconButton>
           </Paper>
