@@ -8,7 +8,7 @@ import { Data } from '../context/Data/Index';
 import { config } from '../config';
 import { createParentComment, updateTemplate } from './issueUtils/templates';
 import { coreInfo, otherInfo, guidelines, regionOptions, labelsIssueCreation, steps, URL_README } from './issueUtils/constants';
-import {ldnParser} from "@keyko-io/filecoin-verifier-tools";
+import { ldnParser } from "@keyko-io/filecoin-verifier-tools";
 
 
 //view 0: log in with github 
@@ -41,8 +41,6 @@ class LdnApplication extends Component<LdnApplicationProps> {
     addressList: [] as string[],
     isIssueComplete: false
   }
-
-
 
 
   async componentDidMount() {

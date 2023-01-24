@@ -22,7 +22,7 @@ export const Data = React.createContext({
   searchUserIssues: any,
   logToSentry: (category: string, message: string, level: "info" | "error", data: Map<string, any>) => { },
   approvedNotariesLoading: true,
-  ldnRequestsLoading: true,
+  ldnRequestsLoading: false,
   updateContextState: (elementToUpdate: any, type: string) => { },
   isAddressVerified: false,
   isVerifyWalletLoading: false,

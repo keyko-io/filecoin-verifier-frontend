@@ -512,7 +512,7 @@ export default class DataProvider extends React.Component<
           console.error(error);
           this.setState({ ldnRequestsLoading: false });
           this.props.wallet.dispatchNotification(
-            "We could not load the data, please try again"
+            "While loading data error happened, please try again"
           );
         }
       },
@@ -542,7 +542,7 @@ export default class DataProvider extends React.Component<
       clientRequests: [],
       largeClientRequests: [],
       approvedNotariesLoading: true,
-      ldnRequestsLoading: true,
+      ldnRequestsLoading: false,
       loadVerifierAndPendingRequests: async () => {
         this.setState({ isPendingRequestLoading: true })
         try {
@@ -550,16 +550,12 @@ export default class DataProvider extends React.Component<
             await this.props.github.githubOctoGenericLogin();
           }
 
-
-
           const allIssues = await this.props.github.fetchGithubIssues(
             config.lotusNodes[this.props.wallet.networkIndex].notaryOwner,
             config.lotusNodes[this.props.wallet.networkIndex]
               .notaryRepo,
             'open',
             "Notary Application")
-
-
 
           // const allIssues = await this.props.github.githubOctoGeneric.octokit.paginate(
           //   this.props.github.githubOctoGeneric.octokit.issues.listForRepo,

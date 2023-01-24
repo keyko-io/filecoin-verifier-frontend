@@ -240,14 +240,13 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
     }
   }
 
-  const isGithubLogged = context.github.githubLogged
+  const user = context.github.loggedUser
 
   useEffect(() => {
-    if (isGithubLogged) {
+    if (user) {
       context.loadClientRequests()
     }
-  }, [isGithubLogged])
-
+  }, [user])
 
   useEffect(() => {
     const selectedTab = tabs === '1' ? 'Notary' : 'Large'

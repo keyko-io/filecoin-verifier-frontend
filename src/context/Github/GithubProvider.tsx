@@ -4,6 +4,7 @@ import { Github } from './Index'
 import { Octokit } from '@octokit/rest'
 import { config } from '../../config';
 import axios from "axios"
+import toast from 'react-hot-toast';
 
 interface WalletProviderStates {
     githubLogged: boolean
@@ -27,7 +28,6 @@ export default class WalletProvider extends React.Component<{}, WalletProviderSt
     }
 
     initNetworkIndex = () => {
-
         const activeIndex = config.lotusNodes
             .map((node: any, index: number) => { return { name: node.name, index: index } })
             .filter((node: any, index: number) => config.networks.includes(node.name))
@@ -36,7 +36,15 @@ export default class WalletProvider extends React.Component<{}, WalletProviderSt
     }
 
     async componentDidMount() {
-        this.loadGithub()
+        const tokenIs = await this.state.checkToken()
+
+        if (tokenIs === "not expired") {
+            this.loadGithub()
+        }
+
+        if (tokenIs === "expired") {
+            this.state.logoutGithub()
+        }
     }
 
     state = {
@@ -58,19 +66,28 @@ export default class WalletProvider extends React.Component<{}, WalletProviderSt
                         code
                     })
                 })
+
                 const authjson = await authrequest.json()
+
                 const expiration = new Date().getTime() + (Number(authjson.data.expires_in) * 1000)
+
                 localStorage.setItem('tokenExpiration', expiration.toString())
                 localStorage.setItem('githubToken', authjson.data.access_token)
+
                 await this.state.initGithubOcto(authjson.data.access_token)
+
                 const { login, avatar_url } = (await this.state.githubOcto.users.getAuthenticated()).data
+
                 localStorage.setItem("avatar", avatar_url)
                 localStorage.setItem("loggedUser", login)
+
                 this.setState({ loggedUser: login, avatarUrl: avatar_url })
                 axios.defaults.headers.common['Authorization'] = `Bearer ${authjson.data.access_token}`
+
             } catch (e: any) {
-                // this.state.dispatchNotification('Failed to login. Try again later.')
-                console.log(e, "login github")
+                this.state.logoutGithub()
+                toast.error("Failed to login. Try again later.")
+                console.log(e, "error occurred while login github")
             }
         },
         initGithubOcto: async (token: string) => {
@@ -90,6 +107,8 @@ export default class WalletProvider extends React.Component<{}, WalletProviderSt
         logoutGithub: async () => {
             localStorage.removeItem('githubToken')
             localStorage.removeItem('loggedUser')
+            localStorage.removeItem('avatar')
+            localStorage.removeItem('tokenExpiration')
             await this.setStateAsync({
                 githubLogged: false,
                 githubOcto: undefined,
@@ -103,8 +122,12 @@ export default class WalletProvider extends React.Component<{}, WalletProviderSt
                 const expiration = localStorage.getItem('tokenExpiration')! || 0
                 if (Number(expiration) <= actualTimestamp || expiration === 0) {
                     this.state.logoutGithub()
+                    return "expired"
                 }
+
                 axios.defaults.headers.common['Authorization'] = `Bearer ${githubToken}` //test -using axios to fetch comments
+
+                return "not expired"
             }
         },
         githubOctoGenericLogin: async () => {
@@ -135,17 +158,17 @@ export default class WalletProvider extends React.Component<{}, WalletProviderSt
             try {
 
                 // the following is for testing
-                if(!issue){
+                if (!issue) {
                     const rawComments = await this.state.githubOctoGeneric.octokit.paginate(
-                    this.state.githubOctoGeneric.octokit.issues.listComments,
-                    {
-                        owner,
-                        repo,
-                        issue_number: issueNumber
-                    }
-                );
-                // console.log("rawComments", rawComments)
-                return rawComments
+                        this.state.githubOctoGeneric.octokit.issues.listComments,
+                        {
+                            owner,
+                            repo,
+                            issue_number: issueNumber
+                        }
+                    );
+                    // console.log("rawComments", rawComments)
+                    return rawComments
                 }
 
 
@@ -162,6 +185,7 @@ export default class WalletProvider extends React.Component<{}, WalletProviderSt
     }
 
     loadGithub() {
+        console.log("running now in load github")
         const githubToken = localStorage.getItem('githubToken')!
         const loggedUser = localStorage.getItem('loggedUser')!
         if (githubToken) {
