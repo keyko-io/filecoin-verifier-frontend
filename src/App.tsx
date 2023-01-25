@@ -19,6 +19,10 @@ import LogAsNotaryModal from './modals/LogAsNotaryModal'
 import { Button } from '@material-ui/core';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import RefreshIcon from '@mui/icons-material/Refresh';
+import SearchIcon from '@mui/icons-material/Search';
+import Paper from '@mui/material/Paper';
+import InputBase from '@mui/material/InputBase';
+import IconButton from '@mui/material/IconButton';
 
 library.add(fab, far, fas)
 
@@ -131,12 +135,9 @@ class App extends Component<{}, States> {
     return '0'
   }
 
-  updateSearch = () => {
-    this.context.search(this.state.search)
-  }
 
   handleChange = (e: any) => {
-    this.setState({ [e.target.name]: e.target.value } as any, this.updateSearch)
+    this.setState({ search: e.target.value })
   }
 
   handleSearch = async (event: any) => {
@@ -173,15 +174,25 @@ class App extends Component<{}, States> {
               </Button>
             </div>
           </div>
-          <div className="search" >
-            <form onSubmit={this.handleSearch}>
-              <Input
-                name="search"
-                placeholder="Search"
-                onChange={this.handleChange}
-              />
-            </form>
-          </div>
+
+          {/* SEARCH COMPONENT */}
+          <Paper
+            component="form"
+            onSubmit={this.handleSearch}
+            sx={{ p: '2px 4px', display: 'flex', alignItems: 'center', width: 300, height: 40 }}
+            elevation={3}
+          >
+            <InputBase
+              sx={{ ml: 1, flex: 1 }}
+              placeholder="Search"
+              onChange={this.handleChange}
+            />
+            <IconButton type="button" aria-label="search">
+              <SearchIcon onClick={this.handleSearch} sx={{ color: "rgb(0, 127, 255)", fontSize: "24px" }} />
+            </IconButton>
+          </Paper>
+          {/* SEARCH COMPONENT */}
+
           <div className="headerLeftRight">
             <div className="refresh" onClick={this.refresh}>
               <RefreshIcon />
