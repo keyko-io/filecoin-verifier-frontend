@@ -13,11 +13,6 @@ import DataTable from "react-data-table-component";
 import { CircularProgress } from "@material-ui/core";
 import { notaryParser, metrics } from "@keyko-io/filecoin-verifier-tools";
 
-
-
-
-
-
 type RootKeyHolderState = {
   tabs: string;
   approveLoading: boolean;
@@ -171,8 +166,8 @@ export default class RootKeyHolder extends Component<{},
     for (const request of this.context.verifierAndPendingRequests) {
       if (this.context.selectedNotaryRequests.includes(request.id)) {
         const messageIds: any[] = [];
-        var commentContent = "";
-        var label = "";
+        let commentContent = "";
+        let label = "";
         let filfox = "";
         let errorMessage = "";
         let warningMessage = "";
