@@ -1,4 +1,3 @@
-import React from 'react';
 import Logo from '../../svg/logo.svg';
 import history from "../../context/History"
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
