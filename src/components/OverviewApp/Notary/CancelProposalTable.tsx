@@ -1,24 +1,34 @@
 import { CircularProgress } from "@material-ui/core"
-import React, { useContext, useEffect, useState } from "react"
+import { useContext, useEffect, useState } from "react"
 import DataTable from "react-data-table-component"
 import { Data } from "../../../context/Data/Index"
 import { ldnParser } from "@keyko-io/filecoin-verifier-tools";
 
+type DataCancelType = {
+  clientAddress: string,
+  clientName: string,
+  comment: any,
+  datacap: string,
+  issueNumber: number,
+  msig: string,
+  tx: any,
+  url?: string
+}
 
-export const cancelColumns: any = [
+export const cancelColumns = [
   {
     name: "Client Name",
-    selector: (row: any) => row.clientName,
+    selector: (row: DataCancelType) => row.clientName,
   },
   {
     name: "Client Address",
-    selector: (row: any) => row.clientAddress,
+    selector: (row: DataCancelType) => row.clientAddress,
     grow: 2,
   },
   {
     name: "Issue Number",
-    selector: (row: any) => row.issueNumber,
-    cell: (row: any) => (
+    selector: (row: DataCancelType) => row.issueNumber,
+    cell: (row: DataCancelType) => (
       <a
         target="_blank"
         rel="noopener noreferrer"
@@ -30,17 +40,17 @@ export const cancelColumns: any = [
   },
   {
     name: "TxId",
-    selector: (row: any) => row.tx.id,
+    selector: (row: DataCancelType) => row.tx.id,
   },
   {
     name: "Datacap",
-    selector: (row: any) => row.datacap,
+    selector: (row: DataCancelType) => row.datacap,
   },
 ]
 
 type CancelProposalTableProps = {
   setCancelProposalData: any,
-  dataCancel: any,
+  dataCancel: DataCancelType[],
   dataCancelLoading: boolean,
   setDataCancel: any,
 }
@@ -89,7 +99,7 @@ const CancelProposalTable = ({ setCancelProposalData, dataCancel, dataCancelLoad
     }
 
     //manipulate the data for the table and also the cancel function usage
-    const DataCancel = dataByActiveAccount.map((item: any) => {
+    const DataCancel: DataCancelType[] = dataByActiveAccount.map((item: any) => {
 
       //getting client name
       const { name } = ldnParser.parseIssue(item.issue[0].issueInfo.issue.body)
