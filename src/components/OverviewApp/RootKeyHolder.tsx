@@ -1,7 +1,6 @@
 import { Component } from "react";
 import { Data } from "../../context/Data/Index";
 import AddVerifierModal from "../../modals/AddVerifierModal";
-import RequestVerifierModal from "../../modals/RequestVerifierModal";
 // @ts-ignore
 import { ButtonPrimary, dispatchCustomEvent } from "slate-react-system";
 import { bytesToiB, anyToBytes } from "../../utils/Filters";
@@ -79,18 +78,6 @@ export default class RootKeyHolder extends Component<{},
     });
   };
 
-  requestVerifier = async () => {
-    dispatchCustomEvent({
-      name: "create-modal",
-      detail: {
-        id: Math.random()
-          .toString(36)
-          .replace(/[^a-z]+/g, "")
-          .substr(0, 5),
-        modal: <RequestVerifierModal />,
-      },
-    });
-  };
 
   showWarnPropose = async (e: any, origin: string, selected: any[]) => {
     await e.preventDefault();
@@ -167,8 +154,8 @@ export default class RootKeyHolder extends Component<{},
     for (const request of this.context.verifierAndPendingRequests) {
       if (this.context.selectedNotaryRequests.includes(request.id)) {
         const messageIds: any[] = [];
-        var commentContent = "";
-        var label = "";
+        let commentContent = "";
+        let label = "";
         let filfox = "";
         let errorMessage = "";
         let warningMessage = "";

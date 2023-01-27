@@ -1,4 +1,3 @@
-import React from 'react';
 // @ts-ignore
 import { ButtonPrimary } from "slate-react-system";
 import "./Option.scss"
