@@ -9,3 +9,17 @@ export type VerifiedData = ApprovedVerifiers & { verifierAccount: string }
 export type VerifiedCachedData = {
     [key: number]: VerifiedData[]
 }
+
+export interface LargeRequestData {
+    address: string;
+    approvals: number;
+    data: any;
+    datacap: string;
+    issue_number: number;
+    labels: any;
+    multisig: string;
+    proposer: any;
+    signable: boolean;
+    tx: any;
+    url: string;
+}

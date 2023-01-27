@@ -11,12 +11,12 @@ import * as Sentry from "@sentry/react";
 import { notaryLedgerVerifiedComment } from './comments'
 import { ldnParser, notaryParser, commonUtils, simpleClientParser } from "@keyko-io/filecoin-verifier-tools";
 import verifierRegistry from "../../data/verifiers-registry.json";
-import { ApprovedVerifiers, VerifiedCachedData, VerifiedData } from "../../type";
+import { ApprovedVerifiers, LargeRequestData, VerifiedCachedData, VerifiedData } from "../../type";
 
 interface DataProviderStates {
   loadClientRequests: any;
   clientRequests: any[];
-  largeClientRequests: any[];
+  largeClientRequests: LargeRequestData[];
   loadVerifierAndPendingRequests: any;
   verifierAndPendingRequests: any[];
   viewroot: boolean;
@@ -499,8 +499,7 @@ export default class DataProvider extends React.Component<
                 )
               )
             )
-          const largeClientRequests = largeissues.map((i: any) => i.value)
-
+          const largeClientRequests: LargeRequestData[] = largeissues.map((i: any) => i.value)
 
           // LARGE ISSUES: filecoin-plus-large-datasets  END /////////////////////
 
