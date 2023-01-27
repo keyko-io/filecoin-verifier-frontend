@@ -11,6 +11,7 @@ import * as Sentry from "@sentry/react";
 import { notaryLedgerVerifiedComment } from './comments'
 import { ldnParser, notaryParser, commonUtils, simpleClientParser } from "@keyko-io/filecoin-verifier-tools";
 import verifierRegistry from "../../data/verifiers-registry.json";
+import { ApprovedVerifiers, VerifiedCachedData, VerifiedData } from "../../type";
 
 interface DataProviderStates {
   loadClientRequests: any;
@@ -20,8 +21,8 @@ interface DataProviderStates {
   verifierAndPendingRequests: any[];
   viewroot: boolean;
   switchview: any;
-  verified: any[];
-  verifiedCachedData: any;
+  verified: VerifiedData[];
+  verifiedCachedData: VerifiedCachedData;
   loadVerified: any;
   acceptedNotariesLoading: boolean;
   updateGithubVerified: any;
@@ -656,11 +657,11 @@ export default class DataProvider extends React.Component<
         }
       },
       verified: [],
-      verifiedCachedData: null,
+      verifiedCachedData: [],
       acceptedNotariesLoading: false,
       approvedVerifiersData: null,
       txsIssueGitHub: null,
-      loadVerified: async (page: any) => {
+      loadVerified: async (page: number) => {
         try {
           if (this.state.verifiedCachedData && this.state.verifiedCachedData[page]) {
             this.setState({ verified: this.state.verifiedCachedData[page] })
@@ -669,7 +670,7 @@ export default class DataProvider extends React.Component<
 
           this.setState({ acceptedNotariesLoading: true })
 
-          let approvedVerifiers
+          let approvedVerifiers: ApprovedVerifiers[]
           if (this.state.approvedVerifiersData === null) {
             approvedVerifiers = (await this.props.wallet.api.listVerifiers())
             this.setState({ approvedVerifiersData: approvedVerifiers })
@@ -679,11 +680,11 @@ export default class DataProvider extends React.Component<
 
           const paginate = approvedVerifiers.slice((page - 1) * 10, page * 10)
 
-          let verified: any = [];
+          let verified: VerifiedData[] = [];
           await Promise.allSettled(
             paginate.map(
-              (verifiedAddress: any) =>
-                new Promise<any>(async (resolve, reject) => {
+              (verifiedAddress: ApprovedVerifiers) =>
+                new Promise<string>(async (resolve, reject) => {
                   try {
                     let verifierAccount = await this.props.wallet.api.actorKey(
                       verifiedAddress.verifier

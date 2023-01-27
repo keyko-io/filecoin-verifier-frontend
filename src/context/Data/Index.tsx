@@ -1,5 +1,6 @@
 import { any } from 'bluebird'
 import React from 'react'
+import { VerifiedData } from "../../type";
 
 export const Data = React.createContext({
   getLastUniqueId: any,
@@ -10,9 +11,9 @@ export const Data = React.createContext({
   loadVerifierAndPendingRequests: any,
   verifierAndPendingRequests: [] as any,
   viewroot: false,
-  approvedVerifiersData: null,
+  approvedVerifiersData: any,
   switchview: async () => { },
-  verified: [] as any,
+  verified: [] as VerifiedData[],
   loadVerified: async () => { },
   updateGithubVerified: async (requestNumber: any, messageID: string, address: string, datacap: number, signer: string, errorMessage: string) => { },
   createRequest: async (data: any) => { },
