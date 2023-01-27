@@ -2,7 +2,6 @@ import { config } from '../../config'
 import signer from "@zondax/filecoin-signing-tools/js"
 import { VerifyAPI } from '@keyko-io/filecoin-verifier-tools'
 export class BurnerWallet {
-
     // Notary: 
     // mnemonic: string = 'exit mystery juice city argue breeze film learn orange dynamic marine diary antenna road couple surge marine assume loop thought leader liquid rotate believe'
     //RKH
@@ -34,7 +33,7 @@ export class BurnerWallet {
         return this
     }
 
-    public selectNetwork = async (nodeIndex: any) => {
+    public selectNetwork = async (nodeIndex: number) => {
         this.lotusNode = config.lotusNodes[nodeIndex]
         this.loadWallet(this.networkIndex)
         return this
@@ -50,7 +49,7 @@ export class BurnerWallet {
         return accounts
     }
 
-    public sign = async (filecoinMessage: any, indexAccount: number) => {
+    public sign = async (filecoinMessage: string, indexAccount: number) => {
         const private_hexstring = signer.keyDerive(this.mnemonic, `m/44'/${this.lotusNode.code}'/0/0/${indexAccount}`, '').private_hexstring
         return signer.transactionSignLotus(
             filecoinMessage,
