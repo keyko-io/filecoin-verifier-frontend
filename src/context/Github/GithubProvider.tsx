@@ -14,7 +14,7 @@ interface WalletProviderStates {
     logoutGithub: any
     githubOctoGenericLogin: any
     githubOctoGeneric: any
-    loggedUser: any
+    loggedUser: string
     avatarUrl: any
     fetchGithubIssues: any
     fetchGithubComments: any
@@ -154,7 +154,7 @@ export default class WalletProvider extends React.Component<{}, WalletProviderSt
             );
             return rawIssues
         },
-        fetchGithubComments: async (owner: any, repo: any, issueNumber: any, issue: any) => {
+        fetchGithubComments: async (owner: string, repo: string, issueNumber: number, issue: any) => {
             try {
 
                 // the following is for testing
@@ -185,7 +185,6 @@ export default class WalletProvider extends React.Component<{}, WalletProviderSt
     }
 
     loadGithub() {
-        console.log("running now in load github")
         const githubToken = localStorage.getItem('githubToken')!
         const loggedUser = localStorage.getItem('loggedUser')!
         if (githubToken) {
