@@ -18,7 +18,7 @@ const LogAsNotaryModal = (props: ModalProps) => {
     const [multisig, setMultisig] = useState(false)
     const [address, setAddress] = useState("")
 
-    const loadWallet = async (type: any) => {
+    const loadWallet = async (type: string) => {
         try {
             const logged = await context.wallet.loadWallet(type, {
                 multisig: true,
