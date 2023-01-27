@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import DataTable from 'react-data-table-component'
 import Welcome from '../components/Welcome/Welcome'
-import { searchAllColumnsFromTable } from './tableUtils/searchAllColumnsFromTable';
 import TableContainer from './tableUtils/TableContainer/TableContainer';
 import TableSearchInput from './tableUtils/TableSearchInput/TableSearchInput';
 import TableRightCornerContainer from './tableUtils/TableRightCornerContainer/TableRightCornerContainer';
@@ -39,7 +38,7 @@ const Miners = () => {
         <DataTable
           title="Search for a Storage Provider"
           columns={columns}
-          data={searchAllColumnsFromTable({ rows: miners, query })}
+          data={miners as MinerData[]}
           pagination
           paginationRowsPerPageOptions={[10, 20, 30]}
           paginationPerPage={10}
