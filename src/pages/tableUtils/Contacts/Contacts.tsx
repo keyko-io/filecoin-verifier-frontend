@@ -1,11 +1,13 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import ContentCopyRoundedIcon from '@mui/icons-material/ContentCopyRounded';
 import CheckRoundedIcon from '@mui/icons-material/CheckRounded';
 import { CopyToClipboard } from "react-copy-to-clipboard"
 import LanguageRoundedIcon from '@mui/icons-material/LanguageRounded';
 import "./Contacts.scss"
 
-const Contacts = ({ slack, href }: any) => {
+type ContactProps = { slack: string, href: string }
+
+const Contacts = ({ slack, href }: ContactProps) => {
     const [isCopySlack, setIsCopySlack] = useState(false)
     const [isCopyMail, setIsCopyMail] = useState(false)
 
