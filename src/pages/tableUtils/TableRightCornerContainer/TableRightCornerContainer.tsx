@@ -1,7 +1,10 @@
-import React from 'react'
 import "./TableRightCornerContainer.scss"
 
-const TableRightCornerContainer = ({ children }: any) => {
+export interface TableRightCornerContainerProps {
+  children: React.ReactNode
+}
+
+const TableRightCornerContainer = ({ children }: TableRightCornerContainerProps) => {
   return (
     <div className='tableRightCorner_container'>{children}</div>
   )
