@@ -1,39 +1,40 @@
 import React from "react";
 import OpenInNewRoundedIcon from '@mui/icons-material/OpenInNewRounded';
 import Contacts from "./Contacts/Contacts";
+import { MinerData } from "./loadMiners";
 
 export const columns: any = [
   {
     name: "Storage Provider",
-    selector: (row: any) => row.name,
+    selector: (row: MinerData) => row.name,
     sortable: true,
 
   },
   {
     name: "Location",
-    selector: (row: any) => row.location,
+    selector: (row: MinerData) => row.location,
     sortable: true,
   },
   {
     name: "Provider ID",
-    selector: (row: any) => row.minerId,
+    selector: (row: MinerData) => row.minerId,
     sortable: true,
   },
   {
     name: "Contact Info",
-    selector: (row: any) => row.contacts.slack,
+    selector: (row: MinerData) => row.contacts.slack,
     sortable: true,
-    cell: (row: any) => <Contacts slack={row.contacts.slack} href={row.contacts.href} />
+    cell: (row: MinerData) => <Contacts slack={row.contacts.slack} href={row.contacts.href} />
   },
   {
     name: "Last Price for Verified Deals",
     sortable: true,
-    selector: (row: any) => row.verifiedPrice
+    selector: (row: MinerData) => row.verifiedPrice
   },
   {
     name: "Min Piece Size",
     sortable: true,
-    selector: (row: any) => row.minPieceSize,
+    selector: (row: MinerData) => row.minPieceSize,
     sortFunction: (x: any, y: any) => {
       //Custom sort function for minPieceSize
 

@@ -5,20 +5,21 @@ import { searchAllColumnsFromTable } from './tableUtils/searchAllColumnsFromTabl
 import TableContainer from './tableUtils/TableContainer/TableContainer';
 import TableSearchInput from './tableUtils/TableSearchInput/TableSearchInput';
 import TableRightCornerContainer from './tableUtils/TableRightCornerContainer/TableRightCornerContainer';
-import { loadData } from './tableUtils/loadMiners';
+import { loadData, MinerData } from './tableUtils/loadMiners';
 import { columns } from './tableUtils/minersColumns';
 import CircularProgress from '@mui/material/CircularProgress';
 
 
 const Miners = () => {
   const [query, setQuery] = useState<string>("")
-  const [miners, setMiners] = useState<any>([])
+  const [miners, setMiners] = useState<MinerData[] | undefined>(undefined)
   const [loading, setLoading] = useState<boolean>(true)
 
 
   useEffect(() => {
     const getData = async () => {
       const data = await loadData()
+      console.log(data, "hey")
       setMiners(data)
       setLoading(false)
     }
