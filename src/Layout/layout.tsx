@@ -4,10 +4,12 @@ import Footer from './Footer/Footer'
 import Header from './Header/Header'
 import { Toaster } from 'react-hot-toast';
 
+export interface LayoutProps {
+    children: React.ReactNode
+}
 
-const Layout = ({ children }: any) => {
+const Layout = ({ children }: LayoutProps) => {
     const excludeHeaderPaths = ['/app'];
-
 
     let { pathname } = useLocation();
 
