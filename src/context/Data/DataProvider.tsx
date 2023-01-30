@@ -14,7 +14,7 @@ import verifierRegistry from "../../data/verifiers-registry.json";
 import { ApprovedVerifiers, LargeRequestData, VerifiedCachedData, VerifiedData } from "../../type";
 
 interface DataProviderStates {
-  loadClientRequests: any;
+  loadClientRequests: () => Promise<void>;
   clientRequests: any[];
   largeClientRequests: LargeRequestData[];
   loadVerifierAndPendingRequests: any;

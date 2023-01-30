@@ -15,7 +15,7 @@ interface WalletProviderStates {
     githubOctoGenericLogin: any
     githubOctoGeneric: any
     loggedUser: string
-    avatarUrl: any
+    avatarUrl: string
     fetchGithubIssues: any
     fetchGithubComments: any
 }
