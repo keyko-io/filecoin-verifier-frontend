@@ -18,11 +18,7 @@ type RootKeyHolderState = {
   approveLoading: boolean;
   selectedTransactions: any[];
   refAccepted: any;
-  sortOrderAccepted: number;
-  orderByAccepted: string;
   refRequests: any;
-  sortOrderRequest: number;
-  orderByRequest: string;
 };
 
 export default class RootKeyHolder extends Component<{},
@@ -35,11 +31,8 @@ export default class RootKeyHolder extends Component<{},
     approveLoading: false,
     tabs: "0",
     refAccepted: {} as any,
-    sortOrderAccepted: -1,
-    orderByAccepted: "verifier",
     refRequests: {} as any,
-    orderByRequest: "addresses",
-    sortOrderRequest: -1,
+
   };
 
   componentDidMount() {
