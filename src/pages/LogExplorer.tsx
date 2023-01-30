@@ -1,8 +1,7 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 // @ts-ignore
 import Welcome from '../components/Welcome/Welcome'
 import { TextField, Button, CircularProgress } from '@material-ui/core';
-import { Data } from '../context/Data/Index'
 import { config } from '../config'
 import SearchIcon from '@mui/icons-material/Search';
 import history from '../context/History';
@@ -12,7 +11,6 @@ const NOTARY_PREFIX_URL = `https://github.com/${config.onboardingOwner}/${config
 const LDN_PREFIX_URL = `https://github.com/${config.onboardingOwner}/${config.onboardingLargeClientRepo}/issues/`
 
 const LogExplorer = () => {
-  const context: any = useContext(Data)
 
   const onTop = () => {
     window.scrollTo({
@@ -59,13 +57,36 @@ const LogExplorer = () => {
     setIssueNumber(e.target.value)
   }
 
+  const fetchLogs = async (issue_number: string) => {
+    try {
+      const res = (
+        await fetch(
+          "https://cbqluey8wa.execute-api.us-east-1.amazonaws.com/dev",
+          {
+            headers: { "x-api-key": config.loggerApiKey },
+            method: "POST",
+            body: JSON.stringify({
+              type: "GET_LOGS",
+              searchType: "issue_number",
+              operation: "=",
+              search: issue_number,
+            }),
+          }
+        )
+      ).json();
+      return res;
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
   const selectIssueNumber = async (issueNumberId?: string) => {
     setIsLogsLoading(true)
     setLogs([])
     setMaxLogsNumber(10)
     try {
       setSrchButtonDisabled(true)
-      const res = issueNumberId ? await context.fetchLogs(issueNumberId) : await context.fetchLogs(issueNumber)
+      const res = issueNumberId ? await fetchLogs(issueNumberId) : await fetchLogs(issueNumber)
       setLogs(formatItems(res.items))
       setSrchButtonDisabled(false)
       setIsLogsLoading(false)

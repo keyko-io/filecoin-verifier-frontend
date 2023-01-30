@@ -20,25 +20,25 @@ interface DataProviderStates {
   loadVerifierAndPendingRequests: () => Promise<void>;
   verifierAndPendingRequests: any[];
   viewroot: boolean;
-  switchview: any;
+  switchview: () => void;
   verified: VerifiedData[];
   verifiedCachedData: VerifiedCachedData;
-  loadVerified: any;
+  loadVerified: (page: number) => Promise<void>;
   acceptedNotariesLoading: boolean;
-  updateGithubVerified: any;
-  updateGithubVerifiedLarge: any;
-  createRequest: any;
+  updateGithubVerified: (requestNumber: number, messageID: string, address: string, datacap: number, signer: string, errorMessage: string) => Promise<void>;
+  updateGithubVerifiedLarge: (requestNumber: any, messageID: string, address: string, datacap: any, signer: string, errorMessage: string, action?: string) => Promise<void>;
+  createRequest: (data: any) => Promise<any>;
   selectedNotaryRequests: any[];
-  selectNotaryRequest: any;
-  loadClients: any;
-  assignToIssue: any;
+  selectNotaryRequest: (selectedNotaryItems: any) => void;
+  loadClients: () => Promise<void>;
+  assignToIssue: (issue_number: number, assignees: string[]) => Promise<void>;
   clients: any[];
   clientsAmount: string;
-  search: any;
+  search: (query: string) => void;
   searchString: string;
-  searchUserIssues: any;
-  logToSentry: any;
-  fetchLogs: any;
+  searchUserIssues: (user: string) => Promise<any[]>;
+  logToSentry: (category: string, message: string, level: "info" | "error", data: any) => void;
+
   postLogs: any;
   approvedNotariesLoading: boolean;
   ldnRequestsLoading: boolean;
@@ -134,28 +134,6 @@ export default class DataProvider extends React.Component<
                 body: JSON.stringify({
                   type: "POST_CUSTOM_LOGS",
                   logArray: logArray,
-                }),
-              }
-            )
-          ).json();
-          return res;
-        } catch (error) {
-          console.log(error);
-        }
-      },
-      fetchLogs: async (issue_number: any) => {
-        try {
-          const res = (
-            await fetch(
-              "https://cbqluey8wa.execute-api.us-east-1.amazonaws.com/dev",
-              {
-                headers: { "x-api-key": config.loggerApiKey },
-                method: "POST",
-                body: JSON.stringify({
-                  type: "GET_LOGS",
-                  searchType: "issue_number",
-                  operation: "=",
-                  search: issue_number,
                 }),
               }
             )
@@ -647,7 +625,7 @@ export default class DataProvider extends React.Component<
       },
       verifierAndPendingRequests: [],
       viewroot: false,
-      switchview: async () => {
+      switchview: () => {
         if (this.state.viewroot) {
           this.setState({ viewroot: false });
         } else {
@@ -756,7 +734,7 @@ export default class DataProvider extends React.Component<
 
       },
       updateGithubVerified: async (
-        requestNumber: any,
+        requestNumber: number,
         messageID: string,
         address: string,
         datacap: number,
@@ -821,12 +799,8 @@ export default class DataProvider extends React.Component<
         messageID: string,
         address: string,
         datacap: any,
-        approvals: boolean,
         signer: string,
-        msigAddress: string,
-        name: string,
         errorMessage: string,
-        labels: string[],
         action?: string
       ) => {
         const formattedDc = bytesToiB(datacap);
@@ -867,7 +841,7 @@ export default class DataProvider extends React.Component<
           body: commentContent,
         });
       },
-      assignToIssue: async (issue_number: any, assignees: any) => {
+      assignToIssue: async (issue_number: number, assignees: string[]) => {
         let isAssigned = false;
         for (const assigne of assignees) {
           try {
@@ -879,7 +853,9 @@ export default class DataProvider extends React.Component<
                 assignees: [assigne],
               });
             if (assigned.data.assignees.length > 0) isAssigned = true;
-          } catch (error) { }
+          } catch (error) {
+            console.log(error)
+          }
         }
 
         if (!isAssigned) {
@@ -915,7 +891,7 @@ export default class DataProvider extends React.Component<
         }
       },
       selectedNotaryRequests: [] as any[],
-      selectNotaryRequest: async (selectedNotaryItems: any) => {
+      selectNotaryRequest: (selectedNotaryItems: any) => {
         const selectedNotaries = selectedNotaryItems.map(
           (item: any) => item.id
         );
@@ -925,7 +901,7 @@ export default class DataProvider extends React.Component<
       clients: [],
       clientsAmount: "",
       searchString: "",
-      search: async (query: string) => {
+      search: (query: string) => {
         this.setState({ searchString: query });
       },
       isAddressVerified: false,
