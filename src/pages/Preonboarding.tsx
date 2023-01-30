@@ -23,11 +23,11 @@ const options = [
 
 const Preonboarding = (e: React.MouseEvent) => {
 
-  const proposeVerifier = () => {
+  const proposeVerifier = (index: number) => {
     dispatchCustomEvent({
       name: "create-modal", detail: {
         id: Math.random().toString(36).replace(/[^a-z]+/g, '').substr(0, 5),
-        modal: <LogInModal type={e.currentTarget.id} />
+        modal: <LogInModal type={index.toString()} />
       }
     })
   }
@@ -48,7 +48,7 @@ const Preonboarding = (e: React.MouseEvent) => {
               title={option.title}
               desc={option.desc}
               imgSrc={option.imgSrc}
-              onClick={proposeVerifier}
+              onClick={() => proposeVerifier(index)}
               buttonName="Select"
             />
           })}

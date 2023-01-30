@@ -11,7 +11,7 @@ type OptionProps = {
     available?: string,
     buttonName?: string
     id: number,
-    onClick: (target?: number | React.MouseEvent<HTMLButtonElement>) => void;
+    onClick: (target: number) => void;
 }
 
 const Option = (props: OptionProps) => {
