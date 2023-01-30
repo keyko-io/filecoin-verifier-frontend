@@ -11,12 +11,12 @@ type OptionProps = {
     available?: string,
     buttonName?: string
     id: number,
-    onClick: (target: any) => void;
+    onClick: (target?: number | React.MouseEvent<HTMLButtonElement>) => void;
 }
 
 const Option = (props: OptionProps) => {
     return (
-        <div id={props.id.toString()} className="option" onClick={(e) => props.onClick(e)}>
+        <div id={props.id.toString()} className="option">
             <div><img src={props.imgSrc} alt={props.title} /></div>
             {props.head ?
                 <div className="optionhead">{props.head}</div>
@@ -35,7 +35,7 @@ const Option = (props: OptionProps) => {
             }
             <div className="buttonoption">
                 <ButtonPrimary id={props.id.toString()}
-                    onClick={(e: any) => props.onClick(e)}>
+                    onClick={props.onClick}>
                     {props.buttonName}
                 </ButtonPrimary>
             </div>

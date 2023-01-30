@@ -21,9 +21,9 @@ const options = [
   }]
 
 
-const Preonboarding = () => {
+const Preonboarding = (e: React.MouseEvent) => {
 
-  const proposeVerifier = async (e: any) => {
+  const proposeVerifier = () => {
     dispatchCustomEvent({
       name: "create-modal", detail: {
         id: Math.random().toString(36).replace(/[^a-z]+/g, '').substr(0, 5),
