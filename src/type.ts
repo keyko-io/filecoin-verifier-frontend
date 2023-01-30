@@ -31,3 +31,11 @@ export interface DirectIssue {
     owner: string,
     data: any
 }
+
+export interface TransactionAndIssue {
+    clientAddress: string;
+    multisigAddress: any;
+    multisigInfo: any;
+    tx: any;
+    issue: any[];
+}

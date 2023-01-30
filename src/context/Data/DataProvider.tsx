@@ -11,7 +11,7 @@ import * as Sentry from "@sentry/react";
 import { notaryLedgerVerifiedComment } from './comments'
 import { ldnParser, notaryParser, commonUtils, simpleClientParser } from "@keyko-io/filecoin-verifier-tools";
 import verifierRegistry from "../../data/verifiers-registry.json";
-import { ApprovedVerifiers, DirectIssue, LargeRequestData, VerifiedCachedData, VerifiedData } from "../../type";
+import { ApprovedVerifiers, DirectIssue, LargeRequestData, TransactionAndIssue, VerifiedCachedData, VerifiedData } from "../../type";
 
 interface DataProviderStates {
   loadClientRequests: () => Promise<void>;
@@ -38,25 +38,25 @@ interface DataProviderStates {
   searchString: string;
   searchUserIssues: (user: string) => Promise<any[]>;
   logToSentry: (category: string, message: string, level: "info" | "error", data: any) => void;
-
-  postLogs: any;
+  postLogs: (message: string, type: string, actionKeyword: string, issueNumber: number, repo: string) => Promise<any>;
   approvedNotariesLoading: boolean;
   ldnRequestsLoading: boolean;
-  updateContextState: any;
+  updateContextState: (elementToUpdate: any, type: string) => void;
   isAddressVerified: boolean;
   isVerifyWalletLoading: boolean;
   isPendingRequestLoading: boolean;
-  updateIsVerifiedAddress: any;
-  verifyWalletAddress: any;
-  checkVerifyWallet: any;
+  updateIsVerifiedAddress: (val: boolean) => void;
+  verifyWalletAddress: () => Promise<boolean | undefined>
+  checkVerifyWallet: () => Promise<boolean>;
   selectedLargeClientRequests: any;
-  setSelectedLargeClientRequests: any;
-  setIsVerifyWalletLoading: any;
-  getLDNIssuesAndTransactions: any;
-  getLastUniqueId: any;
-  approvedVerifiersData: any;
-  txsIssueGitHub: any;
+  setSelectedLargeClientRequests: (rowNumbers: any[]) => void;
+  setIsVerifyWalletLoading: (value: boolean) => void;
+  getLDNIssuesAndTransactions: () => Promise<{ transactionAndIssue: TransactionAndIssue[], filteredTxsIssue: TransactionAndIssue[] }>;
+  getLastUniqueId: (issueNumber: number) => Promise<string>;
+  approvedVerifiersData: ApprovedVerifiers[] | null,
+  txsIssueGitHub: TransactionAndIssue[] | null;
 }
+
 
 interface DataProviderProps {
   github: any;
@@ -355,7 +355,6 @@ export default class DataProvider extends React.Component<
           transactionAndIssue,
           filteredTxsIssue: transactionAndIssue.filter((i: any) => i.issue)
         }
-
       },
       loadClientRequests: async () => {
         try {
@@ -716,14 +715,6 @@ export default class DataProvider extends React.Component<
             config.onboardingLargeOwner,
             config.onboardingLargeClientRepo,
             issueNumber)
-          // const data = await this.props.github.githubOcto.paginate(
-          // this.props.github.githubOcto.issues.listComments,
-          // {
-          //   owner: config.onboardingLargeOwner,
-          //   repo: config.onboardingLargeClientRepo,
-          //   issue_number: issueNumber,
-          // })
-
           const idPattern = /####\s*Id\s*\n>\s*(.*)/g
           const comment = comments.filter((item: any) => item.body.includes("## DataCap Allocation requested")).reverse()
           const Id = commonUtils.matchGroupLargeNotary(idPattern, comment[0].body)
@@ -907,7 +898,7 @@ export default class DataProvider extends React.Component<
       isAddressVerified: false,
       isPendingRequestLoading: false,
       isVerifyWalletLoading: false,
-      updateIsVerifiedAddress: async (val: boolean) => {
+      updateIsVerifiedAddress: (val: boolean) => {
         this.setState({ isAddressVerified: val })
       },
       verifyWalletAddress: async () => {
@@ -925,8 +916,7 @@ export default class DataProvider extends React.Component<
             alert('Ledger wallet successfully verified with message: ' + msgCid['/'])
             // update state
 
-            await this.state.updateIsVerifiedAddress(true)
-
+            this.state.updateIsVerifiedAddress(true)
 
             // get issue with that address
             const rawIssues = await this.props.github.fetchGithubIssues(config.onboardingOwner, config.onboardingNotaryOwner, 'all', "Notary Application")

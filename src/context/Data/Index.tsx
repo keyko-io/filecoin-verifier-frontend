@@ -1,6 +1,5 @@
-import { any } from 'bluebird'
 import React from 'react'
-import { VerifiedData, DirectIssue, LargeRequestData, VerifiedCachedData } from "../../type";
+import { VerifiedData, DirectIssue, LargeRequestData, VerifiedCachedData, ApprovedVerifiers, TransactionAndIssue } from "../../type";
 
 export const Data = React.createContext({
   loadClientRequests: async () => { },
@@ -27,33 +26,25 @@ export const Data = React.createContext({
   searchString: '',
   searchUserIssues: async (user: string) => [] as any[],
   logToSentry: (category: string, message: string, level: "info" | "error", data: any) => { },
-
-
-  getLastUniqueId: any,
-  txsIssueGitHub: [] as any,
-  approvedVerifiersData: any,
+  postLogs: async (message: string, type: string, actionKeyword: string, issueNumber: number, repo: string) => ({}) as any,
   approvedNotariesLoading: true,
   ldnRequestsLoading: false,
   updateContextState: (elementToUpdate: any, type: string) => { },
   isAddressVerified: false,
   isVerifyWalletLoading: false,
-  updateIsVerifiedAddress: async (val: boolean) => { },
-  verifyWalletAddress: async () => { },
-  checkVerifyWallet: async () => { },
-  setIsVerifyWalletLoading: () => { },
-  getLDNIssuesAndTransactions: () => { },
-
-  postLogs: async (
-    message: string,
-    type: string,
-    actionKeyword: string,
-    issueNumber: number,
-    repo: string
-  ) => { },
-  selectedLargeClientRequests: [],
+  isPendingRequestLoading: false,
+  updateIsVerifiedAddress: (val: boolean) => { },
+  verifyWalletAddress: async () => undefined as (boolean | undefined),
+  checkVerifyWallet: async () => false,
+  selectedLargeClientRequests: [] as any[],
   setSelectedLargeClientRequests: (rowNumbers: any[]) => { },
+  setIsVerifyWalletLoading: (value: boolean) => { },
+  getLDNIssuesAndTransactions: () => { },
+  getLastUniqueId: async (issueNumber: number) => '',
+  approvedVerifiersData: [] as (ApprovedVerifiers[] | null),
+  txsIssueGitHub: [] as (TransactionAndIssue[] | null),
+
   // passed by props
   github: {} as any,
   wallet: {} as any
-
 })
