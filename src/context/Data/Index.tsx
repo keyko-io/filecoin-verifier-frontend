@@ -8,7 +8,7 @@ export const Data = React.createContext({
   loadClientRequests: async () => { },
   clientRequests: [] as any,
   largeClientRequests: [] as any,
-  loadVerifierAndPendingRequests: any,
+  loadVerifierAndPendingRequests: async () => { },
   verifierAndPendingRequests: [] as any,
   viewroot: false,
   approvedVerifiersData: any,

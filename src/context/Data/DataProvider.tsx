@@ -11,13 +11,13 @@ import * as Sentry from "@sentry/react";
 import { notaryLedgerVerifiedComment } from './comments'
 import { ldnParser, notaryParser, commonUtils, simpleClientParser } from "@keyko-io/filecoin-verifier-tools";
 import verifierRegistry from "../../data/verifiers-registry.json";
-import { ApprovedVerifiers, LargeRequestData, VerifiedCachedData, VerifiedData } from "../../type";
+import { ApprovedVerifiers, DirectIssue, LargeRequestData, VerifiedCachedData, VerifiedData } from "../../type";
 
 interface DataProviderStates {
   loadClientRequests: () => Promise<void>;
-  clientRequests: any[];
+  clientRequests: DirectIssue[];
   largeClientRequests: LargeRequestData[];
-  loadVerifierAndPendingRequests: any;
+  loadVerifierAndPendingRequests: () => Promise<void>;
   verifierAndPendingRequests: any[];
   viewroot: boolean;
   switchview: any;
@@ -403,7 +403,7 @@ export default class DataProvider extends React.Component<
           //   }
           // );
 
-          const issues: any[] = [];
+          const issues: DirectIssue[] = [];
 
           for (const rawIssue of rawDirectIssues) {
             const data = simpleClientParser.parseIssue(rawIssue.body);
@@ -421,7 +421,6 @@ export default class DataProvider extends React.Component<
               });
             }
           }
-
           // DIRECT ISSUES END /////////////////////
 
 

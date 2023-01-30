@@ -23,3 +23,11 @@ export interface LargeRequestData {
     tx: any;
     url: string;
 }
+
+
+export interface DirectIssue {
+    number: number,
+    url: string,
+    owner: string,
+    data: any
+}
