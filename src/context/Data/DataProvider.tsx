@@ -57,11 +57,10 @@ interface DataProviderStates {
   txsIssueGitHub: TransactionAndIssue[] | null;
 }
 
-
 interface DataProviderProps {
   github: any;
   wallet: any;
-  children: any;
+  children: React.ReactNode;
 }
 
 type largeRequest = {
