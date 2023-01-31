@@ -7,7 +7,6 @@ import { dispatchCustomEvent } from "slate-react-system";
 import { config } from '../../config';
 import { withCookies, Cookies } from 'react-cookie'
 
-
 interface WalletProviderStates {
     isLogged: boolean
     isLoading: boolean

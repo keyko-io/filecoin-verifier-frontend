@@ -7,15 +7,15 @@ import axios from "axios"
 import toast from 'react-hot-toast';
 
 interface WalletProviderStates {
-    githubLogged: boolean
     loginGithub: (code: string) => Promise<void>
     initGithubOcto: (token: string) => Promise<void>
     logoutGithub: () => Promise<void>
     githubOctoGenericLogin: () => Promise<void>
-    loggedUser: string
-    avatarUrl: string
     fetchGithubIssues: (owner: any, repo: any, state: any, labels: any) => Promise<any>
     fetchGithubComments: (owner: string, repo: string, issueNumber: number, issue: any) => Promise<any>
+    githubLogged: boolean
+    loggedUser: string
+    avatarUrl: string
     githubOctoGeneric: any
     githubOcto: any
 }
