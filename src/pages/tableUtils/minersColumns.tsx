@@ -1,9 +1,8 @@
-import React from "react";
 import OpenInNewRoundedIcon from '@mui/icons-material/OpenInNewRounded';
 import Contacts from "./Contacts/Contacts";
 import { MinerData } from "./loadMiners";
 
-export const columns: any = [
+export const columns = [
   {
     name: "Storage Provider",
     selector: (row: MinerData) => row.name,
@@ -35,7 +34,7 @@ export const columns: any = [
     name: "Min Piece Size",
     sortable: true,
     selector: (row: MinerData) => row.minPieceSize,
-    sortFunction: (x: any, y: any) => {
+    sortFunction: (x: MinerData, y: MinerData) => {
       //Custom sort function for minPieceSize
 
       const a = x.minPieceSizeRaw;
@@ -55,8 +54,8 @@ export const columns: any = [
   {
     name: "Reputation Score",
     sortable: true,
-    selector: (row: any) => row.reputationScore,
-    cell: (row: any) => <div style={{ display: "flex", fontWeight: "bold", alignItems: "center", color: row.reputationScore > 50 ? "#15803d" : "#ef4444" }}>
+    selector: (row: MinerData) => row.reputationScore,
+    cell: (row: MinerData) => <div style={{ display: "flex", fontWeight: "bold", alignItems: "center", color: row.reputationScore > 50 ? "#15803d" : "#ef4444" }}>
       <span>{row.reputationScore}</span>
       {row.reputationScore !== "not found" &&
         <a
