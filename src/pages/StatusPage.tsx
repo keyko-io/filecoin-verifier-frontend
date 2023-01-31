@@ -19,7 +19,7 @@ const repo = config.onboardingLargeClientRepo;
 
 
 const StatusPage = () => {
-  const context: any = useContext(Data);
+  const context = useContext(Data);
   const { github } = context;
 
   const [isLDNBotHealthy, setIsLDNBotHealthy] = useState<boolean | null>(null);
@@ -58,8 +58,8 @@ const StatusPage = () => {
         setIsLDNBotHealthy(false)
       }
     } catch (error) {
-        setIsLDNBotHealthy(false)
-        setIsLDNLoading(false)
+      setIsLDNBotHealthy(false)
+      setIsLDNLoading(false)
       console.log(error)
     }
   }
@@ -154,7 +154,7 @@ const StatusPage = () => {
               justifyContent="space-between"
             >
               <Typography variant="body1">
-               SSA Bot 
+                SSA Bot
               </Typography>
               {checkHealthStatus(isSSALoading, isSSAHealhty)}
             </Stack>
@@ -177,8 +177,8 @@ const StatusPage = () => {
         <Typography variant="body1">Last time active was: <span>{moment(lastSSATime).fromNow()}</span></Typography>
         <Typography variant="body1">LDN Validation Bot is always active and listens to events happening on the repository.</Typography>
         {/* <Typography variant="body1">The last time SSA bot ran: <span>{moment(lastSSATime).fromNow()}</span></Typography> */}
-        <Typography variant="body1">Both bots update this issue: 
-        <a href={config.status_issue_url} > {config.status_issue_number}</a>. 
+        <Typography variant="body1">Both bots update this issue:
+          <a href={config.status_issue_url} > {config.status_issue_number}</a>.
         </Typography>
       </Alert>}
       </Stack>

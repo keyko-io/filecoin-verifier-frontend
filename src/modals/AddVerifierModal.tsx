@@ -6,7 +6,7 @@ import { dispatchCustomEvent, H3, Input, ButtonPrimary, SelectMenu, LoaderSpinne
 
 
 const AddVerifierModal = () => {
-    const context: any = useContext(Data)
+    const context = useContext(Data)
 
     const [proposeLoading, setProposeLoading] = useState(false)
     const [datacap, setDatacap] = useState("1")
@@ -32,14 +32,16 @@ const AddVerifierModal = () => {
             setDatacapExt("1000000000000")
             setAccountID("")
 
-            context.dispatchNotification('Propose Message sent with ID: ' + messageID)
+            context.wallet.dispatchNotification('Propose Message sent with ID: ' + messageID)
             dispatchCustomEvent({ name: "delete-modal", detail: {} })
         } catch (e: any) {
             setProposeLoading(false)
-            context.dispatchNotification('Proposal failed: ' + e.message)
+            context.wallet.dispatchNotification('Proposal failed: ' + e.message)
             dispatchCustomEvent({ name: "delete-modal", detail: {} })
         }
     }
+
+
 
     return (
         <div className="addmodal">

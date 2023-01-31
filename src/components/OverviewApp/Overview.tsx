@@ -8,7 +8,7 @@ import { BeatLoader } from "react-spinners";
 import "./Overview.scss"
 
 const Overview = () => {
-    const context: any = useContext(Data)
+    const context = useContext(Data)
 
     const [approvedNotariesLoading, setApprovedNotariesLoading] = useState(false)
     const [approvedNotariesLength, setApprovedNotariesLength] = useState<any>(null)
@@ -41,7 +41,7 @@ const Overview = () => {
                                         <BeatLoader size={15} color={"rgb(24,160,237)"} />
                                     </div>
                                     :
-                                    bytesToiB(context.clientsAmount)}</div>
+                                    bytesToiB(Number(context.clientsAmount))}</div>
                             <div className="text">Datacap Granted</div>
                         </div>
                         <div className="textinfodatablock">

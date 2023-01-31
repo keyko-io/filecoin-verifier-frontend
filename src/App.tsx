@@ -27,7 +27,7 @@ import { fas } from '@fortawesome/free-solid-svg-icons'
 library.add(fab, far, fas)
 
 const App = () => {
-  const context: any = useContext(Data)
+  const context = useContext(Data)
 
   const [networkSelect, setNetworkSelect] = useState(false)
   const [accountSelect, setAccountSelect] = useState(false)
@@ -96,9 +96,9 @@ const App = () => {
   const refresh = () => {
     if (context.viewroot) context.loadVerifierAndPendingRequests();
 
-    if (!context.wiewroot && localStorage.getItem("loggedUser")) context.loadClientRequests()
+    if (!context.viewroot && localStorage.getItem("loggedUser")) context.loadClientRequests()
 
-    if (!context.wiewroot && !localStorage.getItem("loggedUser")) {
+    if (!context.viewroot && !localStorage.getItem("loggedUser")) {
       context.wallet.dispatchNotification("You should login first for this action!!")
     }
   }
@@ -106,10 +106,10 @@ const App = () => {
   const getVerifierAmount = (account: string) => {
     for (const verified of context.verified) {
       if (account === verified.verifierAccount) {
-        return verified.datacap
+        return Number(verified.datacap)
       }
     }
-    return '0'
+    return 0
   }
 
   const handleSearch = async (e: any) => {
