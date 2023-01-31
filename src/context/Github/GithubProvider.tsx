@@ -5,22 +5,9 @@ import { Octokit } from '@octokit/rest'
 import { config } from '../../config';
 import axios from "axios"
 import toast from 'react-hot-toast';
+import { GithubProviderStates } from '../contextType';
 
-interface WalletProviderStates {
-    loginGithub: (code: string) => Promise<void>
-    initGithubOcto: (token: string) => Promise<void>
-    logoutGithub: () => Promise<void>
-    githubOctoGenericLogin: () => Promise<void>
-    fetchGithubIssues: (owner: any, repo: any, state: any, labels: any) => Promise<any>
-    fetchGithubComments: (owner: string, repo: string, issueNumber: number, issue: any) => Promise<any>
-    githubLogged: boolean
-    loggedUser: string
-    avatarUrl: string
-    githubOctoGeneric: any
-    githubOcto: any
-}
-
-export default class WalletProvider extends React.Component<{}, WalletProviderStates> {
+export default class WalletProvider extends React.Component<{}, GithubProviderStates> {
     setStateAsync(state: any) {
         return new Promise((resolve: any) => {
             this.setState(state, resolve)

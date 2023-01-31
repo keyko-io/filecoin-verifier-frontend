@@ -1,4 +1,3 @@
-// we use this data for the accepted notaries table in RKH view
 export type ApprovedVerifiers = {
     datacap: string,
     verifier: string,
@@ -24,7 +23,6 @@ export interface LargeRequestData {
     url: string;
 }
 
-
 export interface DirectIssue {
     number: number,
     url: string,
@@ -39,3 +37,4 @@ export interface TransactionAndIssue {
     tx: any;
     issue: any[];
 }
+

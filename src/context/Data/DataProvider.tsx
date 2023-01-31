@@ -11,74 +11,8 @@ import * as Sentry from "@sentry/react";
 import { notaryLedgerVerifiedComment } from './comments'
 import { ldnParser, notaryParser, commonUtils, simpleClientParser } from "@keyko-io/filecoin-verifier-tools";
 import verifierRegistry from "../../data/verifiers-registry.json";
-import { ApprovedVerifiers, DirectIssue, LargeRequestData, TransactionAndIssue, VerifiedCachedData, VerifiedData } from "../../type";
-
-interface DataProviderStates {
-  loadClientRequests: () => Promise<void>;
-  clientRequests: DirectIssue[];
-  largeClientRequests: LargeRequestData[];
-  loadVerifierAndPendingRequests: () => Promise<void>;
-  verifierAndPendingRequests: any[];
-  viewroot: boolean;
-  switchview: () => void;
-  verified: VerifiedData[];
-  verifiedCachedData: VerifiedCachedData;
-  loadVerified: (page: number) => Promise<void>;
-  acceptedNotariesLoading: boolean;
-  updateGithubVerified: (requestNumber: number, messageID: string, address: string, datacap: number, signer: string, errorMessage: string) => Promise<void>;
-  updateGithubVerifiedLarge: (requestNumber: number, messageID: string, address: string, datacap: any, signer: string, errorMessage: string, action?: string) => Promise<void>;
-  createRequest: (data: any) => Promise<any>;
-  selectedNotaryRequests: any[];
-  selectNotaryRequest: (selectedNotaryItems: any) => void;
-  loadClients: () => Promise<void>;
-  assignToIssue: (issue_number: number, assignees: string[]) => Promise<void>;
-  clients: any[];
-  clientsAmount: string;
-  search: (query: string) => void;
-  searchString: string;
-  searchUserIssues: (user: string) => Promise<any[]>;
-  logToSentry: (category: string, message: string, level: "info" | "error", data: any) => void;
-  postLogs: (message: string, type: string, actionKeyword: string, issueNumber: number, repo: string) => Promise<any>;
-  approvedNotariesLoading: boolean;
-  ldnRequestsLoading: boolean;
-  updateContextState: (elementToUpdate: any, type: string) => void;
-  isAddressVerified: boolean;
-  isVerifyWalletLoading: boolean;
-  isPendingRequestLoading: boolean;
-  updateIsVerifiedAddress: (val: boolean) => void;
-  verifyWalletAddress: () => Promise<boolean | undefined>
-  checkVerifyWallet: () => Promise<boolean>;
-  selectedLargeClientRequests: any;
-  setSelectedLargeClientRequests: (rowNumbers: any[]) => void;
-  setIsVerifyWalletLoading: (value: boolean) => void;
-  getLDNIssuesAndTransactions: () => Promise<{ transactionAndIssue: TransactionAndIssue[], filteredTxsIssue: TransactionAndIssue[] }>;
-  getLastUniqueId: (issueNumber: number) => Promise<string>;
-  approvedVerifiersData: ApprovedVerifiers[] | null,
-  txsIssueGitHub: TransactionAndIssue[] | null;
-}
-
-interface DataProviderProps {
-  github: any;
-  wallet: any;
-  children: React.ReactNode;
-}
-
-type largeRequest = {
-  issue_number: number | string,
-  url: string,
-  address: string
-  multisig: string,
-  datacap: string | number
-  approvals: number,
-  tx: any,
-  proposer: {
-    signeraddress: string,
-    signerGitHandle: string,
-  },
-  labels: string[],
-  data: any
-  signable: boolean,
-}
+import { ApprovedVerifiers, DirectIssue, LargeRequestData, VerifiedData } from "../../type";
+import { DataProviderProps, DataProviderStates } from "../contextType";
 
 export default class DataProvider extends React.Component<
   DataProviderProps,
@@ -449,7 +383,7 @@ export default class DataProvider extends React.Component<
                     const datacap = elem.tx ?
                       bytesToiB(parseInt(elem.tx[0].parsed.params.cap)) : elem.issue[0].datacap
 
-                    const obj: largeRequest = {
+                    const obj: LargeRequestData = {
                       issue_number: elem.issue[0].issueInfo.issue_number,
                       url: elem.issue[0].issueInfo.issue.html_url,
                       address: elem.clientAddress,
