@@ -69,3 +69,20 @@ export interface GithubProviderStates {
 }
 
 // GITHUB PROVIDER CONTEXT TYPE => STATE AND PROPS
+
+
+
+
+//CONFIF LOTUS TYPE
+
+export interface ConfigLotusNode {
+    name: string;
+    code: number;
+    url: string;
+    token: string | undefined;
+    notaryRepo: string;
+    notaryOwner: string;
+    rkhMultisig: string;
+    rkhtreshold: number;
+    largeClientRequestAssign: string[];
+}
