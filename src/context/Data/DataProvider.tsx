@@ -333,7 +333,6 @@ export default class DataProvider extends React.Component<
           }
           // DIRECT ISSUES END /////////////////////
 
-
           // LARGE ISSUES: filecoin-plus-large-datasets /////////////////////
           const ldnIssueTxs = await this.state.getLDNIssuesAndTransactions()
           const txsIssueGitHub = ldnIssueTxs.filteredTxsIssue
@@ -915,7 +914,7 @@ export default class DataProvider extends React.Component<
 
           // retrieve issue and check comments
           // const rawComments = await this.props.github.fetchGithubComments('keyko-io', 'filecoin-notaries-onboarding', issueNumber)
-          const rawComments = await this.props.github.fetchGithubComments(config.onboardingOwner, config.onboardingNotaryOwner, issueNumber)
+          const rawComments = await this.props.github.fetchGithubComments(config.onboardingOwner, config.onboardingNotaryOwner, Number(issueNumber))
           for (let comment of rawComments) {
             // return true if the verified notary comment is present
             // return false if not

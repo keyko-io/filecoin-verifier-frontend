@@ -1,5 +1,7 @@
 import { ApprovedVerifiers, DirectIssue, LargeRequestData, TransactionAndIssue, VerifiedCachedData, VerifiedData } from "../type";
 
+import { Cookies } from 'react-cookie'
+
 // DATA PROVIDER CONTEXT TYPE => STATE AND PROPS
 export interface DataProviderStates {
     loadClientRequests: () => Promise<void>;
@@ -46,8 +48,8 @@ export interface DataProviderStates {
 }
 
 export interface DataProviderProps {
-    github: any;
-    wallet: any;
+    github: GithubProviderStates;
+    wallet: WalletProviderStates;
     children: React.ReactNode;
 }
 // DATA PROVIDER CONTEXT TYPE => STATE AND PROPS
@@ -60,7 +62,7 @@ export interface GithubProviderStates {
     logoutGithub: () => Promise<void>
     githubOctoGenericLogin: () => Promise<void>
     fetchGithubIssues: (owner: any, repo: any, state: any, labels: any) => Promise<any>
-    fetchGithubComments: (owner: string, repo: string, issueNumber: number, issue: any) => Promise<any>
+    fetchGithubComments: (owner: string, repo: string, issueNumber: number, issue?: any) => Promise<any>
     githubLogged: boolean
     loggedUser: string
     avatarUrl: string
@@ -71,9 +73,42 @@ export interface GithubProviderStates {
 // GITHUB PROVIDER CONTEXT TYPE => STATE AND PROPS
 
 
+// WALLET PROVIDER CONTEXT TYPE => STATE AND PROPS
+export type LoadWalletOptionsType = { multisig: boolean, multisigAddress: string }
+
+export interface WalletProviderStates {
+    isLogged: boolean
+    isLoading: boolean
+    wallet: string
+    api: any
+    walletIndex: number
+    networkIndex: number
+    accounts: any[]
+    accountsActive: any
+    activeAccount: string
+    balance: number
+    message: string
+    multisig: boolean
+    multisigAddress: string
+    multisigID: string
+    sign: any
+    getAccounts: any
+    importSeed: (seedphrase: string) => Promise<void>
+    selectNetwork: (networkIndex: number) => Promise<void>
+    selectAccount: (index: number) => Promise<void>
+    loadWallet: (type: string, options?: LoadWalletOptionsType) => Promise<boolean>
+    dispatchNotification: (message: string) => void
+}
 
 
-//CONFIF LOTUS TYPE
+export type WalletProviderProps = {
+    cookies: Cookies
+}
+
+// WALLET PROVIDER CONTEXT TYPE => STATE AND PROPS
+
+
+//CONFIG LOTUS TYPE
 
 export interface ConfigLotusNode {
     name: string;

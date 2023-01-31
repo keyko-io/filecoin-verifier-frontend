@@ -1,5 +1,6 @@
 import React from 'react'
 import { VerifiedData, DirectIssue, LargeRequestData, VerifiedCachedData, ApprovedVerifiers, TransactionAndIssue } from "../../type";
+import { GithubProviderStates, WalletProviderStates } from '../contextType';
 
 export const Data = React.createContext({
   assignToIssue: async (issue_number: number, assignees: string[]) => { },
@@ -44,7 +45,7 @@ export const Data = React.createContext({
   approvedVerifiersData: [] as (ApprovedVerifiers[] | null),
   txsIssueGitHub: [] as (TransactionAndIssue[] | null),
   // passed by props
-  github: {} as any,
-  wallet: {} as any
+  github: {} as GithubProviderStates,
+  wallet: {} as WalletProviderStates
 })
 

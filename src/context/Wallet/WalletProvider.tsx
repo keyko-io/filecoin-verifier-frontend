@@ -5,35 +5,8 @@ import { BurnerWallet } from './BurnerWallet'
 // @ts-ignore
 import { dispatchCustomEvent } from "slate-react-system";
 import { config } from '../../config';
-import { withCookies, Cookies } from 'react-cookie'
-
-interface WalletProviderStates {
-    isLogged: boolean
-    isLoading: boolean
-    wallet: string
-    api: any
-    sign: any
-    getAccounts: any
-    walletIndex: number
-    networkIndex: number
-    accounts: any[]
-    accountsActive: any
-    activeAccount: string
-    importSeed: any
-    selectNetwork: any
-    selectAccount: any
-    balance: number
-    message: string
-    loadWallet: any
-    dispatchNotification: any
-    multisig: boolean
-    multisigAddress: string
-    multisigID: string
-}
-
-type Props = {
-    cookies: Cookies
-}
+import { withCookies } from 'react-cookie'
+import { LoadWalletOptionsType, WalletProviderProps, WalletProviderStates } from '../contextType';
 
 async function getActiveAccounts(api: any, accounts: any) {
     const accountsActive: any = {};
@@ -53,7 +26,7 @@ async function getActiveAccounts(api: any, accounts: any) {
     return accountsActive
 }
 
-class WalletProvider extends React.Component<Props, WalletProviderStates> {
+class WalletProvider extends React.Component<WalletProviderProps, WalletProviderStates> {
     setStateAsync(state: any) {
         return new Promise((resolve: any) => {
             this.setState(state, resolve)
@@ -287,7 +260,7 @@ class WalletProvider extends React.Component<Props, WalletProviderStates> {
         },
         balance: 0,
         message: '',
-        loadWallet: async (type: string, options: any = {}) => {
+        loadWallet: async (type: string, options?: LoadWalletOptionsType) => {
             this.setState({ isLoading: true })
             switch (type) {
                 case 'Ledger':
