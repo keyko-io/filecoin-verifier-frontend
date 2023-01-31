@@ -8,16 +8,16 @@ import toast from 'react-hot-toast';
 
 interface WalletProviderStates {
     githubLogged: boolean
-    githubOcto: any
-    loginGithub: any
-    initGithubOcto: any
-    logoutGithub: any
-    githubOctoGenericLogin: any
-    githubOctoGeneric: any
+    loginGithub: (code: string) => Promise<void>
+    initGithubOcto: (token: string) => Promise<void>
+    logoutGithub: () => Promise<void>
+    githubOctoGenericLogin: () => Promise<void>
     loggedUser: string
     avatarUrl: string
-    fetchGithubIssues: any
-    fetchGithubComments: any
+    fetchGithubIssues: (owner: any, repo: any, state: any, labels: any) => Promise<any>
+    fetchGithubComments: (owner: string, repo: string, issueNumber: number, issue: any) => Promise<any>
+    githubOctoGeneric: any
+    githubOcto: any
 }
 
 export default class WalletProvider extends React.Component<{}, WalletProviderStates> {
@@ -53,8 +53,7 @@ export default class WalletProvider extends React.Component<{}, WalletProviderSt
         githubLogged: false,
         githubOcto: {} as any,
         githubOctoGeneric: { logged: false } as any,
-        loginGithub: async (code: string, onboarding?: boolean) => {
-            console.log('code', code)
+        loginGithub: async (code: string) => {
             try {
                 const authrequest = await fetch(config.apiUri + '/api/v1/github', {
                     method: 'POST',
@@ -84,7 +83,7 @@ export default class WalletProvider extends React.Component<{}, WalletProviderSt
                 this.setState({ loggedUser: login, avatarUrl: avatar_url })
                 axios.defaults.headers.common['Authorization'] = `Bearer ${authjson.data.access_token}`
 
-            } catch (e: any) {
+            } catch (e) {
                 this.state.logoutGithub()
                 toast.error("Failed to login. Try again later.")
                 console.log(e, "error occurred while login github")
@@ -142,7 +141,7 @@ export default class WalletProvider extends React.Component<{}, WalletProviderSt
                     })
             }
         },
-        fetchGithubIssues: async (owner: any, repo: any, state: any, labels: any) => {
+        fetchGithubIssues: async (owner: string, repo: string, state: any, labels: any) => {
             const rawIssues = await this.state.githubOcto.paginate(
                 this.state.githubOcto.issues.listForRepo,
                 {
@@ -154,7 +153,7 @@ export default class WalletProvider extends React.Component<{}, WalletProviderSt
             );
             return rawIssues
         },
-        fetchGithubComments: async (owner: string, repo: string, issueNumber: number, issue: any) => {
+        fetchGithubComments: async (owner: string, repo: string, issueNumber: number, issue?: any) => {
             try {
 
                 // the following is for testing
