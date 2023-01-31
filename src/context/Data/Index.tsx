@@ -14,7 +14,7 @@ export const Data = React.createContext({
   loadVerified: async (page: number) => { },
   acceptedNotariesLoading: false,
   updateGithubVerified: async (requestNumber: number, messageID: string, address: string, datacap: number, signer: string, errorMessage: string) => { },
-  updateGithubVerifiedLarge: async (requestNumber: any, messageID: string, address: string, datacap: any, signer: string, errorMessage: string, action?: string) => { },
+  updateGithubVerifiedLarge: async (requestNumber: number, messageID: string, address: string, datacap: any, signer: string, errorMessage: string, action?: string) => { },
   createRequest: async (data: any) => { },
   selectedNotaryRequests: [] as any,
   selectNotaryRequest: (selectedNotaryItems: any) => { },

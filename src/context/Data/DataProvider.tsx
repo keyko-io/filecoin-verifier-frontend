@@ -26,7 +26,7 @@ interface DataProviderStates {
   loadVerified: (page: number) => Promise<void>;
   acceptedNotariesLoading: boolean;
   updateGithubVerified: (requestNumber: number, messageID: string, address: string, datacap: number, signer: string, errorMessage: string) => Promise<void>;
-  updateGithubVerifiedLarge: (requestNumber: any, messageID: string, address: string, datacap: any, signer: string, errorMessage: string, action?: string) => Promise<void>;
+  updateGithubVerifiedLarge: (requestNumber: number, messageID: string, address: string, datacap: any, signer: string, errorMessage: string, action?: string) => Promise<void>;
   createRequest: (data: any) => Promise<any>;
   selectedNotaryRequests: any[];
   selectNotaryRequest: (selectedNotaryItems: any) => void;

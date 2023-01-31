@@ -295,7 +295,7 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
           if (txReceipt.ExitCode !== 0) {
             errorMessage += `#### There was an error processing the message \n>${messageID}, retry later.`;
             context.updateGithubVerified(
-              request.issue_number,
+              request.number,
               messageID,
               address,
               datacap,
@@ -310,7 +310,7 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
           setApproveLoading(false)
           // github update
           context.updateGithubVerified(
-            request.issue_number,
+            request.number,
             messageID,
             address,
             datacap,
@@ -326,7 +326,7 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
           context.loadClientRequests();
 
           sentryData = {
-            requestNumber: request.issue_number,
+            requestNumber: request.number,
             messageID: messageID,
             address: address,
             dataCap: dc,
@@ -343,8 +343,8 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
           };
 
           context.logToSentry(
-            `verifyClients issue n. ${request.issue_number}`,
-            `verifyClients error - issue n. ${request.issue_number}: ${e.message}`,
+            `verifyClients issue n. ${request.number}`,
+            `verifyClients error - issue n. ${request.number}: ${e.message}`,
             "error",
             sentryData
           );
@@ -353,8 +353,8 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
           );
         } finally {
           context.logToSentry(
-            `verifyClients issue n. ${request.issue_number}`,
-            `verifyClients info: verifyClients issue n. ${request.issue_number}`,
+            `verifyClients issue n. ${request.number}`,
+            `verifyClients info: verifyClients issue n. ${request.number}`,
             "info",
             sentryData
           );
@@ -450,21 +450,17 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
             action = "Proposed";
           }
 
-
           if (!messageID) {
             errorMessage += `#### the transaction was unsuccessful - retry later.`;
             await context.updateGithubVerifiedLarge(
               request.issue_number,
-              null,
+              '',
               address,
               datacap,
-              request.approvals,
               signer,
-              context.wallet.multisigID,
-              request.data.name,
               errorMessage,
-              []
             );
+
             context.wallet.dispatchNotification(errorMessage);
             throw Error(errorMessage);
           }
@@ -477,14 +473,11 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
             messageID,
             address,
             datacap,
-            request.approvals,
             signer,
-            context.wallet.multisigID,
-            request.data.name,
             "",
-            request.labels,
             action
           );
+
           context.wallet.dispatchNotification(
             "Transaction successful! Verify Client Message sent with ID: " +
             messageID
