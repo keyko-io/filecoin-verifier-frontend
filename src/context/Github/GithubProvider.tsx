@@ -5,6 +5,7 @@ import { Octokit } from '@octokit/rest'
 import { config } from '../../config';
 import axios from "axios"
 import toast from 'react-hot-toast';
+import * as Sentry from "@sentry/react";
 
 interface WalletProviderStates {
     githubLogged: boolean
@@ -84,10 +85,17 @@ export default class WalletProvider extends React.Component<{}, WalletProviderSt
                 this.setState({ loggedUser: login, avatarUrl: avatar_url })
                 axios.defaults.headers.common['Authorization'] = `Bearer ${authjson.data.access_token}`
 
-            } catch (e: any) {
+            } catch (error) {
+                Sentry.captureMessage("ERROR: Failed to login github", {
+                    level: Sentry.Severity.Error,
+                    extra: {
+                        error,
+                        code
+                    }
+                });
                 this.state.logoutGithub()
                 toast.error("Failed to login. Try again later.")
-                console.log(e, "error occurred while login github")
+                console.log(error, "error occurred while login github")
             }
         },
         initGithubOcto: async (token: string) => {
