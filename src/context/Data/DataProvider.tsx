@@ -214,22 +214,12 @@ export default class DataProvider extends React.Component<
                   try {
                     const data = ldnParser.parseIssue(rawLargeIssue.body);
                     if (data) {
+
                       const rawLargeClientComments = await this.props.github.fetchGithubComments(
                         config.onboardingLargeOwner,
                         config.onboardingLargeClientRepo,
                         rawLargeIssue.number,
-                        rawLargeIssue)
-
-                      // const rawLargeClientComments =
-                      //   await this.props.github.githubOcto.paginate(
-                      //     this.props.github.githubOcto.issues.listComments,
-                      //     {
-                      //       owner: config.onboardingLargeOwner,
-                      //       repo: config.onboardingLargeClientRepo,
-                      //       issue_number: rawLargeIssue.number,
-                      //     }
-                      //   );
-
+                      )
 
                       resolve({
                         issue_number: rawLargeIssue.number,
@@ -257,6 +247,7 @@ export default class DataProvider extends React.Component<
 
           for (let i = cmtsLength - 1; i >= 0; i--) {
             const commentParsed = ldnParser.parseReleaseRequest(comms[i].body)
+
             if (commentParsed.correct) {
               const issueInMsig = issuesByMsig.find((item: any) => item.multisigAddress === commentParsed.notaryAddress)
               if (issueInMsig) {
