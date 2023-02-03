@@ -16,7 +16,7 @@ export const largeReqColumns = [
         name: "Address",
         selector: (row: LargeRequestData) => row.address,
         sortable: true,
-        cell: (row: any) => <div>{`${row.address.substring(0, 9)}...${row.address.substring(row.address.length - 9, row.address.length)}`}</div>
+        cell: (row: LargeRequestData) => <div>{`${row.address.substring(0, 9)}...${row.address.substring(row.address.length - 9, row.address.length)}`}</div>
     },
     {
         name: "Multisig",
@@ -82,8 +82,8 @@ const LargeRequestTable = ({ setSelectedLargeClientRequests, largeRequestListLoa
         }
         if (context.searchString === "" && context.largeClientRequests) {
             const data = context.largeClientRequests
-                .map((item: any) => ({ ...item, data: item.data.name, searchBy: `${item?.data?.name} ${item?.issue_number} ${item?.multisig} ${item?.address} ${item?.datacap} ${item?.tx?.id}` }))
-                .map((item: any) => item.tx !== null ? item : { ...item, tx: "", })
+                .map((item) => ({ ...item, data: item.data.name, searchBy: `${item?.data?.name} ${item?.issue_number} ${item?.multisig} ${item?.address} ${item?.datacap} ${item?.tx?.id}` }))
+                .map((item) => item.tx !== null ? item : { ...item, tx: "", })
             setDataForLargeRequestTable(data)
         }
     }, [context.searchString, context.largeClientRequests])
@@ -115,10 +115,10 @@ const LargeRequestTable = ({ setSelectedLargeClientRequests, largeRequestListLoa
                         </div>
                         : "No large client requests yet"}
                     onSelectedRowsChange={({ selectedRows }) => {
-                        const rowNumbers = selectedRows.map((row: any) => row.issue_number)
+                        const rowNumbers = selectedRows.map((row) => row.issue_number)
                         setSelectedLargeClientRequests(rowNumbers)
                     }}
-                    onRowClicked={(row: any) => {
+                    onRowClicked={(row) => {
                         if (!row.signable) {
                             context.wallet.dispatchNotification(CANT_SIGN_MESSAGE)
                         }
