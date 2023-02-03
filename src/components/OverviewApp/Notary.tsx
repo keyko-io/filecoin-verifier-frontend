@@ -548,7 +548,7 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
   return (
     <div className="main">
       <div className="tabsholder">
-        <NotaryTabs tabs={tabs} changeStateTabs={changeStateTabs} ctx={context} verifiedClientsLength={props.notaryProps.clients.length} dataCancelLength={dataCancel?.length} />
+        <NotaryTabs tabs={tabs} changeStateTabs={changeStateTabs} verifiedClientsLength={props.notaryProps.clients.length} />
         <div className="tabssadd">
           {tabs === "1" && (
             <ButtonPrimary onClick={() => requestDatacap()}>

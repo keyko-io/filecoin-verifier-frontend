@@ -1,14 +1,14 @@
-import React from "react"
+import { useContext } from "react";
+import { Data } from "../../../context/Data/Index";
 
 type NotaryTabsProps = {
     tabs: string;
-    changeStateTabs: any,
-    ctx: any,
-    verifiedClientsLength: any,
-    dataCancelLength: any,
+    changeStateTabs: (indexTab: string) => void,
+    verifiedClientsLength: number,
 }
 
-const NotaryTabs = ({ changeStateTabs, tabs, ctx, dataCancelLength, verifiedClientsLength }: NotaryTabsProps) => {
+const NotaryTabs = ({ changeStateTabs, tabs, verifiedClientsLength }: NotaryTabsProps) => {
+    const context = useContext(Data)
 
     const selectedTab = (tabIndex: string) => {
         return tabs === tabIndex ? "selected" : ""
@@ -23,7 +23,7 @@ const NotaryTabs = ({ changeStateTabs, tabs, ctx, dataCancelLength, verifiedClie
                         changeStateTabs("1");
                     }}
                 >
-                    Public Requests ({ctx.clientRequests.length})
+                    Public Requests ({context.clientRequests.length})
                 </div>
                 <div
                     className={selectedTab("2")}
@@ -39,7 +39,7 @@ const NotaryTabs = ({ changeStateTabs, tabs, ctx, dataCancelLength, verifiedClie
                         changeStateTabs("3");
                     }}
                 >
-                    Large Requests ({ctx.largeClientRequests.length})
+                    Large Requests ({context.largeClientRequests.length})
                 </div>
 
                 <div
