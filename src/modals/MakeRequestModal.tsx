@@ -336,7 +336,7 @@ class MakeRequestModal extends Component<ModalProps, States> {
                                 redirectUri={config.oauthUri}
                                 clientId={config.githubApp}
                                 scope="repo"
-                                onSuccess={(response: any) => {
+                                onSuccess={(response: { code: string }) => {
                                     this.context.github.loginGithub(response.code, true)
                                 }}
                                 onFailure={(response: any) => {

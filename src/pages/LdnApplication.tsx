@@ -25,7 +25,7 @@ type LdnApplicationProps = {
 
 
 class LdnApplication extends Component<LdnApplicationProps> {
-  public static contextType: typeof Data = Data
+  public static contextType = Data
 
 
   state = {
@@ -426,7 +426,7 @@ class LdnApplication extends Component<LdnApplicationProps> {
                 redirectUri={config.oauthUri}
                 clientId={config.githubApp}
                 scope="repo"
-                onSuccess={async (response: any) => {
+                onSuccess={async (response: { code: string }) => {
                   try {
                     await this.context.github.loginGithub(response.code, true)
                     this.setState({ loggedUser: this.context.github.loggedUser })

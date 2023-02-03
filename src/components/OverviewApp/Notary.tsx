@@ -600,7 +600,7 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
               redirectUri={config.oauthUri}
               clientId={config.githubApp}
               scope="repo"
-              onSuccess={async (response: any) => {
+              onSuccess={async (response: { code: string }) => {
                 await context.github.loginGithub(response.code);
               }}
               onFailure={(response: any) => {
