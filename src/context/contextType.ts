@@ -83,7 +83,7 @@ export interface WalletProviderStates {
     api: any
     walletIndex: number
     networkIndex: number
-    accounts: any[]
+    accounts: string[]
     accountsActive: any
     activeAccount: string
     balance: number
