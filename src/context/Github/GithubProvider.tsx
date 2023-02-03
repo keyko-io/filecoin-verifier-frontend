@@ -16,8 +16,8 @@ export default class WalletProvider extends React.Component<{}, GithubProviderSt
 
     initNetworkIndex = () => {
         const activeIndex = config.lotusNodes
-            .map((node: any, index: number) => { return { name: node.name, index: index } })
-            .filter((node: any, index: number) => config.networks.includes(node.name))
+            .map((node, index) => { return { name: node.name, index: index } })
+            .filter((node) => config.networks.includes(node.name))
 
         return activeIndex[0].index
     }
