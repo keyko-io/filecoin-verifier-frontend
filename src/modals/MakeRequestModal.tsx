@@ -11,7 +11,6 @@ import { BurnerWallet } from '../context/Wallet/BurnerWallet';
 import history from "../context/History"
 import { CircularProgress } from "@material-ui/core";
 
-
 type States = {
     address: string
     datacap: string
@@ -71,7 +70,7 @@ class MakeRequestModal extends Component<ModalProps, States> {
         this.context.github.checkToken()
     }
 
-    handleRedirection = (e: any) => {
+    handleRedirection = (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault()
 
         dispatchCustomEvent({ name: "delete-modal", detail: {} })
@@ -87,7 +86,7 @@ class MakeRequestModal extends Component<ModalProps, States> {
         })
     }
 
-    handleSubmit = async (e: any) => {
+    handleSubmit = async (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault()
 
         if ((parseInt(this.state.datacap) > 1024 && this.state.datacapExt === "TiB")) {
@@ -209,7 +208,7 @@ class MakeRequestModal extends Component<ModalProps, States> {
         this.setState({ submitLoading: false })
     }
 
-    handleChange = (e: any) => {
+    handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.name === 'gitHubMethod') {
             this.setState({ emailMethod: false })
         }
