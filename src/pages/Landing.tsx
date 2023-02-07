@@ -1,4 +1,3 @@
-import React from 'react';
 // @ts-ignore
 import TiB from '../svg/tib.svg';
 import Mining from '../svg/mining.png';

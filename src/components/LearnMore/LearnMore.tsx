@@ -1,4 +1,3 @@
-import React from 'react';
 import { useLocation } from 'react-router-dom';
 // @ts-ignore
 import { ButtonPrimary } from "slate-react-system";
@@ -24,7 +23,9 @@ const LearnMore = () => {
 
     return (
         <div className="learnmore">
-            {pathname !== "/" ? <ButtonPrimary onClick={checkDatacap}>Check Remaining DataCap</ButtonPrimary> : <ButtonPrimary style={{ marginRight: "30px" }} onClick={() => goTo("logs")}>See the logs</ButtonPrimary>}
+            {pathname !== "/" ?
+                <ButtonPrimary onClick={checkDatacap}>Check Remaining DataCap</ButtonPrimary>
+                : <ButtonPrimary style={{ marginRight: "30px" }} onClick={() => goTo("logs")}>See the logs</ButtonPrimary>}
             <ButtonPrimary style={{ margin: "0px 30px", }} onClick={navigate}>Learn More</ButtonPrimary>
             <ButtonPrimary onClick={() => goTo("status")}>Status Page</ButtonPrimary>
         </div >
