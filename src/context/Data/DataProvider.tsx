@@ -543,22 +543,9 @@ export default class DataProvider extends React.Component<
 
           const allIssues = await this.props.github.fetchGithubIssues(
             config.lotusNodes[this.props.wallet.networkIndex].notaryOwner,
-            config.lotusNodes[this.props.wallet.networkIndex]
-              .notaryRepo,
+            config.lotusNodes[this.props.wallet.networkIndex].notaryRepo,
             'open',
             "Notary Application")
-
-          // const allIssues = await this.props.github.githubOctoGeneric.octokit.paginate(
-          //   this.props.github.githubOctoGeneric.octokit.issues.listForRepo,
-          //   {
-          //     owner:
-          //       config.lotusNodes[this.props.wallet.networkIndex].notaryOwner,
-          //     repo: config.lotusNodes[this.props.wallet.networkIndex]
-          //       .notaryRepo,
-          //     state: "open",
-          //     labels: ["Notary Application"]
-          //   }
-          // )
 
           const msigRequests = allIssues
             .filter((issue: any) => !issue.labels.find((l: any) => l.name === 'status:AddedOnchain'))
@@ -572,23 +559,15 @@ export default class DataProvider extends React.Component<
             msigRequests.map((issue: any) => new Promise<any>(async (resolve, reject) => {
               const comments = await this.props.github.fetchGithubComments(
                 config.lotusNodes[this.props.wallet.networkIndex].notaryOwner,
-                config.lotusNodes[this.props.wallet.networkIndex]
-                  .notaryRepo,
+                config.lotusNodes[this.props.wallet.networkIndex].notaryRepo,
                 issue.number,
-                issue)
-              // const comments = await this?.props?.github?.githubOctoGeneric?.octokit?.paginate(
-              //   this?.props?.github?.githubOctoGeneric?.octokit?.issues?.listComments,
-              //   {
-              //     owner:
-              //       config.lotusNodes[this.props.wallet.networkIndex].notaryOwner,
-              //     repo: config.lotusNodes[this.props.wallet.networkIndex]
-              //       .notaryRepo,
-              //     issue_number: issue.number,
-              //   }
-              // )
+              )
 
-              const lastRequest = comments.map((c: any) => notaryParser.parseApproveComment(c.body))
-                .filter((o: any) => o.correct).reverse()[0] || null
+              const parseCommentBody = comments.map((c: any) => notaryParser.parseApproveComment(c.body))
+
+              const filteredCorrectRequests = parseCommentBody.filter((o: any) => o.correct)
+
+              const lastRequest = filteredCorrectRequests.reverse()[0]
 
               const msigAddress = lastRequest?.address || null
 
@@ -602,6 +581,7 @@ export default class DataProvider extends React.Component<
               })
             }))
           )
+
           const requestsAndComments = requestsAndCommentsProm
             .filter((r: any) => r.status === "fulfilled")
             .map((r: any) => r.value)
