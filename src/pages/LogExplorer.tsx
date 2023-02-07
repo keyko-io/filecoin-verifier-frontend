@@ -1,18 +1,27 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 // @ts-ignore
 import Welcome from '../components/Welcome/Welcome'
 import { TextField, Button, CircularProgress } from '@material-ui/core';
-import { Data } from '../context/Data/Index'
 import { config } from '../config'
 import SearchIcon from '@mui/icons-material/Search';
 import history from '../context/History';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 
+type LogsItem = {
+  ID: string,
+  actionKeyword: string,
+  dateTimestamp: string,
+  issue_number: string,
+  message: string,
+  repo: string
+  type: string
+}
+
+
 const NOTARY_PREFIX_URL = `https://github.com/${config.onboardingOwner}/${config.onboardingNotaryOwner}/issues/`
 const LDN_PREFIX_URL = `https://github.com/${config.onboardingOwner}/${config.onboardingLargeClientRepo}/issues/`
 
 const LogExplorer = () => {
-  const context: any = useContext(Data)
 
   const onTop = () => {
     window.scrollTo({
@@ -30,7 +39,7 @@ const LogExplorer = () => {
   const [maxLogsNumber, setMaxLogsNumber] = useState(10)
   const [searchText, setSearchText] = useState("")
   const [date, setDate] = useState("")
-  const [logs, setLogs] = useState<any>([])
+  const [logs, setLogs] = useState<LogsItem[]>([])
   const [sortBy, setSortBy] = useState("dateTimestamp")
   const [isLogsLoading, setIsLogsLoading] = useState(false)
   const [isSearched, setIsSearched] = useState(false)
@@ -55,8 +64,31 @@ const LogExplorer = () => {
     }
   }, [])
 
-  const inputIssueNumber = (e: any) => {
+  const inputIssueNumber = (e: React.ChangeEvent<HTMLInputElement>) => {
     setIssueNumber(e.target.value)
+  }
+
+  const fetchLogs = async (issue_number: string) => {
+    try {
+      const res = (
+        await fetch(
+          "https://cbqluey8wa.execute-api.us-east-1.amazonaws.com/dev",
+          {
+            headers: { "x-api-key": config.loggerApiKey },
+            method: "POST",
+            body: JSON.stringify({
+              type: "GET_LOGS",
+              searchType: "issue_number",
+              operation: "=",
+              search: issue_number,
+            }),
+          }
+        )
+      ).json();
+      return res;
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   const selectIssueNumber = async (issueNumberId?: string) => {
@@ -65,7 +97,7 @@ const LogExplorer = () => {
     setMaxLogsNumber(10)
     try {
       setSrchButtonDisabled(true)
-      const res = issueNumberId ? await context.fetchLogs(issueNumberId) : await context.fetchLogs(issueNumber)
+      const res = issueNumberId ? await fetchLogs(issueNumberId) : await fetchLogs(issueNumber)
       setLogs(formatItems(res.items))
       setSrchButtonDisabled(false)
       setIsLogsLoading(false)
@@ -79,7 +111,7 @@ const LogExplorer = () => {
     }
   }
 
-  const formatItems = (items: any[]) => {
+  const formatItems = (items: LogsItem[]) => {
     const newItemsArray = []
     for (let item of items) {
       let obj: any = {}
@@ -90,7 +122,7 @@ const LogExplorer = () => {
       }
       newItemsArray.push(obj)
     }
-    return newItemsArray.sort((a: any, b: any) => new Date(b[sortBy]).valueOf() - new Date(a[sortBy]).valueOf())
+    return newItemsArray.sort((a, b) => new Date(b[sortBy]).valueOf() - new Date(a[sortBy]).valueOf())
   }
 
   return (
@@ -132,7 +164,7 @@ const LogExplorer = () => {
                   label="Search Issue Number"
                   variant="filled"
                   size="small"
-                  onChange={(e) => inputIssueNumber(e)}
+                  onChange={inputIssueNumber}
                   className="inputRounded-2"
                   type="number"
                 />
@@ -163,7 +195,7 @@ const LogExplorer = () => {
                 <thead style={{ textAlign: "center" }}>
                   <tr>
                     {
-                      columns.map((column: any, i: any) =>
+                      columns.map((column, i) =>
                         <td key={i}>{column.name} </td>
                       )}
                   </tr>
@@ -171,10 +203,10 @@ const LogExplorer = () => {
                 <tbody>
                   {
                     logs
-                      .filter((item: any, i: any) => item.message.match(new RegExp(searchText, "gi")) || item.repo.match(new RegExp(searchText, "gi")))
-                      .filter((item: any, i: any) => date ? new Date(item.dateTimestamp).toLocaleDateString('fr-CA', { year: 'numeric', month: '2-digit', day: '2-digit' }) === date : true)
+                      .filter((item) => item.message.match(new RegExp(searchText, "gi")) || item.repo.match(new RegExp(searchText, "gi")))
+                      .filter((item) => date ? new Date(item.dateTimestamp).toLocaleDateString('fr-CA', { year: 'numeric', month: '2-digit', day: '2-digit' }) === date : true)
                       .slice(0, maxLogsNumber)
-                      .map((item: any, i: any) =>
+                      .map((item, i) =>
                         <tr key={i} style={{ textAlign: "center" }}>
                           <td >{new Date(item.dateTimestamp).toLocaleDateString()} {new Date(item.dateTimestamp).toLocaleTimeString()} </td>
                           <td >{item.type} </td>

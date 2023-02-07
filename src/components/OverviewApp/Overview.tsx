@@ -6,19 +6,20 @@ import RootKeyHolder from './RootKeyHolder';
 import Notary from './Notary';
 import { BeatLoader } from "react-spinners";
 import "./Overview.scss"
+import { ApprovedVerifiers } from '../../type';
 
 const Overview = () => {
-    const context: any = useContext(Data)
+    const context = useContext(Data)
 
     const [approvedNotariesLoading, setApprovedNotariesLoading] = useState(false)
-    const [approvedNotariesLength, setApprovedNotariesLength] = useState<any>(null)
+    const [approvedNotariesLength, setApprovedNotariesLength] = useState<number | null>(null)
 
     useEffect(() => {
         context.loadClients()
 
         setApprovedNotariesLoading(true)
 
-        context.wallet.api.listVerifiers().then((data: any) => {
+        context.wallet.api.listVerifiers().then((data: ApprovedVerifiers[]) => {
             setApprovedNotariesLength(data.length)
             setApprovedNotariesLoading(false)
         })
@@ -41,7 +42,7 @@ const Overview = () => {
                                         <BeatLoader size={15} color={"rgb(24,160,237)"} />
                                     </div>
                                     :
-                                    bytesToiB(context.clientsAmount)}</div>
+                                    bytesToiB(Number(context.clientsAmount))}</div>
                             <div className="text">Datacap Granted</div>
                         </div>
                         <div className="textinfodatablock">

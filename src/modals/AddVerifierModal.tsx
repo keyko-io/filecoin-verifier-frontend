@@ -6,14 +6,14 @@ import { dispatchCustomEvent, H3, Input, ButtonPrimary, SelectMenu, LoaderSpinne
 
 
 const AddVerifierModal = () => {
-    const context: any = useContext(Data)
+    const context = useContext(Data)
 
     const [proposeLoading, setProposeLoading] = useState(false)
     const [datacap, setDatacap] = useState("1")
     const [datacapExt, setDatacapExt] = useState("1000000000000")
     const [accountID, setAccountID] = useState("")
 
-    const handleSubmit = async (e: any) => {
+    const handleSubmit = async (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault()
         setProposeLoading(false)
 
@@ -32,14 +32,16 @@ const AddVerifierModal = () => {
             setDatacapExt("1000000000000")
             setAccountID("")
 
-            context.dispatchNotification('Propose Message sent with ID: ' + messageID)
+            context.wallet.dispatchNotification('Propose Message sent with ID: ' + messageID)
             dispatchCustomEvent({ name: "delete-modal", detail: {} })
-        } catch (e: any) {
+        } catch (error: any) {
             setProposeLoading(false)
-            context.dispatchNotification('Proposal failed: ' + e.message)
+            context.wallet.dispatchNotification('Proposal failed: ' + error.message)
             dispatchCustomEvent({ name: "delete-modal", detail: {} })
         }
     }
+
+
 
     return (
         <div className="addmodal">
@@ -51,7 +53,7 @@ const AddVerifierModal = () => {
                         name="verifierAccountID"
                         value={accountID}
                         placeholder="xxxxxx"
-                        onChange={(e: any) => setAccountID(e.target.value)}
+                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => setAccountID(e.target.value)}
                     />
                 </div>
                 <div className="datacapholder">
@@ -61,14 +63,14 @@ const AddVerifierModal = () => {
                             name="datacap"
                             value={datacap}
                             placeholder="1"
-                            onChange={(e: any) => setDatacap(e.target.value)}
+                            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setDatacap(e.target.value)}
                         />
                     </div>
                     <div className="datacapext">
                         <SelectMenu
                             name="datacapExt"
                             value={datacapExt}
-                            onChange={(e: any) => setDatacapExt(e.target.value)}
+                            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setDatacapExt(e.target.value)}
                             options={config.datacapExt}
                         />
                     </div>

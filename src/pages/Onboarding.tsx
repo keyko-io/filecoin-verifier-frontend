@@ -1,13 +1,10 @@
-import React from "react";
 // @ts-ignore
 import RootKey from "../svg/rkh-verifiers.svg";
 import Cients from "../svg/client-miners.svg";
 import Option from "../components/Option/Option";
 import history from "../context/History";
-
 import Welcome from "../components/Welcome/Welcome";
 import LearnMore from "../components/LearnMore/LearnMore";
-
 
 const options = [
   {
@@ -35,7 +32,6 @@ const Onboarding = () => {
       });
     }
   };
-
 
   return (
     <div className="onboarding">

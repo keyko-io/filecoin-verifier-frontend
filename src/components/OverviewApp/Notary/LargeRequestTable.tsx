@@ -2,58 +2,59 @@ import { CircularProgress } from "@material-ui/core"
 import { useContext, useEffect, useState } from "react"
 import DataTable from "react-data-table-component"
 import { Data } from "../../../context/Data/Index"
+import { LargeRequestData } from "../../../type"
 
-export const largeReqColumns: any = [
+export const largeReqColumns = [
     {
         name: "Client",
-        selector: (row: any) => row.data,
+        selector: (row: LargeRequestData) => row.data,
         sortable: true,
         grow: 1.2,
         wrap: true
     },
     {
         name: "Address",
-        selector: (row: any) => row.address,
+        selector: (row: LargeRequestData) => row.address,
         sortable: true,
-        cell: (row: any) => <div>{`${row.address.substring(0, 9)}...${row.address.substring(row.address.length - 9, row.address.length)}`}</div>
+        cell: (row: LargeRequestData) => <div>{`${row.address.substring(0, 9)}...${row.address.substring(row.address.length - 9, row.address.length)}`}</div>
     },
     {
         name: "Multisig",
-        selector: (row: any) => row.multisig,
+        selector: (row: LargeRequestData) => row.multisig,
         sortable: true,
         grow: 0.5
     },
     {
         name: "Datacap",
-        selector: (row: any) => row.datacap,
+        selector: (row: LargeRequestData) => row.datacap,
         sortable: true,
         grow: 0.5
     },
     {
         name: "Audit Trail",
-        selector: (row: any) => row.issue_number,
+        selector: (row: LargeRequestData) => row.issue_number,
         sortable: true,
         grow: 0.5,
-        cell: (row: any) => <a
+        cell: (row: LargeRequestData) => <a
             target="_blank"
             rel="noopener noreferrer"
             href={row.url}>#{row.issue_number}</a>,
     },
     {
         name: "Proposer",
-        selector: (row: any) => row.proposer.signerGitHandle,
+        selector: (row: LargeRequestData) => row.proposer.signerGitHandle,
         sortable: true,
-        cell: (row: any) => <span >{row.proposer.signerGitHandle || "-"}</span>,
+        cell: (row: LargeRequestData) => <span >{row.proposer.signerGitHandle || "-"}</span>,
         grow: 0.5,
     },
     {
         name: "TxId",
-        selector: (row: any) => row.tx.id,
+        selector: (row: LargeRequestData) => row.tx.id,
         grow: 0.5,
     },
     {
         name: "Approvals",
-        selector: (row: any) => row.approvals,
+        selector: (row: LargeRequestData) => row.approvals,
         sortable: true,
         grow: 0.5,
     },
@@ -61,7 +62,7 @@ export const largeReqColumns: any = [
 
 type LargeRequestTableProps = {
     setSelectedLargeClientRequests: any
-    dataForLargeRequestTable: any
+    dataForLargeRequestTable: LargeRequestData[],
     largeRequestListLoading: boolean
     setDataForLargeRequestTable: any
 }
@@ -81,8 +82,8 @@ const LargeRequestTable = ({ setSelectedLargeClientRequests, largeRequestListLoa
         }
         if (context.searchString === "" && context.largeClientRequests) {
             const data = context.largeClientRequests
-                .map((item: any) => ({ ...item, data: item.data.name, searchBy: `${item?.data?.name} ${item?.issue_number} ${item?.multisig} ${item?.address} ${item?.datacap} ${item?.tx?.id}` }))
-                .map((item: any) => item.tx !== null ? item : { ...item, tx: "", })
+                .map((item) => ({ ...item, data: item.data.name, searchBy: `${item?.data?.name} ${item?.issue_number} ${item?.multisig} ${item?.address} ${item?.datacap} ${item?.tx?.id}` }))
+                .map((item) => item.tx !== null ? item : { ...item, tx: "", })
             setDataForLargeRequestTable(data)
         }
     }, [context.searchString, context.largeClientRequests])
@@ -114,10 +115,10 @@ const LargeRequestTable = ({ setSelectedLargeClientRequests, largeRequestListLoa
                         </div>
                         : "No large client requests yet"}
                     onSelectedRowsChange={({ selectedRows }) => {
-                        const rowNumbers = selectedRows.map((row: any) => row.issue_number)
+                        const rowNumbers = selectedRows.map((row) => row.issue_number)
                         setSelectedLargeClientRequests(rowNumbers)
                     }}
-                    onRowClicked={(row: any) => {
+                    onRowClicked={(row) => {
                         if (!row.signable) {
                             context.wallet.dispatchNotification(CANT_SIGN_MESSAGE)
                         }

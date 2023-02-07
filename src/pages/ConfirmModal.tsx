@@ -9,7 +9,7 @@ type ConfirmModalProps = {
 
 const ConfirmModal = (props: ConfirmModalProps) => {
 
-    const handleSubmit = async (e: any) => {
+    const handleSubmit = () => {
         dispatchCustomEvent({ name: "delete-modal", detail: {} })
     }
 

@@ -27,14 +27,14 @@ import { fas } from '@fortawesome/free-solid-svg-icons'
 library.add(fab, far, fas)
 
 const App = () => {
-  const context: any = useContext(Data)
+  const context = useContext(Data)
 
   const [networkSelect, setNetworkSelect] = useState(false)
   const [accountSelect, setAccountSelect] = useState(false)
   const [search, setSearch] = useState("")
 
-  const modalRef: any = useRef()
-  const viewSwitch: any = useRef()
+  const modalRef = useRef<HTMLDivElement>(null)
+  const viewSwitch = useRef<HTMLDivElement>(null)
 
   const closeModal = (e: any) => {
     if (e.path && e?.path[1] !== modalRef.current && !e.path.includes(viewSwitch.current)) {
@@ -53,9 +53,9 @@ const App = () => {
     }
   }, [isWalletLogged])
 
-  const openNetworkSelect = (e: any) => setNetworkSelect(!networkSelect)
+  const openNetworkSelect = () => setNetworkSelect(!networkSelect)
 
-  const openAccountSelect = (e: any) => !accountSelect && setAccountSelect(true)
+  const openAccountSelect = () => !accountSelect && setAccountSelect(true)
 
   const switchNetwork = async (index: number) => {
     context.wallet.selectNetwork(index)
@@ -96,9 +96,9 @@ const App = () => {
   const refresh = () => {
     if (context.viewroot) context.loadVerifierAndPendingRequests();
 
-    if (!context.wiewroot && localStorage.getItem("loggedUser")) context.loadClientRequests()
+    if (!context.viewroot && localStorage.getItem("loggedUser")) context.loadClientRequests()
 
-    if (!context.wiewroot && !localStorage.getItem("loggedUser")) {
+    if (!context.viewroot && !localStorage.getItem("loggedUser")) {
       context.wallet.dispatchNotification("You should login first for this action!!")
     }
   }
@@ -106,10 +106,10 @@ const App = () => {
   const getVerifierAmount = (account: string) => {
     for (const verified of context.verified) {
       if (account === verified.verifierAccount) {
-        return verified.datacap
+        return Number(verified.datacap)
       }
     }
-    return '0'
+    return 0
   }
 
   const handleSearch = async (e: any) => {
@@ -166,7 +166,7 @@ const App = () => {
           <div className="refresh" onClick={refresh}>
             <RefreshIcon />
           </div>
-          <div className="accountholder" onClick={(e) => openAccountSelect(e)} ref={modalRef}>
+          <div className="accountholder" onClick={openAccountSelect} ref={modalRef}>
             {accountSelect ?
               <div className="accountselectholder" ref={viewSwitch}>
                 <div className="headertitles">Select Account Type</div>
@@ -201,7 +201,7 @@ const App = () => {
                   : null}
                 <div className="headertitles">Account addresses</div>
                 <div className="accountModal">
-                  {context.wallet.accounts.map((account: any, index: number) => {
+                  {context.wallet.accounts.map((account, index) => {
                     return <div key={index} className="accountentry" style={{ backgroundColor: index === context.wallet.walletIndex ? '#C7C7C7' : 'inherit' }}>
                       <div>
                         <div className="datacapdata" onClick={() => switchAccount(index)} >

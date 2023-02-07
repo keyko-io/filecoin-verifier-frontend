@@ -20,7 +20,7 @@ const WalletModal = () => {
         name="seedphrase"
         value={seedphrase}
         placeholder="Enter your seedphrase"
-        onChange={(e: any) => setSeedPhrase(e.target.value)}
+        onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSeedPhrase(e.target.value)}
       />
       <ButtonPrimary onClick={handleImport}>Import</ButtonPrimary>
     </div>

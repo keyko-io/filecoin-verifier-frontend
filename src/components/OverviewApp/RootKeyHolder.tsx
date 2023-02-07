@@ -11,17 +11,14 @@ import { EVENT_TYPE, MetricsApiParams } from "../../utils/Metrics";
 import DataTable from "react-data-table-component";
 import { CircularProgress } from "@material-ui/core";
 import { notaryParser, metrics } from "@keyko-io/filecoin-verifier-tools";
+import { VerifiedData } from "../../type";
 
 type RootKeyHolderState = {
   tabs: string;
   approveLoading: boolean;
   selectedTransactions: any[];
   refAccepted: any;
-  sortOrderAccepted: number;
-  orderByAccepted: string;
   refRequests: any;
-  sortOrderRequest: number;
-  orderByRequest: string;
 };
 
 export default class RootKeyHolder extends Component<{},
@@ -34,11 +31,8 @@ export default class RootKeyHolder extends Component<{},
     approveLoading: false,
     tabs: "0",
     refAccepted: {} as any,
-    sortOrderAccepted: -1,
-    orderByAccepted: "verifier",
     refRequests: {} as any,
-    orderByRequest: "addresses",
-    sortOrderRequest: -1,
+
   };
 
   componentDidMount() {
@@ -554,27 +548,27 @@ export default class RootKeyHolder extends Component<{},
               columns={[
                 {
                   name: "Notary",
-                  selector: (row: any) => row.verifier,
+                  selector: (row) => row.verifier,
                   sortable: true,
                 },
                 {
                   name: "Address",
-                  selector: (row: any) => row.verifierAccount,
+                  selector: (row) => row.verifierAccount,
                   sortable: true,
                   grow: 2,
                 },
                 {
                   name: "Datacap",
-                  selector: (row: any) => row.datacap,
+                  selector: (row) => row.datacap,
                   sortable: true,
                   cell: (row: any) => <span>{bytesToiB(row.datacap)}</span>,
                 },
               ]}
-              data={this.context.verified}
+              data={this.context.verified as VerifiedData[]}
               pagination
               paginationServer
               paginationTotalRows={this.context?.approvedVerifiersData?.length}
-              onChangePage={(page) => {
+              onChangePage={(page: number) => {
                 this.context.loadVerified(page)
               }}
               progressPending={this.context.acceptedNotariesLoading}

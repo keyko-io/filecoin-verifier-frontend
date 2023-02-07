@@ -1,40 +1,40 @@
-import React from "react";
 import OpenInNewRoundedIcon from '@mui/icons-material/OpenInNewRounded';
 import Contacts from "./Contacts/Contacts";
+import { MinerData } from "./loadMiners";
 
-export const columns: any = [
+export const columns = [
   {
     name: "Storage Provider",
-    selector: (row: any) => row.name,
+    selector: (row: MinerData) => row.name,
     sortable: true,
 
   },
   {
     name: "Location",
-    selector: (row: any) => row.location,
+    selector: (row: MinerData) => row.location,
     sortable: true,
   },
   {
     name: "Provider ID",
-    selector: (row: any) => row.minerId,
+    selector: (row: MinerData) => row.minerId,
     sortable: true,
   },
   {
     name: "Contact Info",
-    selector: (row: any) => row.contacts.slack,
+    selector: (row: MinerData) => row.contacts.slack,
     sortable: true,
-    cell: (row: any) => <Contacts slack={row.contacts.slack} href={row.contacts.href} />
+    cell: (row: MinerData) => <Contacts slack={row.contacts.slack} href={row.contacts.href} />
   },
   {
     name: "Last Price for Verified Deals",
     sortable: true,
-    selector: (row: any) => row.verifiedPrice
+    selector: (row: MinerData) => row.verifiedPrice
   },
   {
     name: "Min Piece Size",
     sortable: true,
-    selector: (row: any) => row.minPieceSize,
-    sortFunction: (x: any, y: any) => {
+    selector: (row: MinerData) => row.minPieceSize,
+    sortFunction: (x: MinerData, y: MinerData) => {
       //Custom sort function for minPieceSize
 
       const a = x.minPieceSizeRaw;
@@ -54,8 +54,8 @@ export const columns: any = [
   {
     name: "Reputation Score",
     sortable: true,
-    selector: (row: any) => row.reputationScore,
-    cell: (row: any) => <div style={{ display: "flex", fontWeight: "bold", alignItems: "center", color: row.reputationScore > 50 ? "#15803d" : "#ef4444" }}>
+    selector: (row: MinerData) => row.reputationScore,
+    cell: (row: MinerData) => <div style={{ display: "flex", fontWeight: "bold", alignItems: "center", color: row.reputationScore > 50 ? "#15803d" : "#ef4444" }}>
       <span>{row.reputationScore}</span>
       {row.reputationScore !== "not found" &&
         <a
