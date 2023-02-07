@@ -1,66 +1,48 @@
-import React, { Component } from 'react';
+import { useContext, useState } from 'react';
 import { Data } from '../context/Data/Index'
 import { config } from '../config'
 // @ts-ignore
 import { dispatchCustomEvent, H3, Input, ButtonPrimary, SelectMenu, LoaderSpinner } from "slate-react-system";
 
-type States = {
-    proposeLoading: boolean
-    datacap: string
-    datacapExt: string
-    verifierAccountID: string
-};
 
-class AddVerifierModal extends Component<{}, States> {
-    public static contextType = Data
+const AddVerifierModal = () => {
+    const context = useContext(Data)
 
-    constructor(props: {}) {
-        super(props);
-        this.state = {
-            proposeLoading: false,
-            datacap: '1',
-            datacapExt: '1000000000000',
-            verifierAccountID: ''
-        }
-    }
+    const [proposeLoading, setProposeLoading] = useState(false)
+    const [datacap, setDatacap] = useState("1")
+    const [datacapExt, setDatacapExt] = useState("1000000000000")
+    const [accountID, setAccountID] = useState("")
 
-    componentDidMount () {
-
-    }
-
-    handleSubmit = async (e:any) => {
+    const handleSubmit = async (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault()
-        this.setState({ proposeLoading: true })
+        setProposeLoading(false)
+
         try {
-            const datacap = parseFloat(this.state.datacap)
-            const fullDatacap = BigInt(datacap * parseFloat(this.state.datacapExt))
-            let verifierAccountID = this.state.verifierAccountID
-            if(verifierAccountID.length < 12){
-                verifierAccountID = await this.context.wallet.api.actorKey(verifierAccountID)
+            const dataCap = parseFloat(datacap)
+            const fullDatacap = BigInt(dataCap * parseFloat(datacapExt))
+            let verifierAccountID = accountID
+            if (verifierAccountID.length < 12) {
+                verifierAccountID = await context.wallet.api.actorKey(verifierAccountID)
             }
-            let messageID = await this.context.wallet.api.proposeVerifier(verifierAccountID, fullDatacap, this.context.wallet.walletIndex);
-            this.setState({
-                verifierAccountID: '',
-                datacap: '1',
-                datacapExt: '1000000000000',
-                proposeLoading: false
-            })
-            this.context.dispatchNotification('Propose Message sent with ID: ' + messageID)
+
+            let messageID = await context.wallet.api.proposeVerifier(verifierAccountID, fullDatacap, context.wallet.walletIndex);
+
+            setProposeLoading(false)
+            setDatacap("1")
+            setDatacapExt("1000000000000")
+            setAccountID("")
+
+            context.wallet.dispatchNotification('Propose Message sent with ID: ' + messageID)
             dispatchCustomEvent({ name: "delete-modal", detail: {} })
-        } catch (e:any) {
-            this.setState({ proposeLoading: false })
-            this.context.dispatchNotification('Proposal failed: ' + e.message)
-            console.log(e.stack)
+        } catch (error: any) {
+            setProposeLoading(false)
+            context.wallet.dispatchNotification('Proposal failed: ' + error.message)
             dispatchCustomEvent({ name: "delete-modal", detail: {} })
         }
     }
 
 
-    handleChange = (e:any) => {
-        this.setState({ [e.target.name]: e.target.value } as any)
-    }
 
-  render() {
     return (
         <div className="addmodal">
             <H3>Add verifier</H3>
@@ -69,9 +51,9 @@ class AddVerifierModal extends Component<{}, States> {
                     <Input
                         description="Notary Account ID"
                         name="verifierAccountID"
-                        value={this.state.verifierAccountID}
+                        value={accountID}
                         placeholder="xxxxxx"
-                        onChange={this.handleChange}
+                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => setAccountID(e.target.value)}
                     />
                 </div>
                 <div className="datacapholder">
@@ -79,25 +61,24 @@ class AddVerifierModal extends Component<{}, States> {
                         <Input
                             description="Notary datacap"
                             name="datacap"
-                            value={this.state.datacap}
+                            value={datacap}
                             placeholder="1"
-                            onChange={this.handleChange}
+                            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setDatacap(e.target.value)}
                         />
                     </div>
                     <div className="datacapext">
                         <SelectMenu
                             name="datacapExt"
-                            value={this.state.datacapExt}
-                            onChange={this.handleChange}
+                            value={datacapExt}
+                            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setDatacapExt(e.target.value)}
                             options={config.datacapExt}
                         />
                     </div>
                 </div>
-                <ButtonPrimary onClick={this.handleSubmit}>{this.state.proposeLoading ? <LoaderSpinner /> : 'Propose Notary'}</ButtonPrimary>
+                <ButtonPrimary onClick={handleSubmit}>{proposeLoading ? <LoaderSpinner /> : 'Propose Notary'}</ButtonPrimary>
             </form>
         </div>
     )
-  }
 }
 
 export default AddVerifierModal;

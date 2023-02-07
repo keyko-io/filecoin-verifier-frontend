@@ -38,7 +38,7 @@ const WarnModalNotaryVerified = ({ onClick }: WarnModalNotaryVerifiedProps) => {
                         redirectUri={oauthUri}
                         clientId={githubApp}
                         scope="repo"
-                        onSuccess={async (response: any) => {
+                        onSuccess={async (response: { code: string }) => {
                             await github.loginGithub(response.code);
                         }}
                         onFailure={(response: any) => {

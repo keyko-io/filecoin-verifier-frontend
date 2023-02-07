@@ -5,22 +5,9 @@ import { Octokit } from '@octokit/rest'
 import { config } from '../../config';
 import axios from "axios"
 import toast from 'react-hot-toast';
+import { GithubProviderStates } from '../contextType';
 
-interface WalletProviderStates {
-    githubLogged: boolean
-    githubOcto: any
-    loginGithub: any
-    initGithubOcto: any
-    logoutGithub: any
-    githubOctoGenericLogin: any
-    githubOctoGeneric: any
-    loggedUser: any
-    avatarUrl: any
-    fetchGithubIssues: any
-    fetchGithubComments: any
-}
-
-export default class WalletProvider extends React.Component<{}, WalletProviderStates> {
+export default class WalletProvider extends React.Component<{}, GithubProviderStates> {
     setStateAsync(state: any) {
         return new Promise((resolve: any) => {
             this.setState(state, resolve)
@@ -29,8 +16,8 @@ export default class WalletProvider extends React.Component<{}, WalletProviderSt
 
     initNetworkIndex = () => {
         const activeIndex = config.lotusNodes
-            .map((node: any, index: number) => { return { name: node.name, index: index } })
-            .filter((node: any, index: number) => config.networks.includes(node.name))
+            .map((node, index) => { return { name: node.name, index: index } })
+            .filter((node) => config.networks.includes(node.name))
 
         return activeIndex[0].index
     }
@@ -53,8 +40,7 @@ export default class WalletProvider extends React.Component<{}, WalletProviderSt
         githubLogged: false,
         githubOcto: {} as any,
         githubOctoGeneric: { logged: false } as any,
-        loginGithub: async (code: string, onboarding?: boolean) => {
-            console.log('code', code)
+        loginGithub: async (code: string) => {
             try {
                 const authrequest = await fetch(config.apiUri + '/api/v1/github', {
                     method: 'POST',
@@ -84,7 +70,7 @@ export default class WalletProvider extends React.Component<{}, WalletProviderSt
                 this.setState({ loggedUser: login, avatarUrl: avatar_url })
                 axios.defaults.headers.common['Authorization'] = `Bearer ${authjson.data.access_token}`
 
-            } catch (e: any) {
+            } catch (e) {
                 this.state.logoutGithub()
                 toast.error("Failed to login. Try again later.")
                 console.log(e, "error occurred while login github")
@@ -142,7 +128,7 @@ export default class WalletProvider extends React.Component<{}, WalletProviderSt
                     })
             }
         },
-        fetchGithubIssues: async (owner: any, repo: any, state: any, labels: any) => {
+        fetchGithubIssues: async (owner: string, repo: string, state: any, labels: any) => {
             const rawIssues = await this.state.githubOcto.paginate(
                 this.state.githubOcto.issues.listForRepo,
                 {
@@ -154,7 +140,7 @@ export default class WalletProvider extends React.Component<{}, WalletProviderSt
             );
             return rawIssues
         },
-        fetchGithubComments: async (owner: any, repo: any, issueNumber: any, issue: any) => {
+        fetchGithubComments: async (owner: string, repo: string, issueNumber: number, issue?: any) => {
             try {
 
                 // the following is for testing
@@ -185,7 +171,6 @@ export default class WalletProvider extends React.Component<{}, WalletProviderSt
     }
 
     loadGithub() {
-        console.log("running now in load github")
         const githubToken = localStorage.getItem('githubToken')!
         const loggedUser = localStorage.getItem('loggedUser')!
         if (githubToken) {

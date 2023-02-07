@@ -39,7 +39,7 @@ class AddClientModal extends Component<ModalProps, States> {
     componentDidMount() {
         if (this.props.clientRequest && this.props.selected) {
             const requestSelected = this.props.selected || ''
-            const request = this.props.clientRequest.find(element => element.number == requestSelected);
+            const request = this.props.clientRequest.find(element => element.number === requestSelected);
             this.setState({
                 issueNumber: request.issue_number,
                 address: request.data.address
@@ -55,9 +55,6 @@ class AddClientModal extends Component<ModalProps, States> {
         try {
             const dataCapIssue = this.state.datacap + this.state.units
             const fullDatacap = anyToBytes(dataCapIssue)
-
-            console.log("datacap: " + this.state.datacap)
-            console.log("fullDatacap: " + fullDatacap)
 
             let messageID
             if (this.context.wallet.multisig) {
@@ -77,17 +74,14 @@ class AddClientModal extends Component<ModalProps, States> {
                 submitLoading: false
             })
             this.context.wallet.dispatchNotification('Verify Client Message sent with ID: ' + messageID)
-            dispatchCustomEvent({ name: "delete-modal", detail: {} })
+            this.deleteModal()
             this.setState({ submitLoading: false })
-        } catch (e:any) {
+        } catch (e: any) {
             this.setState({ submitLoading: false })
             this.context.wallet.dispatchNotification('Client verification failed: ' + e.message)
-            console.log(e.stack)
-            dispatchCustomEvent({ name: "delete-modal", detail: {} })
-
+            this.deleteModal()
         }
     }
-
 
     findUnits = (value: string) => {
         const element = config.datacapExt.find(ele => ele.value === value)
@@ -101,7 +95,9 @@ class AddClientModal extends Component<ModalProps, States> {
         }
     }
 
-
+    deleteModal() {
+        dispatchCustomEvent({ name: "delete-modal", detail: {} })
+    }
 
     render() {
         return (

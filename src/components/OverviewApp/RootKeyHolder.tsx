@@ -1,7 +1,6 @@
 import { Component } from "react";
 import { Data } from "../../context/Data/Index";
 import AddVerifierModal from "../../modals/AddVerifierModal";
-import RequestVerifierModal from "../../modals/RequestVerifierModal";
 // @ts-ignore
 import { ButtonPrimary, dispatchCustomEvent } from "slate-react-system";
 import { bytesToiB, anyToBytes } from "../../utils/Filters";
@@ -12,22 +11,14 @@ import { EVENT_TYPE, MetricsApiParams } from "../../utils/Metrics";
 import DataTable from "react-data-table-component";
 import { CircularProgress } from "@material-ui/core";
 import { notaryParser, metrics } from "@keyko-io/filecoin-verifier-tools";
-
-
-
-
-
+import { VerifiedData } from "../../type";
 
 type RootKeyHolderState = {
   tabs: string;
   approveLoading: boolean;
   selectedTransactions: any[];
   refAccepted: any;
-  sortOrderAccepted: number;
-  orderByAccepted: string;
   refRequests: any;
-  sortOrderRequest: number;
-  orderByRequest: string;
 };
 
 export default class RootKeyHolder extends Component<{},
@@ -40,11 +31,8 @@ export default class RootKeyHolder extends Component<{},
     approveLoading: false,
     tabs: "0",
     refAccepted: {} as any,
-    sortOrderAccepted: -1,
-    orderByAccepted: "verifier",
     refRequests: {} as any,
-    orderByRequest: "addresses",
-    sortOrderRequest: -1,
+
   };
 
   componentDidMount() {
@@ -83,18 +71,6 @@ export default class RootKeyHolder extends Component<{},
     });
   };
 
-  requestVerifier = async () => {
-    dispatchCustomEvent({
-      name: "create-modal",
-      detail: {
-        id: Math.random()
-          .toString(36)
-          .replace(/[^a-z]+/g, "")
-          .substr(0, 5),
-        modal: <RequestVerifierModal />,
-      },
-    });
-  };
 
   showWarnPropose = async (e: any, origin: string, selected: any[]) => {
     await e.preventDefault();
@@ -171,8 +147,8 @@ export default class RootKeyHolder extends Component<{},
     for (const request of this.context.verifierAndPendingRequests) {
       if (this.context.selectedNotaryRequests.includes(request.id)) {
         const messageIds: any[] = [];
-        var commentContent = "";
-        var label = "";
+        let commentContent = "";
+        let label = "";
         let filfox = "";
         let errorMessage = "";
         let warningMessage = "";
@@ -572,27 +548,27 @@ export default class RootKeyHolder extends Component<{},
               columns={[
                 {
                   name: "Notary",
-                  selector: (row: any) => row.verifier,
+                  selector: (row) => row.verifier,
                   sortable: true,
                 },
                 {
                   name: "Address",
-                  selector: (row: any) => row.verifierAccount,
+                  selector: (row) => row.verifierAccount,
                   sortable: true,
                   grow: 2,
                 },
                 {
                   name: "Datacap",
-                  selector: (row: any) => row.datacap,
+                  selector: (row) => row.datacap,
                   sortable: true,
                   cell: (row: any) => <span>{bytesToiB(row.datacap)}</span>,
                 },
               ]}
-              data={this.context.verified}
+              data={this.context.verified as VerifiedData[]}
               pagination
               paginationServer
               paginationTotalRows={this.context?.approvedVerifiersData?.length}
-              onChangePage={(page) => {
+              onChangePage={(page: number) => {
                 this.context.loadVerified(page)
               }}
               progressPending={this.context.acceptedNotariesLoading}

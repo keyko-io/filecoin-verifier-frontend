@@ -1,5 +1,3 @@
-import React from "react";
-
 export const columns: any = [
   {
     name: "Organization / Notary Name",

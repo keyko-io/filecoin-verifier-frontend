@@ -7,13 +7,14 @@ import TransportWebUSB from '@ledgerhq/hw-transport-webusb'
 import FilecoinApp from "@zondax/ledger-filecoin"
 import signer from "@zondax/filecoin-signing-tools/js"
 import { VerifyAPI } from '@keyko-io/filecoin-verifier-tools'
+import { ConfigLotusNode } from '../contextType'
 
 export class LedgerWallet {
 
   ledgerBusy: boolean = false
   ledgerApp: any = false
   api: any
-  lotusNode: any
+  lotusNode: ConfigLotusNode
   networkIndex: number = 0
 
   public loadWallet = async (networkIndex: number) => {
