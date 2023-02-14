@@ -39,10 +39,11 @@ const startSentry = () => {
     try {
         const response = Sentry.init({
             dsn: "https://eb76476e0295444a8b84d8f3202b804d@o4504672105463808.ingest.sentry.io/4504672107364352",
+           
             integrations: [new Integrations.BrowserTracing({ tracePropagationTargets: ["*"] })],
             tracesSampleRate: 1.0,
         });
-        console.log("response", response);
+        console.log("sentry init", response);
     } catch (error) {
         console.log("error", error);
     }

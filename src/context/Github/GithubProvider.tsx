@@ -1,10 +1,10 @@
-import React from "react";
-import { Github } from "./Index";
 import { Octokit } from "@octokit/rest";
-import { config } from "../../config";
 import axios from "axios";
+import React from "react";
 import toast from "react-hot-toast";
-import * as Logger from "../../"
+import { config } from "../../config";
+import * as Logger from "../../logger";
+import { Github } from "./Index";
 
 interface WalletProviderStates {
     githubLogged: boolean;
@@ -113,19 +113,19 @@ export default class WalletProvider extends React.Component<
                     "Authorization"
                 ] = `Bearer ${authjson.data.access_token}`;
 
-                await Sentry.captureMessage("Github Login Success", {
-                    user: {
-                        githubToken: authjson.data.access_token,
-                        githubUsername: githubHandle,
-                    },
+                await Logger.configureScope({
+                    githubUsername: githubHandle,
+                });
+                await Logger.BasicLogger({
+                    message: "Github Login Success",
                 });
             } catch (e: any) {
                 this.state.logoutGithub();
-                await Sentry.captureMessage("Github Login Failed", {
-                    user: {
-                        githubToken: authjson.data.access_token,
-                        githubUsername: githubHandle,
-                    },
+                await Logger.configureScope({
+                    githubUsername: githubHandle,
+                });
+                await Logger.BasicLogger({
+                    message: "Github Login Failed",
                 });
                 toast.error("Failed to login. Try again later.");
                 console.log(e, "error occurred while login github");
@@ -158,13 +158,10 @@ export default class WalletProvider extends React.Component<
                 githubOcto: undefined,
                 loggedUser: null,
             });
-            await Sentry.configureScope(function (scope) {
-                scope.setTag("githubToken", "");
-                scope.setTag("githubUsername", "");
+            await Logger.configureScope({ githubUsername: "" });
+            await Logger.BasicLogger({
+                message: "User Logged Out Github",
             });
-            await Sentry.captureMessage(
-                "User Logged out from Github"
-            );
         },
 
         checkToken: async () => {
@@ -269,21 +266,22 @@ export default class WalletProvider extends React.Component<
             if (loggedUser) {
                 this.setState({ loggedUser });
             }
-            await Sentry.configureScope(function (scope) {
-                scope.setTag("githubToken", githubToken);
-                scope.setTag("githubUsername", loggedUser);
+
+            await Logger.configureScope({
+                githubUsername: loggedUser,
             });
-            await Sentry.captureMessage(
-                "Loaded Github Token Successfully"
-            );
+            await Logger.BasicLogger({
+                message: "Loaded Github Token Successfully",
+            });
 
             this.state.githubOctoGenericLogin();
         } catch (error) {
-            await Sentry.configureScope(function (scope) {
-                scope.setTag("githubToken", "");
-                scope.setTag("githubUsername", "");
+            await Logger.configureScope({
+                githubUsername: "",
             });
-            await Sentry.captureException("Error: loadGithub token");
+            await Logger.BasicLogger({
+                message: "Error: loadGithub token",
+            });
             console.log(error);
         }
     }
