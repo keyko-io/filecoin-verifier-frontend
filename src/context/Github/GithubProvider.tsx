@@ -248,17 +248,13 @@ export default class WalletProvider extends React.Component<
 
     async loadGithub() {
         try {
-            console.log("running now in load github");
             const githubToken = localStorage.getItem("githubToken")!;
-            console.log("githubToken", githubToken);
             const loggedUser = localStorage.getItem("loggedUser")!;
-            console.log("loggedUser", loggedUser);
             if (githubToken) {
                 const response = await this.state.initGithubOcto(
                     githubToken
                 );
-                const aut = await response?.auth();
-                console.log("auth", aut);
+                await response?.auth();
             }
             if (!githubToken) {
                 this.setState({ githubLogged: false });
