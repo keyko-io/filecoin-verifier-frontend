@@ -12,6 +12,7 @@ import DataTable from "react-data-table-component";
 import { CircularProgress } from "@material-ui/core";
 import { notaryParser, metrics } from "@keyko-io/filecoin-verifier-tools";
 import { VerifiedData } from "../../type";
+import * as Logger from "../../logger";
 
 type RootKeyHolderState = {
   tabs: string;
@@ -388,6 +389,9 @@ export default class RootKeyHolder extends Component<{},
               request.issue_number,
               PHASE
             );
+
+            await Logger.BasicLogger({ message: Logger.RKH_SIGN_ON_CHAIN })
+
           }
         } catch (e: any) {
           this.context.wallet.dispatchNotification("Failed: " + e.message);

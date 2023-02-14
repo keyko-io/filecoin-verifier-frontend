@@ -16,6 +16,7 @@ import WarnModalNotaryVerified from "../../modals/WarnModalNotaryVeried";
 import { LargeRequestTable, CancelProposalTable, NotaryTabs, PublicRequestTable, VerifiedClientsTable } from "./Notary/index";
 import toast from 'react-hot-toast';
 import { ldnParser } from "@keyko-io/filecoin-verifier-tools";
+import * as Logger from "../../logger";
 
 
 type NotaryProps = {
@@ -219,6 +220,8 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
       await Promise.all([updateComment, postLogs])
 
       toast.success("Your pending request has been successfully canceled.")
+
+      await Logger.BasicLogger({ message: Logger.PROPOSE_CANCELLED })
 
       const updateCancelData = (item: any) => item.clientAddress !== cancelProposalData.clientAddress
 
@@ -477,6 +480,12 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
             "",
             action
           );
+
+          if (action === "Proposed") {
+            await Logger.BasicLogger({ message: Logger.REQUEST_PROPOSED })
+          } else {
+            await Logger.BasicLogger({ message: Logger.REQUEST_APPROVED })
+          }
 
           context.wallet.dispatchNotification(
             "Transaction successful! Verify Client Message sent with ID: " +
