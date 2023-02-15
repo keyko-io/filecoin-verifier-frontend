@@ -7,7 +7,6 @@ import BigNumber from "bignumber.js";
 import _ from 'lodash'
 import { v4 as uuidv4 } from "uuid";
 import { bytesToiB } from "../../utils/Filters";
-import * as Sentry from "@sentry/react";
 import { notaryLedgerVerifiedComment } from './comments'
 import { ldnParser, notaryParser, commonUtils, simpleClientParser } from "@keyko-io/filecoin-verifier-tools";
 import verifierRegistry from "../../data/verifiers-registry.json";
@@ -75,20 +74,6 @@ export default class DataProvider extends React.Component<
         } catch (error) {
           console.log(error);
         }
-      },
-      logToSentry: (
-        category: string,
-        message: string,
-        level: "info" | "error",
-        data: any
-      ) => {
-        let breadCrumb = {
-          category,
-          message,
-          data,
-        };
-        Sentry.addBreadcrumb(breadCrumb);
-        Sentry.captureMessage(breadCrumb.message);
       },
       getLDNIssuesAndTransactions: async () => {
         //GETTING ISSUES
