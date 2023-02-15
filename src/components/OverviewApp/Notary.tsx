@@ -266,11 +266,8 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
       if (selectedClientRequests.includes(request.number)) {
         let messageID = "";
         let address = "";
-        let dc = request.data.datacap;
-        let sentryData: any = {};
         let errorMessage = "";
         try {
-          sentryData.request = { ...request };
           const datacap: number = anyToBytes(request.data.datacap);
           console.log("datacap", datacap);
           address = request.data.address;
@@ -328,39 +325,14 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
 
           context.loadClientRequests();
 
-          sentryData = {
-            requestNumber: request.number,
-            messageID: messageID,
-            address: address,
-            dataCap: dc,
-            multisigId: context.wallet.multisigID,
-            activeAccount: context.wallet.activeAccount,
-            accounts: context.wallet.accounts,
-            walletIndex: context.wallet.walletIndex,
-          };
         } catch (e: any) {
           setApproveLoading(false)
-          sentryData = {
-            ...sentryData,
-            error: e,
-          };
 
-          context.logToSentry(
-            `verifyClients issue n. ${request.number}`,
-            `verifyClients error - issue n. ${request.number}: ${e.message}`,
-            "error",
-            sentryData
-          );
           context.wallet.dispatchNotification(
             "Verification failed: " + e.message
           );
         } finally {
-          context.logToSentry(
-            `verifyClients issue n. ${request.number}`,
-            `verifyClients info: verifyClients issue n. ${request.number}`,
-            "info",
-            sentryData
-          );
+          await Logger.BasicLogger({ message: Logger.CLIENT_ALLOCATION_REQUEST })
         }
       }
     }
@@ -372,9 +344,6 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
     let thisStateLargeRequestList = context.largeClientRequests;
     for (const request of thisStateLargeRequestList) {
       if (selectedLargeClientRequests.includes(request.issue_number)) {
-        let sentryData: any = {};
-        sentryData.request = { ...request };
-        sentryData.requestNumber = request.issue_number;
         let errorMessage = "";
         const PHASE = "DATACAP-SIGN";
         try {
@@ -382,17 +351,12 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
 
           let address = request.address;
 
-          sentryData.datacap = request.datacap;
-          sentryData.address = address;
-          sentryData.approvals = request.approvals;
-
           context.wallet.dispatchNotification(
             `datacap being approved: ${request.datacap} \nclient address: ${address}`
           );
 
           if (address.length < 12) {
             address = await context.wallet.api.actorKey(address);
-            sentryData.actorKey = address;
           }
 
           let messageID;
@@ -468,9 +432,6 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
             throw Error(errorMessage);
           }
 
-          sentryData.messageID = messageID;
-          sentryData.signer = signer;
-
           await context.updateGithubVerifiedLarge(
             request.issue_number,
             messageID,
@@ -517,16 +478,6 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
           );
           // console.log(e.stack)
           setApproveLoading(false)
-          sentryData = {
-            ...sentryData,
-            error: e,
-          };
-          context.logToSentry(
-            `verifyLargeClients issue n. ${request.issue_number}`,
-            `verifyLargeClients error - issue n. ${request.issue_number}, error:${e.message}`,
-            "error",
-            sentryData
-          );
         }
       }
     }
