@@ -21,7 +21,7 @@ const WarnModalVerify = (props: ModalProps) => {
 
         if (props.origin === 'Notary') {
             for (const request of props.clientRequests) {
-                if (props.selectedClientRequests.includes(request.issue_number)) {
+                if (props.selectedClientRequests.includes(request.issue_number || request.number)) {
                     requestToShow.push({
                         address: props.largeAddress ? request.address : request.data.address,
                         datacap: request.data.datacap ? request.data.datacap : request.datacap
