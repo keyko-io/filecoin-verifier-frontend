@@ -38,7 +38,7 @@ const NotaryTabs = ({
                 if (
                     Number(count) !==
                     Number(context?.largeClientRequests?.length)
-                )
+                ) {
                     await Logger.BasicLogger({
                         message:
                             "Github count: " +
@@ -46,6 +46,7 @@ const NotaryTabs = ({
                             " , Dashboard Count: " +
                             context?.largeClientRequests?.length,
                     });
+                }
                 setOpenRequestsOnGithub(count);
             } catch (error) {}
         };

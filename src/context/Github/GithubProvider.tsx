@@ -216,10 +216,9 @@ export default class WalletProvider extends React.Component<
             owner: any,
             repo: any,
             issueNumber: any,
-            issue: any
+            issue?: any
         ) => {
             try {
-                // the following is for testing
                 if (!issue) {
                     const rawComments =
                         await this.state.githubOctoGeneric.octokit.paginate(
@@ -231,14 +230,12 @@ export default class WalletProvider extends React.Component<
                                 issue_number: issueNumber,
                             }
                         );
-                    // console.log("rawComments", rawComments)
                     return rawComments;
                 }
 
                 const axiosComms = await axios.get(
                     issue.comments_url
                 );
-                // console.log("axiosComms", axiosComms.data)
                 return axiosComms.data;
             } catch (error) {
                 console.log(error);
