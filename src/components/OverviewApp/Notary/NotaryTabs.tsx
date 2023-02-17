@@ -15,8 +15,6 @@ const NotaryTabs = ({
     verifiedClientsLength,
 }: NotaryTabsProps) => {
     const context = useContext(Data);
-    const [openRequestsOnGithub, setOpenRequestsOnGithub] =
-        useState(0);
 
     const selectedTab = (tabIndex: string) => {
         return tabs === tabIndex ? "selected" : "";
@@ -47,8 +45,12 @@ const NotaryTabs = ({
                             context?.largeClientRequests?.length,
                     });
                 }
-                setOpenRequestsOnGithub(count);
-            } catch (error) {}
+            } catch (error) {
+                console.log(error);
+                await Logger.BasicLogger({
+                    message: "Error: Cant log number of requests",
+                });
+            }
         };
         handler();
     }, [context?.github, context?.largeClientRequests]);
