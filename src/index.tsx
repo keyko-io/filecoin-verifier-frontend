@@ -37,10 +37,18 @@ if (window.location.host.includes("fleek") && config.willRedirect) {
 
 const startSentry = () => {
     try {
+        const sentryDSN = process.env.SENTRY_DSN;
+        if (!sentryDSN) {
+            console.log("sentry dsn is not set. aborting");
+            return;
+        }
         const response = Sentry.init({
-            dsn: "https://eb76476e0295444a8b84d8f3202b804d@o4504672105463808.ingest.sentry.io/4504672107364352",
-           
-            integrations: [new Integrations.BrowserTracing({ tracePropagationTargets: ["*"] })],
+            dsn: sentryDSN,
+            integrations: [
+                new Integrations.BrowserTracing({
+                    tracePropagationTargets: ["*"],
+                }),
+            ],
             tracesSampleRate: 1.0,
         });
         console.log("sentry init", response);
