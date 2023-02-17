@@ -79,8 +79,7 @@ const NotaryTabs = ({
                     }}
                 >
                     Large Requests (
-                    {context?.largeClientRequests?.length}) (
-                    {openRequestsOnGithub})
+                    {context?.largeClientRequests?.length})
                 </div>
 
                 <div
