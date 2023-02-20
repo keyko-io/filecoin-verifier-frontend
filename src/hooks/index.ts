@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 
 export const useInitialLargeRequest = (largeClientRequests: any[]) => {
+    console.log("largeClientRequests", largeClientRequests)
   const [data, setData] = useState<any>([]);
 
   useEffect(() => {

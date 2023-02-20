@@ -107,7 +107,6 @@ const LargeRequestTable = ({
         </div>
       ) : (
         <>
-          {" "}
           <DataTable
             columns={largeReqColumns}
             selectableRowDisabled={(row) => !row.signable}
@@ -141,14 +140,14 @@ const LargeRequestTable = ({
           />
           <DataTable
             columns={largeReqColumns}
-            data={this.context.verified as VerifiedData[]}
+            data={this?.context?.verified}
             pagination
             paginationServer
-            paginationTotalRows={this.context?.approvedVerifiersData?.length 403}
+            paginationTotalRows={this?.context?.approvedVerifiersData?.length}
             onChangePage={(page: number) => {
-              this.context.loadVerified(page);
+              this?.context?.loadVerified(page);
             }}
-            progressPending={this.context.acceptedNotariesLoading}
+            progressPending={this?.context?.acceptedNotariesLoading}
             progressComponent={
               <CircularProgress
                 style={{ marginTop: "4rem", color: "rgb(0, 144, 255)" }}

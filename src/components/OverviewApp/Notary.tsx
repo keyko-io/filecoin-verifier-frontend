@@ -259,8 +259,9 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
   const user = context.github.loggedUser;
 
   useEffect(() => {
+        console.log("user", user)
     if (user) {
-      context.loadClientRequests();
+      context.testLoadLarge();
     }
   }, [user]);
 
