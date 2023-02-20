@@ -37,7 +37,9 @@ if (window.location.host.includes("fleek") && config.willRedirect) {
 
 const startSentry = () => {
     try {
-        const sentryDSN = process.env.SENTRY_DSN;
+        const sentryDSN =
+            process.env.REACT_APP_SENTRY_DSN ||
+            "https://e434fb51144f42c5adc29d6cf075256e@o4504711585005568.ingest.sentry.io/4504711588413440"; // hmm..
         if (!sentryDSN) {
             console.log("sentry dsn is not set. aborting");
             return;
