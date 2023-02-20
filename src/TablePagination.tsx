@@ -107,7 +107,7 @@ const LargeRequestTable = ({
         </div>
       ) : (
         <>
-          <DataTable
+          {/* <DataTable
             columns={largeReqColumns}
             selectableRowDisabled={(row) => !row.signable}
             selectableRowsHighlight
@@ -137,17 +137,19 @@ const LargeRequestTable = ({
                 style={{ margin: "4rem auto", color: "#0090ff" }}
               />
             }
-          />
+          /> */}
           <DataTable
             columns={largeReqColumns}
-            data={this?.context?.verified}
+            data={data}
             pagination
             paginationServer
-            paginationTotalRows={this?.context?.approvedVerifiersData?.length}
+            paginationTotalRows={context.rawLargeIssuesAll.length}
             onChangePage={(page: number) => {
-              this?.context?.loadVerified(page);
+              console.log(page, "page");
+              //@ts-ignore
+              context?.testLoadLarge(page);
             }}
-            progressPending={this?.context?.acceptedNotariesLoading}
+            //progressPending={this?.context?.acceptedNotariesLoading}
             progressComponent={
               <CircularProgress
                 style={{ marginTop: "4rem", color: "rgb(0, 144, 255)" }}
