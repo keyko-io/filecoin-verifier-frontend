@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 import { Data } from "../../context/Data/Index";
 import AddClientModal from "../../modals/AddClientModal";
@@ -13,24 +12,29 @@ import WarnModalVerify from "../../modals/WarnModalVerify";
 import { BeatLoader } from "react-spinners";
 import { useContext } from "react";
 import WarnModalNotaryVerified from "../../modals/WarnModalNotaryVeried";
-import { LargeRequestTable, CancelProposalTable, NotaryTabs, PublicRequestTable, VerifiedClientsTable } from "./Notary/index";
-import toast from 'react-hot-toast';
+import {
+  LargeRequestTable,
+  CancelProposalTable,
+  NotaryTabs,
+  PublicRequestTable,
+  VerifiedClientsTable,
+} from "./Notary/index";
+import toast from "react-hot-toast";
 import { ldnParser } from "@keyko-io/filecoin-verifier-tools";
-
 
 type NotaryProps = {
   clients: any[];
 };
 
 type CancelProposalDataType = {
-  clientName: string,
-  clientAddress: string,
-  issueNumber: number,
-  datacap: string,
-  tx: any,
-  comment: any
-  msig: string
-}
+  clientName: string;
+  clientAddress: string;
+  issueNumber: number;
+  datacap: string;
+  tx: any;
+  comment: any;
+  msig: string;
+};
 
 interface ProposedRequestBody {
   approvedMessage: boolean;
@@ -42,23 +46,26 @@ interface ProposedRequestBody {
 }
 
 const Notary = (props: { notaryProps: NotaryProps }) => {
+  const context = useContext(Data);
 
-  const context = useContext(Data)
-
-  const [selectedClientRequests, setSelectedClientRequests] = useState([] as any)
-  const [selectedLargeClientRequests, setSelectedLargeClientRequests] = useState([] as any)
-  const [tabs, setTabs] = useState('3')
-  const [approveLoading, setApproveLoading] = useState(false)
-  const [approvedDcRequests, setApprovedDcRequests] = useState([] as any)
-  const [dataForLargeRequestTable, setDataForLargeRequestTable] = useState([])
-  const [largeRequestListLoading, setLargeRequestListLoading] = useState(false)
-  const [cancelProposalData, setCancelProposalData] = useState<CancelProposalDataType | null>(null)
-  const [dataCancel, setDataCancel] = useState<CancelProposalDataType[]>([])
-  const [dataCancelLoading, setDataCancelLoading] = useState(false)
+  const [selectedClientRequests, setSelectedClientRequests] = useState(
+    [] as any
+  );
+  const [selectedLargeClientRequests, setSelectedLargeClientRequests] =
+    useState([] as any);
+  const [tabs, setTabs] = useState("3");
+  const [approveLoading, setApproveLoading] = useState(false);
+  const [approvedDcRequests, setApprovedDcRequests] = useState([] as any);
+  const [dataForLargeRequestTable, setDataForLargeRequestTable] = useState([]);
+  const [largeRequestListLoading, setLargeRequestListLoading] = useState(false);
+  const [cancelProposalData, setCancelProposalData] =
+    useState<CancelProposalDataType | null>(null);
+  const [dataCancel, setDataCancel] = useState<CancelProposalDataType[]>([]);
+  const [dataCancelLoading, setDataCancelLoading] = useState(false);
 
   const changeStateTabs = (indexTab: string) => {
-    setTabs(indexTab)
-  }
+    setTabs(indexTab);
+  };
 
   const requestDatacap = () => {
     dispatchCustomEvent({
@@ -75,7 +82,7 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
 
   const verifyNewDatacap = () => {
     if (!selectedClientRequests.length) {
-      toast.error("You should select one public request!")
+      toast.error("You should select one public request!");
     } else {
       dispatchCustomEvent({
         name: "create-modal",
@@ -110,26 +117,25 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
               origin === "Notary"
                 ? context.clientRequests
                 : origin === "Large"
-                  ? context.largeClientRequests
-                  : []
+                ? context.largeClientRequests
+                : []
             }
             selectedClientRequests={
               origin === "Notary"
                 ? selectedClientRequests
                 : origin === "Large"
-                  ? selectedLargeClientRequests
-                  : []
+                ? selectedLargeClientRequests
+                : []
             }
             onClick={() => {
               origin === "Notary"
                 ? verifyClients()
                 : origin === "newDatacap"
-                  ? verifyNewDatacap()
-                  : origin === "Large"
-                    ? verifyLargeClients()
-                    : requestDatacap()
-            }
-            }
+                ? verifyNewDatacap()
+                : origin === "Large"
+                ? verifyLargeClients()
+                : requestDatacap();
+            }}
             largeAddress={origin === "Large" ? true : false}
             origin={
               origin === "Notary" || "Large" ? "Notary" : "single-message"
@@ -140,15 +146,16 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
     });
   };
 
-  // if(config.lotusNodes[this.context.wallet.networkIndex].name !== "Localhost") 
+  // if(config.lotusNodes[this.context.wallet.networkIndex].name !== "Localhost")
 
-  const checkNotaryIsVerifiedAndShowWarnVerify = async (e: any, origin: string) => {
-
+  const checkNotaryIsVerifiedAndShowWarnVerify = async (
+    e: any,
+    origin: string
+  ) => {
     if (config.lotusNodes[context.wallet.networkIndex].name !== "Localhost") {
       try {
-        const isVerified: any = await context.checkVerifyWallet()
+        const isVerified: any = await context.checkVerifyWallet();
         if (!isVerified) {
-
           await e.preventDefault();
           dispatchCustomEvent({
             name: "create-modal",
@@ -159,47 +166,53 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
                 .substr(0, 5),
               modal: (
                 <WarnModalNotaryVerified
-                  onClick={async () => await context.verifyWalletAddress()
-                  }
+                  onClick={async () => await context.verifyWalletAddress()}
                 />
               ),
             },
           });
-          return
+          return;
         }
       } catch (error) {
-        console.log(error)
+        console.log(error);
       }
-
     }
-    showWarnVerify(origin)
-  }
+    showWarnVerify(origin);
+  };
 
   const cancelDuplicateRequest = async () => {
     if (!cancelProposalData) {
-      toast.error("You should select one pending request!")
+      toast.error("You should select one pending request!");
       return;
     }
 
     try {
       setDataCancelLoading(true);
 
-      const res = await context.wallet.api.cancelPending(cancelProposalData.msig, cancelProposalData.tx, context.wallet.walletIndex, context.wallet)
+      const res = await context.wallet.api.cancelPending(
+        cancelProposalData.msig,
+        cancelProposalData.tx,
+        context.wallet.walletIndex,
+        context.wallet
+      );
 
       if (!res) {
         setDataCancelLoading(false);
-        toast.error("Something went wrong, please try again!")
+        toast.error("Something went wrong, please try again!");
         return;
       }
 
-      const parsedBody: ProposedRequestBody = ldnParser.parseApprovedRequestWithSignerAddress(cancelProposalData.comment.body)
+      const parsedBody: ProposedRequestBody =
+        ldnParser.parseApprovedRequestWithSignerAddress(
+          cancelProposalData.comment.body
+        );
 
       const cancelRequestBody = (proposedCommentBody: ProposedRequestBody) => {
+        const { message, address, datacap, signerAddress } =
+          proposedCommentBody;
 
-        const { message, address, datacap, signerAddress } = proposedCommentBody
-
-        return `## Canceled Request\nThe following request has been canceled by the notary, thus should not be considered as valid anymore.\n#### Message sent to Filecoin Network\n>${message} \n#### Address \n> ${address}\n#### Datacap Allocated\n> ${datacap}\n#### Signer Address\n> ${signerAddress}\n#### You can check the status of the message here: https://filfox.info/en/message/${message}`
-      }
+        return `## Canceled Request\nThe following request has been canceled by the notary, thus should not be considered as valid anymore.\n#### Message sent to Filecoin Network\n>${message} \n#### Address \n> ${address}\n#### Datacap Allocated\n> ${datacap}\n#### Signer Address\n> ${signerAddress}\n#### You can check the status of the message here: https://filfox.info/en/message/${message}`;
+      };
 
       const postLogs = context.postLogs(
         `Request Canceled with txID:${cancelProposalData.tx.id}, Signer Address: ${context.wallet.activeAccount}`,
@@ -209,24 +222,26 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
         "CANCEL_REQUEST"
       );
 
-      const updateComment = context.github.githubOcto.rest.issues.updateComment({
-        owner: config.onboardingLargeOwner,
-        repo: config.onboardingLargeClientRepo,
-        comment_id: cancelProposalData.comment.id,
-        body: cancelRequestBody(parsedBody)
-      });
+      const updateComment = context.github.githubOcto.rest.issues.updateComment(
+        {
+          owner: config.onboardingLargeOwner,
+          repo: config.onboardingLargeClientRepo,
+          comment_id: cancelProposalData.comment.id,
+          body: cancelRequestBody(parsedBody),
+        }
+      );
 
-      await Promise.all([updateComment, postLogs])
+      await Promise.all([updateComment, postLogs]);
 
-      toast.success("Your pending request has been successfully canceled.")
+      toast.success("Your pending request has been successfully canceled.");
 
-      const updateCancelData = (item: any) => item.clientAddress !== cancelProposalData.clientAddress
+      const updateCancelData = (item: any) =>
+        item.clientAddress !== cancelProposalData.clientAddress;
 
-      setDataCancel((dataCancel: any) => dataCancel.filter(updateCancelData))
+      setDataCancel((dataCancel: any) => dataCancel.filter(updateCancelData));
 
       setDataCancelLoading(false);
       setCancelProposalData(null);
-
     } catch (error) {
       await context.postLogs(
         `Error canceling pending request txID:${cancelProposalData.tx.id}, Signer Address:${context.wallet.activeAccount}`,
@@ -235,30 +250,30 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
         cancelProposalData.issueNumber,
         "CANCEL_REQUEST"
       );
-      toast.error("Something went wrong, please try again!")
-      setDataCancelLoading(false)
+      toast.error("Something went wrong, please try again!");
+      setDataCancelLoading(false);
     }
-  }
+  };
 
-  const user = context.github.loggedUser
+  const user = context.github.loggedUser;
 
   useEffect(() => {
     if (user) {
-      context.loadClientRequests()
+      // context.loadClientRequests()
     }
-  }, [user])
+  }, [user]);
 
   useEffect(() => {
-    const selectedTab = tabs === '1' ? 'Notary' : 'Large'
+    const selectedTab = tabs === "1" ? "Notary" : "Large";
 
     if (context.isAddressVerified) {
-      showWarnVerify(selectedTab)
+      showWarnVerify(selectedTab);
     }
-  }, [context.isAddressVerified])
+  }, [context.isAddressVerified]);
 
   const verifyClients = async () => {
     dispatchCustomEvent({ name: "delete-modal", detail: {} });
-    setApproveLoading(true)
+    setApproveLoading(true);
     for (const request of context.clientRequests) {
       if (selectedClientRequests.includes(request.number)) {
         let messageID = "";
@@ -289,7 +304,7 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
             );
           }
 
-          const signer = context.wallet.activeAccount ?? ""
+          const signer = context.wallet.activeAccount ?? "";
 
           const txReceipt = await context.wallet.api.getReceipt(messageID);
           if (txReceipt.ExitCode !== 0) {
@@ -307,7 +322,7 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
             );
             throw Error(errorMessage);
           }
-          setApproveLoading(false)
+          setApproveLoading(false);
           // github update
           context.updateGithubVerified(
             request.number,
@@ -336,7 +351,7 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
             walletIndex: context.wallet.walletIndex,
           };
         } catch (e: any) {
-          setApproveLoading(false)
+          setApproveLoading(false);
           sentryData = {
             ...sentryData,
             error: e,
@@ -364,7 +379,7 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
   };
 
   const verifyLargeClients = async () => {
-    setApproveLoading(true)
+    setApproveLoading(true);
     dispatchCustomEvent({ name: "delete-modal", detail: {} });
     let thisStateLargeRequestList = context.largeClientRequests;
     for (const request of thisStateLargeRequestList) {
@@ -413,7 +428,7 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
             setApprovedDcRequests([
               ...approvedDcRequests,
               request.issue_number,
-            ])
+            ]);
             await context.postLogs(
               `Datacap GRANTED: ${messageID} - signer: ${signer}`,
               "INFO",
@@ -454,11 +469,11 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
             errorMessage += `#### the transaction was unsuccessful - retry later.`;
             await context.updateGithubVerifiedLarge(
               request.issue_number,
-              '',
+              "",
               address,
               datacap,
               signer,
-              errorMessage,
+              errorMessage
             );
 
             context.wallet.dispatchNotification(errorMessage);
@@ -480,7 +495,7 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
 
           context.wallet.dispatchNotification(
             "Transaction successful! Verify Client Message sent with ID: " +
-            messageID
+              messageID
           );
           await context.postLogs(
             `Transaction successful! Verify Client Message sent with ID: ${messageID}`,
@@ -489,7 +504,7 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
             request.issue_number,
             PHASE
           );
-          setApproveLoading(false)
+          setApproveLoading(false);
           //UPDATE THE CONTEXT
           context.updateContextState(
             thisStateLargeRequestList,
@@ -507,7 +522,7 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
             PHASE
           );
           // console.log(e.stack)
-          setApproveLoading(false)
+          setApproveLoading(false);
           sentryData = {
             ...sentryData,
             error: e,
@@ -522,33 +537,41 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
       }
     }
 
-    setLargeRequestListLoading(true)
-    context.loadClientRequests()
-    setLargeRequestListLoading(false)
+    setLargeRequestListLoading(true);
+    context.loadClientRequests();
+    setLargeRequestListLoading(false);
   };
 
   const activeTable = (tabs: any) => {
     const tables: any = {
-      "1": <PublicRequestTable setSelectedClientRequests={setSelectedClientRequests} />,
+      "1": (
+        <PublicRequestTable
+          setSelectedClientRequests={setSelectedClientRequests}
+        />
+      ),
       "2": <VerifiedClientsTable verifiedClients={props.notaryProps.clients} />,
-      "3": < LargeRequestTable largeRequestListLoading={largeRequestListLoading}
-        setSelectedLargeClientRequests={setSelectedLargeClientRequests}
-        dataForLargeRequestTable={dataForLargeRequestTable}
-        setDataForLargeRequestTable={setDataForLargeRequestTable}
-      />,
-      "4": <CancelProposalTable dataCancel={dataCancel}
-        setDataCancel={setDataCancel}
-        dataCancelLoading={dataCancelLoading}
-        setCancelProposalData={setCancelProposalData} />
-    }
+      "3": <LargeRequestTable />,
+      "4": (
+        <CancelProposalTable
+          dataCancel={dataCancel}
+          setDataCancel={setDataCancel}
+          dataCancelLoading={dataCancelLoading}
+          setCancelProposalData={setCancelProposalData}
+        />
+      ),
+    };
 
-    return tables[tabs]
-  }
+    return tables[tabs];
+  };
 
   return (
     <div className="main">
       <div className="tabsholder">
-        <NotaryTabs tabs={tabs} changeStateTabs={changeStateTabs} verifiedClientsLength={props.notaryProps.clients.length} />
+        <NotaryTabs
+          tabs={tabs}
+          changeStateTabs={changeStateTabs}
+          verifiedClientsLength={props.notaryProps.clients.length}
+        />
         <div className="tabssadd">
           {tabs === "1" && (
             <ButtonPrimary onClick={() => requestDatacap()}>
@@ -560,15 +583,16 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
               Verify new datacap
             </ButtonPrimary>
           )}
-          {tabs === "4" && (dataCancelLoading ? <BeatLoader size={15} color={"rgb(24,160,237)"} /> : <ButtonPrimary
-            onClick={cancelDuplicateRequest}
-          >
-            Cancel Proposal
-          </ButtonPrimary>)}
+          {tabs === "4" &&
+            (dataCancelLoading ? (
+              <BeatLoader size={15} color={"rgb(24,160,237)"} />
+            ) : (
+              <ButtonPrimary onClick={cancelDuplicateRequest}>
+                Cancel Proposal
+              </ButtonPrimary>
+            ))}
 
-          {tabs === "1" ||
-            tabs === "2" ||
-            tabs === "3" ? (
+          {tabs === "1" || tabs === "2" || tabs === "3" ? (
             <>
               {approveLoading ? (
                 <BeatLoader size={15} color={"rgb(24,160,237)"} />
@@ -581,9 +605,7 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
                     )
                   }
                 >
-                  {tabs === "3"
-                    ? "Approve Request"
-                    : "Verify client"}
+                  {tabs === "3" ? "Approve Request" : "Verify client"}
                 </ButtonPrimary>
               )}
             </>
@@ -593,7 +615,7 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
 
       {context.github.githubLogged && activeTable(tabs)}
 
-      {!context.github.githubLogged ?
+      {!context.github.githubLogged ? (
         <div style={{ marginTop: "50px" }}>
           <div id="githublogin">
             <LoginGithub
@@ -608,7 +630,9 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
               }}
             />
           </div>
-        </div> : <div className="alignright" style={{ marginBottom: "40px" }}>
+        </div>
+      ) : (
+        <div className="alignright" style={{ marginBottom: "40px" }}>
           <ButtonSecondary
             className="buttonsecondary"
             onClick={async () => {
@@ -618,9 +642,9 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
             Logout GitHub
           </ButtonSecondary>
         </div>
-      }
-    </div >
+      )}
+    </div>
   );
-}
+};
 
-export default Notary
+export default Notary;

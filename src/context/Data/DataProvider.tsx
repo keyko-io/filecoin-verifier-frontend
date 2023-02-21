@@ -4,14 +4,24 @@ import { config } from "../../config";
 // @ts-ignore
 import { IssueBody } from "../../utils/IssueBody";
 import BigNumber from "bignumber.js";
-import _ from 'lodash'
+import _ from "lodash";
 import { v4 as uuidv4 } from "uuid";
 import { bytesToiB } from "../../utils/Filters";
 import * as Sentry from "@sentry/react";
-import { notaryLedgerVerifiedComment } from './comments'
-import { ldnParser, notaryParser, commonUtils, simpleClientParser } from "@keyko-io/filecoin-verifier-tools";
+import { notaryLedgerVerifiedComment } from "./comments";
+import {
+  ldnParser,
+  notaryParser,
+  commonUtils,
+  simpleClientParser,
+} from "@keyko-io/filecoin-verifier-tools";
 import verifierRegistry from "../../data/verifiers-registry.json";
-import { ApprovedVerifiers, DirectIssue, LargeRequestData, VerifiedData } from "../../type";
+import {
+  ApprovedVerifiers,
+  DirectIssue,
+  LargeRequestData,
+  VerifiedData,
+} from "../../type";
 import { DataProviderProps, DataProviderStates } from "../contextType";
 
 export default class DataProvider extends React.Component<
@@ -44,9 +54,11 @@ export default class DataProvider extends React.Component<
         repo: string
       ) => {
         try {
-
-          if (config.lotusNodes[this.props.wallet.networkIndex].name === "Localhost") {
-            return
+          if (
+            config.lotusNodes[this.props.wallet.networkIndex].name ===
+            "Localhost"
+          ) {
+            return;
           }
 
           const logArray = [
@@ -90,14 +102,18 @@ export default class DataProvider extends React.Component<
         Sentry.addBreadcrumb(breadCrumb);
         Sentry.captureMessage(breadCrumb.message);
       },
+      // @ts-ignore
       getLDNIssuesAndTransactions: async () => {
         //GETTING ISSUES
 
+        console.log("issue fetching starts");
         const rawLargeIssuesAll = await this.props.github.fetchGithubIssues(
           config.onboardingLargeOwner,
           config.onboardingLargeClientRepo,
-          'open',
-          "bot:readyToSign")
+          "open",
+          "bot:readyToSign"
+        );
+
         // const rawLargeIssuesAll = await this.props.github.githubOcto.paginate(
         //   this.props.github.githubOcto.issues.listForRepo,
         //   {
@@ -109,143 +125,155 @@ export default class DataProvider extends React.Component<
         //   }
         // );
 
-
         const rawLargeIssues = rawLargeIssuesAll.filter(
           (item: any) =>
             !item.labels.find((l: any) => l.name === "status:needsDiligence")
         );
 
-
         //GETTING COMMENTS
-        const comments: any = (
-          await Promise.allSettled(
-            rawLargeIssues.map(
-              (rawLargeIssue: any) =>
-                new Promise<any>(async (resolve, reject) => {
-                  try {
-                    const data = ldnParser.parseIssue(rawLargeIssue.body);
-                    if (data) {
-
-                      const rawLargeClientComments = await this.props.github.fetchGithubComments(
+        const comments: any = await Promise.allSettled(
+          rawLargeIssues.map(
+            (rawLargeIssue: any) =>
+              new Promise<any>(async (resolve, reject) => {
+                try {
+                  const data = ldnParser.parseIssue(rawLargeIssue.body);
+                  if (data) {
+                    const rawLargeClientComments =
+                      await this.props.github.fetchGithubComments(
                         config.onboardingLargeOwner,
                         config.onboardingLargeClientRepo,
-                        rawLargeIssue.number,
-                      )
+                        rawLargeIssue.number
+                      );
 
-                      resolve({
-                        issue_number: rawLargeIssue.number,
-                        issue: rawLargeIssue,
-                        comments: rawLargeClientComments,
-                      })
-                    } else {
-                      resolve({})
-                    }
-                  } catch (err) {
-                    reject(err)
+                    resolve({
+                      issue_number: rawLargeIssue.number,
+                      issue: rawLargeIssue,
+                      comments: rawLargeClientComments,
+                    });
+                  } else {
+                    resolve({});
                   }
+                } catch (err) {
+                  reject(err);
                 }
-                )
-            )
+              })
           )
-        )
+        );
+
+        console.log(comments, "c", comments.length);
+        console.log(rawLargeIssues, "i", rawLargeIssues.length);
+
+        console.log("issue parsed finished");
+
+        return;
 
         //GROUPING ISSUES BY MSIG
-        let issuesByMsig: any[] = []
+        let issuesByMsig: any[] = [];
 
         for (let resProm of comments) {
-          const comms = resProm?.value?.comments
-          const cmtsLength = resProm?.value?.comments?.length
+          const comms = resProm?.value?.comments;
+          const cmtsLength = resProm?.value?.comments?.length;
 
           for (let i = cmtsLength - 1; i >= 0; i--) {
-            const commentParsed = ldnParser.parseReleaseRequest(comms[i].body)
+            const commentParsed = ldnParser.parseReleaseRequest(comms[i].body);
 
             if (commentParsed.correct) {
-              const issueInMsig = issuesByMsig.find((item: any) => item.multisigAddress === commentParsed.notaryAddress)
+              const issueInMsig = issuesByMsig.find(
+                (item: any) =>
+                  item.multisigAddress === commentParsed.notaryAddress
+              );
               if (issueInMsig) {
                 issueInMsig.issues.push({
                   clientAddress: commentParsed.clientAddress,
                   datacap: commentParsed.allocationDatacap,
-                  issueInfo: resProm.value
-                })
+                  issueInfo: resProm.value,
+                });
               } else {
                 issuesByMsig.push({
                   multisigAddress: commentParsed.notaryAddress,
-                  issues: [{
-                    clientAddress: commentParsed.clientAddress,
-                    datacap: commentParsed.allocationDatacap,
-                    issueInfo: resProm.value
-                  }
+                  issues: [
+                    {
+                      clientAddress: commentParsed.clientAddress,
+                      datacap: commentParsed.allocationDatacap,
+                      issueInfo: resProm.value,
+                    },
                   ],
-
-                })
+                });
               }
-              break
+              break;
             }
           }
         }
 
         // GETTING PENDING TRANSACTIONS FROM LOTUS
-        const txsGroupedByClientAddress: any = (await Promise.allSettled(
-          issuesByMsig.map(
-            (msigGroup: any) => new Promise<any>(async (resolve, reject) => {
-              try {
-                const pendingTxs =
-                  await this.props.wallet.api.pendingTransactions(
-                    msigGroup.multisigAddress
-                  );
+        const txsGroupedByClientAddress: any = (
+          await Promise.allSettled(
+            issuesByMsig.map(
+              (msigGroup: any) =>
+                new Promise<any>(async (resolve, reject) => {
+                  try {
+                    const pendingTxs =
+                      await this.props.wallet.api.pendingTransactions(
+                        msigGroup.multisigAddress
+                      );
 
-                // we will need msiginfo later
-                const multisigInfo =
-                  await this.props.wallet.api.multisigInfo(
-                    msigGroup.multisigAddress
-                  );
-                // if they don't have method = 4 or they miss the 'parsed' object,
-                // we don't incclude them (for now)
+                    // we will need msiginfo later
+                    const multisigInfo =
+                      await this.props.wallet.api.multisigInfo(
+                        msigGroup.multisigAddress
+                      );
+                    // if they don't have method = 4 or they miss the 'parsed' object,
+                    // we don't incclude them (for now)
 
-                const pendingFiltered = pendingTxs
-                  .filter((tx: any) => tx.tx.method === 4 && tx.parsed)
+                    const pendingFiltered = pendingTxs.filter(
+                      (tx: any) => tx.tx.method === 4 && tx.parsed
+                    );
 
-                const txsByClientAddress = _.groupBy(pendingFiltered, 'parsed.params.address')
+                    const txsByClientAddress = _.groupBy(
+                      pendingFiltered,
+                      "parsed.params.address"
+                    );
 
-                resolve(
-                  {
-                    multisigAddress: msigGroup.multisigAddress,
-                    multisigInfo,
-                    txsByClientAddress
+                    resolve({
+                      multisigAddress: msigGroup.multisigAddress,
+                      multisigInfo,
+                      txsByClientAddress,
+                    });
+                  } catch (error) {
+                    reject(error);
                   }
-                )
-              } catch (error) {
-                reject(error)
-
-              }
-            })
+                })
+            )
           )
-        )).map((i: any) => i.value)
+        ).map((i: any) => i.value);
 
         // MATCH TRANSACTION WITH ISSUE
         const issuesByClientAddress = issuesByMsig.map((iss: any) => {
           return {
             multisigAddress: iss.multisigAddress,
-            byClients: _.groupBy(iss.issues, 'clientAddress')
-          }
-        }
-        )
+            byClients: _.groupBy(iss.issues, "clientAddress"),
+          };
+        });
 
-        let transactionAndIssue = []
+        let transactionAndIssue = [];
         for (let msigGroup of issuesByClientAddress) {
           const txsByCientList = txsGroupedByClientAddress
             .filter((i: any) => i)
-            .filter((i: any) => i.multisigAddress === msigGroup.multisigAddress)
-          if (!txsByCientList.length) continue
-          for (let [k, v] of Object.entries(txsByCientList[0].txsByClientAddress)) {
+            .filter(
+              (i: any) => i.multisigAddress === msigGroup.multisigAddress
+            );
+          if (!txsByCientList.length) continue;
+          for (let [k, v] of Object.entries(
+            txsByCientList[0].txsByClientAddress
+          )) {
             // pairs transaction and github issue
             transactionAndIssue.push({
               clientAddress: k,
               multisigAddress: msigGroup.multisigAddress,
               multisigInfo: txsByCientList[0].multisigInfo,
               tx: v as any,
-              issue: msigGroup.byClients[k]
-            })
+              issue: msigGroup.byClients[k],
+            });
           }
           // TODO make a list of issues without transactions
           for (let [k, v] of Object.entries(msigGroup.byClients)) {
@@ -255,8 +283,8 @@ export default class DataProvider extends React.Component<
                 multisigAddress: msigGroup.multisigAddress,
                 multisigInfo: txsByCientList[0].multisigInfo,
                 tx: null,
-                issue: v
-              })
+                issue: v,
+              });
             }
           }
         }
@@ -276,12 +304,12 @@ export default class DataProvider extends React.Component<
 
         return {
           transactionAndIssue,
-          filteredTxsIssue: transactionAndIssue.filter((i: any) => i.issue)
-        }
+          filteredTxsIssue: transactionAndIssue.filter((i: any) => i.issue),
+        };
       },
       loadClientRequests: async () => {
         try {
-          this.setState({ ldnRequestsLoading: true })
+          this.setState({ ldnRequestsLoading: true });
 
           // DIRECT ISSUES /////////////////////
           // 'filecoin-plus-client-onboarding
@@ -289,8 +317,9 @@ export default class DataProvider extends React.Component<
           const rawDirectIssues = await this.props.github.fetchGithubIssues(
             config.onboardingOwner,
             config.onboardingClientRepo,
-            'open',
-            "state:Verifying")
+            "open",
+            "state:Verifying"
+          );
 
           // const rawDirectIssues = await this.props.github.githubOcto.paginate(
           //   this.props.github.githubOcto.issues.listForRepo,
@@ -324,41 +353,37 @@ export default class DataProvider extends React.Component<
           // DIRECT ISSUES END /////////////////////
 
           // LARGE ISSUES: filecoin-plus-large-datasets /////////////////////
-          const ldnIssueTxs = await this.state.getLDNIssuesAndTransactions()
-          const txsIssueGitHub = ldnIssueTxs.filteredTxsIssue
+          const ldnIssueTxs = await this.state.getLDNIssuesAndTransactions();
+          const txsIssueGitHub = ldnIssueTxs.filteredTxsIssue;
 
-          this.setState({ txsIssueGitHub })
+          this.setState({ txsIssueGitHub });
 
-          const largeissues: any =
-
-            await Promise.allSettled(
-
-              txsIssueGitHub.map((elem: any) =>
+          const largeissues: any = await Promise.allSettled(
+            txsIssueGitHub.map(
+              (elem: any) =>
                 new Promise<any>(async (resolve, reject) => {
                   try {
-
-                    const approvals = elem.tx ? 1 : 0
-
+                    const approvals = elem.tx ? 1 : 0;
 
                     const account =
                       this.props.wallet.accountsActive[
-                      this.props.wallet.activeAccount
+                        this.props.wallet.activeAccount
                       ];
                     const msigIncludeSigner =
                       elem.multisigInfo.signers.includes(account);
 
-
                     let signerAddress: any;
                     let signerGitHandle;
                     if (elem.tx) {
-                      signerAddress = await this.props.wallet.api.actorKey(elem.tx[0].signers[0])
+                      signerAddress = await this.props.wallet.api.actorKey(
+                        elem.tx[0].signers[0]
+                      );
                       signerGitHandle =
                         verifierRegistry.notaries.find(
                           (notary: any) =>
                             notary.ldn_config.signing_address === signerAddress
                         )?.github_user[0] || "none";
                     }
-
 
                     const approverIsNotProposer = signerAddress
                       ? signerAddress !== this.props.wallet.activeAccount
@@ -367,10 +392,10 @@ export default class DataProvider extends React.Component<
                     let signable = approvals
                       ? msigIncludeSigner && approverIsNotProposer
                       : msigIncludeSigner;
-                    if (config.networks.includes("Localhost"))
-                      signable = true;
-                    const datacap = elem.tx ?
-                      bytesToiB(parseInt(elem.tx[0].parsed.params.cap)) : elem.issue[0].datacap
+                    if (config.networks.includes("Localhost")) signable = true;
+                    const datacap = elem.tx
+                      ? bytesToiB(parseInt(elem.tx[0].parsed.params.cap))
+                      : elem.issue[0].datacap;
 
                     const obj: LargeRequestData = {
                       issue_number: elem.issue[0].issueInfo.issue_number,
@@ -382,22 +407,26 @@ export default class DataProvider extends React.Component<
                       tx: elem.tx ? elem.tx[0] : null,
                       proposer: {
                         signeraddress: signerAddress,
-                        signerGitHandle: signerGitHandle as string
+                        signerGitHandle: signerGitHandle as string,
                       },
-                      labels: elem.issue[0].issueInfo
-                        .issue.labels.map((i: any) => i.name),
-                      data: ldnParser.parseIssue(elem.issue[0].issueInfo.issue.body),
-                      signable: signable
-                    }
-                    resolve(obj)
+                      labels: elem.issue[0].issueInfo.issue.labels.map(
+                        (i: any) => i.name
+                      ),
+                      data: ldnParser.parseIssue(
+                        elem.issue[0].issueInfo.issue.body
+                      ),
+                      signable: signable,
+                    };
+                    resolve(obj);
                   } catch (error) {
-                    reject(error)
+                    reject(error);
                   }
-                }
-                )
-              )
+                })
             )
-          const largeClientRequests: LargeRequestData[] = largeissues.map((i: any) => i.value)
+          );
+          const largeClientRequests: LargeRequestData[] = largeissues.map(
+            (i: any) => i.value
+          );
 
           // LARGE ISSUES: filecoin-plus-large-datasets  END /////////////////////
 
@@ -442,7 +471,7 @@ export default class DataProvider extends React.Component<
       approvedNotariesLoading: true,
       ldnRequestsLoading: false,
       loadVerifierAndPendingRequests: async () => {
-        this.setState({ isPendingRequestLoading: true })
+        this.setState({ isPendingRequestLoading: true });
         try {
           if (this.props.github.githubOctoGeneric.logged === false) {
             await this.props.github.githubOctoGenericLogin();
@@ -451,53 +480,80 @@ export default class DataProvider extends React.Component<
           const allIssues = await this.props.github.fetchGithubIssues(
             config.lotusNodes[this.props.wallet.networkIndex].notaryOwner,
             config.lotusNodes[this.props.wallet.networkIndex].notaryRepo,
-            'open',
-            "Notary Application")
+            "open",
+            "Notary Application"
+          );
 
           const msigRequests = allIssues
-            .filter((issue: any) => !issue.labels.find((l: any) => l.name === 'status:AddedOnchain'))
-            .filter((issue: any) => issue.labels.find((l: any) => l.name === 'status:Approved' || l.name === "status:StartSignOnchain"))
+            .filter(
+              (issue: any) =>
+                !issue.labels.find((l: any) => l.name === "status:AddedOnchain")
+            )
+            .filter((issue: any) =>
+              issue.labels.find(
+                (l: any) =>
+                  l.name === "status:Approved" ||
+                  l.name === "status:StartSignOnchain"
+              )
+            );
 
-          const pendingTxs =
-            (await this.props.wallet.api.pendingRootTransactions())
-              .filter((ptx: any) => ptx.parsed.name === "addVerifier" || ptx.parsed.name === "removeVerifier")
+          const pendingTxs = (
+            await this.props.wallet.api.pendingRootTransactions()
+          ).filter(
+            (ptx: any) =>
+              ptx.parsed.name === "addVerifier" ||
+              ptx.parsed.name === "removeVerifier"
+          );
 
           const requestsAndCommentsProm: any = await Promise.allSettled(
-            msigRequests.map((issue: any) => new Promise<any>(async (resolve, reject) => {
-              const comments = await this.props.github.fetchGithubComments(
-                config.lotusNodes[this.props.wallet.networkIndex].notaryOwner,
-                config.lotusNodes[this.props.wallet.networkIndex].notaryRepo,
-                issue.number,
-              )
+            msigRequests.map(
+              (issue: any) =>
+                new Promise<any>(async (resolve, reject) => {
+                  const comments = await this.props.github.fetchGithubComments(
+                    config.lotusNodes[this.props.wallet.networkIndex]
+                      .notaryOwner,
+                    config.lotusNodes[this.props.wallet.networkIndex]
+                      .notaryRepo,
+                    issue.number
+                  );
 
-              const parseCommentBody = comments.map((c: any) => notaryParser.parseApproveComment(c.body))
+                  const parseCommentBody = comments.map((c: any) =>
+                    notaryParser.parseApproveComment(c.body)
+                  );
 
-              const filteredCorrectRequests = parseCommentBody.filter((o: any) => o.correct)
+                  const filteredCorrectRequests = parseCommentBody.filter(
+                    (o: any) => o.correct
+                  );
 
-              const lastRequest = filteredCorrectRequests.reverse()[0]
+                  const lastRequest = filteredCorrectRequests.reverse()[0];
 
-              const msigAddress = lastRequest?.address || null
+                  const msigAddress = lastRequest?.address || null;
 
-              const tx = pendingTxs.find((ptx: any) => ptx.parsed.params.verifier === msigAddress)
-              resolve({
-                issue,
-                comments,
-                lastRequest,
-                msigAddress,
-                tx
-              })
-            }))
-          )
+                  const tx = pendingTxs.find(
+                    (ptx: any) => ptx.parsed.params.verifier === msigAddress
+                  );
+                  resolve({
+                    issue,
+                    comments,
+                    lastRequest,
+                    msigAddress,
+                    tx,
+                  });
+                })
+            )
+          );
 
           const requestsAndComments = requestsAndCommentsProm
             .filter((r: any) => r.status === "fulfilled")
-            .map((r: any) => r.value)
+            .map((r: any) => r.value);
 
           const verifierAndPendingRequests = requestsAndComments.map(
             (r: any) => {
-              const datacap = r.tx ? bytesToiB(Number(r.tx?.parsed?.params?.cap)) : r?.lastRequest?.datacap
-              const proposedBy = r.tx ? r?.tx?.signers[0] : ""
-              const txs = r.tx ? [r.tx] : []
+              const datacap = r.tx
+                ? bytesToiB(Number(r.tx?.parsed?.params?.cap))
+                : r?.lastRequest?.datacap;
+              const proposedBy = r.tx ? r?.tx?.signers[0] : "";
+              const txs = r.tx ? [r.tx] : [];
 
               return {
                 id: uuidv4(),
@@ -507,19 +563,20 @@ export default class DataProvider extends React.Component<
                 datacaps: [datacap],
                 txs,
                 proposedBy,
-                proposed: proposedBy ? true : false
-              }
-            })
+                proposed: proposedBy ? true : false,
+              };
+            }
+          );
 
           this.setState({
             verifierAndPendingRequests,
             approvedNotariesLoading: false,
-            isPendingRequestLoading: false
+            isPendingRequestLoading: false,
           });
         } catch (error) {
           this.setState({
             approvedNotariesLoading: false,
-            isPendingRequestLoading: false
+            isPendingRequestLoading: false,
           });
           console.error("error in verifierAndPendingRequests", error);
         }
@@ -540,22 +597,25 @@ export default class DataProvider extends React.Component<
       txsIssueGitHub: null,
       loadVerified: async (page: number) => {
         try {
-          if (this.state.verifiedCachedData && this.state.verifiedCachedData[page]) {
-            this.setState({ verified: this.state.verifiedCachedData[page] })
-            return
+          if (
+            this.state.verifiedCachedData &&
+            this.state.verifiedCachedData[page]
+          ) {
+            this.setState({ verified: this.state.verifiedCachedData[page] });
+            return;
           }
 
-          this.setState({ acceptedNotariesLoading: true })
+          this.setState({ acceptedNotariesLoading: true });
 
-          let approvedVerifiers: ApprovedVerifiers[]
+          let approvedVerifiers: ApprovedVerifiers[];
           if (this.state.approvedVerifiersData === null) {
-            approvedVerifiers = (await this.props.wallet.api.listVerifiers())
-            this.setState({ approvedVerifiersData: approvedVerifiers })
+            approvedVerifiers = await this.props.wallet.api.listVerifiers();
+            this.setState({ approvedVerifiersData: approvedVerifiers });
           } else {
-            approvedVerifiers = this.state.approvedVerifiersData
+            approvedVerifiers = this.state.approvedVerifiersData;
           }
 
-          const paginate = approvedVerifiers.slice((page - 1) * 10, page * 10)
+          const paginate = approvedVerifiers.slice((page - 1) * 10, page * 10);
 
           let verified: VerifiedData[] = [];
           await Promise.allSettled(
@@ -578,7 +638,7 @@ export default class DataProvider extends React.Component<
                       verifierAccount,
                       datacap: verifiedAddress.datacap,
                     });
-                    resolve("ok")
+                    resolve("ok");
                   } catch (error) {
                     reject(error);
                   }
@@ -586,9 +646,14 @@ export default class DataProvider extends React.Component<
             )
           );
 
-          this.setState({ verifiedCachedData: { ...this.state.verifiedCachedData, [page]: verified } })
+          this.setState({
+            verifiedCachedData: {
+              ...this.state.verifiedCachedData,
+              [page]: verified,
+            },
+          });
 
-          this.setState({ acceptedNotariesLoading: false })
+          this.setState({ acceptedNotariesLoading: false });
           this.setState({ verified });
         } catch (error) {
           console.error("error in resolving promises", error);
@@ -616,15 +681,22 @@ export default class DataProvider extends React.Component<
           const comments = await this.props.github.fetchGithubComments(
             config.onboardingLargeOwner,
             config.onboardingLargeClientRepo,
-            issueNumber)
-          const idPattern = /####\s*Id\s*\n>\s*(.*)/g
-          const comment = comments.filter((item: any) => item.body.includes("## DataCap Allocation requested")).reverse()
-          const Id = commonUtils.matchGroupLargeNotary(idPattern, comment[0].body)
-          return Id
+            issueNumber
+          );
+          const idPattern = /####\s*Id\s*\n>\s*(.*)/g;
+          const comment = comments
+            .filter((item: any) =>
+              item.body.includes("## DataCap Allocation requested")
+            )
+            .reverse();
+          const Id = commonUtils.matchGroupLargeNotary(
+            idPattern,
+            comment[0].body
+          );
+          return Id;
         } catch (error) {
-          console.log(error)
+          console.log(error);
         }
-
       },
       updateGithubVerified: async (
         requestNumber: number,
@@ -697,7 +769,8 @@ export default class DataProvider extends React.Component<
         action?: string
       ) => {
         const formattedDc = bytesToiB(datacap);
-        const uniqueLastId = await this.state.getLastUniqueId(requestNumber) || ""
+        const uniqueLastId =
+          (await this.state.getLastUniqueId(requestNumber)) || "";
 
         let commentContent =
           errorMessage !== ""
@@ -747,7 +820,7 @@ export default class DataProvider extends React.Component<
               });
             if (assigned.data.assignees.length > 0) isAssigned = true;
           } catch (error) {
-            console.log(error)
+            console.log(error);
           }
         }
 
@@ -801,112 +874,143 @@ export default class DataProvider extends React.Component<
       isPendingRequestLoading: false,
       isVerifyWalletLoading: false,
       updateIsVerifiedAddress: (val: boolean) => {
-        this.setState({ isAddressVerified: val })
+        this.setState({ isAddressVerified: val });
       },
       verifyWalletAddress: async () => {
         try {
-          this.state.setIsVerifyWalletLoading(true)
+          this.state.setIsVerifyWalletLoading(true);
 
           //send message
           // const msgCid = 'bafy2bzacedeu7ymgdg3gwy522gtoy4a6j6v433cur4wjlv2xjeqtvm4bkymoi'
-          const msgCid = await this.props.wallet.api.methods.sendTx(this.props.wallet.api.client, this.props.wallet.walletIndex, this.props.wallet, this.props.wallet.api.methods.encodeSend(config.secretRecieverAddress))
+          const msgCid = await this.props.wallet.api.methods.sendTx(
+            this.props.wallet.api.client,
+            this.props.wallet.walletIndex,
+            this.props.wallet,
+            this.props.wallet.api.methods.encodeSend(
+              config.secretRecieverAddress
+            )
+          );
           // if (msgCid) {
-          if (msgCid['/']) {
-
+          if (msgCid["/"]) {
             // alert('Ledger wallet successfully verified with message: ' + msgCid)
-            this.state.setIsVerifyWalletLoading(false)
-            alert('Ledger wallet successfully verified with message: ' + msgCid['/'])
+            this.state.setIsVerifyWalletLoading(false);
+            alert(
+              "Ledger wallet successfully verified with message: " + msgCid["/"]
+            );
             // update state
 
-            this.state.updateIsVerifiedAddress(true)
+            this.state.updateIsVerifiedAddress(true);
 
             // get issue with that address
-            const rawIssues = await this.props.github.fetchGithubIssues(config.onboardingOwner, config.onboardingNotaryOwner, 'all', "Notary Application")
+            const rawIssues = await this.props.github.fetchGithubIssues(
+              config.onboardingOwner,
+              config.onboardingNotaryOwner,
+              "all",
+              "Notary Application"
+            );
 
-            let issueNumber = ''
+            let issueNumber = "";
             for (let issue of rawIssues) {
               //parse each issue
-              let parsedNotaryAddress = notaryParser.parseNotaryAddress(issue.body)
-              let address = parsedNotaryAddress ? parsedNotaryAddress.split(' ')[0] : ''
+              let parsedNotaryAddress = notaryParser.parseNotaryAddress(
+                issue.body
+              );
+              let address = parsedNotaryAddress
+                ? parsedNotaryAddress.split(" ")[0]
+                : "";
 
-              // if the address is the one selected by user, set issue number 
+              // if the address is the one selected by user, set issue number
               if (address && address === this.props.wallet.activeAccount) {
-                issueNumber = issue.number
-                break
+                issueNumber = issue.number;
+                break;
               }
             }
             // if iussue number is not there, return false (it should never happen)
             if (!issueNumber) {
-              console.log('Looks like there is any notary with this address...')
-              return false
+              console.log(
+                "Looks like there is any notary with this address..."
+              );
+              return false;
             }
             // comment github with comment
             // const body = notaryLedgerVerifiedComment(msgCid)
-            const body = notaryLedgerVerifiedComment(msgCid['/'])
+            const body = notaryLedgerVerifiedComment(msgCid["/"]);
             await this.props.github.githubOcto.issues.createComment({
               // owner: 'keyko-io',
               owner: config.onboardingOwner,
               // repo: 'filecoin-notaries-onboarding',
               repo: config.onboardingNotaryOwner,
               issue_number: issueNumber,
-              body
+              body,
             });
           }
-
         } catch (error) {
-          this.setState({ isVerifyWalletLoading: false })
-          console.log(error)
+          this.setState({ isVerifyWalletLoading: false });
+          console.log(error);
         }
       },
       checkVerifyWallet: async () => {
         try {
-
           //check all issue with notary application label
           // const rawIssues = await this.props.github.fetchGithubIssues('keyko-io', 'filecoin-notaries-onboarding', 'all', "Notary Application")
-          const rawIssues = await this.props.github.fetchGithubIssues(config.onboardingOwner, config.onboardingNotaryOwner, 'all', "Notary Application")
+          const rawIssues = await this.props.github.fetchGithubIssues(
+            config.onboardingOwner,
+            config.onboardingNotaryOwner,
+            "all",
+            "Notary Application"
+          );
 
-          let issueNumber = ''
+          let issueNumber = "";
           for (let issue of rawIssues) {
             // parse each issue
-            let parsedNotaryAddress = notaryParser.parseNotaryAddress(issue.body)
-            let address = parsedNotaryAddress ? parsedNotaryAddress.split(' ')[0] : ''
+            let parsedNotaryAddress = notaryParser.parseNotaryAddress(
+              issue.body
+            );
+            let address = parsedNotaryAddress
+              ? parsedNotaryAddress.split(" ")[0]
+              : "";
 
-            // if the address is the one selected by user, set issue number 
+            // if the address is the one selected by user, set issue number
             if (address && address === this.props.wallet.activeAccount) {
-              issueNumber = issue.number
-              break
+              issueNumber = issue.number;
+              break;
             }
           }
           // if there is no issue number, rteturn false, it should never Happen
           if (!issueNumber) {
-            return false
+            return false;
           }
 
           // retrieve issue and check comments
           // const rawComments = await this.props.github.fetchGithubComments('keyko-io', 'filecoin-notaries-onboarding', issueNumber)
-          const rawComments = await this.props.github.fetchGithubComments(config.onboardingOwner, config.onboardingNotaryOwner, Number(issueNumber))
+          const rawComments = await this.props.github.fetchGithubComments(
+            config.onboardingOwner,
+            config.onboardingNotaryOwner,
+            Number(issueNumber)
+          );
           for (let comment of rawComments) {
             // return true if the verified notary comment is present
             // return false if not
-            const parsedComment = notaryParser.parseNotaryLedgerVerifiedComment(comment.body)
+            const parsedComment = notaryParser.parseNotaryLedgerVerifiedComment(
+              comment.body
+            );
             if (parsedComment.correct) {
-              return true
+              return true;
             }
           }
-          return false
-
+          return false;
         } catch (error) {
-          console.log('error in checkverifyWallet', error)
-          return false
+          console.log("error in checkverifyWallet", error);
+          return false;
         }
       },
       selectedLargeClientRequests: [],
       setSelectedLargeClientRequests: (rowNumbers: any[]) => {
-        this.setState({ selectedLargeClientRequests: rowNumbers })
+        this.setState({ selectedLargeClientRequests: rowNumbers });
       },
       setIsVerifyWalletLoading: (value: boolean) => {
-        this.setState({ isVerifyWalletLoading: value })
-      }
+        this.setState({ isVerifyWalletLoading: value });
+      },
     };
   }
 
