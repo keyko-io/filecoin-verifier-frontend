@@ -139,8 +139,7 @@ const LargeRequestTable = () => {
   };
 
   useEffect(() => {
-    //deneme();
-    context.getLDNIssuesAndTransactions();
+    deneme();
   }, []);
 
   const CANT_SIGN_MESSAGE =

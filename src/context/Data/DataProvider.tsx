@@ -24,6 +24,26 @@ import {
 } from "../../type";
 import { DataProviderProps, DataProviderStates } from "../contextType";
 
+interface LotusTx {
+  id: number;
+  signers: string[];
+  parsed: {
+    name: string;
+    params: {
+      address: string;
+      cap: any;
+    };
+  };
+}
+
+interface TxsByClientAddress {
+  multisigAddress: string;
+  multisigInfo: any;
+  txsByClientAddress: {
+    [key: string]: LotusTx[];
+  };
+}
+
 export default class DataProvider extends React.Component<
   DataProviderProps,
   DataProviderStates
@@ -106,7 +126,6 @@ export default class DataProvider extends React.Component<
       getLDNIssuesAndTransactions: async () => {
         //GETTING ISSUES
 
-        console.log("issue fetching starts");
         const rawLargeIssuesAll = await this.props.github.fetchGithubIssues(
           config.onboardingLargeOwner,
           config.onboardingLargeClientRepo,
@@ -125,10 +144,12 @@ export default class DataProvider extends React.Component<
         //   }
         // );
 
-        const rawLargeIssues = rawLargeIssuesAll.filter(
-          (item: any) =>
-            !item.labels.find((l: any) => l.name === "status:needsDiligence")
-        );
+        const rawLargeIssues = rawLargeIssuesAll
+          .filter(
+            (item: any) =>
+              !item.labels.find((l: any) => l.name === "status:needsDiligence")
+          )
+          .slice(0, 10);
 
         //GETTING COMMENTS
         const comments: any = await Promise.allSettled(
@@ -159,13 +180,6 @@ export default class DataProvider extends React.Component<
               })
           )
         );
-
-        console.log(comments, "c", comments.length);
-        console.log(rawLargeIssues, "i", rawLargeIssues.length);
-
-        console.log("issue parsed finished");
-
-        return;
 
         //GROUPING ISSUES BY MSIG
         let issuesByMsig: any[] = [];
@@ -205,8 +219,10 @@ export default class DataProvider extends React.Component<
           }
         }
 
+        console.log({ issuesByMsig });
+
         // GETTING PENDING TRANSACTIONS FROM LOTUS
-        const txsGroupedByClientAddress: any = (
+        const txsGroupedByClientAddress: TxsByClientAddress[] = (
           await Promise.allSettled(
             issuesByMsig.map(
               (msigGroup: any) =>
@@ -222,6 +238,7 @@ export default class DataProvider extends React.Component<
                       await this.props.wallet.api.multisigInfo(
                         msigGroup.multisigAddress
                       );
+
                     // if they don't have method = 4 or they miss the 'parsed' object,
                     // we don't incclude them (for now)
 
@@ -229,10 +246,14 @@ export default class DataProvider extends React.Component<
                       (tx: any) => tx.tx.method === 4 && tx.parsed
                     );
 
+                    //console.log(pendingFiltered, "pending filtered");
+
                     const txsByClientAddress = _.groupBy(
                       pendingFiltered,
                       "parsed.params.address"
                     );
+
+                    console.log(txsByClientAddress, "txsByClientAddress");
 
                     resolve({
                       multisigAddress: msigGroup.multisigAddress,
@@ -248,24 +269,32 @@ export default class DataProvider extends React.Component<
         ).map((i: any) => i.value);
 
         // MATCH TRANSACTION WITH ISSUE
-        const issuesByClientAddress = issuesByMsig.map((iss: any) => {
-          return {
-            multisigAddress: iss.multisigAddress,
-            byClients: _.groupBy(iss.issues, "clientAddress"),
-          };
-        });
+        const issuesByClientAddress = issuesByMsig.map(
+          (iss: { multisigAddress: string; issues: any[] }) => {
+            return {
+              multisigAddress: iss.multisigAddress,
+              byClients: _.groupBy(iss.issues, "clientAddress"),
+            };
+          }
+        );
+
+        console.log(issuesByClientAddress, "issuesByClientAddress");
 
         let transactionAndIssue = [];
         for (let msigGroup of issuesByClientAddress) {
-          const txsByCientList = txsGroupedByClientAddress
-            .filter((i: any) => i)
-            .filter(
-              (i: any) => i.multisigAddress === msigGroup.multisigAddress
+          const txsByCientList: TxsByClientAddress[] =
+            txsGroupedByClientAddress.filter(
+              (tx) => tx.multisigAddress === msigGroup.multisigAddress
             );
+
           if (!txsByCientList.length) continue;
+
+          console.log({ txsByCientList });
+
           for (let [k, v] of Object.entries(
             txsByCientList[0].txsByClientAddress
           )) {
+            console.log(k, v);
             // pairs transaction and github issue
             transactionAndIssue.push({
               clientAddress: k,

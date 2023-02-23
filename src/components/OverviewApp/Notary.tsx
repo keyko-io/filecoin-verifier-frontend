@@ -259,7 +259,7 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
 
   useEffect(() => {
     if (user) {
-      // context.loadClientRequests()
+      context.loadClientRequests();
     }
   }, [user]);
 
