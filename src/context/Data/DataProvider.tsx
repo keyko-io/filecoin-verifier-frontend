@@ -875,7 +875,7 @@ export default class DataProvider extends React.Component<
           });
           if (issue.status === 201) {
             // this.state.dispatchNotification('Request submited as #' + issue.data.number)
-            this.state.loadClientRequests();
+            // this.state.loadClientRequests();
             await this.state.assignToIssue(issue.data.number, data.assignees);
             return issue.data.html_url;
           } else {

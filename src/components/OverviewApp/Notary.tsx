@@ -259,7 +259,7 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
 
   useEffect(() => {
     if (user) {
-      context.loadClientRequests();
+      // context.loadClientRequests();
     }
   }, [user]);
 
@@ -338,7 +338,7 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
             "Verify Client Message sent with ID: " + messageID
           );
 
-          context.loadClientRequests();
+          // context.loadClientRequests();
 
           sentryData = {
             requestNumber: request.number,
@@ -538,7 +538,7 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
     }
 
     setLargeRequestListLoading(true);
-    context.loadClientRequests();
+    // context.loadClientRequests();
     setLargeRequestListLoading(false);
   };
 

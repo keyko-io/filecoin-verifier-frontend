@@ -96,7 +96,7 @@ const App = () => {
   const refresh = () => {
     if (context.viewroot) context.loadVerifierAndPendingRequests();
 
-    if (!context.viewroot && localStorage.getItem("loggedUser")) context.loadClientRequests()
+    // if (!context.viewroot && localStorage.getItem("loggedUser")) context.loadClientRequests()
 
     if (!context.viewroot && !localStorage.getItem("loggedUser")) {
       context.wallet.dispatchNotification("You should login first for this action!!")
