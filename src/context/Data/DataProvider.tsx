@@ -85,7 +85,6 @@ export default class DataProvider extends React.Component<
         let breadCrumb = {
           category,
           message,
-          level: level === "info" ? Sentry.Severity.Info : Sentry.Severity.Error,
           data,
         };
         Sentry.addBreadcrumb(breadCrumb);

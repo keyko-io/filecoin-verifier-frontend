@@ -1,18 +1,59 @@
-import { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
+import { config } from "../../../config";
+import * as Logger from "../../../logger";
 import { Data } from "../../../context/Data/Index";
 
 type NotaryTabsProps = {
     tabs: string;
-    changeStateTabs: (indexTab: string) => void,
-    verifiedClientsLength: number,
-}
+    changeStateTabs: (indexTab: string) => void;
+    verifiedClientsLength: number;
+};
 
-const NotaryTabs = ({ changeStateTabs, tabs, verifiedClientsLength }: NotaryTabsProps) => {
-    const context = useContext(Data)
+const NotaryTabs = ({
+    changeStateTabs,
+    tabs,
+    verifiedClientsLength,
+}: NotaryTabsProps) => {
+    const context = useContext(Data);
 
     const selectedTab = (tabIndex: string) => {
-        return tabs === tabIndex ? "selected" : ""
-    }
+        return tabs === tabIndex ? "selected" : "";
+    };
+
+    useEffect(() => {
+        const handler = async () => {
+            try {
+                const state = "open";
+                const label = "bot:readyToSign";
+                const rawLargeIssuesAll =
+                    await context?.github?.fetchGithubIssues(
+                        config?.onboardingLargeOwner,
+                        config?.onboardingLargeClientRepo,
+                        state,
+                        label
+                    );
+                const count = rawLargeIssuesAll?.length || 0;
+                if (
+                    Number(count) !==
+                    Number(context?.largeClientRequests?.length)
+                ) {
+                    await Logger.BasicLogger({
+                        message:
+                            "Github count: " +
+                            count +
+                            " , Dashboard Count: " +
+                            context?.largeClientRequests?.length,
+                    });
+                }
+            } catch (error) {
+                console.log(error);
+                await Logger.BasicLogger({
+                    message: "Error: Cant log number of requests",
+                });
+            }
+        };
+        handler();
+    }, [context?.github, context?.largeClientRequests]);
 
     return (
         <>
@@ -39,7 +80,8 @@ const NotaryTabs = ({ changeStateTabs, tabs, verifiedClientsLength }: NotaryTabs
                         changeStateTabs("3");
                     }}
                 >
-                    Large Requests ({context.largeClientRequests.length})
+                    Large Requests (
+                    {context?.largeClientRequests?.length})
                 </div>
 
                 <div
@@ -52,7 +94,7 @@ const NotaryTabs = ({ changeStateTabs, tabs, verifiedClientsLength }: NotaryTabs
                 </div>
             </div>
         </>
-    )
-}
+    );
+};
 
-export default NotaryTabs
+export default NotaryTabs;
