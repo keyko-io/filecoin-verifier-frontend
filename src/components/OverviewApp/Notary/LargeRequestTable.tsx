@@ -6,28 +6,10 @@ import { config } from "../../../config";
 import { Data } from "../../../context/Data/Index";
 import { LargeRequestData } from "../../../type";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
-import Divider from "@mui/material/Divider";
-
-import Box from "@mui/material/Box";
-import Typography from "@mui/material/Typography";
-import Modal from "@mui/material/Modal";
-import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
+import TransactionModal from "./TransactionModal";
 
 const CANT_SIGN_MESSAGE =
   "You can currently only approve the allocation requests associated with the multisig organization you signed in with. Signing proposals for additional DataCap allocations will require you to sign in again";
-
-const style = {
-  position: "absolute" as "absolute",
-  top: "50%",
-  left: "50%",
-  transform: "translate(-50%, -50%)",
-  width: 400,
-  bgcolor: "background.paper",
-  boxShadow: 24,
-  borderRadius: "12px",
-  px: 8,
-  py: 6,
-};
 
 const LargeRequestTable = () => {
   const context = useContext(Data);
@@ -179,35 +161,19 @@ const LargeRequestTable = () => {
     },
   ];
 
+  const txInformation = {
+    proposer: "N.Xari Abramox",
+    txId: 23,
+    approvals: 1,
+  };
+
   return (
     <div className="large-request-table" style={{ minHeight: "500px" }}>
-      <Modal
+      <TransactionModal
         open={open}
-        onClose={handleClose}
-        aria-labelledby="modal-modal-title"
-        aria-describedby="modal-modal-description"
-      >
-        <Box sx={style}>
-          <Divider />
-          <Typography sx={{ my: 1, display: "flex", alignItems: "center" }}>
-            <KeyboardArrowRightIcon sx={{ color: "rgb(0, 144, 255)" }} />
-            <span style={{ marginLeft: "1rem" }}>
-              Proposer : Robert Downey Jr.
-            </span>
-          </Typography>
-          <Divider />
-          <Typography sx={{ my: 1, display: "flex", alignItems: "center" }}>
-            <KeyboardArrowRightIcon sx={{ color: "rgb(0, 144, 255)" }} />
-            <span style={{ marginLeft: "1rem" }}> TxId : 10</span>
-          </Typography>
-          <Divider />
-          <Typography sx={{ my: 1, display: "flex", alignItems: "center" }}>
-            <KeyboardArrowRightIcon sx={{ color: "rgb(0, 144, 255)" }} />
-            <span style={{ marginLeft: "1rem" }}>Approvals : 1 </span>
-          </Typography>
-          <Divider />
-        </Box>
-      </Modal>
+        handleClose={handleClose}
+        txInfo={txInformation}
+      />
       {!context.ldnRequestsLoading && (
         <p
           style={{
