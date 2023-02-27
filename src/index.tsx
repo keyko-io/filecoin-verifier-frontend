@@ -1,5 +1,5 @@
 import React from "react";
-import ReactDOM from 'react-dom/client';
+import ReactDOM from "react-dom/client";
 import "./index.scss";
 import { config } from "./config";
 import App from "./App";
@@ -15,88 +15,170 @@ import "./fonts/SuisseIntl-Regular.woff";
 import Layout from "../src/Layout/layout";
 import LdnApplication from "./pages/LdnApplication";
 
-import * as serviceWorker from './serviceWorker';
-import Preonboarding from './pages/Preonboarding';
-import Onboarding from './pages/Onboarding';
-import Landing from './pages/Landing';
-import history from './context/History';
-import LogExplorer from './pages/LogExplorer';
-import './fonts/SuisseIntl-Regular.woff'
-import ClientDetails from './pages/ClientDetails'
-import { CookiesProvider } from 'react-cookie';
+import * as serviceWorker from "./serviceWorker";
+import Preonboarding from "./pages/Preonboarding";
+import Onboarding from "./pages/Onboarding";
+import Landing from "./pages/Landing";
+import history from "./context/History";
+import LogExplorer from "./pages/LogExplorer";
+import "./fonts/SuisseIntl-Regular.woff";
+import ClientDetails from "./pages/ClientDetails";
+import { CookiesProvider } from "react-cookie";
 import * as Sentry from "@sentry/react";
 import { Integrations } from "@sentry/tracing";
 import Verifiers from "./pages/Verifiers";
 import Miners from "./pages/Miners";
 import StatusPage from "./pages/StatusPage";
 
-
 // redirect to domain if user access fleek url
 if (window.location.host.includes("fleek") && config.willRedirect) {
-  window.location.href = config.domain;
+    window.location.href = config.domain;
 }
 
-Sentry.init({
-  dsn: "https://488b3be98a124c008cd88fce8b8abe1c@o933704.ingest.sentry.io/5882860",
-  integrations: [new Integrations.BrowserTracing()],
+const startSentry = () => {
+    try {
+        const sentryDSN =
+            process.env.REACT_APP_SENTRY_DSN ||
+            "https://e434fb51144f42c5adc29d6cf075256e@o4504711585005568.ingest.sentry.io/4504711588413440"; // hmm..
+        if (!sentryDSN) {
+            console.log("sentry dsn is not set. aborting");
+            return;
+        }
+        const response = Sentry.init({
+            dsn: sentryDSN,
+            integrations: [
+                new Integrations.BrowserTracing({
+                    tracePropagationTargets: ["*"],
+                }),
+            ],
+            tracesSampleRate: 1.0,
+        });
+        console.log("sentry init", response);
+    } catch (error) {
+        console.log("error", error);
+    }
+};
 
-  // Set tracesSampleRate to 1.0 to capture 100%
-  // of transactions for performance monitoring.
-  // We recommend adjusting this value in production
-  tracesSampleRate: 1.0,
-});
+startSentry();
 
-const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement);
+const root = ReactDOM.createRoot(
+    document.getElementById("root") as HTMLElement
+);
 
 root.render(
-  <>
-    <CookiesProvider>
-      <WalletProvider>
-        <GithubProvider>
-          <Wallet.Consumer>
-            {(wallet) => (
-              <Github.Consumer>
-                {(github) => (
-                  <DataProvider wallet={wallet} github={github}>
-                    <Router history={history}>
-                      <Layout>
-                        <Switch>
-                          <Route exact path={"/"} component={Onboarding}></Route>
-                          <Route path={"/app"} component={App}></Route>
-                          <Route
-                            path={"/wallet"}
-                            component={Preonboarding}
-                          ></Route>
-                          <Route path={"/landing"} component={Landing}></Route>
-                          <Route
-                            path={"/verifiers"}
-                            component={Verifiers}
-                          ></Route>
-                          <Route
-                            path={"/ldn-application"}
-                            component={LdnApplication}
-                          ></Route>
-                          <Route path={"/miners"} component={Miners}></Route>
-                          <Route
-                            path={"/client"}
-                            component={ClientDetails}
-                          ></Route>
-                          <Route path={"/logs"} component={LogExplorer}></Route>
-                          <Route path={"/status"} component={StatusPage}></Route>
-                        </Switch>
-                      </Layout >
-                    </Router>
-                    <GlobalNotification style={{ bottom: 0, right: 0 }} />
-                    <GlobalModal style={{ maxWidth: "none" }} />
-                  </DataProvider>
-                )}
-              </Github.Consumer>
-            )}
-          </Wallet.Consumer>
-        </GithubProvider>
-      </WalletProvider>
-    </CookiesProvider>
-  </>,
+    <>
+        <CookiesProvider>
+            <WalletProvider>
+                <GithubProvider>
+                    <Wallet.Consumer>
+                        {(wallet) => (
+                            <Github.Consumer>
+                                {(github) => (
+                                    <DataProvider
+                                        wallet={wallet}
+                                        github={github}
+                                    >
+                                        <Router history={history}>
+                                            <Layout>
+                                                <Switch>
+                                                    <Route
+                                                        exact
+                                                        path={"/"}
+                                                        component={
+                                                            Onboarding
+                                                        }
+                                                    ></Route>
+                                                    <Route
+                                                        path={"/app"}
+                                                        component={
+                                                            App
+                                                        }
+                                                    ></Route>
+                                                    <Route
+                                                        path={
+                                                            "/wallet"
+                                                        }
+                                                        component={
+                                                            Preonboarding
+                                                        }
+                                                    ></Route>
+                                                    <Route
+                                                        path={
+                                                            "/landing"
+                                                        }
+                                                        component={
+                                                            Landing
+                                                        }
+                                                    ></Route>
+                                                    <Route
+                                                        path={
+                                                            "/verifiers"
+                                                        }
+                                                        component={
+                                                            Verifiers
+                                                        }
+                                                    ></Route>
+                                                    <Route
+                                                        path={
+                                                            "/ldn-application"
+                                                        }
+                                                        component={
+                                                            LdnApplication
+                                                        }
+                                                    ></Route>
+                                                    <Route
+                                                        path={
+                                                            "/miners"
+                                                        }
+                                                        component={
+                                                            Miners
+                                                        }
+                                                    ></Route>
+                                                    <Route
+                                                        path={
+                                                            "/client"
+                                                        }
+                                                        component={
+                                                            ClientDetails
+                                                        }
+                                                    ></Route>
+                                                    <Route
+                                                        path={"/logs"}
+                                                        component={
+                                                            LogExplorer
+                                                        }
+                                                    ></Route>
+                                                    <Route
+                                                        path={
+                                                            "/status"
+                                                        }
+                                                        component={
+                                                            StatusPage
+                                                        }
+                                                    ></Route>
+                                                </Switch>
+                                            </Layout>
+                                        </Router>
+                                        <GlobalNotification
+                                            style={{
+                                                bottom: 0,
+                                                right: 0,
+                                            }}
+                                        />
+                                        <GlobalModal
+                                            style={{
+                                                maxWidth: "none",
+                                            }}
+                                        />
+                                    </DataProvider>
+                                )}
+                            </Github.Consumer>
+                        )}
+                    </Wallet.Consumer>
+                </GithubProvider>
+            </WalletProvider>
+        </CookiesProvider>
+    </>
 );
 
 // If you want your app to work offline and load faster, you can change
