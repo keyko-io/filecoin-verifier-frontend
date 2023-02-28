@@ -4,6 +4,7 @@ import { Cookies } from 'react-cookie'
 
 // DATA PROVIDER CONTEXT TYPE => STATE AND PROPS
 export interface DataProviderStates {
+    getNodeData: (address: any) => Promise<any>;
     loadClientRequests: () => Promise<void>;
     loadVerifierAndPendingRequests: () => Promise<void>;
     switchview: () => void;
