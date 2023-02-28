@@ -20,6 +20,9 @@ const NotaryTabs = ({
         return tabs === tabIndex ? "selected" : "";
     };
 
+    const user = context.github.loggedUser
+
+
     useEffect(() => {
         const handler = async () => {
             try {
@@ -52,8 +55,12 @@ const NotaryTabs = ({
                 });
             }
         };
-        handler();
-    }, [context?.github, context?.largeClientRequests]);
+ 
+        if(user) {
+            handler();
+        }
+
+    }, [ user, context?.largeClientRequests, context?.github]);
 
     return (
         <>

@@ -446,13 +446,18 @@ export default class DataProvider extends React.Component<
         try {
           if (this.props.github.githubOctoGeneric.logged === false) {
             await this.props.github.githubOctoGenericLogin();
+         
           }
-
-          const allIssues = await this.props.github.fetchGithubIssues(
-            config.lotusNodes[this.props.wallet.networkIndex].notaryOwner,
-            config.lotusNodes[this.props.wallet.networkIndex].notaryRepo,
-            'open',
-            "Notary Application")
+    
+          const allIssues = await this.props.github.githubOctoGeneric.octokit.paginate(
+            this.props.github.githubOctoGeneric.octokit.issues.listForRepo,
+            {
+              owner: config.onboardingOwner,
+              repo: config.onboardingNotaryOwner,
+              state: "open",
+              labels : "Notary Application"
+            }
+          )
 
           const msigRequests = allIssues
             .filter((issue: any) => !issue.labels.find((l: any) => l.name === 'status:AddedOnchain'))
