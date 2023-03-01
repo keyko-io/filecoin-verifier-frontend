@@ -156,8 +156,8 @@ const App = () => {
             placeholder="Search"
             onChange={(e) => setSearch(e.target.value)}
           />
-          <IconButton type="button" aria-label="search">
-            <SearchIcon onClick={handleSearch} sx={{ color: "rgb(0, 127, 255)", fontSize: "24px" }} />
+          <IconButton type="button" aria-label="search" onClick={handleSearch}>
+            <SearchIcon  sx={{ color: "rgb(0, 127, 255)", fontSize: "24px" }} />
           </IconButton>
         </Paper>
         {/* SEARCH COMPONENT */}
