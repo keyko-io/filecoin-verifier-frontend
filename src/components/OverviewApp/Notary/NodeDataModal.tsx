@@ -1,6 +1,7 @@
 import { Divider, Box, Typography, Modal } from "@mui/material";
 import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
 import CloseIcon from "@mui/icons-material/Close";
+import { CircularProgress } from "@material-ui/core";
 
 const style = {
     position: "absolute" as "absolute",
@@ -27,15 +28,17 @@ type NodeDataModalProps = {
     handleClose: () => void;
     nodeInfo: {
         proposer: string;
-        txId: number;
+        txId: string;
         approvals: number;
     };
+    isLoadingNodeData: boolean;
 };
 
 const NodeDataModal = ({
     open,
     handleClose,
     nodeInfo,
+    isLoadingNodeData,
 }: NodeDataModalProps) => {
     return (
         <Modal
@@ -52,57 +55,69 @@ const NodeDataModal = ({
                 <Typography variant="h6" mb={1.5} textAlign="center">
                     Transaction Information
                 </Typography>
+                {isLoadingNodeData ? (
+                    <div style={{ textAlign: "center" }}>
+                        <CircularProgress
+                            style={{
+                                margin: "8rem auto",
+                                color: "#0090ff",
+                            }}
+                        />
+                    </div>
+                ) : (
+                    <>
+                        <Divider />
+                        <Typography
+                            sx={{
+                                my: 1,
+                                display: "flex",
+                                alignItems: "center",
+                            }}
+                        >
+                            <KeyboardArrowRightIcon
+                                sx={{ color: "rgb(0, 144, 255)" }}
+                            />
+                            <span style={{ marginLeft: "1rem" }}>
+                                Proposer : {nodeInfo.proposer}
+                            </span>
+                        </Typography>
 
-                <Divider />
-                <Typography
-                    sx={{
-                        my: 1,
-                        display: "flex",
-                        alignItems: "center",
-                    }}
-                >
-                    <KeyboardArrowRightIcon
-                        sx={{ color: "rgb(0, 144, 255)" }}
-                    />
-                    <span style={{ marginLeft: "1rem" }}>
-                        Proposer : {nodeInfo.proposer}
-                    </span>
-                </Typography>
+                        <Divider />
+                        <Typography
+                            sx={{
+                                my: 1,
+                                display: "flex",
+                                alignItems: "center",
+                            }}
+                        >
+                            <KeyboardArrowRightIcon
+                                sx={{ color: "rgb(0, 144, 255)" }}
+                            />
+                            <span style={{ marginLeft: "1rem" }}>
+                                {" "}
+                                TxId : {nodeInfo.txId}
+                            </span>
+                        </Typography>
 
-                <Divider />
-                <Typography
-                    sx={{
-                        my: 1,
-                        display: "flex",
-                        alignItems: "center",
-                    }}
-                >
-                    <KeyboardArrowRightIcon
-                        sx={{ color: "rgb(0, 144, 255)" }}
-                    />
-                    <span style={{ marginLeft: "1rem" }}>
-                        {" "}
-                        TxId : {nodeInfo.txId}
-                    </span>
-                </Typography>
+                        <Divider />
+                        <Typography
+                            sx={{
+                                my: 1,
+                                display: "flex",
+                                alignItems: "center",
+                            }}
+                        >
+                            <KeyboardArrowRightIcon
+                                sx={{ color: "rgb(0, 144, 255)" }}
+                            />
+                            <span style={{ marginLeft: "1rem" }}>
+                                Approvals : {nodeInfo.approvals}
+                            </span>
+                        </Typography>
 
-                <Divider />
-                <Typography
-                    sx={{
-                        my: 1,
-                        display: "flex",
-                        alignItems: "center",
-                    }}
-                >
-                    <KeyboardArrowRightIcon
-                        sx={{ color: "rgb(0, 144, 255)" }}
-                    />
-                    <span style={{ marginLeft: "1rem" }}>
-                        Approvals : {nodeInfo.approvals}
-                    </span>
-                </Typography>
-
-                <Divider />
+                        <Divider />
+                    </>
+                )}
             </Box>
         </Modal>
     );

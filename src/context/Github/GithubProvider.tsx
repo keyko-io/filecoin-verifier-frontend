@@ -230,7 +230,9 @@ export default class WalletProvider extends React.Component<
       const loggedUser = localStorage.getItem("loggedUser")!;
       if (githubToken) {
         const response = await this.state.initGithubOcto(githubToken);
-        await response?.auth();
+        console.log("response", response);
+        const authresponse = await response?.auth();
+        console.log("authresponse", authresponse);
       }
       if (!githubToken) {
         this.setState({ githubLogged: false });
@@ -251,6 +253,8 @@ export default class WalletProvider extends React.Component<
       await Logger.configureScope({
         githubUsername: "",
       });
+        this.setState({ githubLogged: false });
+        this.setState({ loggedUser: "" });
       await Logger.BasicLogger({
         message: "Error: loadGithub token",
       });

@@ -133,6 +133,59 @@ export default class DataProvider extends React.Component<
                 Sentry.addBreadcrumb(breadCrumb);
                 Sentry.captureMessage(breadCrumb.message);
             },
+            getLargeRequestSearchInputData: async () => {
+                const rawLargeIssuesAll =
+                    await this.props.github.fetchGithubIssues(
+                        config.onboardingLargeOwner,
+                        config.onboardingLargeClientRepo,
+                        "open",
+                        "bot:readyToSign"
+                    );
+                const parsedIssueData: any = [];
+                await Promise.all(
+                    rawLargeIssuesAll?.map(async (issue: any) => {
+                        const parsed = ldnParser.parseIssue(
+                            issue.body
+                        );
+                        const comments =
+                            await this.props.github.githubOcto.paginate(
+                                this.props.github.githubOcto.issues
+                                    .listComments,
+                                {
+                                    owner: config.onboardingLargeOwner,
+                                    repo: config.onboardingLargeClientRepo,
+                                    issue_number: issue.number,
+                                }
+                            );
+
+                        const comment = comments
+                            .reverse()
+                            .find((comment: any) =>
+                                comment?.body?.includes(
+                                    "## DataCap Allocation requested"
+                                )
+                            );
+
+                        if(!comment?.body) return
+                        const commentParsed =
+                            ldnParser.parseReleaseRequest(
+                                comment.body
+                            );
+                        parsedIssueData.push({
+                            ...parsed,
+                            issue_number: issue?.number,
+                            url: issue?.html_url,
+                            comments,
+                            multisig: commentParsed?.notaryAddress,
+                            datacap: commentParsed?.allocationDatacap,
+                            proposer: null,
+                            tx: null,
+                            approvals: null,
+                        });
+                    })
+                );
+                return parsedIssueData;
+            },
             // @ts-ignore
             getLDNIssuesAndTransactions: async () => {
                 //GETTING ISSUES
@@ -404,16 +457,38 @@ export default class DataProvider extends React.Component<
                     ),
                 };
             },
-            getNodeData: async (address) => {
+
+            getNodeData: async (address, clientAddress) => {
+                console.log("clientAddress", clientAddress);
+                console.log("address", address);
                 const pendingTxs =
                     await this.props.wallet.api.pendingTransactions(
                         address
                     );
 
-                // we will need msiginfo later
-                const multisigInfo =
-                    await this.props.wallet.api.multisigInfo(address);
-                return { pendingTxs, multisigInfo };
+                const pendingFiltered = pendingTxs.filter(
+                    (tx: any) => {
+                        return (
+                            tx.tx.method === 4 &&
+                            tx.parsed &&
+                            tx?.parsed?.params?.address ===
+                                clientAddress
+                        );
+                    }
+                );
+
+                if (pendingFiltered?.length > 0) {
+                    const si = pendingFiltered[0]?.signers[0];
+                    const signerAddress =
+                        await this.props.wallet.api.actorKey(si);
+
+                    return {
+                        signerAddress,
+                        txId: String(pendingFiltered[0]?.id),
+                    };
+                } else {
+                    return { signerAddress: "", txId: "" };
+                }
             },
 
             loadClientRequests: async () => {

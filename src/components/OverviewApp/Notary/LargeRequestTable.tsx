@@ -5,11 +5,22 @@ import DataTable from "react-data-table-component";
 import { config } from "../../../config";
 import { Data } from "../../../context/Data/Index";
 import { LargeRequestData } from "../../../type";
+import verifierRegistry from "../../../data/verifiers-registry.json";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import NodeDataModal from "./NodeDataModal";
+import SearchInput from "./SearchInput";
 
 const CANT_SIGN_MESSAGE =
     "You can currently only approve the allocation requests associated with the multisig organization you signed in with. Signing proposals for additional DataCap allocations will require you to sign in again";
+
+const mapNotaryAddressToGithubHandle = (address: string) => {
+    const githubHandle =
+        verifierRegistry.notaries.find(
+            (notary: any) =>
+                notary.ldn_config.signing_address === address
+        )?.github_user[0] || "";
+    return githubHandle;
+};
 
 const LargeRequestTable = () => {
     const context = useContext(Data);
@@ -21,16 +32,36 @@ const LargeRequestTable = () => {
     const [data, setData] = useState<any>([]);
 
     const [open, setOpen] = useState(false);
-    const handleOpen = async (multisig: string) => {
+    const [proposer, setProposer] = useState("");
+    const [txId, setTxId] = useState("");
+
+    const handleOpen = async (
+        multisig: string,
+        clientAddress: string
+    ) => {
         setLoadingNodeData(true);
         setOpen(true);
-        const nodeData = await context.getNodeData(multisig);
-        console.log("nodeData", nodeData);
-        setLoadingNodeData(true);
+        const nodeData = await context.getNodeData(
+            multisig,
+            clientAddress
+        );
+        if (nodeData?.signerAddress) {
+            const notaryGithubHandle = mapNotaryAddressToGithubHandle(
+                nodeData.signerAddress
+            );
+            setProposer(notaryGithubHandle);
+            setTxId(nodeData?.txId);
+            setLoadingNodeData(false);
+        }
+        setLoadingNodeData(false);
     };
-    const handleClose = () => setOpen(false);
+    const handleClose = () => {
+        setOpen(false);
+        setProposer("");
+        setTxId("");
+    };
 
-    const deneme = async (page: number) => {
+    const fetchTableData = async (page: number) => {
         try {
             setIsLoadingGithubData(true);
             const { data } =
@@ -42,13 +73,10 @@ const LargeRequestTable = () => {
                     page,
                     per_page: 10,
                 });
-
             const parsedIssueData: any = [];
-
             await Promise.all(
                 data?.map(async (issue: any) => {
                     const parsed = ldnParser.parseIssue(issue.body);
-
                     const comments =
                         await context.github.githubOcto.paginate(
                             context.github.githubOcto.issues
@@ -59,7 +87,6 @@ const LargeRequestTable = () => {
                                 issue_number: issue.number,
                             }
                         );
-
                     const comment = comments
                         .reverse()
                         .find((comment: any) =>
@@ -67,10 +94,8 @@ const LargeRequestTable = () => {
                                 "## DataCap Allocation requested"
                             )
                         );
-
                     const commentParsed =
                         ldnParser.parseReleaseRequest(comment?.body);
-
                     parsedIssueData.push({
                         ...parsed,
                         issue_number: issue.number,
@@ -94,57 +119,57 @@ const LargeRequestTable = () => {
     };
 
     useEffect(() => {
-        deneme(1);
+        fetchTableData(1);
     }, []);
 
     const largeReqColumns = [
         {
             name: "Client",
-            selector: (row: any) => row.name,
+            selector: (row: any) => row?.name,
             sortable: true,
             grow: 1.2,
             wrap: true,
         },
         {
             name: "Address",
-            selector: (row: LargeRequestData) => row.address,
+            selector: (row: LargeRequestData) => row?.address,
             sortable: true,
             cell: (row: LargeRequestData) => (
-                <div>{`${row.address.substring(
+                <div>{`${row?.address?.substring(
                     0,
                     9
-                )}...${row.address.substring(
-                    row.address.length - 9,
-                    row.address.length
+                )}...${row?.address.substring(
+                    row?.address.length - 9,
+                    row?.address.length
                 )}`}</div>
             ),
         },
         {
             name: "Multisig",
-            selector: (row: LargeRequestData) => row.multisig,
+            selector: (row: LargeRequestData) => row?.multisig,
             sortable: true,
             grow: 0.5,
             center: true,
         },
         {
             name: "Datacap",
-            selector: (row: LargeRequestData) => row.datacap,
+            selector: (row: LargeRequestData) => row?.datacap,
             sortable: true,
             grow: 0.5,
             center: true,
         },
         {
             name: "Audit Trail",
-            selector: (row: LargeRequestData) => row.issue_number,
+            selector: (row: LargeRequestData) => row?.issue_number,
             sortable: true,
             grow: 0.5,
             cell: (row: LargeRequestData) => (
                 <a
                     target="_blank"
                     rel="noopener noreferrer"
-                    href={row.url}
+                    href={row?.url}
                 >
-                    #{row.issue_number}
+                    #{row?.issue_number}
                 </a>
             ),
             center: true,
@@ -177,7 +202,9 @@ const LargeRequestTable = () => {
             cell: (row: LargeRequestData) => (
                 <div
                     style={{ cursor: "pointer" }}
-                    onClick={() => handleOpen(row.multisig)}
+                    onClick={() =>
+                        handleOpen(row.multisig, row.address)
+                    }
                 >
                     <MoreHorizIcon />
                 </div>
@@ -186,43 +213,23 @@ const LargeRequestTable = () => {
         },
     ];
 
-    const txInformation = {
-        proposer: "N.Xari Abramox",
-        txId: 23,
-        approvals: 1,
-    };
-
     return (
         <div
             className="large-request-table"
             style={{ minHeight: "500px" }}
         >
             <NodeDataModal
+                isLoadingNodeData={isLoadingNodeData}
                 open={open}
                 handleClose={handleClose}
-                nodeInfo={txInformation}
+                nodeInfo={{
+                    proposer,
+                    txId,
+                    approvals: proposer && txId ? 1 : 0,
+                }}
             />
-            {!context.ldnRequestsLoading && (
-                <p
-                    style={{
-                        margin: "0.8rem  1.2rem",
-                        color: "#373D3F",
-                    }}
-                >
-                    *{" "}
-                    <i
-                        style={{
-                            textDecoration: "underline",
-                            textUnderlineOffset: "4px",
-                        }}
-                    >
-                        You can use the searchbar to find a datacap
-                        request
-                    </i>
-                </p>
-            )}
             {context.ldnRequestsLoading ? (
-                <div style={{ width: "100%" }}>
+                <div style={{ width: "100%", textAlign: "center" }}>
                     <CircularProgress
                         style={{
                             margin: "8rem auto",
@@ -231,46 +238,55 @@ const LargeRequestTable = () => {
                     />
                 </div>
             ) : (
-                <DataTable
-                    columns={largeReqColumns}
-                    selectableRowDisabled={(row) => !row.signable}
-                    selectableRowsHighlight
-                    selectableRows
-                    progressPending={isLoadingGithubData}
-                    onChangePage={async (
-                        page: number,
-                        totalRows: number
-                    ) => {
-                        console.log("hey");
-                        console.log(page);
-                        console.log(totalRows);
-                        await deneme(page);
-                    }}
-                    selectableRowsNoSelectAll={true}
-                    pagination
-                    paginationServer
-                    paginationTotalRows={200}
-                    paginationRowsPerPageOptions={[10]}
-                    paginationPerPage={10}
-                    defaultSortFieldId={1}
-                    onRowClicked={(row) => {
-                        if (!row.signable) {
-                            context.wallet.dispatchNotification(
-                                CANT_SIGN_MESSAGE
-                            );
+                <>
+                    <div style={{ display: "grid" }}>
+                        <SearchInput updateData={setData} />
+                    </div>
+                    <DataTable
+                        columns={largeReqColumns}
+                        selectableRowDisabled={(row) => !row.signable}
+                        selectableRowsHighlight
+                        selectableRows
+                        progressPending={isLoadingGithubData}
+                        onChangePage={async (
+                            page: number,
+                            totalRows: number
+                        ) => {
+                            await fetchTableData(page);
+                        }}
+                        selectableRowsNoSelectAll={true}
+                        pagination
+                        paginationServer
+                        paginationTotalRows={200}
+                        paginationRowsPerPageOptions={[10]}
+                        paginationPerPage={10}
+                        defaultSortFieldId={1}
+                        onRowClicked={(row) => {
+                            if (!row.signable) {
+                                context.wallet.dispatchNotification(
+                                    CANT_SIGN_MESSAGE
+                                );
+                            }
+                        }}
+                        noContextMenu={true}
+                        data={data}
+                        progressComponent={
+                            <div
+                                style={{
+                                    width: "100%",
+                                    textAlign: "center",
+                                }}
+                            >
+                                <CircularProgress
+                                    style={{
+                                        margin: "8rem auto",
+                                        color: "#0090ff",
+                                    }}
+                                />
+                            </div>
                         }
-                    }}
-                    noContextMenu={true}
-                    data={data}
-                    progressComponent={
-                        <CircularProgress
-                            style={{
-                                margin: "4rem auto",
-                                color: "#0090ff",
-                            }}
-                        />
-                    }
-                />
+                    />
+                </>
             )}
         </div>
     );
@@ -290,3 +306,16 @@ export default LargeRequestTable;
 //   pendingTxs = cachedAddress.notaryAddress;
 //   console.log("hey hey");
 // }
+//
+//
+//
+// // Proposer(first notary create and sign transaction):
+// //  propser is the person who creates the first transaction to tell
+// the node about the request
+// the proposer also sign the transaction
+// an approval is needed(multisig 2/n) which is then done by another
+// notary
+//
+// // TxId: ransaction created by the first notary to
+// sign(proposer)
+// // Approvals: 0/1

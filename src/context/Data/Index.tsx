@@ -13,7 +13,9 @@ import {
 } from "../contextType";
 
 export const Data = React.createContext({
-    getNodeData: async (address: string) => ({} as any),
+    getLargeRequestSearchInputData: async () => ({} as any),
+    getNodeData: async (address: string, clientAddress: string) =>
+        ({} as any),
     assignToIssue: async (
         issue_number: number,
         assignees: string[]
