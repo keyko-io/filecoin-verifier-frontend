@@ -37,6 +37,9 @@ if (window.location.host.includes("fleek") && config.willRedirect) {
 
 const startSentry = () => {
     try {
+        if (process.env.NODE_ENV === "development") {
+            return;
+        }
         const sentryDSN =
             process.env.REACT_APP_SENTRY_DSN ||
             "https://e434fb51144f42c5adc29d6cf075256e@o4504711585005568.ingest.sentry.io/4504711588413440"; // hmm..
@@ -58,7 +61,6 @@ const startSentry = () => {
         console.log("error", error);
     }
 };
-
 startSentry();
 
 const root = ReactDOM.createRoot(

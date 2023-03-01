@@ -6,6 +6,9 @@ export const BasicLogger = async ({
     message: string;
 }): Promise<boolean> => {
     try {
+        if (process.env.NODE_ENV === "development") {
+            return false;
+        }
         await Sentry.captureMessage(message);
         return true;
     } catch (error) {
@@ -19,6 +22,9 @@ export interface SentryScope {
 
 export const configureScope = async (data: SentryScope) => {
     try {
+        if (process.env.NODE_ENV === "development") {
+            return false;
+        }
         await Sentry.configureScope(function (scope) {
             scope.setTag("githubUsername", data.githubUsername);
         });
