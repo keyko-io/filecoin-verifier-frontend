@@ -40,6 +40,7 @@
     "bignumber.js": "^9.0.1",
     "bluebird": "^3.7.2",
     "copy-text-to-clipboard": "^2.2.0",
+    "fuse.js": "^6.6.2",
     "himalaya": "^1.1.0",
     "lodash": "^4.17.21",
     "markdown-it": "^12.0.4",
