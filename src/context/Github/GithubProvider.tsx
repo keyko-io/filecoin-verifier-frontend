@@ -185,7 +185,7 @@ export default class WalletProvider extends React.Component<
       state: any,
       labels: any
     ) => {
-      console.log("this.state", this.state)
+      console.log("this.state", this?.state)
       if(!this?.state || !Object.keys(this?.state?.githubOcto).length) return;
       const rawIssues = await this?.state?.githubOcto?.paginate(
         this?.state?.githubOcto?.issues?.listForRepo,

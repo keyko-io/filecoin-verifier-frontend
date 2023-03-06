@@ -2,6 +2,7 @@ import { useContext, useEffect, useState } from "react";
 import { config } from "../../../config";
 import * as Logger from "../../../logger";
 import { Data } from "../../../context/Data/Index";
+import { useLargeRequestsContext } from "../../../context/LargeRequests";
 
 type NotaryTabsProps = {
     tabs: string;
@@ -23,7 +24,6 @@ const NotaryTabs = ({
     // useEffect(() => {
     //     const handler = async () => {
     //         try {
-    //             const state = "open";
     //             const label = "bot:readyToSign";
     //             const rawLargeIssuesAll =
     //                 await context?.github?.fetchGithubIssues(
