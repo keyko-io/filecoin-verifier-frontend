@@ -20,40 +20,40 @@ const NotaryTabs = ({
         return tabs === tabIndex ? "selected" : "";
     };
 
-    useEffect(() => {
-        const handler = async () => {
-            try {
-                const state = "open";
-                const label = "bot:readyToSign";
-                const rawLargeIssuesAll =
-                    await context?.github?.fetchGithubIssues(
-                        config?.onboardingLargeOwner,
-                        config?.onboardingLargeClientRepo,
-                        state,
-                        label
-                    );
-                const count = rawLargeIssuesAll?.length || 0;
-                if (
-                    Number(count) !==
-                    Number(context?.largeClientRequests?.length)
-                ) {
-                    await Logger.BasicLogger({
-                        message:
-                            "Github count: " +
-                            count +
-                            " , Dashboard Count: " +
-                            context?.largeClientRequests?.length,
-                    });
-                }
-            } catch (error) {
-                console.log(error);
-                await Logger.BasicLogger({
-                    message: "Error: Cant log number of requests",
-                });
-            }
-        };
-        handler();
-    }, [context?.github, context?.largeClientRequests]);
+    // useEffect(() => {
+    //     const handler = async () => {
+    //         try {
+    //             const state = "open";
+    //             const label = "bot:readyToSign";
+    //             const rawLargeIssuesAll =
+    //                 await context?.github?.fetchGithubIssues(
+    //                     config?.onboardingLargeOwner,
+    //                     config?.onboardingLargeClientRepo,
+    //                     state,
+    //                     label
+    //                 );
+    //             const count = rawLargeIssuesAll?.length || 0;
+    //             if (
+    //                 Number(count) !==
+    //                 Number(context?.largeClientRequests?.length)
+    //             ) {
+    //                 await Logger.BasicLogger({
+    //                     message:
+    //                         "Github count: " +
+    //                         count +
+    //                         " , Dashboard Count: " +
+    //                         context?.largeClientRequests?.length,
+    //                 });
+    //             }
+    //         } catch (error) {
+    //             console.log(error);
+    //             await Logger.BasicLogger({
+    //                 message: "Error: Cant log number of requests",
+    //             });
+    //         }
+    //     };
+    //     handler();
+    // }, [context?.github, context?.largeClientRequests]);
 
     return (
         <>

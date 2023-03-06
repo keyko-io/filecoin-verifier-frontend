@@ -185,8 +185,10 @@ export default class WalletProvider extends React.Component<
       state: any,
       labels: any
     ) => {
-      const rawIssues = await this.state.githubOcto.paginate(
-        this.state.githubOcto.issues.listForRepo,
+      console.log("this.state", this.state)
+      if(!this?.state || !Object.keys(this?.state?.githubOcto).length) return;
+      const rawIssues = await this?.state?.githubOcto?.paginate(
+        this?.state?.githubOcto?.issues?.listForRepo,
         {
           owner,
           repo,
@@ -205,8 +207,8 @@ export default class WalletProvider extends React.Component<
       try {
         if (!issue) {
           const rawComments =
-            await this.state.githubOctoGeneric.octokit.paginate(
-              this.state.githubOctoGeneric.octokit.issues.listComments,
+            await this?.state?.githubOctoGeneric?.octokit?.paginate(
+              this?.state?.githubOctoGeneric?.octokit?.issues?.listComments,
               {
                 owner,
                 repo,
@@ -230,9 +232,7 @@ export default class WalletProvider extends React.Component<
       const loggedUser = localStorage.getItem("loggedUser")!;
       if (githubToken) {
         const response = await this.state.initGithubOcto(githubToken);
-        console.log("response", response);
-        const authresponse = await response?.auth();
-        console.log("authresponse", authresponse);
+      await response?.auth();
       }
       if (!githubToken) {
         this.setState({ githubLogged: false });

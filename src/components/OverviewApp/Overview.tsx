@@ -14,16 +14,16 @@ const Overview = () => {
     const [approvedNotariesLoading, setApprovedNotariesLoading] = useState(false)
     const [approvedNotariesLength, setApprovedNotariesLength] = useState<number | null>(null)
 
-    useEffect(() => {
-        context.loadClients()
+    // useEffect(() => {
+    //     context.loadClients()
 
-        setApprovedNotariesLoading(true)
+    //     setApprovedNotariesLoading(true)
 
-        context.wallet.api.listVerifiers().then((data: ApprovedVerifiers[]) => {
-            setApprovedNotariesLength(data.length)
-            setApprovedNotariesLoading(false)
-        })
-    }, [])
+    //     context.wallet.api.listVerifiers().then((data: ApprovedVerifiers[]) => {
+    //         setApprovedNotariesLength(data.length)
+    //         setApprovedNotariesLoading(false)
+    //     })
+    // }, [])
 
     return (
         <div className="page">

@@ -134,13 +134,15 @@ export default class DataProvider extends React.Component<
                 Sentry.captureMessage(breadCrumb.message);
             },
             getLargeRequestSearchInputData: async () => {
+                if(!this?.props?.github) return
                 const rawLargeIssuesAll =
-                    await this.props.github.fetchGithubIssues(
+                    await this?.props?.github?.fetchGithubIssues(
                         config.onboardingLargeOwner,
                         config.onboardingLargeClientRepo,
                         "open",
                         "bot:readyToSign"
                     );
+                if(!rawLargeIssuesAll) return [];
                 const parsedIssueData: any = [];
                 await Promise.all(
                     rawLargeIssuesAll?.map(async (issue: any) => {

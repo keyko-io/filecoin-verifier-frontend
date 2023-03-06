@@ -22,6 +22,47 @@ const mapNotaryAddressToGithubHandle = (address: string) => {
     return githubHandle;
 };
 
+const formatIssues = async (
+    data: { body: string }[],
+    githubOcto: any
+): Promise<any[]> => {
+    const parsedIssueData: any = [];
+    await Promise.all(
+        data?.map(async (issue: any) => {
+            if (!issue.body) return;
+            const parsed = ldnParser.parseIssue(issue.body);
+            const comments = await githubOcto.paginate(
+                githubOcto.issues.listComments,
+                {
+                    owner: config.onboardingLargeOwner,
+                    repo: config.onboardingLargeClientRepo,
+                    issue_number: issue.number,
+                }
+            );
+            const comment = comments
+                .reverse()
+                .find((comment: any) =>
+                    comment.body.includes(
+                        "## DataCap Allocation requested"
+                    )
+                );
+            if (!comment?.body) return;
+            const commentParsed = ldnParser.parseReleaseRequest(
+                comment.body
+            );
+            parsedIssueData.push({
+                ...parsed,
+                issue_number: issue.number,
+                url: issue.html_url,
+                comments,
+                multisig: commentParsed.notaryAddress,
+                datacap: commentParsed.allocationDatacap,
+            });
+        })
+    );
+    return parsedIssueData;
+};
+
 const LargeRequestTable = () => {
     const context = useContext(Data);
 
@@ -31,6 +72,7 @@ const LargeRequestTable = () => {
         useState<boolean>(false);
     const [data, setData] = useState<any>([]);
 
+    const [currentPage, setCurrentPage] = useState(1);
     const [open, setOpen] = useState(false);
     const [proposer, setProposer] = useState("");
     const [txId, setTxId] = useState("");
@@ -55,62 +97,21 @@ const LargeRequestTable = () => {
         }
         setLoadingNodeData(false);
     };
+
     const handleClose = () => {
         setOpen(false);
         setProposer("");
         setTxId("");
     };
 
-    const fetchTableData = async (page: number) => {
+    const changePage = async () => {
         try {
             setIsLoadingGithubData(true);
-            const { data } =
-                await context.github.githubOcto.issues.listForRepo({
-                    owner: config.onboardingLargeOwner,
-                    repo: config.onboardingLargeClientRepo,
-                    state: "open",
-                    labels: "bot:readyToSign",
-                    page,
-                    per_page: 10,
-                });
-            const parsedIssueData: any = [];
-            await Promise.all(
-                data?.map(async (issue: any) => {
-                    const parsed = ldnParser.parseIssue(issue.body);
-                    const comments =
-                        await context.github.githubOcto.paginate(
-                            context.github.githubOcto.issues
-                                .listComments,
-                            {
-                                owner: config.onboardingLargeOwner,
-                                repo: config.onboardingLargeClientRepo,
-                                issue_number: issue.number,
-                            }
-                        );
-                    const comment = comments
-                        .reverse()
-                        .find((comment: any) =>
-                            comment.body.includes(
-                                "## DataCap Allocation requested"
-                            )
-                        );
-                    const commentParsed =
-                        ldnParser.parseReleaseRequest(comment?.body);
-                    parsedIssueData.push({
-                        ...parsed,
-                        issue_number: issue.number,
-                        url: issue.html_url,
-                        comments,
-                        multisig: commentParsed.notaryAddress,
-                        datacap: commentParsed.allocationDatacap,
-                        proposer: null,
-                        tx: null,
-                        approvals: null,
-                    });
-                })
+            const formattedIssues = await formatIssues(
+                [], // FIXME
+                context.github.githubOcto
             );
-
-            setData(parsedIssueData);
+            setData(formattedIssues);
             setIsLoadingGithubData(false);
         } catch (error) {
             console.log(error);
@@ -119,8 +120,41 @@ const LargeRequestTable = () => {
     };
 
     useEffect(() => {
+        currentPage >= 1 && data?.length &&  fetchTableData(currentPage); // NOT GREAT SOLUTION 
+    }, [currentPage]);
+
+    const fetchTableData = async (page: number) => {
+        try {
+            setIsLoadingGithubData(true);
+            const allReadyToSignIssues =
+                await context.github.githubOcto.issues.listForRepo(
+                    "GET /repos/{owner}/{repo}/issues",
+                    {
+                        owner: config.onboardingLargeOwner,
+                        repo: config.onboardingLargeClientRepo,
+                        state: "open",
+                        labels: "bot:readyToSign",
+                        page,
+                        per_page: 10,
+                    }
+                );
+            if (allReadyToSignIssues.data) {
+                const formattedIssues = await formatIssues(
+                    allReadyToSignIssues.data,
+                    context.github.githubOcto
+                );
+                setData(formattedIssues);
+                setIsLoadingGithubData(false);
+            }
+        } catch (error) {
+            console.log(error);
+            setIsLoadingGithubData(false);
+        }
+    };
+
+    useEffect(() => {
         fetchTableData(1);
-    }, []);
+    }, [context.github]);
 
     const largeReqColumns = [
         {
@@ -174,27 +208,6 @@ const LargeRequestTable = () => {
             ),
             center: true,
         },
-        // {
-        //     name: "Proposer",
-        //     selector: (row: LargeRequestData) =>
-        //         row.proposer.signerGitHandle,
-        //     sortable: true,
-        //     cell: (row: LargeRequestData) => (
-        //         <span>{row?.proposer?.signerGitHandle || "-"}</span>
-        //     ),
-        //     grow: 0.5,
-        // },
-        // {
-        //     name: "TxId",
-        //     selector: (row: LargeRequestData) => row?.tx?.id,
-        //     grow: 0.5,
-        // },
-        // {
-        //     name: "Approvals",
-        //     selector: (row: LargeRequestData) => row.approvals,
-        //     sortable: true,
-        //     grow: 0.5,
-        // },
         {
             name: "Node Data",
             selector: (row: LargeRequestData) => row?.tx?.id,
@@ -240,7 +253,7 @@ const LargeRequestTable = () => {
             ) : (
                 <>
                     <div style={{ display: "grid" }}>
-                        <SearchInput updateData={setData} />
+                        <SearchInput updateData={setData} fetchTableData={fetchTableData} />
                     </div>
                     <DataTable
                         columns={largeReqColumns}
@@ -248,16 +261,16 @@ const LargeRequestTable = () => {
                         selectableRowsHighlight
                         selectableRows
                         progressPending={isLoadingGithubData}
-                        onChangePage={async (
+                        onChangePage={(
                             page: number,
                             totalRows: number
                         ) => {
-                            await fetchTableData(page);
+                            setCurrentPage(page);
                         }}
                         selectableRowsNoSelectAll={true}
                         pagination
                         paginationServer
-                        paginationTotalRows={200}
+                        paginationTotalRows={500}
                         paginationRowsPerPageOptions={[10]}
                         paginationPerPage={10}
                         defaultSortFieldId={1}
