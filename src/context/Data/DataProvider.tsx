@@ -10,9 +10,9 @@ import { bytesToiB } from "../../utils/Filters";
 import * as Sentry from "@sentry/react";
 import { notaryLedgerVerifiedComment } from './comments'
 import { ldnParser, notaryParser, commonUtils, simpleClientParser } from "@keyko-io/filecoin-verifier-tools";
-import verifierRegistry from "../../data/verifiers-registry.json";
 import { ApprovedVerifiers, DirectIssue, LargeRequestData, VerifiedData } from "../../type";
 import { DataProviderProps, DataProviderStates } from "../contextType";
+import { Notary } from "../../pages/Verifiers";
 
 export default class DataProvider extends React.Component<
   DataProviderProps,
@@ -329,6 +329,10 @@ export default class DataProvider extends React.Component<
 
           this.setState({ txsIssueGitHub })
 
+          const res = await fetch(config.verifiers_registry_url)
+  
+          const verifierRegistry : { notaries : Notary[] } = await res.json()
+
           const largeissues: any =
 
             await Promise.allSettled(
@@ -352,9 +356,10 @@ export default class DataProvider extends React.Component<
                     let signerGitHandle;
                     if (elem.tx) {
                       signerAddress = await this.props.wallet.api.actorKey(elem.tx[0].signers[0])
+
                       signerGitHandle =
                         verifierRegistry.notaries.find(
-                          (notary: any) =>
+                          (notary) =>
                             notary.ldn_config.signing_address === signerAddress
                         )?.github_user[0] || "none";
                     }
