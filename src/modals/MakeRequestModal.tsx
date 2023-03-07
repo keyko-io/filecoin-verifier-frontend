@@ -10,6 +10,7 @@ import LoginGithub from 'react-login-github';
 import { BurnerWallet } from '../context/Wallet/BurnerWallet';
 import history from "../context/History"
 import { CircularProgress } from "@material-ui/core";
+import { Notary } from '../pages/Verifiers';
 
 type States = {
     address: string
@@ -29,18 +30,7 @@ type States = {
 }
 
 type ModalProps = {
-    verifier: {
-        id: string,
-        name: string,
-        use_case: string,
-        location: string,
-        website: string,
-        total_datacap: number,
-        email: string,
-        private_request: string,
-        github_user: string,
-        docs_url: string
-    }
+    verifier: Notary
 }
 
 class MakeRequestModal extends Component<ModalProps, States> {
