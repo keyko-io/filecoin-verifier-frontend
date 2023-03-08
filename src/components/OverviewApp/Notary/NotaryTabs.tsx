@@ -21,6 +21,7 @@ const NotaryTabs = ({
         return tabs === tabIndex ? "selected" : "";
     };
 
+    // FIXME
     // useEffect(() => {
     //     const handler = async () => {
     //         try {
