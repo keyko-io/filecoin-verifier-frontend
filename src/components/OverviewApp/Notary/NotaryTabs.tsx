@@ -16,6 +16,7 @@ const NotaryTabs = ({
     verifiedClientsLength,
 }: NotaryTabsProps) => {
     const context = useContext(Data);
+    const { count } = useLargeRequestsContext();
 
     const selectedTab = (tabIndex: string) => {
         return tabs === tabIndex ? "selected" : "";
@@ -82,7 +83,7 @@ const NotaryTabs = ({
                     }}
                 >
                     Large Requests (
-                    {context?.largeClientRequests?.length})
+                    {count})
                 </div>
 
                 <div

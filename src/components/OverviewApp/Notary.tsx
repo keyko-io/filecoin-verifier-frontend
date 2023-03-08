@@ -60,10 +60,6 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
     const [approvedDcRequests, setApprovedDcRequests] = useState(
         [] as any
     );
-    const [dataForLargeRequestTable, setDataForLargeRequestTable] =
-        useState([]);
-    const [largeRequestListLoading, setLargeRequestListLoading] =
-        useState(false);
     const [cancelProposalData, setCancelProposalData] =
         useState<CancelProposalDataType | null>(null);
     const [dataCancel, setDataCancel] = useState<
@@ -583,10 +579,6 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
                 }
             }
         }
-
-        setLargeRequestListLoading(true);
-        // context.loadClientRequests();
-        setLargeRequestListLoading(false);
     };
 
     const activeTable = (tabs: any) => {
@@ -603,7 +595,13 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
                     verifiedClients={props.notaryProps.clients}
                 />
             ),
-            "3": <LargeRequestTable />,
+            "3": (
+                <LargeRequestTable
+                    setSelectedLargeClientRequests={
+                        setSelectedLargeClientRequests
+                    }
+                />
+            ),
             "4": (
                 <CancelProposalTable
                     dataCancel={dataCancel}

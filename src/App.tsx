@@ -144,7 +144,7 @@ const App = () => {
           </div>
         </div>
 
-        {/* SEARCH COMPONENT */}
+        {/* 
         <Paper
           component="form"
           onSubmit={handleSearch}
@@ -160,7 +160,7 @@ const App = () => {
             <SearchIcon onClick={handleSearch} sx={{ color: "rgb(0, 127, 255)", fontSize: "24px" }} />
           </IconButton>
         </Paper>
-        {/* SEARCH COMPONENT */}
+         */}
 
         <div className="headerLeftRight">
           <div className="refresh" onClick={refresh}>

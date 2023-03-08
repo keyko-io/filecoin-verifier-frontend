@@ -23,6 +23,23 @@ const mapNotaryAddressToGithubHandle = (address: string) => {
     return githubHandle;
 };
 
+export const isSignable = (
+    approvals: number,
+    approverSignerAddress: string,
+    activeAccountAddress: string
+) => {
+    // const approverIsNotProposer = false;
+    const approverIsNotProposer = approverSignerAddress
+        ? approverSignerAddress !== activeAccountAddress
+        : false;
+    const msigIncludeSigner = false;
+    const signable = approvals
+        ? msigIncludeSigner && approverIsNotProposer
+        : msigIncludeSigner;
+
+    return signable;
+};
+
 const formatIssues = async (
     data: { body: string }[],
     githubOcto: any
@@ -64,10 +81,16 @@ const formatIssues = async (
     return parsedIssueData;
 };
 
-const LargeRequestTable = () => {
+type LargeRequestTableProps = {
+    setSelectedLargeClientRequests: any
+}
+
+const LargeRequestTable = (props: LargeRequestTableProps) => {
+    const { setSelectedLargeClientRequests } = props;
     const { count } = useLargeRequestsContext();
     const context = useContext(Data);
 
+    const activeAccount = context.wallet.activeAccount;
     const [isLoadingGithubData, setIsLoadingGithubData] =
         useState<boolean>(false);
     const [isLoadingNodeData, setLoadingNodeData] =
@@ -122,7 +145,9 @@ const LargeRequestTable = () => {
     };
 
     useEffect(() => {
-        currentPage >= 1 && data?.length &&  fetchTableData(currentPage); // NOT GREAT SOLUTION 
+        currentPage >= 1 &&
+            data?.length &&
+            fetchTableData(currentPage); // NOT GREAT SOLUTION
     }, [currentPage]);
 
     const fetchTableData = async (page: number) => {
@@ -255,12 +280,29 @@ const LargeRequestTable = () => {
             ) : (
                 <>
                     <div style={{ display: "grid" }}>
-                        <SearchInput updateData={setData} fetchTableData={fetchTableData} />
+                        <SearchInput
+                            updateData={setData}
+                            fetchTableData={fetchTableData}
+                        />
                     </div>
                     <DataTable
                         columns={largeReqColumns}
-                        selectableRowDisabled={(row) => !row.signable}
                         selectableRowsHighlight
+                        onSelectedRowsChange={({ selectedRows }) => {
+                            const rowNumbers = selectedRows.map(
+                                (row) => row.issue_number
+                            );
+                            setSelectedLargeClientRequests(
+                                rowNumbers
+                            );
+                        }}
+                        onRowClicked={(row) => {
+                            if (!row.signable) {
+                                context.wallet.dispatchNotification(
+                                    CANT_SIGN_MESSAGE
+                                );
+                            }
+                        }}
                         selectableRows
                         progressPending={isLoadingGithubData}
                         onChangePage={(
@@ -334,3 +376,25 @@ export default LargeRequestTable;
 // // TxId: ransaction created by the first notary to
 // sign(proposer)
 // // Approvals: 0/1
+//
+//
+//
+//
+// let signerAddress: any;
+// let signerGitHandle;
+// if (elem.tx) {
+//     signerAddress = await this.props.wallet.api.actorKey(
+//         elem.tx[0].signers[0]
+//     );
+
+//     signerGitHandle =
+//         verifierRegistry.notaries.find(
+//             (notary) =>
+//                 notary.ldn_config.signing_address ===
+//                 signerAddress
+//         )?.github_user[0] || "none";
+// }
+
+// const approverIsNotProposer = signerAddress
+//     ? signerAddress !== this.props.wallet.activeAccount
+//     : false;

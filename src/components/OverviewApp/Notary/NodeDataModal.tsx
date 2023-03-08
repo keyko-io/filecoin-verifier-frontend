@@ -78,7 +78,7 @@ const NodeDataModal = ({
                                 sx={{ color: "rgb(0, 144, 255)" }}
                             />
                             <span style={{ marginLeft: "1rem" }}>
-                                Proposer : {nodeInfo.proposer}
+                                Proposer : {nodeInfo.proposer || "-"}
                             </span>
                         </Typography>
 
@@ -95,7 +95,7 @@ const NodeDataModal = ({
                             />
                             <span style={{ marginLeft: "1rem" }}>
                                 {" "}
-                                TxId : {nodeInfo.txId}
+                                TxId : {nodeInfo.txId || "-"}
                             </span>
                         </Typography>
 
@@ -111,7 +111,7 @@ const NodeDataModal = ({
                                 sx={{ color: "rgb(0, 144, 255)" }}
                             />
                             <span style={{ marginLeft: "1rem" }}>
-                                Approvals : {nodeInfo.approvals}
+                                Approvals : {nodeInfo.approvals || "0"}
                             </span>
                         </Typography>
 
