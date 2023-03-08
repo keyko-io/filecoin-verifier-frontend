@@ -8,12 +8,11 @@ import { useLargeRequestsContext } from "../../../context/LargeRequests";
 
 function SearchInput(props: any) {
     const { updateData, fetchTableData } = props;
-    const istate = useLargeRequestsContext();
-    console.log("istate", istate);
+    const { count, data } = useLargeRequestsContext();
     const context = useContext(Data);
     const [open, setOpen] = useState(false);
     const [searchTerm, setSearchTerm] = useState<string>("");
-    const loading = istate.count < 1;
+    const loading = count < 1;
 
     useEffect(() => {
         let active = true;
@@ -36,18 +35,15 @@ function SearchInput(props: any) {
                     "issue_number",
                     "address",
                 ],
-                // location: 0.4,
                 threshold: 0.5,
             };
 
-            const fuse = new Fuse(istate.data, searchConfig);
+            const fuse = new Fuse(data, searchConfig);
             let searchResult = fuse
                 .search(searchTerm)
-            console.log("searchResult", searchResult);
             let result = searchResult
                 .map((i) => i.item)
                 .slice(0, 10);
-            console.log("result", result);
             if (active) {
                 updateData(result);
                 // setOptions(result)
@@ -57,22 +53,7 @@ function SearchInput(props: any) {
         return () => {
             active = false;
         };
-    }, [loading, context, istate, searchTerm]);
-
-    // React.useEffect(() => {
-    //     const handler = async () => {
-    //         const data =
-    //             await context.getLargeRequestSearchInputData();
-    //         setOptions(data)
-    //     };
-    //     handler();
-    // }, [istate]);
-
-    // React.useEffect(() => {
-    //     if (!open) {
-    //         setOptions([]);
-    //     }
-    // }, [open]);
+    }, [loading, context, data, searchTerm]);
 
     return (
         <Autocomplete
