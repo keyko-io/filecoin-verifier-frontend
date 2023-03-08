@@ -9,6 +9,7 @@ import verifierRegistry from "../../../data/verifiers-registry.json";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import NodeDataModal from "./NodeDataModal";
 import SearchInput from "./SearchInput";
+import { useLargeRequestsContext } from "../../../context/LargeRequests";
 
 const CANT_SIGN_MESSAGE =
     "You can currently only approve the allocation requests associated with the multisig organization you signed in with. Signing proposals for additional DataCap allocations will require you to sign in again";
@@ -64,6 +65,7 @@ const formatIssues = async (
 };
 
 const LargeRequestTable = () => {
+    const { count } = useLargeRequestsContext();
     const context = useContext(Data);
 
     const [isLoadingGithubData, setIsLoadingGithubData] =
@@ -270,7 +272,7 @@ const LargeRequestTable = () => {
                         selectableRowsNoSelectAll={true}
                         pagination
                         paginationServer
-                        paginationTotalRows={500}
+                        paginationTotalRows={count > 0 ? count : 500}
                         paginationRowsPerPageOptions={[10]}
                         paginationPerPage={10}
                         defaultSortFieldId={1}
