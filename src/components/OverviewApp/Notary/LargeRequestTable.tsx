@@ -82,8 +82,8 @@ const formatIssues = async (
 };
 
 type LargeRequestTableProps = {
-    setSelectedLargeClientRequests: any
-}
+    setSelectedLargeClientRequests: any;
+};
 
 const LargeRequestTable = (props: LargeRequestTableProps) => {
     const { setSelectedLargeClientRequests } = props;
@@ -289,11 +289,8 @@ const LargeRequestTable = (props: LargeRequestTableProps) => {
                         columns={largeReqColumns}
                         selectableRowsHighlight
                         onSelectedRowsChange={({ selectedRows }) => {
-                            const rowNumbers = selectedRows.map(
-                                (row) => row.issue_number
-                            );
                             setSelectedLargeClientRequests(
-                                rowNumbers
+                                selectedRows
                             );
                         }}
                         onRowClicked={(row) => {
@@ -318,13 +315,6 @@ const LargeRequestTable = (props: LargeRequestTableProps) => {
                         paginationRowsPerPageOptions={[10]}
                         paginationPerPage={10}
                         defaultSortFieldId={1}
-                        onRowClicked={(row) => {
-                            if (!row.signable) {
-                                context.wallet.dispatchNotification(
-                                    CANT_SIGN_MESSAGE
-                                );
-                            }
-                        }}
                         noContextMenu={true}
                         data={data}
                         progressComponent={

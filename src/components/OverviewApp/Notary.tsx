@@ -22,6 +22,7 @@ import {
 import toast from "react-hot-toast";
 import { ldnParser } from "@keyko-io/filecoin-verifier-tools";
 import LargeRequestsProvider from "../../context/LargeRequests";
+import ApproveLargeRequestModal from "./Notary/ApproveLargeRequestModal";
 
 type NotaryProps = {
     clients: any[];
@@ -66,7 +67,15 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
         CancelProposalDataType[]
     >([]);
     const [dataCancelLoading, setDataCancelLoading] = useState(false);
+    const [
+        isApproveLargeRequestModalOpen,
+        setIsApproveLargeRequestModalOpen,
+    ] = useState(false);
 
+    const openApproveLargeRequestModal = () =>
+        setIsApproveLargeRequestModalOpen(true);
+    const closeApproveLargeRequestModal = () =>
+        setIsApproveLargeRequestModalOpen(false);
     const changeStateTabs = (indexTab: string) => {
         setTabs(indexTab);
     };
@@ -191,7 +200,12 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
                 console.log(error);
             }
         }
-        showWarnVerify(origin);
+        if (origin === "Large") {
+            openApproveLargeRequestModal();
+            // show new Large
+        } else {
+            showWarnVerify(origin);
+        }
     };
 
     const cancelDuplicateRequest = async () => {
@@ -625,6 +639,14 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
                         verifiedClientsLength={
                             props.notaryProps.clients.length
                         }
+                    />
+                    <ApproveLargeRequestModal
+                        open={isApproveLargeRequestModalOpen}
+                        handleClose={closeApproveLargeRequestModal}
+                        selectedClientRequests={
+                            selectedLargeClientRequests
+                        }
+                        onClick={verifyLargeClients}
                     />
                     <div className="tabssadd">
                         {tabs === "1" && (
