@@ -23,6 +23,8 @@ import toast from "react-hot-toast";
 import { ldnParser } from "@keyko-io/filecoin-verifier-tools";
 import LargeRequestsProvider from "../../context/LargeRequests";
 import ApproveLargeRequestModal from "./Notary/ApproveLargeRequestModal";
+import NodeDataProvider from "../../context/NodeData";
+import { LargeRequestData } from "../../type";
 
 type NotaryProps = {
     clients: any[];
@@ -425,10 +427,10 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
         }
     };
 
-    const verifyLargeClients = async () => {
+    const verifyLargeClients = async (i?: LargeRequestData[]) => {
         setApproveLoading(true);
         dispatchCustomEvent({ name: "delete-modal", detail: {} });
-        let thisStateLargeRequestList = context.largeClientRequests;
+        let thisStateLargeRequestList = Array.isArray(i) ? i : context.largeClientRequests;
         for (const request of thisStateLargeRequestList) {
             if (
                 selectedLargeClientRequests.includes(
@@ -630,122 +632,131 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
     };
 
     return (
-        <LargeRequestsProvider>
-            <div className="main">
-                <div className="tabsholder">
-                    <NotaryTabs
-                        tabs={tabs}
-                        changeStateTabs={changeStateTabs}
-                        verifiedClientsLength={
-                            props.notaryProps.clients.length
-                        }
-                    />
-                    <ApproveLargeRequestModal
-                        open={isApproveLargeRequestModalOpen}
-                        handleClose={closeApproveLargeRequestModal}
-                        selectedClientRequests={
-                            selectedLargeClientRequests
-                        }
-                        onClick={verifyLargeClients}
-                    />
-                    <div className="tabssadd">
-                        {tabs === "1" && (
-                            <ButtonPrimary
-                                onClick={() => requestDatacap()}
-                            >
-                                Approve Private Request
-                            </ButtonPrimary>
-                        )}
-                        {tabs === "1" && (
-                            <ButtonPrimary
-                                onClick={() => verifyNewDatacap()}
-                            >
-                                Verify new datacap
-                            </ButtonPrimary>
-                        )}
-                        {tabs === "4" &&
-                            (dataCancelLoading ? (
-                                <BeatLoader
-                                    size={15}
-                                    color={"rgb(24,160,237)"}
-                                />
-                            ) : (
+        <NodeDataProvider>
+            <LargeRequestsProvider>
+                <div className="main">
+                    <div className="tabsholder">
+                        <NotaryTabs
+                            tabs={tabs}
+                            changeStateTabs={changeStateTabs}
+                            verifiedClientsLength={
+                                props.notaryProps.clients.length
+                            }
+                        />
+                        <ApproveLargeRequestModal
+                            open={isApproveLargeRequestModalOpen}
+                            handleClose={
+                                closeApproveLargeRequestModal
+                            }
+                            selectedClientRequests={
+                                selectedLargeClientRequests
+                            }
+                            onClick={verifyLargeClients}
+                        />
+                        <div className="tabssadd">
+                            {tabs === "1" && (
                                 <ButtonPrimary
-                                    onClick={cancelDuplicateRequest}
+                                    onClick={() => requestDatacap()}
                                 >
-                                    Cancel Proposal
+                                    Approve Private Request
                                 </ButtonPrimary>
-                            ))}
-
-                        {tabs === "1" ||
-                        tabs === "2" ||
-                        tabs === "3" ? (
-                            <>
-                                {approveLoading ? (
+                            )}
+                            {tabs === "1" && (
+                                <ButtonPrimary
+                                    onClick={() => verifyNewDatacap()}
+                                >
+                                    Verify new datacap
+                                </ButtonPrimary>
+                            )}
+                            {tabs === "4" &&
+                                (dataCancelLoading ? (
                                     <BeatLoader
                                         size={15}
                                         color={"rgb(24,160,237)"}
                                     />
                                 ) : (
                                     <ButtonPrimary
-                                        onClick={(e: any) =>
-                                            checkNotaryIsVerifiedAndShowWarnVerify(
-                                                e,
-                                                tabs === "3"
-                                                    ? "Large"
-                                                    : "Notary"
-                                            )
+                                        onClick={
+                                            cancelDuplicateRequest
                                         }
                                     >
-                                        {tabs === "3"
-                                            ? "Approve Request"
-                                            : "Verify client"}
+                                        Cancel Proposal
                                     </ButtonPrimary>
-                                )}
-                            </>
-                        ) : null}
-                    </div>
-                </div>
+                                ))}
 
-                {context.github.githubLogged && activeTable(tabs)}
-
-                {!context.github.githubLogged ? (
-                    <div style={{ marginTop: "50px" }}>
-                        <div id="githublogin">
-                            <LoginGithub
-                                redirectUri={config.oauthUri}
-                                clientId={config.githubApp}
-                                scope="repo"
-                                onSuccess={async (response: {
-                                    code: string;
-                                }) => {
-                                    await context.github.loginGithub(
-                                        response.code
-                                    );
-                                }}
-                                onFailure={(response: any) => {
-                                    console.log("failure", response);
-                                }}
-                            />
+                            {tabs === "1" ||
+                            tabs === "2" ||
+                            tabs === "3" ? (
+                                <>
+                                    {approveLoading ? (
+                                        <BeatLoader
+                                            size={15}
+                                            color={"rgb(24,160,237)"}
+                                        />
+                                    ) : (
+                                        <ButtonPrimary
+                                            onClick={(e: any) =>
+                                                checkNotaryIsVerifiedAndShowWarnVerify(
+                                                    e,
+                                                    tabs === "3"
+                                                        ? "Large"
+                                                        : "Notary"
+                                                )
+                                            }
+                                        >
+                                            {tabs === "3"
+                                                ? "Approve Request"
+                                                : "Verify client"}
+                                        </ButtonPrimary>
+                                    )}
+                                </>
+                            ) : null}
                         </div>
                     </div>
-                ) : (
-                    <div
-                        className="alignright"
-                        style={{ marginBottom: "40px" }}
-                    >
-                        <ButtonSecondary
-                            className="buttonsecondary"
-                            onClick={async () => {
-                                await context.github.logoutGithub();
-                            }}
+
+                    {context.github.githubLogged && activeTable(tabs)}
+
+                    {!context.github.githubLogged ? (
+                        <div style={{ marginTop: "50px" }}>
+                            <div id="githublogin">
+                                <LoginGithub
+                                    redirectUri={config.oauthUri}
+                                    clientId={config.githubApp}
+                                    scope="repo"
+                                    onSuccess={async (response: {
+                                        code: string;
+                                    }) => {
+                                        await context.github.loginGithub(
+                                            response.code
+                                        );
+                                    }}
+                                    onFailure={(response: any) => {
+                                        console.log(
+                                            "failure",
+                                            response
+                                        );
+                                    }}
+                                />
+                            </div>
+                        </div>
+                    ) : (
+                        <div
+                            className="alignright"
+                            style={{ marginBottom: "40px" }}
                         >
-                            Logout GitHub
-                        </ButtonSecondary>
-                    </div>
-                )}
-            </div>
-        </LargeRequestsProvider>
+                            <ButtonSecondary
+                                className="buttonsecondary"
+                                onClick={async () => {
+                                    await context.github.logoutGithub();
+                                }}
+                            >
+                                Logout GitHub
+                            </ButtonSecondary>
+                        </div>
+                    )}
+                </div>
+            </LargeRequestsProvider>
+        </NodeDataProvider>
     );
 };
 

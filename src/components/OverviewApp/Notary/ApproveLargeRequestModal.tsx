@@ -2,19 +2,41 @@ import { Modal } from "@mui/material";
 import React from "react";
 // @ts-ignore
 import { ButtonPrimary } from "slate-react-system";
+import { useLargeRequestsContext } from "../../../context/LargeRequests";
+import { LargeRequestData } from "../../../type";
 
 type ModalProps = {
-    selectedClientRequests: any[];
+    selectedClientRequests: LargeRequestData[];
     onClick: (target: any) => void;
     open: boolean;
     handleClose: () => void;
 };
 
 const ApproveLargeRequestModal = (props: ModalProps) => {
-    const { selectedClientRequests, onClick, open, handleClose } =
-        props;
+    const { isRequestSignable } = useLargeRequestsContext();
+    const {
+        selectedClientRequests,
+        open,
+        onClick: verifyLargeRequest,
+        handleClose,
+    } = props;
     const message = "this message needs fixing";
-    console.log("selectedClientRequests", selectedClientRequests)
+
+    const onClickHandler = async () => {
+        let areRequestsSignable = false;
+        selectedClientRequests.map(async (r: LargeRequestData) => {
+            const isSignable = await isRequestSignable(r);
+            areRequestsSignable = isSignable;
+        });
+        if (!areRequestsSignable) {
+            console.log();
+            alert(
+                "you are not allowed to sign one or more of the selected transactions"
+            );
+            return;
+        }
+        await verifyLargeRequest(selectedClientRequests);
+    };
 
     return (
         <Modal open={open} onClose={handleClose}>
@@ -35,7 +57,10 @@ const ApproveLargeRequestModal = (props: ModalProps) => {
                     </thead>
                     <tbody>
                         {selectedClientRequests.map(
-                            (request: any, index: any) => (
+                            (
+                                request: LargeRequestData,
+                                index: any
+                            ) => (
                                 <tr key={index}>
                                     <td>{request.address}</td>
                                     <td>{request.datacap}</td>
@@ -48,7 +73,9 @@ const ApproveLargeRequestModal = (props: ModalProps) => {
                     Please check your Ledger to sign and send the
                     message.
                     <div>
-                        <ButtonPrimary onClick={onClick}>
+                        <ButtonPrimary
+                            onClick={() => onClickHandler()}
+                        >
                             Accept
                         </ButtonPrimary>
                     </div>
