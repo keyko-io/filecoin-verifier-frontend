@@ -134,7 +134,11 @@ export default class DataProvider extends React.Component<
                 Sentry.captureMessage(breadCrumb.message);
             },
             getLargeRequestSearchInputData: async () => {
-                if(!this?.props?.github) return
+                if (
+                    !this?.props?.github ||
+                    !this?.props?.github?.githubLogged
+                )
+                    return [];
                 const rawLargeIssuesAll =
                     await this?.props?.github?.fetchGithubIssues(
                         config.onboardingLargeOwner,
@@ -142,7 +146,7 @@ export default class DataProvider extends React.Component<
                         "open",
                         "bot:readyToSign"
                     );
-                if(!rawLargeIssuesAll) return [];
+                if (!rawLargeIssuesAll) return [];
                 const parsedIssueData: any = [];
                 await Promise.all(
                     rawLargeIssuesAll?.map(async (issue: any) => {
@@ -168,7 +172,7 @@ export default class DataProvider extends React.Component<
                                 )
                             );
 
-                        if(!comment?.body) return
+                        if (!comment?.body) return;
                         const commentParsed =
                             ldnParser.parseReleaseRequest(
                                 comment.body
