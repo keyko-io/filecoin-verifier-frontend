@@ -90,7 +90,6 @@ const LargeRequestTable = (props: LargeRequestTableProps) => {
     const { count } = useLargeRequestsContext();
     const context = useContext(Data);
 
-    const activeAccount = context.wallet.activeAccount;
     const [isLoadingGithubData, setIsLoadingGithubData] =
         useState<boolean>(false);
     const [isLoadingNodeData, setLoadingNodeData] =
@@ -129,20 +128,20 @@ const LargeRequestTable = (props: LargeRequestTableProps) => {
         setTxId("");
     };
 
-    const changePage = async () => {
-        try {
-            setIsLoadingGithubData(true);
-            const formattedIssues = await formatIssues(
-                [], // FIXME
-                context.github.githubOcto
-            );
-            setData(formattedIssues);
-            setIsLoadingGithubData(false);
-        } catch (error) {
-            console.log(error);
-            setIsLoadingGithubData(false);
-        }
-    };
+    // const changePage = async () => {
+    //     try {
+    //         setIsLoadingGithubData(true);
+    //         const formattedIssues = await formatIssues(
+    //             [], // FIXME
+    //             context.github.githubOcto
+    //         );
+    //         setData(formattedIssues);
+    //         setIsLoadingGithubData(false);
+    //     } catch (error) {
+    //         console.log(error);
+    //         setIsLoadingGithubData(false);
+    //     }
+    // };
 
     useEffect(() => {
         currentPage >= 1 &&
