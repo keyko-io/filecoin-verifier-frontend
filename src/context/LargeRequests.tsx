@@ -9,7 +9,7 @@ import { Data } from "./Data/Index";
 import { useNodeDataContext } from "./NodeData";
 
 interface LargeRequestsState {
-    isRequestSignable: any;
+    areRequestsSignable: any;
     count: number;
     data: LargeRequestData[];
 }
@@ -35,61 +35,77 @@ export default function LargeRequestsProvider({ children }: any) {
         handler();
     }, [context]);
 
-    const isRequestSignable = async (
-        request: LargeRequestData
-    ): Promise<boolean> => {
-        if (!request.multisig) return false;
-        const activeAccount =
-            context.wallet.accountsActive[
-                context.wallet.activeAccount
-            ];
-        if (!activeAccount) return false;
-        const multisigInfo = await getMultisigInfo(request.multisig);
-        console.log("multisigInfo", multisigInfo);
-        console.log("activeAccount", activeAccount);
+    const areRequestsSignable = async (
 
-        const isMultisigIncludesCurrentSigner =
-            multisigInfo.signers.includes(activeAccount);
+        requests: LargeRequestData[]
+    ): Promise<boolean>=> {
 
-        const pendingTxs =
-            await context.wallet.api.pendingTransactions(
-                String(request.multisig)
-            );
+        const areSignable = await Promise.allSettled(
+            requests.map(
+                (request: LargeRequestData) => new Promise<boolean>(async (resolve, reject) => {
+                    try {
+                        if (!request.multisig) resolve(false);
+                        const activeAccount =
+                            context.wallet.accountsActive[
+                            context.wallet.activeAccount
+                            ];
+                        if (!activeAccount) resolve(false);
+                        const multisigInfo = await getMultisigInfo(request.multisig);
+                        console.log("multisigInfo", multisigInfo);
+                        console.log("activeAccount", activeAccount);
 
-        const approvals = pendingTxs?.length;
-        console.log("approvals", approvals);
-        if (approvals === 2) return false; // Request Completed
-        if (approvals === 0) return isMultisigIncludesCurrentSigner; // Request Didnt start
-        if (approvals === 1) {
-            // Request was proposed by one notary and needs approval of second notary
-            const pendingFiltered = pendingTxs.filter((tx: any) => {
-                return (
-                    tx.tx.method === 4 &&
-                    tx.parsed &&
-                    tx?.parsed?.params?.address === request.address // NOT SURE  ABOUT THIS
-                );
-            });
-            const proposer = pendingFiltered[0]?.signers[0];
-            console.log("proposer", proposer);
-            const signerAddress =
-                context.wallet.api.actorKey(proposer);
-            const approverIsNotProposer = signerAddress
-                ? signerAddress !== activeAccount
-                : false;
-            // const txId = String(pendingFiltered[0]?.id);
-            return (
-                isMultisigIncludesCurrentSigner &&
-                approverIsNotProposer
-            );
-        }
+                        const isMultisigIncludesCurrentSigner =
+                            multisigInfo.signers.includes(activeAccount);
 
-        return false;
+                        const pendingTxs =
+                            await context.wallet.api.pendingTransactions(
+                                String(request.multisig)
+                            );
+
+                        const approvals = pendingTxs?.length;
+                        // console.log("approvals", approvals);
+                        if (approvals === 2) resolve(false); // Request Completed
+                        if (approvals === 0) resolve(true); // Request Didnt start
+                        if (approvals === 1) {
+                            // Request was proposed by one notary and needs approval of second notary
+                            const pendingFiltered = pendingTxs.filter((tx: any) => {
+                                return (
+                                    tx.tx.method === 4 &&
+                                    tx.parsed &&
+                                    tx?.parsed?.params?.address === request.address // NOT SURE  ABOUT THIS
+                                );
+                            });
+                            const proposer = pendingFiltered[0]?.signers[0];
+                            console.log("proposer", proposer);
+                            const signerAddress =
+                                context.wallet.api.actorKey(proposer);
+                            const approverIsNotProposer = signerAddress
+                                ? signerAddress !== activeAccount
+                                : false;
+                            // const txId = String(pendingFiltered[0]?.id);
+                            return (
+                                isMultisigIncludesCurrentSigner &&
+                                approverIsNotProposer
+                            );
+                        }
+
+                        resolve(false);
+                    } catch (error) {
+                        reject(error)
+                    }
+                })
+            )
+        )
+
+        return !areSignable.map((a:any)=>a.value).includes(false)
+
+
     };
 
     const IState: LargeRequestsState = {
         count: data.length,
         data: data,
-        isRequestSignable,
+        areRequestsSignable
     };
 
     return (

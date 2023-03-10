@@ -13,7 +13,7 @@ type ModalProps = {
 };
 
 const ApproveLargeRequestModal = (props: ModalProps) => {
-    const { isRequestSignable } = useLargeRequestsContext();
+    const { areRequestsSignable } = useLargeRequestsContext();
     const {
         selectedClientRequests,
         open,
@@ -23,19 +23,16 @@ const ApproveLargeRequestModal = (props: ModalProps) => {
     const message = "this message needs fixing";
 
     const onClickHandler = async () => {
-        let areRequestsSignable = false;
-        selectedClientRequests.map(async (r: LargeRequestData) => {
-            const isSignable = await isRequestSignable(r);
-            areRequestsSignable = isSignable;
-        });
-        if (!areRequestsSignable) {
+        let isSignable = await areRequestsSignable(selectedClientRequests)
+
+        if (!isSignable) {
             console.log();
             alert(
                 "you are not allowed to sign one or more of the selected transactions"
             );
             return;
         }
-        await verifyLargeRequest(selectedClientRequests);
+        verifyLargeRequest(selectedClientRequests);
     };
 
     return (
