@@ -23,7 +23,7 @@ function SearchInput(props: any) {
             return undefined;
         }
         (async () => {
-            if (!searchTerm && open) {
+            if ((!searchTerm || searchTerm.length < 3) && open) {
                 await fetchTableData(1);
                 return;
             }
@@ -35,17 +35,21 @@ function SearchInput(props: any) {
                     "issue_number",
                     "address",
                 ],
-                threshold: 0.5,
+                location: 0,
+                distance: 90,
+                threshold: 0.3,
             };
 
+            console.log("data", data);
             const fuse = new Fuse(data, searchConfig);
-            let searchResult = fuse
-                .search(searchTerm)
-            let result = searchResult
-                .map((i) => i.item)
-                .slice(0, 10);
+            let searchResult = fuse.search(searchTerm);
+            let result = searchResult.map((i) => i.item).slice(0, 10);
+            console.log("result", result);
+            const formattedResult =
+                await context.formatLargeRequestData(result);
+            console.log("formattedResult", formattedResult);
             if (active) {
-                updateData(result);
+                updateData(formattedResult);
                 // setOptions(result)
             }
         })();

@@ -193,6 +193,7 @@ export default class WalletProvider extends React.Component<
           repo,
           state,
           labels,
+          per_page: 100
         }
       );
       return rawIssues;

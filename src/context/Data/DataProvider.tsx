@@ -27,6 +27,16 @@ import {
     DataProviderStates,
 } from "../contextType";
 
+interface ParseLargeRequestData {
+    address: string;
+    issue_number: string;
+    dataCapWeeklyAllocation: string;
+    datacapRequested: string;
+    identifier: string;
+    name: string;
+    region: string;
+    website: string;
+}
 interface LotusTx {
     id: number;
     signers: string[];
@@ -133,26 +143,14 @@ export default class DataProvider extends React.Component<
                 Sentry.addBreadcrumb(breadCrumb);
                 Sentry.captureMessage(breadCrumb.message);
             },
-            getLargeRequestSearchInputData: async () => {
-                if (
-                    !this?.props?.github ||
-                    !this?.props?.github?.githubLogged
-                )
-                    return [];
-                const rawLargeIssuesAll =
-                    await this?.props?.github?.fetchGithubIssues(
-                        config.onboardingLargeOwner,
-                        config.onboardingLargeClientRepo,
-                        "open",
-                        "bot:readyToSign"
-                    );
-                if (!rawLargeIssuesAll) return [];
+            //@ts-ignore
+            formatLargeRequestData: async (
+                requests: ParseLargeRequestData[]
+            ) => {
+                if (!requests) return [];
                 const parsedIssueData: any = [];
                 await Promise.all(
-                    rawLargeIssuesAll?.map(async (issue: any) => {
-                        const parsed = ldnParser.parseIssue(
-                            issue.body
-                        );
+                        requests?.map(async (issue: ParseLargeRequestData) => {
                         const comments =
                             await this.props.github.githubOcto.paginate(
                                 this.props.github.githubOcto.issues
@@ -160,7 +158,7 @@ export default class DataProvider extends React.Component<
                                 {
                                     owner: config.onboardingLargeOwner,
                                     repo: config.onboardingLargeClientRepo,
-                                    issue_number: issue.number,
+                                    issue_number: issue.issue_number,
                                 }
                             );
 
@@ -178,9 +176,7 @@ export default class DataProvider extends React.Component<
                                 comment.body
                             );
                         parsedIssueData.push({
-                            ...parsed,
-                            issue_number: issue?.number,
-                            url: issue?.html_url,
+                            ...issue,
                             comments,
                             multisig: commentParsed?.notaryAddress,
                             datacap: commentParsed?.allocationDatacap,
@@ -191,6 +187,84 @@ export default class DataProvider extends React.Component<
                     })
                 );
                 return parsedIssueData;
+            },
+            getLargeRequestSearchInputData: async () => {
+                if (
+                    !this?.props?.github ||
+                    !this?.props?.github?.githubLogged
+                )
+                    return [];
+                const allGHIssues =
+                    await this?.props?.github?.fetchGithubIssues(
+                        config.onboardingLargeOwner,
+                        config.onboardingLargeClientRepo,
+                        "open",
+                        "bot:readyToSign"
+                    );
+                console.log("allGHIssues", allGHIssues);
+                const response = allGHIssues.map((issue: any) => {
+                    const parsed: ParseLargeRequestData =
+                        ldnParser.parseIssue(issue.body);
+                    const res = {
+                        ...parsed,
+                        issue_number: issue?.number,
+                        url: issue?.html_url,
+                        // comments,
+                        // multisig: commentParsed?.notaryAddress,
+                        // datacap: commentParsed?.allocationDatacap,
+                        // proposer: null,
+                        // tx: null,
+                        // approvals: null,
+                    };
+                    return res;
+                });
+                console.log("response", response);
+                return response;
+                // if (!response) return [];
+                // const parsedIssueData: any = [];
+                // await Promise.all(
+                //     rawLargeIssuesAll?.map(async (issue: any) => {
+                //         const parsed = ldnParser.parseIssue(
+                //             issue.body
+                //         );
+                //         const comments =
+                //             await this.props.github.githubOcto.paginate(
+                //                 this.props.github.githubOcto.issues
+                //                     .listComments,
+                //                 {
+                //                     owner: config.onboardingLargeOwner,
+                //                     repo: config.onboardingLargeClientRepo,
+                //                     issue_number: issue.number,
+                //                 }
+                //             );
+
+                //         const comment = comments
+                //             .reverse()
+                //             .find((comment: any) =>
+                //                 comment?.body?.includes(
+                //                     "## DataCap Allocation requested"
+                //                 )
+                //             );
+
+                //         if (!comment?.body) return;
+                //         const commentParsed =
+                //             ldnParser.parseReleaseRequest(
+                //                 comment.body
+                //             );
+                //         parsedIssueData.push({
+                //             ...parsed,
+                //             issue_number: issue?.number,
+                //             url: issue?.html_url,
+                //             comments,
+                //             multisig: commentParsed?.notaryAddress,
+                //             datacap: commentParsed?.allocationDatacap,
+                //             proposer: null,
+                //             tx: null,
+                //             approvals: null,
+                //         });
+                //     })
+                // );
+                // return parsedIssueData;
             },
             // @ts-ignore
             getLDNIssuesAndTransactions: async () => {

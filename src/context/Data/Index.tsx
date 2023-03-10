@@ -13,6 +13,7 @@ import {
 } from "../contextType";
 
 export const Data = React.createContext({
+    formatLargeRequestData: async (i: LargeRequestData[]) => ({} as any),
     getLargeRequestSearchInputData: async () => ({} as any),
     getNodeData: async (address: string, clientAddress: string) =>
         ({} as any),

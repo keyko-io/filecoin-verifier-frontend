@@ -24,10 +24,10 @@ const ApproveLargeRequestModal = (props: ModalProps) => {
 
     const onClickHandler = async () => {
         let areRequestsSignable = false;
-        selectedClientRequests.map(async (r: LargeRequestData) => {
+        await Promise.all(selectedClientRequests.map(async (r: LargeRequestData) => {
             const isSignable = await isRequestSignable(r);
             areRequestsSignable = isSignable;
-        });
+        }));
         if (!areRequestsSignable) {
             console.log();
             alert(
