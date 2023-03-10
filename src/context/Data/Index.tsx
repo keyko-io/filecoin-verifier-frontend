@@ -6,7 +6,6 @@ export const Data = React.createContext({
   assignToIssue: async (issue_number: number, assignees: string[]) => { },
   search: (query: string) => { },
   searchUserIssues: async (user: string) => [] as any[],
-  logToSentry: (category: string, message: string, level: "info" | "error", data: any) => { },
   postLogs: async (message: string, type: string, actionKeyword: string, issueNumber: number, repo: string) => ({}) as any,
   updateIsVerifiedAddress: (val: boolean) => { },
   verifyWalletAddress: async () => undefined as (boolean | undefined),

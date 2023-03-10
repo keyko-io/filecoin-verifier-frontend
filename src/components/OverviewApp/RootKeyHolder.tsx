@@ -12,6 +12,7 @@ import DataTable from "react-data-table-component";
 import { CircularProgress } from "@material-ui/core";
 import { notaryParser, metrics } from "@keyko-io/filecoin-verifier-tools";
 import { VerifiedData } from "../../type";
+import * as Logger from "../../logger";
 
 type RootKeyHolderState = {
   tabs: string;
@@ -153,7 +154,6 @@ export default class RootKeyHolder extends Component<{},
         let errorMessage = "";
         let warningMessage = "";
         let messageID = "";
-        let sentryData: any = {};
         const PHASE = "RKH-SIGN";
         try {
           const assignee = (
@@ -282,12 +282,7 @@ export default class RootKeyHolder extends Component<{},
                 : "status:Error";
           }
 
-          // Sentry logs
-          sentryData = {
-            request,
-            messageIDs: messageIds.length > 0 ? messageIds : "not found",
-            rkhSigner: this.context.wallet.activeAccount,
-          };
+    
           if (messageIds.length === 0) {
             await this.context.postLogs(
               `Message ID not returned from node call`,
@@ -295,12 +290,6 @@ export default class RootKeyHolder extends Component<{},
               "",
               request.issue_number,
               PHASE
-            );
-            this.context.logToSentry(
-              "handleSubmitApproveSign",
-              `handleSubmitApproveSign missing messageID -issue n ${request.issue_number}`,
-              "error",
-              sentryData
             );
           }
 
@@ -388,22 +377,14 @@ export default class RootKeyHolder extends Component<{},
               request.issue_number,
               PHASE
             );
+
+            await Logger.BasicLogger({ message: Logger.RKH_SIGN_ON_CHAIN })
           }
         } catch (e: any) {
           this.context.wallet.dispatchNotification("Failed: " + e.message);
 
           this.setState({ approveLoading: false });
-          console.log("failed", e.stack);
-          const errData = {
-            ...sentryData,
-            error: e,
-          };
-          this.context.logToSentry(
-            "handleSubmitApproveSign",
-            `handleSubmitApproveSign error -issue n ${request.issue_number}`,
-            "error",
-            errData
-          );
+    
           await this.context.postLogs(
             `Error approving the multisig: ${e.message}`,
             "ERROR",
