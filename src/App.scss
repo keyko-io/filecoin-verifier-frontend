@@ -32,7 +32,7 @@
     }
   
     .arrowDownIcon {
-      margin: 10px;
+      margin: 5px;
       display: flex;
       justify-content: center;
     }
@@ -55,7 +55,7 @@
       
      
     .accountModal{
-      height: 255px;
+      height: 270px;
       overflow: scroll;
       width: 100%;
       padding: 0 10px;
@@ -176,11 +176,11 @@
   }
 
   .accountselectholder {
-    width: 265px;
+    width: 300px;
     position: absolute;
     padding: 5px 16px;
-    top: 70px;
-    left: 0px;
+    top: 60px;
+    left: -13px;
     border: 1px solid #c7c7c7;
     border-radius: 8px;
     background-color: #fff;

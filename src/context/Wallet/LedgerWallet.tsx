@@ -69,11 +69,13 @@ export class LedgerWallet {
     return this
   }
 
-  public getAccounts = async (nStart = 0, nEnd = 10) => {
+  public getAccounts = async (nStart = 0) => {
     const paths = []
-    for (let i = nStart; i < nEnd; i += 1) {
+
+    for (let i = nStart; i < config.numberOfWalletAccounts; i += 1) {
       paths.push(`m/44'/${this.lotusNode.code}'/0'/0/${i}`)
     }
+
     const accounts = await mapSeries(paths, async path => {
       const returnLoad = await this.ledgerApp.getAddressAndPubKey(path)
       const { addrString } = this.handleErrors(returnLoad)
