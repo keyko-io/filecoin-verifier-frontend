@@ -16,7 +16,6 @@ export interface DataProviderStates {
     assignToIssue: (issue_number: number, assignees: string[]) => Promise<void>;
     search: (query: string) => void;
     searchUserIssues: (user: string) => Promise<any[]>;
-    logToSentry: (category: string, message: string, level: "info" | "error", data: any) => void;
     postLogs: (message: string, type: string, actionKeyword: string, issueNumber: number, repo: string) => Promise<any>;
     updateContextState: (elementToUpdate: any, type: string) => void;
     updateIsVerifiedAddress: (val: boolean) => void;
