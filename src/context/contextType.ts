@@ -92,7 +92,7 @@ export interface WalletProviderStates {
     multisigAddress: string
     multisigID: string
     sign: any
-    getAccounts: any
+    getAccounts: (nStart?: number) => Promise<any[]>
     importSeed: (seedphrase: string) => Promise<void>
     selectNetwork: (networkIndex: number) => Promise<void>
     selectAccount: (index: number) => Promise<void>
