@@ -18,7 +18,7 @@ export const Wallet = React.createContext({
     multisigAddress: '',
     multisigID: '',
     sign: async () => { },
-    getAccounts: async (nStart?: number) => { },
+    getAccounts: async (nStart?: number) => [] as any,
     importSeed: async (seedphrase: string) => { },
     selectNetwork: async (network: number) => { },
     selectAccount: async (index: number) => { },
