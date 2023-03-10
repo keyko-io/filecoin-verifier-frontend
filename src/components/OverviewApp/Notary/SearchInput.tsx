@@ -93,7 +93,7 @@ function SearchInput(props: any) {
                                         size={20}
                                     />
                                 ) : null}
-                                {params.InputProps.endAdornment}
+                                {/**params.InputProps.endAdornment**/}
                             </React.Fragment>
                         ),
                     }}
