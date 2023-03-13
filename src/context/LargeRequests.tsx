@@ -38,7 +38,7 @@ export default function LargeRequestsProvider({ children }: any) {
     const areRequestsSignable = async (
 
         requests: LargeRequestData[]
-    ): Promise<boolean>=> {
+    ): Promise<boolean> => {
 
         const areSignable = await Promise.allSettled(
             requests.map(
@@ -61,29 +61,23 @@ export default function LargeRequestsProvider({ children }: any) {
                             await context.wallet.api.pendingTransactions(
                                 String(request.multisig)
                             );
+                        const pendingForClient = pendingTxs?.filter((tx: any) => tx?.parsed?.params?.address == request.address);
+                        const signaturesNumber = pendingForClient.length
 
-                        const approvals = pendingTxs?.length;
-                        // console.log("approvals", approvals);
-                        if (approvals === 2) resolve(false); // Request Completed
-                        if (approvals === 0) resolve(true); // Request Didnt start
-                        if (approvals === 1) {
+
+                        if (signaturesNumber === 0) resolve(true); // Request Didnt start
+                        // if (approvals >=    1)  //TODO manage the case when there is more than 1 request
+                        if (signaturesNumber >= 1) {
                             // Request was proposed by one notary and needs approval of second notary
-                            const pendingFiltered = pendingTxs.filter((tx: any) => {
-                                return (
-                                    tx.tx.method === 4 &&
-                                    tx.parsed &&
-                                    tx?.parsed?.params?.address === request.address // NOT SURE  ABOUT THIS
-                                );
-                            });
-                            const proposer = pendingFiltered[0]?.signers[0];
+
+                            const proposer = pendingForClient[0]?.signers[0];
                             console.log("proposer", proposer);
                             const signerAddress =
-                                context.wallet.api.actorKey(proposer);
+                                await context.wallet.api.actorKey(proposer);
                             const approverIsNotProposer = signerAddress
-                                ? signerAddress !== activeAccount
+                                ? signerAddress !== context.wallet.accountsActive[activeAccount] //context.wallet.accountsActive[activeAccount]  returns the short address 
                                 : false;
-                            // const txId = String(pendingFiltered[0]?.id);
-                            return (
+                            resolve(
                                 isMultisigIncludesCurrentSigner &&
                                 approverIsNotProposer
                             );
@@ -96,8 +90,7 @@ export default function LargeRequestsProvider({ children }: any) {
                 })
             )
         )
-
-        return !areSignable.map((a:any)=>a.value).includes(false)
+        return !areSignable.map((a: any) => a.value).includes(false)
 
 
     };
