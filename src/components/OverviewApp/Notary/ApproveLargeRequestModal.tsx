@@ -94,7 +94,8 @@ const ApproveLargeRequestModal = (props: ModalProps) => {
                             border: "none",
                             padding : "8px 24px",
                             borderRadius : "4px",
-                            marginTop : "1rem"
+                            marginTop : "1rem",
+                            cursor: "pointer"
                           }}
                             onClick={() => onClickHandler()}
                         >
