@@ -156,8 +156,8 @@ const App = () => {
             placeholder="Search"
             onChange={(e) => setSearch(e.target.value)}
           />
-          <IconButton type="button" aria-label="search">
-            <SearchIcon onClick={handleSearch} sx={{ color: "rgb(0, 127, 255)", fontSize: "24px" }} />
+          <IconButton type="button" aria-label="search" onClick={handleSearch}>
+            <SearchIcon  sx={{ color: "rgb(0, 127, 255)", fontSize: "24px" }} />
           </IconButton>
         </Paper>
          */}
@@ -169,9 +169,17 @@ const App = () => {
           <div className="accountholder" onClick={openAccountSelect} ref={modalRef}>
             {accountSelect ?
               <div className="accountselectholder" ref={viewSwitch}>
-                <div className="headertitles">Select Account Type</div>
-                <div>
-                  <div>{context.viewroot ? 'Rootkey Holder' : 'Approved Notary'}</div>
+                <div style={{
+                  display: "flex",
+                  justifyContent : "space-between",
+                  alignItems: "center"
+                }}>
+ 
+                 <div>
+                   <div className="headertitles">Select Account Type</div>
+                   <div>{context.viewroot ? 'Rootkey Holder' : 'Approved Notary'}</div>
+                 </div>
+                        
                   <div className="viewswitch" >
                     <Toggle
                       active={context.viewroot}
@@ -179,7 +187,9 @@ const App = () => {
                       onChange={switchRoot}
                     />
                   </div>
+
                 </div>
+
                 {context.wallet.multisig && !context.viewroot ?
                   <React.Fragment>
                     <div className="headertitles">Multisig address</div>
@@ -199,7 +209,7 @@ const App = () => {
                     </div>
                   </React.Fragment>
                   : null}
-                <div className="headertitles">Account addresses</div>
+                <div className="headertitles" style={{paddingTop : "10px"}}>Account addresses</div>
                 <div className="accountModal">
                   {context.wallet.accounts.map((account, index) => {
                     return <div key={index} className="accountentry" style={{ backgroundColor: index === context.wallet.walletIndex ? '#C7C7C7' : 'inherit' }}>
@@ -218,7 +228,7 @@ const App = () => {
                     </div>
                   })}
                 </div>
-                {context.wallet.accounts.length > 4 && <div className="arrowDownIcon"><KeyboardArrowDownIcon /></div>}
+                {context.wallet.accounts.length > 5 && <div className="arrowDownIcon"><KeyboardArrowDownIcon fontSize='large' /></div>}
                 {context.wallet.wallet !== 'ledger' ?
                   <div>
                     <div className="importseedphrase" onClick={() => { openWallet() }}>Import seedphrase</div>

@@ -22,6 +22,9 @@ const NotaryTabs = ({
         return tabs === tabIndex ? "selected" : "";
     };
 
+    const user = context.github.loggedUser
+
+
     // FIXME
     // useEffect(() => {
     //     const handler = async () => {

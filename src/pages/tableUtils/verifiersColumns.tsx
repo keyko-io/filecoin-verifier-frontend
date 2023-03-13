@@ -1,22 +1,24 @@
-export const columns: any = [
+import { Notary } from "../Verifiers";
+
+export const columns : any = [
   {
     name: "Organization / Notary Name",
-    selector: (row: any) => row.name ? row.organization + " - " + row.name : row.organization,
+    selector: (row: Notary) => row.name ? row.organization + " - " + row.name : row.organization,
     sortable: true,
   },
   {
     name: "Location",
-    selector: (row: any) => row.location,
+    selector: (row: Notary) => row.location,
     sortable: true,
   },
   {
     name: "Contacts",
-    selector: (row: any) => [row.fil_slack_id, row.github_user],
+    selector: (row: Notary) => [row.fil_slack_id, row.github_user],
     sortable: false,
-    cell: (row: any) => (
+    cell: (row: Notary) => (
       <div style={{ display: "flex", flexDirection: "column" }}>
         <span>Slack : {row.fil_slack_id}</span>
-        {row.github_user.map((item: any, i: any) => (
+        {row.github_user.map((item) => (
           item && <span key={item} style={{ marginRight: "10px" }}> Github : {item}</span>
         ))
         }
@@ -25,7 +27,7 @@ export const columns: any = [
   },
   {
     name: "Use Case",
-    selector: (row: any) => row.use_case,
+    selector: (row: Notary) => row.use_case,
     sortable: true,
     grow: 2,
     wrap: true

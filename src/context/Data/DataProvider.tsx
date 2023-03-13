@@ -7,7 +7,6 @@ import BigNumber from "bignumber.js";
 import _ from "lodash";
 import { v4 as uuidv4 } from "uuid";
 import { bytesToiB } from "../../utils/Filters";
-import * as Sentry from "@sentry/react";
 import { notaryLedgerVerifiedComment } from "./comments";
 import {
     ldnParser,
@@ -15,7 +14,6 @@ import {
     commonUtils,
     simpleClientParser,
 } from "@keyko-io/filecoin-verifier-tools";
-import verifierRegistry from "../../data/verifiers-registry.json";
 import {
     ApprovedVerifiers,
     DirectIssue,
@@ -56,6 +54,7 @@ interface TxsByClientAddress {
         [key: string]: LotusTx[];
     };
 }
+import { Notary } from "../../pages/Verifiers";
 
 export default class DataProvider extends React.Component<
     DataProviderProps,
@@ -100,49 +99,33 @@ export default class DataProvider extends React.Component<
                         return;
                     }
 
-                    const logArray = [
-                        {
-                            message,
-                            type,
-                            actionKeyword,
-                            repo,
-                            issueNumber: issueNumber.toString(),
-                        },
-                    ];
-                    const res = (
-                        await fetch(
-                            "https://cbqluey8wa.execute-api.us-east-1.amazonaws.com/dev",
-                            {
-                                headers: {
-                                    "x-api-key": config.loggerApiKey,
-                                },
-                                method: "POST",
-                                body: JSON.stringify({
-                                    type: "POST_CUSTOM_LOGS",
-                                    logArray: logArray,
-                                }),
-                            }
-                        )
-                    ).json();
-                    return res;
-                } catch (error) {
-                    console.log(error);
-                }
+          const logArray = [
+            {
+              message,
+              type,
+              actionKeyword,
+              repo,
+              issueNumber: issueNumber.toString(),
             },
-            logToSentry: (
-                category: string,
-                message: string,
-                level: "info" | "error",
-                data: any
-            ) => {
-                let breadCrumb = {
-                    category,
-                    message,
-                    data,
-                };
-                Sentry.addBreadcrumb(breadCrumb);
-                Sentry.captureMessage(breadCrumb.message);
-            },
+          ];
+          const res = (
+            await fetch(
+              "https://cbqluey8wa.execute-api.us-east-1.amazonaws.com/dev",
+              {
+                headers: { "x-api-key": config.loggerApiKey },
+                method: "POST",
+                body: JSON.stringify({
+                  type: "POST_CUSTOM_LOGS",
+                  logArray: logArray,
+                }),
+              }
+            )
+          ).json();
+          return res;
+        } catch (error) {
+          console.log(error);
+        }
+      },
             //@ts-ignore
             formatLargeRequestData: async (
                 requests: ParseLargeRequestData[]
@@ -264,9 +247,8 @@ export default class DataProvider extends React.Component<
                 // );
                 // return parsedIssueData;
             },
-            // @ts-ignore
-            getLDNIssuesAndTransactions: async () => {
-                //GETTING ISSUES
+      getLDNIssuesAndTransactions: async () => {
+        //GETTING ISSUES
 
                 const rawLargeIssuesAll =
                     await this.props.github.fetchGithubIssues(
@@ -623,7 +605,11 @@ export default class DataProvider extends React.Component<
                     const txsIssueGitHub =
                         ldnIssueTxs.filteredTxsIssue;
 
-                    this.setState({ txsIssueGitHub });
+          this.setState({ txsIssueGitHub })
+
+          const res = await fetch(config.verifiers_registry_url)
+  
+          const verifierRegistry : { notaries : Notary[] } = await res.json()
 
                     const largeissues: any = await Promise.allSettled(
                         txsIssueGitHub.map(
@@ -646,27 +632,18 @@ export default class DataProvider extends React.Component<
                                                     account
                                                 );
 
-                                            let signerAddress: any;
-                                            let signerGitHandle;
-                                            if (elem.tx) {
-                                                signerAddress =
-                                                    await this.props.wallet.api.actorKey(
-                                                        elem.tx[0]
-                                                            .signers[0]
-                                                    );
-                                                signerGitHandle =
-                                                    verifierRegistry.notaries.find(
-                                                        (
-                                                            notary: any
-                                                        ) =>
-                                                            notary
-                                                                .ldn_config
-                                                                .signing_address ===
-                                                            signerAddress
-                                                    )
-                                                        ?.github_user[0] ||
-                                                    "none";
-                                            }
+
+                    let signerAddress: any;
+                    let signerGitHandle;
+                    if (elem.tx) {
+                      signerAddress = await this.props.wallet.api.actorKey(elem.tx[0].signers[0])
+
+                      signerGitHandle =
+                        verifierRegistry.notaries.find(
+                          (notary) =>
+                            notary.ldn_config.signing_address === signerAddress
+                        )?.github_user[0] || "none";
+                    }
 
                                             const approverIsNotProposer =
                                                 signerAddress
@@ -749,71 +726,63 @@ export default class DataProvider extends React.Component<
 
                     // LARGE ISSUES: filecoin-plus-large-datasets  END /////////////////////
 
-                    this.setState({
-                        clientRequests: issues,
-                        largeClientRequests,
-                        ldnRequestsLoading: false,
-                    });
-                } catch (error) {
-                    console.error(error);
-                    this.setState({ ldnRequestsLoading: false });
-                    this.props.wallet.dispatchNotification(
-                        "While loading data error happened, please try again"
-                    );
-                }
-            },
-            searchUserIssues: async (user: string) => {
-                await this.props.github.githubOctoGenericLogin();
-                const rawIssues =
-                    await this.props.github.githubOcto.search.issuesAndPullRequests(
-                        {
-                            q: `type:issue+user:${user}+repo:${config.onboardingOwner}/${config.onboardingClientRepo}`,
-                        }
-                    );
-                const issues: any[] = [];
-                for (const rawIssue of rawIssues.data.items) {
-                    const data = simpleClientParser.parseIssue(
-                        rawIssue.body
-                    );
-                    if (data.correct) {
-                        issues.push({
-                            number: rawIssue.number,
-                            url: rawIssue.html_url,
-                            owner: rawIssue.user.login,
-                            created_at: rawIssue.created_at,
-                            state: rawIssue.state,
-                            labels: rawIssue.labels,
-                            data,
-                        });
-                    }
-                }
-                return issues;
-            },
-            clientRequests: [],
-            largeClientRequests: [],
-            approvedNotariesLoading: true,
+          this.setState({
+            clientRequests: issues,
+            largeClientRequests,
             ldnRequestsLoading: false,
-            loadVerifierAndPendingRequests: async () => {
-                this.setState({ isPendingRequestLoading: true });
-                try {
-                    if (
-                        this.props.github.githubOctoGeneric.logged ===
-                        false
-                    ) {
-                        await this.props.github.githubOctoGenericLogin();
-                    }
-
-                    const allIssues =
-                        await this.props.github.fetchGithubIssues(
-                            config.lotusNodes[
-                                this.props.wallet.networkIndex
-                            ].notaryOwner,
-                            config.lotusNodes[
-                                this.props.wallet.networkIndex
-                            ].notaryRepo,
-                            "open",
-                            "Notary Application"
-                        );
+          });
+        } catch (error) {
+          console.error(error);
+          this.setState({ ldnRequestsLoading: false });
+          this.props.wallet.dispatchNotification(
+            "While loading data error happened, please try again"
+          );
+        }
+      },
+      searchUserIssues: async (user: string) => {
+        await this.props.github.githubOctoGenericLogin();
+        const rawIssues =
+          await this.props.github.githubOcto.search.issuesAndPullRequests({
+            q: `type:issue+user:${user}+repo:${config.onboardingOwner}/${config.onboardingClientRepo}`,
+          });
+        const issues: any[] = [];
+        for (const rawIssue of rawIssues.data.items) {
+          const data = simpleClientParser.parseIssue(rawIssue.body);
+          if (data.correct) {
+            issues.push({
+              number: rawIssue.number,
+              url: rawIssue.html_url,
+              owner: rawIssue.user.login,
+              created_at: rawIssue.created_at,
+              state: rawIssue.state,
+              labels: rawIssue.labels,
+              data,
+            });
+          }
+        }
+        return issues;
+      },
+      clientRequests: [],
+      largeClientRequests: [],
+      approvedNotariesLoading: true,
+      ldnRequestsLoading: false,
+      loadVerifierAndPendingRequests: async () => {
+        this.setState({ isPendingRequestLoading: true })
+        try {
+          if (this.props.github.githubOctoGeneric.logged === false) {
+            await this.props.github.githubOctoGenericLogin();
+         
+          }
+    
+          const allIssues = await this.props.github.githubOctoGeneric.octokit.paginate(
+            this.props.github.githubOctoGeneric.octokit.issues.listForRepo,
+            {
+              owner: config.onboardingOwner,
+              repo: config.onboardingNotaryOwner,
+              state: "open",
+              labels : "Notary Application"
+            }
+          )
 
                     const msigRequests = allIssues
                         .filter(

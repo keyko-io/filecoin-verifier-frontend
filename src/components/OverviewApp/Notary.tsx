@@ -21,6 +21,7 @@ import {
 } from "./Notary/index";
 import toast from "react-hot-toast";
 import { ldnParser } from "@keyko-io/filecoin-verifier-tools";
+import * as Logger from "../../logger";
 import LargeRequestsProvider from "../../context/LargeRequests";
 import ApproveLargeRequestModal from "./Notary/ApproveLargeRequestModal";
 import NodeDataProvider from "../../context/NodeData";
@@ -255,6 +256,8 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
             "Your pending request has been successfully canceled."
          );
 
+      await Logger.BasicLogger({ message: Logger.PROPOSE_CANCELLED })
+
          const updateCancelData = (item: any) =>
             item.clientAddress !== cancelProposalData.clientAddress;
 
@@ -293,43 +296,35 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
       }
    }, [context.isAddressVerified]);
 
-   const verifyClients = async () => {
-      dispatchCustomEvent({ name: "delete-modal", detail: {} });
-      setApproveLoading(true);
-      for (const request of context.clientRequests) {
-         if (selectedClientRequests.includes(request.number)) {
-            let messageID = "";
-            let address = "";
-            let dc = request.data.datacap;
-            let sentryData: any = {};
-            let errorMessage = "";
-            try {
-               sentryData.request = { ...request };
-               const datacap: number = anyToBytes(
-                  request.data.datacap
-               );
-               console.log("datacap", datacap);
-               address = request.data.address;
-               if (address.length < 12) {
-                  address = await context.wallet.api.actorKey(
-                     address
-                  );
-               }
-               if (context.wallet.multisig) {
-                  messageID =
-                     await context.wallet.api.multisigVerifyClient(
-                        context.wallet.multisigID,
-                        address,
-                        BigInt(datacap),
-                        context.wallet.walletIndex
-                     );
-               } else {
-                  messageID = await context.wallet.api.verifyClient(
-                     address,
-                     BigInt(datacap.toFixed()),
-                     context.wallet.walletIndex
-                  );
-               }
+  const verifyClients = async () => {
+    dispatchCustomEvent({ name: "delete-modal", detail: {} });
+    setApproveLoading(true)
+    for (const request of context.clientRequests) {
+      if (selectedClientRequests.includes(request.number)) {
+        let messageID = "";
+        let address = "";
+        let errorMessage = "";
+        try {
+          const datacap: number = anyToBytes(request.data.datacap);
+          console.log("datacap", datacap);
+          address = request.data.address;
+          if (address.length < 12) {
+            address = await context.wallet.api.actorKey(address);
+          }
+          if (context.wallet.multisig) {
+            messageID = await context.wallet.api.multisigVerifyClient(
+              context.wallet.multisigID,
+              address,
+              BigInt(datacap),
+              context.wallet.walletIndex
+            );
+          } else {
+            messageID = await context.wallet.api.verifyClient(
+              address,
+              BigInt(datacap.toFixed()),
+              context.wallet.walletIndex
+            );
+          }
 
                const signer = context.wallet.activeAccount ?? "";
 
@@ -369,43 +364,18 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
 
                // context.loadClientRequests();
 
-               sentryData = {
-                  requestNumber: request.number,
-                  messageID: messageID,
-                  address: address,
-                  dataCap: dc,
-                  multisigId: context.wallet.multisigID,
-                  activeAccount: context.wallet.activeAccount,
-                  accounts: context.wallet.accounts,
-                  walletIndex: context.wallet.walletIndex,
-               };
-            } catch (e: any) {
-               setApproveLoading(false);
-               sentryData = {
-                  ...sentryData,
-                  error: e,
-               };
-
-               context.logToSentry(
-                  `verifyClients issue n. ${request.number}`,
-                  `verifyClients error - issue n. ${request.number}: ${e.message}`,
-                  "error",
-                  sentryData
-               );
-               context.wallet.dispatchNotification(
-                  "Verification failed: " + e.message
-               );
-            } finally {
-               context.logToSentry(
-                  `verifyClients issue n. ${request.number}`,
-                  `verifyClients info: verifyClients issue n. ${request.number}`,
-                  "info",
-                  sentryData
-               );
-            }
-         }
+        } catch (e: any) {
+          setApproveLoading(false)
+  
+          context.wallet.dispatchNotification(
+            "Verification failed: " + e.message
+          );
+        } finally {
+          await Logger.BasicLogger({ message: Logger.CLIENT_ALLOCATION_REQUEST })
+        }
       }
-   };
+    }
+  };
 
    const verifyLargeClients = async (i?: LargeRequestData[]) => {
       setApproveLoading(true);
@@ -435,10 +405,9 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
                `datacap being approved: ${request.datacap} \nclient address: ${address}`
             );
 
-            if (address.length < 12) {
-               address = await context.wallet.api.actorKey(address);
-               // sentryData.actorKey = address;
-            }
+          if (address.length < 12) {
+            address = await context.wallet.api.actorKey(address);
+          }
 
             let messageID;
             const signer = context.wallet.activeAccount
@@ -506,46 +475,53 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
                throw Error(errorMessage);
             }
 
-            await context.updateGithubVerifiedLarge(
-               request.issue_number,
-               messageID,
-               address,
-               datacap,
-               signer,
-               "",
-               action
-            );
+          await context.updateGithubVerifiedLarge(
+            request.issue_number,
+            messageID,
+            address,
+            datacap,
+            signer,
+            "",
+            action
+          );
 
-            context.wallet.dispatchNotification(
-               "Transaction successful! Verify Client Message sent with ID: " +
-               messageID
-            );
-            await context.postLogs(
-               `Transaction successful! Verify Client Message sent with ID: ${messageID}`,
-               "DEBUG",
-               "",
-               request.issue_number,
-               PHASE
-            );
-            setApproveLoading(false);
-            //UPDATE THE CONTEXT
-            context.updateContextState(
-               thisStateLargeRequestList,
-               "largeClientRequests"
-            );
-         } catch (e: any) {
-            context.wallet.dispatchNotification(
-               "Verification failed: " + e.message
-            );
-            await context.postLogs(
-               `The transaction to sign the datacap failed: ${e.message}`,
-               "ERROR",
-               "",
-               request.issue_number,
-               ""
-            );
-            setApproveLoading(false);
-         }
+          if (action === "Proposed") {
+            await Logger.BasicLogger({ message: Logger.REQUEST_PROPOSED })
+          } else {
+            await Logger.BasicLogger({ message: Logger.REQUEST_APPROVED })
+          }
+
+          context.wallet.dispatchNotification(
+            "Transaction successful! Verify Client Message sent with ID: " +
+            messageID
+          );
+          await context.postLogs(
+            `Transaction successful! Verify Client Message sent with ID: ${messageID}`,
+            "DEBUG",
+            "",
+            request.issue_number,
+            PHASE
+          );
+          setApproveLoading(false)
+          //UPDATE THE CONTEXT
+          context.updateContextState(
+            thisStateLargeRequestList,
+            "largeClientRequests"
+          );
+        } catch (e: any) {
+          context.wallet.dispatchNotification(
+            "Verification failed: " + e.message
+          );
+          await context.postLogs(
+            `The transaction to sign the datacap failed: ${e.message}`,
+            "ERROR",
+            "",
+            request.issue_number,
+            "DATACAP-SIGN"
+          );
+          // console.log(e.stack)
+          setApproveLoading(false)
+        }
       }
    };
 
