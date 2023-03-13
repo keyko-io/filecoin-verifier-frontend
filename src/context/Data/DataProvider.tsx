@@ -8,6 +8,7 @@ import _ from "lodash";
 import { v4 as uuidv4 } from "uuid";
 import { bytesToiB } from "../../utils/Filters";
 import { notaryLedgerVerifiedComment } from "./comments";
+import { Notary } from "../../pages/Verifiers";
 import {
     ldnParser,
     notaryParser,
@@ -54,7 +55,6 @@ interface TxsByClientAddress {
         [key: string]: LotusTx[];
     };
 }
-import { Notary } from "../../pages/Verifiers";
 
 export default class DataProvider extends React.Component<
     DataProviderProps,

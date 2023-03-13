@@ -5,7 +5,6 @@ import DataTable from "react-data-table-component";
 import { config } from "../../../config";
 import { Data } from "../../../context/Data/Index";
 import { LargeRequestData } from "../../../type";
-import verifierRegistry from "../../../data/verifiers-registry.json";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import NodeDataModal from "./NodeDataModal";
 import SearchInput from "./SearchInput";
@@ -14,9 +13,11 @@ import { useLargeRequestsContext } from "../../../context/LargeRequests";
 const CANT_SIGN_MESSAGE =
     "You can currently only approve the allocation requests associated with the multisig organization you signed in with. Signing proposals for additional DataCap allocations will require you to sign in again";
 
-const mapNotaryAddressToGithubHandle = (address: string) => {
+const mapNotaryAddressToGithubHandle = async (address: string) => {
+    const verifRegJson : any= await fetch(config.verifiers_registry_url) 
+    const json =await verifRegJson.json()
     const githubHandle =
-        verifierRegistry.notaries.find(
+        json.notaries.find(
             (notary: any) =>
                 notary.ldn_config.signing_address === address
         )?.github_user[0] || "";
@@ -112,7 +113,7 @@ const LargeRequestTable = (props: LargeRequestTableProps) => {
         );
         console.log("nodeData", nodeData);
         if (nodeData?.signerAddress) {
-            const notaryGithubHandle = mapNotaryAddressToGithubHandle(
+            const notaryGithubHandle = await mapNotaryAddressToGithubHandle(
                 nodeData.signerAddress
             );
             console.log("notaryGithubHandle", notaryGithubHandle);
@@ -339,51 +340,3 @@ const LargeRequestTable = (props: LargeRequestTableProps) => {
 };
 
 export default LargeRequestTable;
-//
-// let pendingTxs;
-// // @ts-ignore
-// if (!cachedAddress.notaryAddress) {
-//   pendingTxs = await context.wallet.api.pendingTransactions(
-//     commentParsed.notaryAddress
-//   );
-
-//   cachedAddress.notaryAddress = pendingTxs;
-// } else {
-//   pendingTxs = cachedAddress.notaryAddress;
-//   console.log("hey hey");
-// }
-//
-//
-//
-// // Proposer(first notary create and sign transaction):
-// //  propser is the person who creates the first transaction to tell
-// the node about the request
-// the proposer also sign the transaction
-// an approval is needed(multisig 2/n) which is then done by another
-// notary
-//
-// // TxId: ransaction created by the first notary to
-// sign(proposer)
-// // Approvals: 0/1
-//
-//
-//
-//
-// let signerAddress: any;
-// let signerGitHandle;
-// if (elem.tx) {
-//     signerAddress = await this.props.wallet.api.actorKey(
-//         elem.tx[0].signers[0]
-//     );
-
-//     signerGitHandle =
-//         verifierRegistry.notaries.find(
-//             (notary) =>
-//                 notary.ldn_config.signing_address ===
-//                 signerAddress
-//         )?.github_user[0] || "none";
-// }
-
-// const approverIsNotProposer = signerAddress
-//     ? signerAddress !== this.props.wallet.activeAccount
-//     : false;

@@ -23,12 +23,6 @@ export const Data = React.createContext({
     ) => {},
     search: (query: string) => {},
     searchUserIssues: async (user: string) => [] as any[],
-    logToSentry: (
-        category: string,
-        message: string,
-        level: "info" | "error",
-        data: any
-    ) => {},
     postLogs: async (
         message: string,
         type: string,
