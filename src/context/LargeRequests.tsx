@@ -5,6 +5,7 @@ import {
     useState,
 } from "react";
 import { LargeRequestData } from "../type";
+import { anyToBytes } from "../utils/Filters";
 import { Data } from "./Data/Index";
 import { useNodeDataContext } from "./NodeData";
 
@@ -61,16 +62,17 @@ export default function LargeRequestsProvider({ children }: any) {
                             await context.wallet.api.pendingTransactions(
                                 String(request.multisig)
                             );
-                        const pendingForClient = pendingTxs?.filter((tx: any) => tx?.parsed?.params?.address == request.address);
-                        const signaturesNumber = pendingForClient.length
+                        // we get most recent txn with same address and and datacap requested of the request
+                        const pendingForClient = pendingTxs?.filter((tx: any) => tx?.parsed?.params?.address == request.address && tx?.parsed?.params?.cap == anyToBytes(request.datacap))
+                        const mostRecentTx = pendingForClient[pendingForClient.length - 1]
 
 
-                        if (signaturesNumber === 0) resolve(true); // Request Didnt start
+                        if (!mostRecentTx) resolve(true); // Request Didnt start
                         // if (approvals >=    1)  //TODO manage the case when there is more than 1 request
-                        if (signaturesNumber >= 1) {
+                        if (mostRecentTx) {
                             // Request was proposed by one notary and needs approval of second notary
 
-                            const proposer = pendingForClient[0]?.signers[0];
+                            const proposer = mostRecentTx.signers[0];
                             console.log("proposer", proposer);
                             const signerAddress =
                                 await context.wallet.api.actorKey(proposer);

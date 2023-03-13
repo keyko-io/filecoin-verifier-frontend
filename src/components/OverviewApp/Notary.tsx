@@ -138,8 +138,8 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
                      origin === "Notary"
                         ? verifyClients()
                         : origin === "newDatacap"
-                        ? verifyNewDatacap()
-                        : requestDatacap();
+                           ? verifyNewDatacap()
+                           : requestDatacap();
                   }}
                   largeAddress={origin === "Large" ? true : false}
                   origin={
@@ -418,6 +418,15 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
       );
       for (const request of thisStateLargeRequestList) {
          try {
+
+            const pendingTxs =
+               await context.wallet.api.pendingTransactions(
+                  String(request.multisig)
+               );
+               
+            const pendingForClient = pendingTxs?.filter((tx: any) => tx?.parsed?.params?.address == request.address && tx?.parsed?.params?.cap == anyToBytes(request.datacap))
+            const mostRecentTx = pendingForClient[pendingForClient.length-1]
+           
             let errorMessage = "";
             const PHASE = "DATACAP-SIGN";
             const datacap = anyToBytes(request.datacap);
@@ -443,10 +452,10 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
                PHASE
             );
             let action = "";
-            if (request.approvals) {
+            if (mostRecentTx) {
                messageID = await context.wallet.api.approvePending(
                   request.multisig,
-                  request.tx,
+                  mostRecentTx, 
                   context.wallet.walletIndex
                );
                setApprovedDcRequests([
@@ -509,7 +518,7 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
 
             context.wallet.dispatchNotification(
                "Transaction successful! Verify Client Message sent with ID: " +
-                  messageID
+               messageID
             );
             await context.postLogs(
                `Transaction successful! Verify Client Message sent with ID: ${messageID}`,
