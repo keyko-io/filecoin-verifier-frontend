@@ -1,9 +1,8 @@
-import { Modal } from "@mui/material";
-import React from "react";
+import { Modal} from "@mui/material";
 // @ts-ignore
-import { ButtonPrimary } from "slate-react-system";
 import { useLargeRequestsContext } from "../../../context/LargeRequests";
 import { LargeRequestData } from "../../../type";
+import CloseIcon from "@mui/icons-material/Close";
 
 type ModalProps = {
     selectedClientRequests: LargeRequestData[];
@@ -12,15 +11,24 @@ type ModalProps = {
     handleClose: () => void;
 };
 
+const closeIconStyle = {
+    position: "absolute",
+    top: "12px",
+    right: "12px",
+    cursor: "pointer",
+};
+
 const ApproveLargeRequestModal = (props: ModalProps) => {
     const { areRequestsSignable } = useLargeRequestsContext();
+    
     const {
         selectedClientRequests,
         open,
         onClick: verifyLargeRequest,
         handleClose,
     } = props;
-    const message = "this message needs fixing";
+
+    const message = "You are about to send a message to assign DataCap to the following addresses:";
 
     const onClickHandler = async () => {
         const isSignable = await areRequestsSignable(selectedClientRequests)
@@ -42,9 +50,20 @@ const ApproveLargeRequestModal = (props: ModalProps) => {
                 className="warnmodalledger"
                 style={{
                     backgroundColor: "white",
-                    height: 220 + 30 * selectedClientRequests.length,
+                    height: 250 + 30 * selectedClientRequests.length,
+                    position : "absolute",
+                    top : "50%",
+                    left: "50%" ,
+                    transform : "translate(-50%, -50%)",
+                    padding: "1.8rem",
+                    borderRadius: "0.4rem",
+                    minWidth: "700px"
                 }}
-            >
+            >   
+             <CloseIcon
+                    sx={closeIconStyle}
+                    onClick={handleClose}
+                />
                 <div>{message}</div>
                 <table>
                     <thead>
@@ -69,14 +88,18 @@ const ApproveLargeRequestModal = (props: ModalProps) => {
                 </table>
                 <div className="ledgermessage">
                     Please check your Ledger to sign and send the
-                    message.
-                    <div>
-                        <ButtonPrimary
+                    message.            
+                        <button
+                          style={{
+                            border: "none",
+                            padding : "8px 24px",
+                            borderRadius : "4px",
+                            marginTop : "1rem"
+                          }}
                             onClick={() => onClickHandler()}
                         >
                             Accept
-                        </ButtonPrimary>
-                    </div>
+                        </button>  
                 </div>
             </div>
         </Modal>

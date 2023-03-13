@@ -62,7 +62,7 @@ function SearchInput(props: any) {
     return (
         <Autocomplete
             id="asynchronous-demo"
-            sx={{ width: 300 }}
+            sx={{ width: 300, marginLeft: "10px" }}
             open={open}
             onOpen={() => {
                 setOpen(true);

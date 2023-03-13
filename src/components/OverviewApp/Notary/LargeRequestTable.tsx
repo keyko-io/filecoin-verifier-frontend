@@ -319,18 +319,17 @@ const LargeRequestTable = (props: LargeRequestTableProps) => {
                         data={data}
                         progressComponent={
                             <div
+                            style={{
+                                width: "1280px",
+                            }}
+                        >
+                            <CircularProgress
                                 style={{
-                                    width: "100%",
-                                    textAlign: "center",
+                                    margin: "10rem auto",
+                                    color: "#0090ff",
                                 }}
-                            >
-                                <CircularProgress
-                                    style={{
-                                        margin: "8rem auto",
-                                        color: "#0090ff",
-                                    }}
-                                />
-                            </div>
+                            />
+                        </div>
                         }
                     />
                 </>
