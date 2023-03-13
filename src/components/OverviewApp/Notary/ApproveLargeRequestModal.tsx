@@ -24,15 +24,18 @@ const ApproveLargeRequestModal = (props: ModalProps) => {
 
     const onClickHandler = async () => {
         let isSignable = await areRequestsSignable(selectedClientRequests)
+        console.log("isSignable", isSignable);
+        // return;
 
+        handleClose();
         if (!isSignable) {
-            console.log();
             alert(
                 "you are not allowed to sign one or more of the selected transactions"
             );
             return;
         }
-        verifyLargeRequest(selectedClientRequests);
+        // console.log("verifyLargeRequest");
+        await verifyLargeRequest(selectedClientRequests);
     };
 
     return (

@@ -111,10 +111,12 @@ const LargeRequestTable = (props: LargeRequestTableProps) => {
             multisig,
             clientAddress
         );
+        console.log("nodeData", nodeData);
         if (nodeData?.signerAddress) {
             const notaryGithubHandle = mapNotaryAddressToGithubHandle(
                 nodeData.signerAddress
             );
+            console.log("notaryGithubHandle", notaryGithubHandle);
             setProposer(notaryGithubHandle);
             setTxId(nodeData?.txId);
             setLoadingNodeData(false);
@@ -264,7 +266,7 @@ const LargeRequestTable = (props: LargeRequestTableProps) => {
                 nodeInfo={{
                     proposer,
                     txId,
-                    approvals: proposer && txId ? 1 : 0,
+                    approvals: txId !== "" ? 1 : 0,
                 }}
             />
             {context.ldnRequestsLoading ? (
