@@ -201,7 +201,6 @@ export default class DataProvider extends React.Component<
                         "open",
                         "bot:readyToSign"
                     );
-                console.log("allGHIssues", allGHIssues);
                 const response = allGHIssues.map((issue: any) => {
                     const parsed: ParseLargeRequestData =
                         ldnParser.parseIssue(issue.body);
@@ -218,7 +217,6 @@ export default class DataProvider extends React.Component<
                     };
                     return res;
                 });
-                console.log("response", response);
                 return response;
                 // if (!response) return [];
                 // const parsedIssueData: any = [];
@@ -539,8 +537,6 @@ export default class DataProvider extends React.Component<
             },
 
             getNodeData: async (address, clientAddress) => {
-                console.log("clientAddress", clientAddress);
-                console.log("address", address);
                 const pendingTxs =
                     await this.props.wallet.api.pendingTransactions(
                         address

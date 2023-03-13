@@ -23,10 +23,8 @@ const ApproveLargeRequestModal = (props: ModalProps) => {
     const message = "this message needs fixing";
 
     const onClickHandler = async () => {
-        let isSignable = await areRequestsSignable(selectedClientRequests)
+        const isSignable = await areRequestsSignable(selectedClientRequests)
         console.log("isSignable", isSignable);
-        // return;
-
         handleClose();
         if (!isSignable) {
             alert(

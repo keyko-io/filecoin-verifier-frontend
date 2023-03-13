@@ -28,7 +28,6 @@ export const isSignable = (
     approverSignerAddress: string,
     activeAccountAddress: string
 ) => {
-    // const approverIsNotProposer = false;
     const approverIsNotProposer = approverSignerAddress
         ? approverSignerAddress !== activeAccountAddress
         : false;
