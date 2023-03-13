@@ -45,6 +45,7 @@ export default function LargeRequestsProvider({ children }: any) {
             requests.map(
                 (request: LargeRequestData) => new Promise<boolean>(async (resolve, reject) => {
                     try {
+
                         if (!request.multisig) resolve(false);
                         const activeAccount =
                             context.wallet.accountsActive[
@@ -66,26 +67,24 @@ export default function LargeRequestsProvider({ children }: any) {
                         const pendingForClient = pendingTxs?.filter((tx: any) => tx?.parsed?.params?.address == request.address && tx?.parsed?.params?.cap == anyToBytes(request.datacap))
                         const mostRecentTx = pendingForClient[pendingForClient.length - 1]
 
-
-                        if (!mostRecentTx) resolve(true); // Request Didnt start
+                        if (!mostRecentTx) {
+                            resolve(true); // Request Didnt start
+                        }
                         // if (approvals >=    1)  //TODO manage the case when there is more than 1 request
-                        if (mostRecentTx) {
+                        else if (mostRecentTx) {
                             // Request was proposed by one notary and needs approval of second notary
-
                             const proposer = mostRecentTx.signers[0];
-                            console.log("proposer", proposer);
-                            const signerAddress =
-                                await context.wallet.api.actorKey(proposer);
-                            const approverIsNotProposer = signerAddress
-                                ? signerAddress !== context.wallet.accountsActive[activeAccount] //context.wallet.accountsActive[activeAccount]  returns the short address 
-                                : false;
+                            const approverIsNotProposer = proposer !== activeAccount
+
+
                             resolve(
                                 isMultisigIncludesCurrentSigner &&
                                 approverIsNotProposer
                             );
                         }
-
-                        resolve(false);
+                        else {
+                            resolve(false);
+                        }
                     } catch (error) {
                         reject(error)
                     }
