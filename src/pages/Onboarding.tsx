@@ -1,20 +1,20 @@
 // @ts-ignore
-import RootKey from "../svg/rkh-verifiers.svg";
-import Cients from "../svg/client-miners.svg";
-import Option from "../components/Option/Option";
-import history from "../context/History";
-import Welcome from "../components/Welcome/Welcome";
-import LearnMore from "../components/LearnMore/LearnMore";
+import RootKey from '../svg/rkh-verifiers.svg';
+import Cients from '../svg/client-miners.svg';
+import Option from '../components/Option/Option';
+import history from '../context/History';
+import Welcome from '../components/Welcome/Welcome';
+import LearnMore from '../components/LearnMore/LearnMore';
 
 const options = [
   {
-    title: "For Root Key Holders and Notaries",
-    desc: "Manage and process in-bound DataCap allocation requests.",
+    title: 'For Root Key Holders and Notaries',
+    desc: 'Manage and process in-bound DataCap allocation requests.',
     imgSrc: RootKey.toString(),
   },
   {
-    title: "For Clients",
-    desc: "Find a Notary in your geography or specialized in your use case to get DataCap!",
+    title: 'For Clients',
+    desc: 'Find a Notary in your geography or specialized in your use case to get DataCap!',
     imgSrc: Cients.toString(),
   },
 ];
@@ -24,11 +24,11 @@ const Onboarding = () => {
   const changeActive = (index: number) => {
     if (index === 0) {
       history.push({
-        pathname: "/wallet",
+        pathname: '/wallet',
       })
     } else {
       history.push({
-        pathname: "/landing",
+        pathname: '/landing',
       });
     }
   };

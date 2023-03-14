@@ -12,23 +12,23 @@ type ClientInfoStateType = {
 
 const clientDetailsColumns: any = [
   {
-    name: "Address",
+    name: 'Address',
     selector: (row: any) => row.data.address,
   },
   {
-    name: "Notary",
+    name: 'Notary',
     selector: (row: any) => row.data.notary,
   },
   {
-    name: "Datacap",
+    name: 'Datacap',
     selector: (row: any) => row.data.datacap,
   },
   {
-    name: "State",
+    name: 'State',
     selector: (row: any) => row.state,
   },
   {
-    name: "Link",
+    name: 'Link',
     selector: (row: any) => row.number,
     cell: (row: any) => (
       <a
@@ -41,7 +41,7 @@ const clientDetailsColumns: any = [
     ),
   },
   {
-    name: "Date",
+    name: 'Date',
     selector: (row: any) => row.created_at,
     cell: (row: any) => <span>{row.created_at.split('T')[0]}</span>
   },
@@ -52,15 +52,15 @@ const ClientDetails = () => {
   const [details, setDetails] = useState<any>([])
   const [loading, setLoading] = useState(false)
   const [clientInfo, setClientInfo] = useState<ClientInfoStateType>({
-    client: "",
-    user: "",
-    address: "",
-    datacap: "",
+    client: '',
+    user: '',
+    address: '',
+    datacap: '',
   })
 
   useEffect(() => {
     if (!history.location.state) {
-      history.push("/")
+      history.push('/')
     }
 
     setClientInfo(history.location.state as ClientInfoStateType)
@@ -77,15 +77,15 @@ const ClientDetails = () => {
 
 
   return (
-    <div style={{ maxWidth: "1280px", margin: "auto", width: "100%", marginTop: "4.4rem", marginBottom: "3rem" }}>
-      <div style={{ display: "flex", flexDirection: "column", minHeight: "180px", justifyContent: "space-around", marginBottom: "1.5rem" }}>
-        <h4 style={{ fontWeight: "normal", fontSize: "1.2rem" }}> Overview - <span style={{ fontWeight: "bold", fontSize: "1.4rem" }}>{clientInfo.client} </span> </h4>
-        <div style={{ fontWeight: "normal", fontSize: "1.2rem" }}>Github user - @{clientInfo.user}</div>
-        <div style={{ fontWeight: "normal", fontSize: "1.2rem" }}>
+    <div style={{ maxWidth: '1280px', margin: 'auto', width: '100%', marginTop: '4.4rem', marginBottom: '3rem' }}>
+      <div style={{ display: 'flex', flexDirection: 'column', minHeight: '180px', justifyContent: 'space-around', marginBottom: '1.5rem' }}>
+        <h4 style={{ fontWeight: 'normal', fontSize: '1.2rem' }}> Overview - <span style={{ fontWeight: 'bold', fontSize: '1.4rem' }}>{clientInfo.client} </span> </h4>
+        <div style={{ fontWeight: 'normal', fontSize: '1.2rem' }}>Github user - @{clientInfo.user}</div>
+        <div style={{ fontWeight: 'normal', fontSize: '1.2rem' }}>
           Request Data - Client: {clientInfo.client} , Address: {clientInfo.address} , Datacap: {clientInfo.datacap}
         </div>
       </div>
-      {loading ? <div style={{ minHeight: "700px" }}> Loading...</div> : <DataTable
+      {loading ? <div style={{ minHeight: '700px' }}> Loading...</div> : <DataTable
         columns={clientDetailsColumns}
         data={details}
         pagination

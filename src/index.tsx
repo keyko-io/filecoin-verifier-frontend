@@ -1,71 +1,68 @@
-import React from "react";
-import ReactDOM from "react-dom/client";
-import "./index.scss";
-import { config } from "./config";
-import App from "./App";
-import WalletProvider from "./context/Wallet/WalletProvider";
-import GithubProvider from "./context/Github/GithubProvider";
-import DataProvider from "./context/Data/DataProvider";
-import { Wallet } from "./context/Wallet/Index";
-import { Github } from "./context/Github/Index";
-import { Router, Route, Switch } from "react-router-dom";
+import ReactDOM from 'react-dom/client';
+import './index.scss';
+import { config } from './config';
+import App from './App';
+import WalletProvider from './context/Wallet/WalletProvider';
+import GithubProvider from './context/Github/GithubProvider';
+import DataProvider from './context/Data/DataProvider';
+import { Wallet } from './context/Wallet/Index';
+import { Github } from './context/Github/Index';
+import { Router, Route, Switch } from 'react-router-dom';
 // @ts-ignore
-import { GlobalNotification, GlobalModal } from "slate-react-system";
-import "./fonts/SuisseIntl-Regular.woff";
-import Layout from "../src/Layout/layout";
-import LdnApplication from "./pages/LdnApplication";
+import { GlobalNotification, GlobalModal } from 'slate-react-system';
+import './fonts/SuisseIntl-Regular.woff';
+import Layout from '../src/Layout/layout';
+import LdnApplication from './pages/LdnApplication';
+import * as serviceWorker from './serviceWorker';
+import Preonboarding from './pages/Preonboarding';
+import Onboarding from './pages/Onboarding';
+import Landing from './pages/Landing';
+import history from './context/History';
+import LogExplorer from './pages/LogExplorer';
+import ClientDetails from './pages/ClientDetails';
+import { CookiesProvider } from 'react-cookie';
+import * as Sentry from '@sentry/react';
+import { Integrations } from '@sentry/tracing';
+import Verifiers from './pages/Verifiers';
+import Miners from './pages/Miners';
+import StatusPage from './pages/StatusPage';
 
-import * as serviceWorker from "./serviceWorker";
-import Preonboarding from "./pages/Preonboarding";
-import Onboarding from "./pages/Onboarding";
-import Landing from "./pages/Landing";
-import history from "./context/History";
-import LogExplorer from "./pages/LogExplorer";
-import "./fonts/SuisseIntl-Regular.woff";
-import ClientDetails from "./pages/ClientDetails";
-import { CookiesProvider } from "react-cookie";
-import * as Sentry from "@sentry/react";
-import { Integrations } from "@sentry/tracing";
-import Verifiers from "./pages/Verifiers";
-import Miners from "./pages/Miners";
-import StatusPage from "./pages/StatusPage";
-import LargeRequestsProvider from "./context/LargeRequests";
 
 // redirect to domain if user access fleek url
-if (window.location.host.includes("fleek") && config.willRedirect) {
+if (window.location.host.includes('fleek') && config.willRedirect) {
     window.location.href = config.domain;
 }
 
 const startSentry = () => {
     try {
-        if (process.env.NODE_ENV === "development") {
+        if (process.env.NODE_ENV === 'development') {
             return;
         }
         const sentryDSN =
             process.env.REACT_APP_SENTRY_DSN ||
-            "https://e434fb51144f42c5adc29d6cf075256e@o4504711585005568.ingest.sentry.io/4504711588413440"; // hmm..
+            'https://e434fb51144f42c5adc29d6cf075256e@o4504711585005568.ingest.sentry.io/4504711588413440'; // hmm..
         if (!sentryDSN) {
-            console.log("sentry dsn is not set. aborting");
+            console.log('sentry dsn is not set. aborting');
             return;
         }
         const response = Sentry.init({
             dsn: sentryDSN,
             integrations: [
                 new Integrations.BrowserTracing({
-                    tracePropagationTargets: ["*"],
+                    tracePropagationTargets: ['*'],
                 }),
             ],
             tracesSampleRate: 1.0,
         });
-        console.log("sentry init", response);
+        console.log('sentry init', response);
     } catch (error) {
-        console.log("error", error);
+        console.log('error', error);
     }
 };
 startSentry();
 
 const root = ReactDOM.createRoot(
-    document.getElementById("root") as HTMLElement
+    document.getElementById('root') as HTMLElement
 );
 
 root.render(
@@ -86,20 +83,20 @@ root.render(
                                                     <Switch>
                                                         <Route
                                                             exact
-                                                            path={"/"}
+                                                            path={'/'}
                                                             component={
                                                                 Onboarding
                                                             }
                                                         ></Route>
                                                         <Route
-                                                            path={"/app"}
+                                                            path={'/app'}
                                                             component={
                                                                 App
                                                             }
                                                         ></Route>
                                                         <Route
                                                             path={
-                                                                "/wallet"
+                                                                '/wallet'
                                                             }
                                                             component={
                                                                 Preonboarding
@@ -107,7 +104,7 @@ root.render(
                                                         ></Route>
                                                         <Route
                                                             path={
-                                                                "/landing"
+                                                                '/landing'
                                                             }
                                                             component={
                                                                 Landing
@@ -115,7 +112,7 @@ root.render(
                                                         ></Route>
                                                         <Route
                                                             path={
-                                                                "/verifiers"
+                                                                '/verifiers'
                                                             }
                                                             component={
                                                                 Verifiers
@@ -123,7 +120,7 @@ root.render(
                                                         ></Route>
                                                         <Route
                                                             path={
-                                                                "/ldn-application"
+                                                                '/ldn-application'
                                                             }
                                                             component={
                                                                 LdnApplication
@@ -131,7 +128,7 @@ root.render(
                                                         ></Route>
                                                         <Route
                                                             path={
-                                                                "/miners"
+                                                                '/miners'
                                                             }
                                                             component={
                                                                 Miners
@@ -139,21 +136,21 @@ root.render(
                                                         ></Route>
                                                         <Route
                                                             path={
-                                                                "/client"
+                                                                '/client'
                                                             }
                                                             component={
                                                                 ClientDetails
                                                             }
                                                         ></Route>
                                                         <Route
-                                                            path={"/logs"}
+                                                            path={'/logs'}
                                                             component={
                                                                 LogExplorer
                                                             }
                                                         ></Route>
                                                         <Route
                                                             path={
-                                                                "/status"
+                                                                '/status'
                                                             }
                                                             component={
                                                                 StatusPage
@@ -170,7 +167,7 @@ root.render(
                                         />
                                         <GlobalModal
                                             style={{
-                                                maxWidth: "none",
+                                                maxWidth: 'none',
                                             }}
                                         />
                                     </DataProvider>

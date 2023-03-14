@@ -10,7 +10,7 @@ import CircularProgress from '@mui/material/CircularProgress';
 
 
 const Miners = () => {
-  const [query, setQuery] = useState<string>("")
+  const [query, setQuery] = useState<string>('')
   const [miners, setMiners] = useState<MinerData[] | undefined>(undefined)
   const [loading, setLoading] = useState<boolean>(true)
 
@@ -18,7 +18,7 @@ const Miners = () => {
   useEffect(() => {
     const getData = async () => {
       const data = await loadData()
-      console.log(data, "hey")
+      console.log(data, 'hey')
       setMiners(data)
       setLoading(false)
     }
@@ -45,7 +45,7 @@ const Miners = () => {
           progressPending={loading}
           defaultSortFieldId={7}
           defaultSortAsc={false}
-          progressComponent={<CircularProgress style={{ marginTop: "100px" }} />}
+          progressComponent={<CircularProgress style={{ marginTop: '100px' }} />}
         />
       </TableContainer>
     </div>

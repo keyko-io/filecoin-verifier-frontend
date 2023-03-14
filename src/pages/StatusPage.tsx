@@ -1,16 +1,16 @@
-import CheckCircleIcon from "@mui/icons-material/CheckCircle";
-import DoNotDisturbOnIcon from "@mui/icons-material/DoNotDisturbOn";
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import DoNotDisturbOnIcon from '@mui/icons-material/DoNotDisturbOn';
 import {
   Box,
   Divider,
   Paper,
   Stack,
   Typography,
-} from "@mui/material";
-import React, { useContext, useEffect, useState } from "react";
-import { Data } from "../context/Data/Index";
-import { config } from "../config";
-import moment from "moment"
+} from '@mui/material';
+import React, { useContext, useEffect, useState } from 'react';
+import { Data } from '../context/Data/Index';
+import { config } from '../config';
+import moment from 'moment'
 import Alert from '@mui/material/Alert';
 
 const testIssueNumber = Number(config.status_issue_number)
@@ -26,7 +26,7 @@ const StatusPage = () => {
   const [isLDNLoading, setIsLDNLoading] = useState<boolean>(false);
 
   const [isSSAHealhty, setIsSSAHealhty] = useState<boolean | null>(null)
-  const [lastSSATime, setLastSSAtime] = useState("")
+  const [lastSSATime, setLastSSAtime] = useState('')
   const [isSSALoading, setIsSSALoading] = useState(false)
 
   useEffect(() => {
@@ -47,10 +47,10 @@ const StatusPage = () => {
 
       if (!statusIssue) return
 
-      //if body == ### Healthcheck... --> loading
-      if (statusIssue.data.body.startsWith("### LDN HEALTH CHECK")) setIsLDNLoading(true)
-      //if body != bot is up....  --> ok
-      if (statusIssue.data.body.startsWith("### Updated By LDN Bot at ")) {
+      // if body == ### Healthcheck... --> loading
+      if (statusIssue.data.body.startsWith('### LDN HEALTH CHECK')) setIsLDNLoading(true)
+      // if body != bot is up....  --> ok
+      if (statusIssue.data.body.startsWith('### Updated By LDN Bot at ')) {
         setIsLDNLoading(false)
         setIsLDNBotHealthy(true)
       } else {
@@ -76,7 +76,7 @@ const StatusPage = () => {
         })
 
       // getting last SSA and its time. 
-      const ssaComments = comments.filter((issue: any) => issue.body.includes("bot ran at"))
+      const ssaComments = comments.filter((issue: any) => issue.body.includes('bot ran at'))
       const last_SSA = ssaComments[ssaComments.length - 1].created_at
       setLastSSAtime(last_SSA)
       // check if it is less than 3 hours.
@@ -95,24 +95,24 @@ const StatusPage = () => {
       return <div>Checking...</div>
     } else {
       if (botStatus) {
-        return <CheckCircleIcon sx={{ color: "green" }} />
+        return <CheckCircleIcon sx={{ color: 'green' }} />
       } else {
         return <DoNotDisturbOnIcon
-          sx={{ color: "red" }}
+          sx={{ color: 'red' }}
         />
       }
     }
   }
 
   return (
-    <Box m="0 auto" marginTop="6rem" sx={{ minHeight: "30rem" }}>
+    <Box m="0 auto" marginTop="6rem" sx={{ minHeight: '30rem' }}>
       <Typography variant="h4" mb="2rem" textAlign="center">
         Fil+ Services Status
       </Typography>
-      <Box sx={{ width: "60rem" }}>
+      <Box sx={{ width: '60rem' }}>
         <Paper elevation={4}>
           <Stack
-            sx={{ p: "1rem" }}
+            sx={{ p: '1rem' }}
             direction="row"
             justifyContent="space-between"
           >
@@ -130,7 +130,7 @@ const StatusPage = () => {
                 spacing={1}
               >
                 <CheckCircleIcon
-                  sx={{ color: "green" }}
+                  sx={{ color: 'green' }}
                 />
                 <span>Active</span>
               </Stack>
@@ -140,7 +140,7 @@ const StatusPage = () => {
                 spacing={1}
               >
                 <DoNotDisturbOnIcon
-                  sx={{ color: "red" }}
+                  sx={{ color: 'red' }}
                 />
                 <span>Down</span>
               </Stack>
@@ -149,7 +149,7 @@ const StatusPage = () => {
           <Divider />
           <Stack>
             <Stack
-              sx={{ p: "1rem" }}
+              sx={{ p: '1rem' }}
               direction="row"
               justifyContent="space-between"
             >
@@ -160,7 +160,7 @@ const StatusPage = () => {
             </Stack>
             <Divider />
             <Stack
-              sx={{ p: "1rem" }}
+              sx={{ p: '1rem' }}
               direction="row"
               justifyContent="space-between"
             >

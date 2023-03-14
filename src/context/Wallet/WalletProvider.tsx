@@ -3,7 +3,7 @@ import { Wallet } from './Index'
 import { LedgerWallet } from './LedgerWallet'
 import { BurnerWallet } from './BurnerWallet'
 // @ts-ignore
-import { dispatchCustomEvent } from "slate-react-system";
+import { dispatchCustomEvent } from 'slate-react-system';
 import { config } from '../../config';
 import { withCookies } from 'react-cookie'
 import { LoadWalletOptionsType, WalletProviderProps, WalletProviderStates } from '../contextType';
@@ -52,7 +52,7 @@ class WalletProvider extends React.Component<WalletProviderProps, WalletProvider
                 }
             }
             let multisigInfo: any = {}
-            let multisigID: string = ''
+            let multisigID = ''
             if (options.multisig) {
                 try {
                     if (options.multisigAddress.length > 20) {
@@ -141,7 +141,7 @@ class WalletProvider extends React.Component<WalletProviderProps, WalletProvider
                 }
             }
             let multisigInfo: any = {}
-            let multisigID: string = ''
+            let multisigID = ''
             if (options.multisig) {
                 try {
                     if (options.multisigAddress.length > 20) {
@@ -275,7 +275,7 @@ class WalletProvider extends React.Component<WalletProviderProps, WalletProvider
         },
         dispatchNotification: (message: string) => {
             dispatchCustomEvent({
-                name: "create-notification", detail: {
+                name: 'create-notification', detail: {
                     id: Math.random().toString(36).replace(/[^a-z]+/g, '').substr(0, 5),
                     description: message,
                     dark: true,

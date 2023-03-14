@@ -1,4 +1,4 @@
-import { ApprovedVerifiers, DirectIssue, LargeRequestData, TransactionAndIssue, VerifiedCachedData, VerifiedData } from "../type";
+import { ApprovedVerifiers, DirectIssue, LargeRequestData, TransactionAndIssue, VerifiedCachedData, VerifiedData } from '../type';
 
 import { Cookies } from 'react-cookie'
 
@@ -110,7 +110,7 @@ export type WalletProviderProps = {
 // WALLET PROVIDER CONTEXT TYPE => STATE AND PROPS
 
 
-//CONFIG LOTUS TYPE
+// CONFIG LOTUS TYPE
 
 export interface ConfigLotusNode {
     name: string;

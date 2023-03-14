@@ -1,18 +1,18 @@
-import { Component } from "react";
-import { Data } from "../../context/Data/Index";
-import AddVerifierModal from "../../modals/AddVerifierModal";
+import { Component } from 'react';
+import { Data } from '../../context/Data/Index';
+import AddVerifierModal from '../../modals/AddVerifierModal';
 // @ts-ignore
-import { ButtonPrimary, dispatchCustomEvent } from "slate-react-system";
-import { bytesToiB, anyToBytes } from "../../utils/Filters";
-import { config } from "../../config";
-import WarnModalVerify from "../../modals/WarnModalVerify";
-import { BeatLoader } from "react-spinners";
-import { EVENT_TYPE, MetricsApiParams } from "../../utils/Metrics";
-import DataTable from "react-data-table-component";
-import { CircularProgress } from "@material-ui/core";
-import { notaryParser, metrics } from "@keyko-io/filecoin-verifier-tools";
-import { VerifiedData } from "../../type";
-import * as Logger from "../../logger";
+import { ButtonPrimary, dispatchCustomEvent } from 'slate-react-system';
+import { bytesToiB, anyToBytes } from '../../utils/Filters';
+import { config } from '../../config';
+import WarnModalVerify from '../../modals/WarnModalVerify';
+import { BeatLoader } from 'react-spinners';
+import { EVENT_TYPE, MetricsApiParams } from '../../utils/Metrics';
+import DataTable from 'react-data-table-component';
+import { CircularProgress } from '@material-ui/core';
+import { notaryParser, metrics } from '@keyko-io/filecoin-verifier-tools';
+import { VerifiedData } from '../../type';
+import * as Logger from '../../logger';
 
 type RootKeyHolderState = {
   tabs: string;
@@ -22,7 +22,7 @@ type RootKeyHolderState = {
   refRequests: any;
 };
 
-export default class RootKeyHolder extends Component<{},
+export default class RootKeyHolder extends Component<object,
   RootKeyHolderState
 > {
   public static contextType = Data;
@@ -30,7 +30,7 @@ export default class RootKeyHolder extends Component<{},
   state = {
     selectedTransactions: [] as any[],
     approveLoading: false,
-    tabs: "0",
+    tabs: '0',
     refAccepted: {} as any,
     refRequests: {} as any,
 
@@ -42,11 +42,11 @@ export default class RootKeyHolder extends Component<{},
   }
 
   showApproved = async () => {
-    this.setState({ tabs: "2" });
+    this.setState({ tabs: '2' });
   };
 
   showVerifierRequests = async () => {
-    this.setState({ tabs: "0" });
+    this.setState({ tabs: '0' });
   };
 
   selectRow = (transactionId: string) => {
@@ -61,11 +61,11 @@ export default class RootKeyHolder extends Component<{},
 
   proposeVerifier = async () => {
     dispatchCustomEvent({
-      name: "create-modal",
+      name: 'create-modal',
       detail: {
         id: Math.random()
           .toString(36)
-          .replace(/[^a-z]+/g, "")
+          .replace(/[^a-z]+/g, '')
           .substr(0, 5),
         modal: <AddVerifierModal />,
       },
@@ -77,23 +77,23 @@ export default class RootKeyHolder extends Component<{},
     await e.preventDefault();
     if (selected.length === 0) {
       this.context.wallet.dispatchNotification(
-        "Plese, select at least one client to sign"
+        'Plese, select at least one client to sign'
       );
       return;
     }
     dispatchCustomEvent({
-      name: "create-modal",
+      name: 'create-modal',
       detail: {
         id: Math.random()
           .toString(36)
-          .replace(/[^a-z]+/g, "")
+          .replace(/[^a-z]+/g, '')
           .substr(0, 5),
         modal: (
           <WarnModalVerify
             clientRequests={this.context.verifierAndPendingRequests}
             selectedClientRequests={selected}
             onClick={
-              origin === "ProposeSign"
+              origin === 'ProposeSign'
                 ? this.handleSubmitApproveSign.bind(this)
                 : this.handleSubmitCancel.bind(this)
             }
@@ -110,7 +110,7 @@ export default class RootKeyHolder extends Component<{},
         if (request.id === id) {
           if (request.proposed === true) {
             if (request.proposedBy !== this.context.wallet.activeAccount) {
-              alert("You must be the proposer of the request  to cancel it! ");
+              alert('You must be the proposer of the request  to cancel it! ');
               continue;
             }
             // for each tx
@@ -122,9 +122,9 @@ export default class RootKeyHolder extends Component<{},
                 tx.id,
                 this.context.wallet.walletIndex
               );
-              console.log("cancel: " + messageID);
+              console.log('cancel: ' + messageID);
               this.context.wallet.dispatchNotification(
-                "Cancel Message sent with ID: " + messageID
+                'Cancel Message sent with ID: ' + messageID
               );
             }
           }
@@ -132,13 +132,13 @@ export default class RootKeyHolder extends Component<{},
       }
     } catch (e: any) {
       this.setState({ approveLoading: false });
-      this.context.wallet.dispatchNotification("Cancel failed: " + e.message);
-      console.log("error", e.stack);
+      this.context.wallet.dispatchNotification('Cancel failed: ' + e.message);
+      console.log('error', e.stack);
     }
   };
 
   handleSubmitApproveSign = async () => {
-    dispatchCustomEvent({ name: "delete-modal", detail: {} });
+    dispatchCustomEvent({ name: 'delete-modal', detail: {} });
     this.setState({ approveLoading: true });
     // loop over selected rows
     await this.context.wallet.api.multisigInfo(
@@ -148,13 +148,13 @@ export default class RootKeyHolder extends Component<{},
     for (const request of this.context.verifierAndPendingRequests) {
       if (this.context.selectedNotaryRequests.includes(request.id)) {
         const messageIds: any[] = [];
-        let commentContent = "";
-        let label = "";
-        let filfox = "";
-        let errorMessage = "";
-        let warningMessage = "";
-        let messageID = "";
-        const PHASE = "RKH-SIGN";
+        let commentContent = '';
+        let label = '';
+        let filfox = '';
+        let errorMessage = '';
+        let warningMessage = '';
+        let messageID = '';
+        const PHASE = 'RKH-SIGN';
         try {
           const assignee = (
             await this.context.github.githubOctoGeneric.octokit.issues.get({
@@ -166,20 +166,20 @@ export default class RootKeyHolder extends Component<{},
             })
           )?.data?.assignee?.login;
           if (!assignee) {
-            throw new Error("You should assign the issue to someone");
+            throw new Error('You should assign the issue to someone');
           }
           await this.context.postLogs(
             `multisig ${request.addresses[0]} - starting to approve it!`,
-            "DEBUG",
-            "",
+            'DEBUG',
+            '',
             request.issue_number,
             PHASE
           );
           if (request.proposed === true) {
             await this.context.postLogs(
               `multisig ${request.addresses[0]} - the address is proposed. going to confirm!`,
-              "DEBUG",
-              "",
+              'DEBUG',
+              '',
               request.issue_number,
               PHASE
             );
@@ -210,41 +210,41 @@ export default class RootKeyHolder extends Component<{},
                 errorMessage += `#### @${assignee} There was an error processing the message >${messageID}`;
               messageIds.push(messageID);
               this.context.wallet.dispatchNotification(
-                "Accepting Message sent with ID: " + messageID
+                'Accepting Message sent with ID: ' + messageID
               );
               filfox += `#### You can check the status of the message here: https://filfox.info/en/message/${messageID}\n`;
             }
             // comment to issue
             commentContent = `## The request has been signed by a new Root Key Holder\n#### Message sent to Filecoin Network\n>${messageIds.join()}\n${errorMessage}\n${filfox}`;
             label =
-              errorMessage === "" ? "status:AddedOnchain" : "status:Error";
+              errorMessage === '' ? 'status:AddedOnchain' : 'status:Error';
           } else {
             await this.context.postLogs(
               `multisig ${request.addresses[0]} - going to propose the address.`,
-              "DEBUG",
-              "",
+              'DEBUG',
+              '',
               request.issue_number,
               PHASE
             );
-            let filfox = "";
-            let errorMessage = "";
+            let filfox = '';
+            let errorMessage = '';
             for (let i = 0; i < request.datacaps.length; i++) {
               if (request.datacaps[i] && request.addresses[i]) {
                 const datacap = anyToBytes(request.datacaps[i]);
                 let address = request.addresses[i];
-                console.log("request address: " + address);
-                console.log("request datacap: " + request.datacaps[i]);
-                console.log("datacap: " + datacap);
+                console.log('request address: ' + address);
+                console.log('request datacap: ' + request.datacaps[i]);
+                console.log('datacap: ' + datacap);
 
-                if (address.startsWith("t1") || address.startsWith("f1")) {
+                if (address.startsWith('t1') || address.startsWith('f1')) {
                   address = await this.context.wallet.api.actorAddress(address);
                   console.log(
-                    "getting t0/f0 ID. Result of  actorAddress method: " +
+                    'getting t0/f0 ID. Result of  actorAddress method: ' +
                     address
                   );
                 }
 
-                console.log("address to propose: " + address);
+                console.log('address to propose: ' + address);
 
                 messageID =
                   datacap === 0
@@ -257,7 +257,7 @@ export default class RootKeyHolder extends Component<{},
                       BigInt(datacap),
                       this.context.wallet.walletIndex
                     );
-                console.log("messageID: " + messageID);
+                console.log('messageID: ' + messageID);
                 const txReceipt = await this.context.wallet.api.getReceipt(
                   messageID
                 );
@@ -267,33 +267,33 @@ export default class RootKeyHolder extends Component<{},
                   errorMessage += `#### @${assignee} There was an error processing the message\n>${messageID}`;
                 messageIds.push(messageID);
                 this.context.wallet.dispatchNotification(
-                  "Accepting Message sent with ID: " + messageID
+                  'Accepting Message sent with ID: ' + messageID
                 );
                 filfox += `#### You can check the status of the message here: https://filfox.info/en/message/${messageID}\n`;
               }
             }
             commentContent = `## The request has been signed by a new Root Key Holder\n#### Message sent to Filecoin Network\n>${messageIds.join()}\n ${errorMessage}\n ${filfox}`;
             label =
-              errorMessage === ""
+              errorMessage === ''
                 ? config.lotusNodes[this.context.wallet.networkIndex]
                   .rkhtreshold > 1
-                  ? "status:StartSignOnchain"
-                  : "status:AddedOnchain"
-                : "status:Error";
+                  ? 'status:StartSignOnchain'
+                  : 'status:AddedOnchain'
+                : 'status:Error';
           }
 
     
           if (messageIds.length === 0) {
             await this.context.postLogs(
-              `Message ID not returned from node call`,
-              "ERROR",
-              "",
+              'Message ID not returned from node call',
+              'ERROR',
+              '',
               request.issue_number,
               PHASE
             );
           }
 
-          if (commentContent !== "") {
+          if (commentContent !== '') {
             await this.context.github.githubOctoGeneric.octokit.issues.createComment(
               {
                 owner:
@@ -306,7 +306,7 @@ export default class RootKeyHolder extends Component<{},
               }
             );
           }
-          if (warningMessage !== "") {
+          if (warningMessage !== '') {
             await this.context.github.githubOctoGeneric.octokit.issues.createComment(
               {
                 owner:
@@ -319,7 +319,7 @@ export default class RootKeyHolder extends Component<{},
               }
             );
           }
-          if (label !== "") {
+          if (label !== '') {
             await this.context.github.githubOctoGeneric.octokit.issues.removeAllLabels(
               {
                 owner:
@@ -339,12 +339,12 @@ export default class RootKeyHolder extends Component<{},
                 repo: config.lotusNodes[this.context.wallet.networkIndex]
                   .notaryRepo,
                 issue_number: request.issue_number,
-                labels: [label, "Notary Application"],
+                labels: [label, 'Notary Application'],
               }
             );
           }
-          //metrics
-          if (label === "status:AddedOnchain") {
+          // metrics
+          if (label === 'status:AddedOnchain') {
             const notaryGovissue =
               await this.context.github.githubOctoGeneric.octokit.issues.get({
                 owner:
@@ -359,10 +359,10 @@ export default class RootKeyHolder extends Component<{},
             const applicationAddress = notaryData.address
 
             const params: MetricsApiParams = {
-              name: applicationName || "not found",
-              clientAddress: applicationAddress || "not found",
-              msigAddress: request.addresses[0] ? request.addresses[0] : "",
-              messageCid: messageIds[0] ? messageIds[0] : "",
+              name: applicationName || 'not found',
+              clientAddress: applicationAddress || 'not found',
+              msigAddress: request.addresses[0] ? request.addresses[0] : '',
+              messageCid: messageIds[0] ? messageIds[0] : '',
             };
             metrics.callMetricsApi(
               request.issue_number,
@@ -372,8 +372,8 @@ export default class RootKeyHolder extends Component<{},
             );
             await this.context.postLogs(
               `multisig ${request.addresses[0]} approved by RKH ${this.context.wallet.activeAccount}!`,
-              "INFO",
-              "msig_approved",
+              'INFO',
+              'msig_approved',
               request.issue_number,
               PHASE
             );
@@ -381,14 +381,14 @@ export default class RootKeyHolder extends Component<{},
             await Logger.BasicLogger({ message: Logger.RKH_SIGN_ON_CHAIN })
           }
         } catch (e: any) {
-          this.context.wallet.dispatchNotification("Failed: " + e.message);
+          this.context.wallet.dispatchNotification('Failed: ' + e.message);
 
           this.setState({ approveLoading: false });
     
           await this.context.postLogs(
             `Error approving the multisig: ${e.message}`,
-            "ERROR",
-            "",
+            'ERROR',
+            '',
             request.issue_number,
             PHASE
           );
@@ -416,7 +416,7 @@ export default class RootKeyHolder extends Component<{},
         <div className="tabsholder">
           <div className="tabs">
             <div
-              className={this.state.tabs === "0" ? "selected" : ""}
+              className={this.state.tabs === '0' ? 'selected' : ''}
               onClick={() => {
                 this.showVerifierRequests();
               }}
@@ -424,7 +424,7 @@ export default class RootKeyHolder extends Component<{},
               Notary Requests ({this.context.verifierAndPendingRequests.length})
             </div>
             <div
-              className={this.state.tabs === "2" ? "selected" : ""}
+              className={this.state.tabs === '2' ? 'selected' : ''}
               onClick={() => {
                 this.showApproved();
               }}
@@ -434,14 +434,14 @@ export default class RootKeyHolder extends Component<{},
           </div>
           <div className="tabssadd">
             {this.state.approveLoading ? (
-              <BeatLoader size={15} color={"rgb(24,160,237)"} />
-            ) : this.state.tabs === "0" ? (
+              <BeatLoader size={15} color={'rgb(24,160,237)'} />
+            ) : this.state.tabs === '0' ? (
               <>
                 <ButtonPrimary
                   onClick={(e: any) =>
                     this.showWarnPropose(
                       e,
-                      "ProposeSign",
+                      'ProposeSign',
                       this.context.selectedNotaryRequests
                     )
                   }
@@ -453,20 +453,20 @@ export default class RootKeyHolder extends Component<{},
           </div>
         </div>
 
-        {this.state.tabs === "0" &&
-          <div style={{ minHeight: "500px" }}>
+        {this.state.tabs === '0' &&
+          <div style={{ minHeight: '500px' }}>
             <DataTable
               columns={[
                 {
-                  name: "Status",
+                  name: 'Status',
                   selector: (row: any) => row.proposed,
                   sortable: true,
                   cell: (row: any) => (
-                    <span>{row.proposed ? "Proposed" : "Pending"}</span>
+                    <span>{row.proposed ? 'Proposed' : 'Pending'}</span>
                   ),
                 },
                 {
-                  name: "Issue",
+                  name: 'Issue',
                   selector: (row: any) => row.issue_number,
                   sortable: true,
                   cell: (row: any) => (
@@ -480,25 +480,25 @@ export default class RootKeyHolder extends Component<{},
                   ),
                 },
                 {
-                  name: "Address",
+                  name: 'Address',
                   selector: (row: any) => row.addresses,
                   sortable: true,
                 },
                 {
-                  name: "Datacap",
+                  name: 'Datacap',
                   selector: (row: any) => row.datacaps,
                   sortable: true,
                 },
                 {
-                  name: "Transaction ID",
+                  name: 'Transaction ID',
                   selector: (row: any) => row.txs,
                   grow: 2,
                   cell: (row: any) => (
-                    <span>{row.txs.length === 0 ? "-" : row.txs[0].id}</span>
+                    <span>{row.txs.length === 0 ? '-' : row.txs[0].id}</span>
                   ),
                 },
                 {
-                  name: "Proposed by",
+                  name: 'Proposed by',
                   selector: (row: any) => row.proposedBy,
                   sortable: true,
                   grow: 2,
@@ -514,7 +514,7 @@ export default class RootKeyHolder extends Component<{},
               selectableRowsNoSelectAll={true}
               progressPending={this.context.isPendingRequestLoading}
               progressComponent={<CircularProgress
-                style={{ marginTop: "4rem", color: "rgb(0, 144, 255)" }}
+                style={{ marginTop: '4rem', color: 'rgb(0, 144, 255)' }}
               />}
               onSelectedRowsChange={({ selectedRows }) => {
                 this.context.selectNotaryRequest(selectedRows);
@@ -523,23 +523,23 @@ export default class RootKeyHolder extends Component<{},
           </div>
         }
 
-        {this.state.tabs === "2" &&
-          <div style={{ minHeight: "500px" }}>
+        {this.state.tabs === '2' &&
+          <div style={{ minHeight: '500px' }}>
             <DataTable
               columns={[
                 {
-                  name: "Notary",
+                  name: 'Notary',
                   selector: (row) => row.verifier,
                   sortable: true,
                 },
                 {
-                  name: "Address",
+                  name: 'Address',
                   selector: (row) => row.verifierAccount,
                   sortable: true,
                   grow: 2,
                 },
                 {
-                  name: "Datacap",
+                  name: 'Datacap',
                   selector: (row) => row.datacap,
                   sortable: true,
                   cell: (row: any) => <span>{bytesToiB(row.datacap)}</span>,
@@ -554,7 +554,7 @@ export default class RootKeyHolder extends Component<{},
               }}
               progressPending={this.context.acceptedNotariesLoading}
               progressComponent={<CircularProgress
-                style={{ marginTop: "4rem", color: "rgb(0, 144, 255)" }}
+                style={{ marginTop: '4rem', color: 'rgb(0, 144, 255)' }}
               />}
               paginationRowsPerPageOptions={[10]}
             />

@@ -1,4 +1,4 @@
-import { config } from "../../config"
+import { config } from '../../config'
 export const coreInfo = [
   { name: 'title', description: 'Github Issue Title', value: '', error: false, errorMessage: 'Field is Required', type: 'string' },
   { name: 'name', description: 'Organization Name', value: '', error: false, errorMessage: 'Field is Required', type: 'string' },

@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 // @ts-ignore
-import { ButtonPrimary } from "slate-react-system";
-import { anyToBytes } from "../utils/Filters"
+import { ButtonPrimary } from 'slate-react-system';
+import { anyToBytes } from '../utils/Filters'
 
 type ModalProps = {
     clientRequests: any[],
@@ -14,10 +14,10 @@ type ModalProps = {
 
 const WarnModalVerify = (props: ModalProps) => {
     const [requestToShow, setRequestToShow] = useState<any>([])
-    const [message, setMessage] = useState("")
+    const [message, setMessage] = useState('')
 
     useEffect(() => {
-        let requestToShow = []
+        const requestToShow = []
 
         if (props.origin === 'Notary') {
             for (const request of props.clientRequests) {
@@ -29,7 +29,7 @@ const WarnModalVerify = (props: ModalProps) => {
                 }
             }
 
-            setMessage("You are about to send a message to assign DataCap to the following addresses:")
+            setMessage('You are about to send a message to assign DataCap to the following addresses:')
 
         } else if (props.origin === 'ProposeSign' || props.origin === 'Cancel') {
             for (const request of props.clientRequests) {
@@ -43,9 +43,9 @@ const WarnModalVerify = (props: ModalProps) => {
 
             setMessage(
                 props.origin === 'ProposeSign' ?
-                    "You are about to send a message to sign the following Notaries and associated DataCaps:"
+                    'You are about to send a message to sign the following Notaries and associated DataCaps:'
                     :
-                    "You are about to send a message to cancel the transaction to the following adresses"
+                    'You are about to send a message to cancel the transaction to the following adresses'
             )
         }
 

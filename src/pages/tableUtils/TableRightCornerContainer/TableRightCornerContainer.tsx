@@ -1,4 +1,4 @@
-import "./TableRightCornerContainer.scss"
+import './TableRightCornerContainer.scss'
 
 export interface TableRightCornerContainerProps {
   children: React.ReactNode

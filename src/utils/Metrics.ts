@@ -1,9 +1,9 @@
 export enum EVENT_TYPE {
-    CREATE_APPLICATION = "create_application",
-    MULTISIG_CREATION = "multisig_creation",
-    FIRST_DC_REQUEST = "first_datacap_request",
-    DC_ALLOCATION = "datacap_allocation",
-    SUBSEQUENT_DC_REQUEST = "subsequent_datacap_request",
+    CREATE_APPLICATION = 'create_application',
+    MULTISIG_CREATION = 'multisig_creation',
+    FIRST_DC_REQUEST = 'first_datacap_request',
+    DC_ALLOCATION = 'datacap_allocation',
+    SUBSEQUENT_DC_REQUEST = 'subsequent_datacap_request',
 }
 
 /**

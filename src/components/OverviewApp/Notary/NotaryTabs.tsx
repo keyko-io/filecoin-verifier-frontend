@@ -1,8 +1,8 @@
-import { useContext, useEffect, useState } from "react";
-import { config } from "../../../config";
-import * as Logger from "../../../logger";
-import { Data } from "../../../context/Data/Index";
-import { useLargeRequestsContext } from "../../../context/LargeRequests";
+import { useContext, useEffect, useState } from 'react';
+import { config } from '../../../config';
+import * as Logger from '../../../logger';
+import { Data } from '../../../context/Data/Index';
+import { useLargeRequestsContext } from '../../../context/LargeRequests';
 
 type NotaryTabsProps = {
     tabs: string;
@@ -19,7 +19,7 @@ const NotaryTabs = ({
     const { count } = useLargeRequestsContext();
 
     const selectedTab = (tabIndex: string) => {
-        return tabs === tabIndex ? "selected" : "";
+        return tabs === tabIndex ? 'selected' : '';
     };
 
     const user = context.github.loggedUser
@@ -64,25 +64,25 @@ const NotaryTabs = ({
         <>
             <div className="tabs">
                 <div
-                    className={selectedTab("1")}
+                    className={selectedTab('1')}
                     onClick={() => {
-                        changeStateTabs("1");
+                        changeStateTabs('1');
                     }}
                 >
                     Public Requests ({context.clientRequests.length})
                 </div>
                 <div
-                    className={selectedTab("2")}
+                    className={selectedTab('2')}
                     onClick={() => {
-                        changeStateTabs("2");
+                        changeStateTabs('2');
                     }}
                 >
                     Verified clients ({verifiedClientsLength})
                 </div>
                 <div
-                    className={selectedTab("3")}
+                    className={selectedTab('3')}
                     onClick={() => {
-                        changeStateTabs("3");
+                        changeStateTabs('3');
                     }}
                 >
                     Large Requests (
@@ -90,9 +90,9 @@ const NotaryTabs = ({
                 </div>
 
                 <div
-                    className={selectedTab("4")}
+                    className={selectedTab('4')}
                     onClick={() => {
-                        changeStateTabs("4");
+                        changeStateTabs('4');
                     }}
                 >
                     Proposed Requests

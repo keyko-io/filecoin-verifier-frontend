@@ -11,7 +11,7 @@ export interface LayoutProps {
 const Layout = ({ children }: LayoutProps) => {
     const excludeHeaderPaths = ['/app'];
 
-    let { pathname } = useLocation();
+    const { pathname } = useLocation();
 
     return (<>
         <Toaster position="top-right" containerStyle={{

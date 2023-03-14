@@ -1,5 +1,5 @@
 import React from 'react'
-import "./TableSearchInput.scss"
+import './TableSearchInput.scss'
 
 type TableSearchInputProps = {
   query: string,

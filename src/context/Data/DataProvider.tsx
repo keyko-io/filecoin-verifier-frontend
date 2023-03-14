@@ -1,30 +1,30 @@
-import React from "react";
-import { Data } from "./Index";
-import { config } from "../../config";
+import React from 'react';
+import { Data } from './Index';
+import { config } from '../../config';
 // @ts-ignore
-import { IssueBody } from "../../utils/IssueBody";
-import BigNumber from "bignumber.js";
-import _ from "lodash";
-import { v4 as uuidv4 } from "uuid";
-import { bytesToiB } from "../../utils/Filters";
-import { notaryLedgerVerifiedComment } from "./comments";
-import { Notary } from "../../pages/Verifiers";
+import { IssueBody } from '../../utils/IssueBody';
+import BigNumber from 'bignumber.js';
+import _ from 'lodash';
+import { v4 as uuidv4 } from 'uuid';
+import { bytesToiB } from '../../utils/Filters';
+import { notaryLedgerVerifiedComment } from './comments';
+import { Notary } from '../../pages/Verifiers';
 import {
     ldnParser,
     notaryParser,
     commonUtils,
     simpleClientParser,
-} from "@keyko-io/filecoin-verifier-tools";
+} from '@keyko-io/filecoin-verifier-tools';
 import {
     ApprovedVerifiers,
     DirectIssue,
     LargeRequestData,
     VerifiedData,
-} from "../../type";
+} from '../../type';
 import {
     DataProviderProps,
     DataProviderStates,
-} from "../contextType";
+} from '../contextType';
 
 interface ParseLargeRequestData {
     address: string;
@@ -68,7 +68,7 @@ export default class DataProvider extends React.Component<
                 type: string
             ) => {
                 switch (type) {
-                    case "largeClientRequests":
+                    case 'largeClientRequests':
                         this.setState({
                             largeClientRequests: elementToUpdate,
                         });
@@ -94,7 +94,7 @@ export default class DataProvider extends React.Component<
                     if (
                         config.lotusNodes[
                             this.props.wallet.networkIndex
-                        ].name === "Localhost"
+                        ].name === 'Localhost'
                     ) {
                         return;
                     }
@@ -110,12 +110,12 @@ export default class DataProvider extends React.Component<
           ];
           const res = (
             await fetch(
-              "https://cbqluey8wa.execute-api.us-east-1.amazonaws.com/dev",
+              'https://cbqluey8wa.execute-api.us-east-1.amazonaws.com/dev',
               {
-                headers: { "x-api-key": config.loggerApiKey },
-                method: "POST",
+                headers: { 'x-api-key': config.loggerApiKey },
+                method: 'POST',
                 body: JSON.stringify({
-                  type: "POST_CUSTOM_LOGS",
+                  type: 'POST_CUSTOM_LOGS',
                   logArray: logArray,
                 }),
               }
@@ -126,7 +126,7 @@ export default class DataProvider extends React.Component<
           console.log(error);
         }
       },
-            //@ts-ignore
+            // @ts-ignore
             formatLargeRequestData: async (
                 requests: ParseLargeRequestData[]
             ) => {
@@ -149,7 +149,7 @@ export default class DataProvider extends React.Component<
                             .reverse()
                             .find((comment: any) =>
                                 comment?.body?.includes(
-                                    "## DataCap Allocation requested"
+                                    '## DataCap Allocation requested'
                                 )
                             );
 
@@ -181,8 +181,8 @@ export default class DataProvider extends React.Component<
                     await this?.props?.github?.fetchGithubIssues(
                         config.onboardingLargeOwner,
                         config.onboardingLargeClientRepo,
-                        "open",
-                        "bot:readyToSign"
+                        'open',
+                        'bot:readyToSign'
                     );
                 const response = allGHIssues.map((issue: any) => {
                     const parsed: ParseLargeRequestData =
@@ -248,14 +248,14 @@ export default class DataProvider extends React.Component<
                 // return parsedIssueData;
             },
       getLDNIssuesAndTransactions: async () => {
-        //GETTING ISSUES
+        // GETTING ISSUES
 
                 const rawLargeIssuesAll =
                     await this.props.github.fetchGithubIssues(
                         config.onboardingLargeOwner,
                         config.onboardingLargeClientRepo,
-                        "open",
-                        "bot:readyToSign"
+                        'open',
+                        'bot:readyToSign'
                     );
 
                 // const rawLargeIssuesAll = await this.props.github.githubOcto.paginate(
@@ -274,12 +274,12 @@ export default class DataProvider extends React.Component<
                         (item: any) =>
                             !item.labels.find(
                                 (l: any) =>
-                                    l.name === "status:needsDiligence"
+                                    l.name === 'status:needsDiligence'
                             )
                     )
                     .slice(0, 10);
 
-                //GETTING COMMENTS
+                // GETTING COMMENTS
                 const comments: any = await Promise.allSettled(
                     rawLargeIssues.map(
                         (rawLargeIssue: any) =>
@@ -316,10 +316,10 @@ export default class DataProvider extends React.Component<
                     )
                 );
 
-                //GROUPING ISSUES BY MSIG
-                let issuesByMsig: any[] = [];
+                // GROUPING ISSUES BY MSIG
+                const issuesByMsig: any[] = [];
 
-                for (let resProm of comments) {
+                for (const resProm of comments) {
                     const comms = resProm?.value?.comments;
                     const cmtsLength =
                         resProm?.value?.comments?.length;
@@ -398,17 +398,17 @@ export default class DataProvider extends React.Component<
                                                             tx.parsed
                                                     );
 
-                                                //console.log(pendingFiltered, "pending filtered");
+                                                // console.log(pendingFiltered, "pending filtered");
 
                                                 const txsByClientAddress =
                                                     _.groupBy(
                                                         pendingFiltered,
-                                                        "parsed.params.address"
+                                                        'parsed.params.address'
                                                     );
 
                                                 console.log(
                                                     txsByClientAddress,
-                                                    "txsByClientAddress"
+                                                    'txsByClientAddress'
                                                 );
 
                                                 resolve({
@@ -436,7 +436,7 @@ export default class DataProvider extends React.Component<
                             multisigAddress: iss.multisigAddress,
                             byClients: _.groupBy(
                                 iss.issues,
-                                "clientAddress"
+                                'clientAddress'
                             ),
                         };
                     }
@@ -444,11 +444,11 @@ export default class DataProvider extends React.Component<
 
                 console.log(
                     issuesByClientAddress,
-                    "issuesByClientAddress"
+                    'issuesByClientAddress'
                 );
 
-                let transactionAndIssue = [];
-                for (let msigGroup of issuesByClientAddress) {
+                const transactionAndIssue = [];
+                for (const msigGroup of issuesByClientAddress) {
                     const txsByCientList: TxsByClientAddress[] =
                         txsGroupedByClientAddress.filter(
                             (tx) =>
@@ -460,7 +460,7 @@ export default class DataProvider extends React.Component<
 
                     console.log({ txsByCientList });
 
-                    for (let [k, v] of Object.entries(
+                    for (const [k, v] of Object.entries(
                         txsByCientList[0].txsByClientAddress
                     )) {
                         console.log(k, v);
@@ -476,7 +476,7 @@ export default class DataProvider extends React.Component<
                         });
                     }
                     // TODO make a list of issues without transactions
-                    for (let [k, v] of Object.entries(
+                    for (const [k, v] of Object.entries(
                         msigGroup.byClients
                     )) {
                         if (
@@ -545,7 +545,7 @@ export default class DataProvider extends React.Component<
                         txId: String(pendingFiltered[0]?.id),
                     };
                 } else {
-                    return { signerAddress: "", txId: "" };
+                    return { signerAddress: '', txId: '' };
                 }
             },
 
@@ -560,8 +560,8 @@ export default class DataProvider extends React.Component<
                         await this.props.github.fetchGithubIssues(
                             config.onboardingOwner,
                             config.onboardingClientRepo,
-                            "open",
-                            "state:Verifying"
+                            'open',
+                            'state:Verifying'
                         );
 
                     // const rawDirectIssues = await this.props.github.githubOcto.paginate(
@@ -642,7 +642,7 @@ export default class DataProvider extends React.Component<
                         verifierRegistry.notaries.find(
                           (notary) =>
                             notary.ldn_config.signing_address === signerAddress
-                        )?.github_user[0] || "none";
+                        )?.github_user[0] || 'none';
                     }
 
                                             const approverIsNotProposer =
@@ -659,7 +659,7 @@ export default class DataProvider extends React.Component<
                                                 : msigIncludeSigner;
                                             if (
                                                 config.networks.includes(
-                                                    "Localhost"
+                                                    'Localhost'
                                                 )
                                             )
                                                 signable = true;
@@ -735,7 +735,7 @@ export default class DataProvider extends React.Component<
           console.error(error);
           this.setState({ ldnRequestsLoading: false });
           this.props.wallet.dispatchNotification(
-            "While loading data error happened, please try again"
+            'While loading data error happened, please try again'
           );
         }
       },
@@ -779,8 +779,8 @@ export default class DataProvider extends React.Component<
             {
               owner: config.onboardingOwner,
               repo: config.onboardingNotaryOwner,
-              state: "open",
-              labels : "Notary Application"
+              state: 'open',
+              labels : 'Notary Application'
             }
           )
 
@@ -790,15 +790,15 @@ export default class DataProvider extends React.Component<
                                 !issue.labels.find(
                                     (l: any) =>
                                         l.name ===
-                                        "status:AddedOnchain"
+                                        'status:AddedOnchain'
                                 )
                         )
                         .filter((issue: any) =>
                             issue.labels.find(
                                 (l: any) =>
-                                    l.name === "status:Approved" ||
+                                    l.name === 'status:Approved' ||
                                     l.name ===
-                                        "status:StartSignOnchain"
+                                        'status:StartSignOnchain'
                             )
                         );
 
@@ -806,8 +806,8 @@ export default class DataProvider extends React.Component<
                         await this.props.wallet.api.pendingRootTransactions()
                     ).filter(
                         (ptx: any) =>
-                            ptx.parsed.name === "addVerifier" ||
-                            ptx.parsed.name === "removeVerifier"
+                            ptx.parsed.name === 'addVerifier' ||
+                            ptx.parsed.name === 'removeVerifier'
                     );
 
                     const requestsAndCommentsProm: any =
@@ -875,7 +875,7 @@ export default class DataProvider extends React.Component<
                     const requestsAndComments =
                         requestsAndCommentsProm
                             .filter(
-                                (r: any) => r.status === "fulfilled"
+                                (r: any) => r.status === 'fulfilled'
                             )
                             .map((r: any) => r.value);
 
@@ -890,7 +890,7 @@ export default class DataProvider extends React.Component<
                                 : r?.lastRequest?.datacap;
                             const proposedBy = r.tx
                                 ? r?.tx?.signers[0]
-                                : "";
+                                : '';
                             const txs = r.tx ? [r.tx] : [];
 
                             return {
@@ -916,7 +916,7 @@ export default class DataProvider extends React.Component<
                         isPendingRequestLoading: false,
                     });
                     console.error(
-                        "error in verifierAndPendingRequests",
+                        'error in verifierAndPendingRequests',
                         error
                     );
                 }
@@ -967,7 +967,7 @@ export default class DataProvider extends React.Component<
                         page * 10
                     );
 
-                    let verified: VerifiedData[] = [];
+                    const verified: VerifiedData[] = [];
                     await Promise.allSettled(
                         paginate.map(
                             (verifiedAddress: ApprovedVerifiers) =>
@@ -995,7 +995,7 @@ export default class DataProvider extends React.Component<
                                                 datacap:
                                                     verifiedAddress.datacap,
                                             });
-                                            resolve("ok");
+                                            resolve('ok');
                                         } catch (error) {
                                             reject(error);
                                         }
@@ -1015,7 +1015,7 @@ export default class DataProvider extends React.Component<
                     this.setState({ verified });
                 } catch (error) {
                     console.error(
-                        "error in resolving promises",
+                        'error in resolving promises',
                         error
                     );
                 }
@@ -1025,7 +1025,7 @@ export default class DataProvider extends React.Component<
                     const clients =
                         await this.props.wallet.api.listVerifiedClients();
 
-                    let clientsAmount = clients
+                    const clientsAmount = clients
                         .reduce(
                             (tot: any, el: any) =>
                                 new BigNumber(tot).plus(
@@ -1038,7 +1038,7 @@ export default class DataProvider extends React.Component<
                     this.setState({ clients, clientsAmount });
                 } catch (error) {
                     console.error(
-                        "error in resolving promises",
+                        'error in resolving promises',
                         error
                     );
                 }
@@ -1055,7 +1055,7 @@ export default class DataProvider extends React.Component<
                     const comment = comments
                         .filter((item: any) =>
                             item.body.includes(
-                                "## DataCap Allocation requested"
+                                '## DataCap Allocation requested'
                             )
                         )
                         .reverse();
@@ -1077,13 +1077,13 @@ export default class DataProvider extends React.Component<
                 errorMessage: string
             ) => {
                 const formattedDc = bytesToiB(datacap);
-                let commentContent =
-                    errorMessage !== ""
+                const commentContent =
+                    errorMessage !== ''
                         ? errorMessage
                         : `## Request Approved\nYour Datacap Allocation Request has been approved by the Notary\n#### Message sent to Filecoin Network\n>${messageID} \n#### Address \n> ${address}\n#### Datacap Allocated\n> ${formattedDc}\n#### Signer Address\n> ${signer}\n#### You can check the status of the message here: https://filfox.info/en/message/${messageID}`;
 
-                //if error, post error comment and error label
-                if (errorMessage !== "") {
+                // if error, post error comment and error label
+                if (errorMessage !== '') {
                     await this.props.github.githubOcto.issues.removeAllLabels(
                         {
                             owner: config.onboardingOwner,
@@ -1096,7 +1096,7 @@ export default class DataProvider extends React.Component<
                             owner: config.onboardingOwner,
                             repo: config.onboardingClientRepo,
                             issue_number: requestNumber,
-                            labels: ["status:Error"],
+                            labels: ['status:Error'],
                         }
                     );
                     await this.props.github.githubOcto.issues.createComment(
@@ -1122,7 +1122,7 @@ export default class DataProvider extends React.Component<
                     owner: config.onboardingOwner,
                     repo: config.onboardingClientRepo,
                     issue_number: requestNumber,
-                    labels: ["state:Granted"],
+                    labels: ['state:Granted'],
                 });
                 await this.props.github.githubOcto.issues.createComment(
                     {
@@ -1136,7 +1136,7 @@ export default class DataProvider extends React.Component<
                     owner: config.onboardingOwner,
                     repo: config.onboardingClientRepo,
                     issue_number: requestNumber,
-                    state: "closed",
+                    state: 'closed',
                 });
             },
             updateGithubVerifiedLarge: async (
@@ -1152,15 +1152,15 @@ export default class DataProvider extends React.Component<
                 const uniqueLastId =
                     (await this.state.getLastUniqueId(
                         requestNumber
-                    )) || "";
+                    )) || '';
 
-                let commentContent =
-                    errorMessage !== ""
+                const commentContent =
+                    errorMessage !== ''
                         ? errorMessage
                         : `## Request ${action}\nYour Datacap Allocation Request has been ${action?.toLowerCase()} by the Notary\n#### Message sent to Filecoin Network\n>${messageID} \n#### Address \n> ${address}\n#### Datacap Allocated\n> ${formattedDc}\n#### Signer Address\n> ${signer}\n#### Id\n> ${uniqueLastId}\n#### You can check the status of the message here: https://filfox.info/en/message/${messageID}`;
 
-                //if error, post error comment and error label
-                if (errorMessage !== "") {
+                // if error, post error comment and error label
+                if (errorMessage !== '') {
                     await this.props.github.githubOcto.issues.removeAllLabels(
                         {
                             owner: config.onboardingLargeOwner,
@@ -1173,7 +1173,7 @@ export default class DataProvider extends React.Component<
                             owner: config.onboardingLargeOwner,
                             repo: config.onboardingLargeClientRepo,
                             issue_number: requestNumber,
-                            labels: ["status:Error"],
+                            labels: ['status:Error'],
                         }
                     );
                     await this.props.github.githubOcto.issues.createComment(
@@ -1187,7 +1187,7 @@ export default class DataProvider extends React.Component<
                     return;
                 }
 
-                //create approval comment
+                // create approval comment
                 await this.props.github.githubOcto.issues.createComment(
                     {
                         owner: config.onboardingLargeOwner,
@@ -1242,7 +1242,7 @@ export default class DataProvider extends React.Component<
                                 owner: config.onboardingOwner,
                                 repo: config.onboardingClientRepo,
                                 title:
-                                    "Client Allocation Request for: " +
+                                    'Client Allocation Request for: ' +
                                     data.organization,
                                 body: IssueBody(data, user),
                             }
@@ -1273,8 +1273,8 @@ export default class DataProvider extends React.Component<
                 });
             },
             clients: [],
-            clientsAmount: "",
-            searchString: "",
+            clientsAmount: '',
+            searchString: '',
             search: (query: string) => {
                 this.setState({ searchString: query });
             },
@@ -1288,7 +1288,7 @@ export default class DataProvider extends React.Component<
                 try {
                     this.state.setIsVerifyWalletLoading(true);
 
-                    //send message
+                    // send message
                     // const msgCid = 'bafy2bzacedeu7ymgdg3gwy522gtoy4a6j6v433cur4wjlv2xjeqtvm4bkymoi'
                     const msgCid =
                         await this.props.wallet.api.methods.sendTx(
@@ -1300,12 +1300,12 @@ export default class DataProvider extends React.Component<
                             )
                         );
                     // if (msgCid) {
-                    if (msgCid["/"]) {
+                    if (msgCid['/']) {
                         // alert('Ledger wallet successfully verified with message: ' + msgCid)
                         this.state.setIsVerifyWalletLoading(false);
                         alert(
-                            "Ledger wallet successfully verified with message: " +
-                                msgCid["/"]
+                            'Ledger wallet successfully verified with message: ' +
+                                msgCid['/']
                         );
                         // update state
 
@@ -1316,20 +1316,20 @@ export default class DataProvider extends React.Component<
                             await this.props.github.fetchGithubIssues(
                                 config.onboardingOwner,
                                 config.onboardingNotaryOwner,
-                                "all",
-                                "Notary Application"
+                                'all',
+                                'Notary Application'
                             );
 
-                        let issueNumber = "";
-                        for (let issue of rawIssues) {
-                            //parse each issue
-                            let parsedNotaryAddress =
+                        let issueNumber = '';
+                        for (const issue of rawIssues) {
+                            // parse each issue
+                            const parsedNotaryAddress =
                                 notaryParser.parseNotaryAddress(
                                     issue.body
                                 );
-                            let address = parsedNotaryAddress
-                                ? parsedNotaryAddress.split(" ")[0]
-                                : "";
+                            const address = parsedNotaryAddress
+                                ? parsedNotaryAddress.split(' ')[0]
+                                : '';
 
                             // if the address is the one selected by user, set issue number
                             if (
@@ -1344,14 +1344,14 @@ export default class DataProvider extends React.Component<
                         // if iussue number is not there, return false (it should never happen)
                         if (!issueNumber) {
                             console.log(
-                                "Looks like there is any notary with this address..."
+                                'Looks like there is any notary with this address...'
                             );
                             return false;
                         }
                         // comment github with comment
                         // const body = notaryLedgerVerifiedComment(msgCid)
                         const body = notaryLedgerVerifiedComment(
-                            msgCid["/"]
+                            msgCid['/']
                         );
                         await this.props.github.githubOcto.issues.createComment(
                             {
@@ -1371,26 +1371,26 @@ export default class DataProvider extends React.Component<
             },
             checkVerifyWallet: async () => {
                 try {
-                    //check all issue with notary application label
+                    // check all issue with notary application label
                     // const rawIssues = await this.props.github.fetchGithubIssues('keyko-io', 'filecoin-notaries-onboarding', 'all', "Notary Application")
                     const rawIssues =
                         await this.props.github.fetchGithubIssues(
                             config.onboardingOwner,
                             config.onboardingNotaryOwner,
-                            "all",
-                            "Notary Application"
+                            'all',
+                            'Notary Application'
                         );
 
-                    let issueNumber = "";
-                    for (let issue of rawIssues) {
+                    let issueNumber = '';
+                    for (const issue of rawIssues) {
                         // parse each issue
-                        let parsedNotaryAddress =
+                        const parsedNotaryAddress =
                             notaryParser.parseNotaryAddress(
                                 issue.body
                             );
-                        let address = parsedNotaryAddress
-                            ? parsedNotaryAddress.split(" ")[0]
-                            : "";
+                        const address = parsedNotaryAddress
+                            ? parsedNotaryAddress.split(' ')[0]
+                            : '';
 
                         // if the address is the one selected by user, set issue number
                         if (
@@ -1415,7 +1415,7 @@ export default class DataProvider extends React.Component<
                             config.onboardingNotaryOwner,
                             Number(issueNumber)
                         );
-                    for (let comment of rawComments) {
+                    for (const comment of rawComments) {
                         // return true if the verified notary comment is present
                         // return false if not
                         const parsedComment =
@@ -1428,7 +1428,7 @@ export default class DataProvider extends React.Component<
                     }
                     return false;
                 } catch (error) {
-                    console.log("error in checkverifyWallet", error);
+                    console.log('error in checkverifyWallet', error);
                     return false;
                 }
             },

@@ -1,31 +1,30 @@
-import { useEffect, useState } from "react";
-import { Data } from "../../context/Data/Index";
-import AddClientModal from "../../modals/AddClientModal";
+import { useEffect, useState ,useContext} from 'react';
+import { Data } from '../../context/Data/Index';
+import AddClientModal from '../../modals/AddClientModal';
 // @ts-ignore
 // prettier-ignore
-import { ButtonPrimary, dispatchCustomEvent, ButtonSecondary } from "slate-react-system";
-import { anyToBytes } from "../../utils/Filters";
+import { ButtonPrimary, dispatchCustomEvent, ButtonSecondary } from 'slate-react-system';
+import { anyToBytes } from '../../utils/Filters';
 // @ts-ignore
-import LoginGithub from "react-login-github";
-import { config } from "../../config";
-import WarnModalVerify from "../../modals/WarnModalVerify";
-import { BeatLoader } from "react-spinners";
-import { useContext } from "react";
-import WarnModalNotaryVerified from "../../modals/WarnModalNotaryVeried";
+import LoginGithub from 'react-login-github';
+import { config } from '../../config';
+import WarnModalVerify from '../../modals/WarnModalVerify';
+import { BeatLoader } from 'react-spinners';
+import WarnModalNotaryVerified from '../../modals/WarnModalNotaryVeried';
 import {
    LargeRequestTable,
    CancelProposalTable,
    NotaryTabs,
    PublicRequestTable,
    VerifiedClientsTable,
-} from "./Notary/index";
-import toast from "react-hot-toast";
-import { ldnParser } from "@keyko-io/filecoin-verifier-tools";
-import * as Logger from "../../logger";
-import LargeRequestsProvider from "../../context/LargeRequests";
-import ApproveLargeRequestModal from "./Notary/ApproveLargeRequestModal";
-import NodeDataProvider from "../../context/NodeData";
-import { LargeRequestData } from "../../type";
+} from './Notary/index';
+import toast from 'react-hot-toast';
+import { ldnParser } from '@keyko-io/filecoin-verifier-tools';
+import * as Logger from '../../logger';
+import LargeRequestsProvider from '../../context/LargeRequests';
+import ApproveLargeRequestModal from './Notary/ApproveLargeRequestModal';
+import NodeDataProvider from '../../context/NodeData';
+import { LargeRequestData } from '../../type';
 
 type NotaryProps = {
    clients: any[];
@@ -59,7 +58,7 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
       selectedLargeClientRequests,
       setSelectedLargeClientRequests,
    ] = useState([] as any);
-   const [tabs, setTabs] = useState("3");
+   const [tabs, setTabs] = useState('3');
    const [approveLoading, setApproveLoading] = useState(false);
    const [approvedDcRequests, setApprovedDcRequests] = useState(
       [] as any
@@ -85,11 +84,11 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
 
    const requestDatacap = () => {
       dispatchCustomEvent({
-         name: "create-modal",
+         name: 'create-modal',
          detail: {
             id: Math.random()
                .toString(36)
-               .replace(/[^a-z]+/g, "")
+               .replace(/[^a-z]+/g, '')
                .substr(0, 5),
             modal: <AddClientModal />,
          },
@@ -98,14 +97,14 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
 
    const verifyNewDatacap = () => {
       if (!selectedClientRequests.length) {
-         toast.error("You should select one public request!");
+         toast.error('You should select one public request!');
       } else {
          dispatchCustomEvent({
-            name: "create-modal",
+            name: 'create-modal',
             detail: {
                id: Math.random()
                   .toString(36)
-                  .replace(/[^a-z]+/g, "")
+                  .replace(/[^a-z]+/g, '')
                   .substr(0, 5),
                modal: (
                   <AddClientModal
@@ -121,32 +120,32 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
 
    const showWarnVerify = async (origin: string) => {
       dispatchCustomEvent({
-         name: "create-modal",
+         name: 'create-modal',
          detail: {
             id: Math.random()
                .toString(36)
-               .replace(/[^a-z]+/g, "")
+               .replace(/[^a-z]+/g, '')
                .substr(0, 5),
             modal: (
                <WarnModalVerify
                   clientRequests={
-                     origin === "Notary" ? context.clientRequests : []
+                     origin === 'Notary' ? context.clientRequests : []
                   }
                   selectedClientRequests={
-                     origin === "Notary" ? selectedClientRequests : []
+                     origin === 'Notary' ? selectedClientRequests : []
                   }
                   onClick={() => {
-                     origin === "Notary"
+                     origin === 'Notary'
                         ? verifyClients()
-                        : origin === "newDatacap"
+                        : origin === 'newDatacap'
                            ? verifyNewDatacap()
                            : requestDatacap();
                   }}
-                  largeAddress={origin === "Large" ? true : false}
+                  largeAddress={origin === 'Large' ? true : false}
                   origin={
-                     origin === "Notary" || "Large"
-                        ? "Notary"
-                        : "single-message"
+                     origin === 'Notary' 
+                        ? 'Notary'
+                        : 'single-message'
                   }
                />
             ),
@@ -162,18 +161,18 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
    ) => {
       if (
          config.lotusNodes[context.wallet.networkIndex].name !==
-         "Localhost"
+         'Localhost'
       ) {
          try {
             const isVerified: any = await context.checkVerifyWallet();
             if (!isVerified) {
                await e.preventDefault();
                dispatchCustomEvent({
-                  name: "create-modal",
+                  name: 'create-modal',
                   detail: {
                      id: Math.random()
                         .toString(36)
-                        .replace(/[^a-z]+/g, "")
+                        .replace(/[^a-z]+/g, '')
                         .substr(0, 5),
                      modal: (
                         <WarnModalNotaryVerified
@@ -190,7 +189,7 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
             console.log(error);
          }
       }
-      if (origin === "Large") {
+      if (origin === 'Large') {
          openApproveLargeRequestModal();
          // show new Large
       } else {
@@ -200,7 +199,7 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
 
    const cancelDuplicateRequest = async () => {
       if (!cancelProposalData) {
-         toast.error("You should select one pending request!");
+         toast.error('You should select one pending request!');
          return;
       }
 
@@ -216,7 +215,7 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
 
          if (!res) {
             setDataCancelLoading(false);
-            toast.error("Something went wrong, please try again!");
+            toast.error('Something went wrong, please try again!');
             return;
          }
 
@@ -236,10 +235,10 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
 
          const postLogs = context.postLogs(
             `Request Canceled with txID:${cancelProposalData.tx.id}, Signer Address: ${context.wallet.activeAccount}`,
-            "INFO",
-            "cancel_request",
+            'INFO',
+            'cancel_request',
             cancelProposalData.issueNumber,
-            "CANCEL_REQUEST"
+            'CANCEL_REQUEST'
          );
 
          const updateComment =
@@ -253,7 +252,7 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
          await Promise.all([updateComment, postLogs]);
 
          toast.success(
-            "Your pending request has been successfully canceled."
+            'Your pending request has been successfully canceled.'
          );
 
       await Logger.BasicLogger({ message: Logger.PROPOSE_CANCELLED })
@@ -270,12 +269,12 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
       } catch (error) {
          await context.postLogs(
             `Error canceling pending request txID:${cancelProposalData.tx.id}, Signer Address:${context.wallet.activeAccount}`,
-            "ERROR",
-            "cancel_request",
+            'ERROR',
+            'cancel_request',
             cancelProposalData.issueNumber,
-            "CANCEL_REQUEST"
+            'CANCEL_REQUEST'
          );
-         toast.error("Something went wrong, please try again!");
+         toast.error('Something went wrong, please try again!');
          setDataCancelLoading(false);
       }
    };
@@ -289,7 +288,7 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
    }, [user]);
 
    useEffect(() => {
-      const selectedTab = tabs === "1" ? "Notary" : "Large";
+      const selectedTab = tabs === '1' ? 'Notary' : 'Large';
 
       if (context.isAddressVerified) {
          showWarnVerify(selectedTab);
@@ -297,16 +296,16 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
    }, [context.isAddressVerified]);
 
   const verifyClients = async () => {
-    dispatchCustomEvent({ name: "delete-modal", detail: {} });
+    dispatchCustomEvent({ name: 'delete-modal', detail: {} });
     setApproveLoading(true)
     for (const request of context.clientRequests) {
       if (selectedClientRequests.includes(request.number)) {
-        let messageID = "";
-        let address = "";
-        let errorMessage = "";
+        let messageID = '';
+        let address = '';
+        let errorMessage = '';
         try {
           const datacap: number = anyToBytes(request.data.datacap);
-          console.log("datacap", datacap);
+          console.log('datacap', datacap);
           address = request.data.address;
           if (address.length < 12) {
             address = await context.wallet.api.actorKey(address);
@@ -326,7 +325,7 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
             );
           }
 
-               const signer = context.wallet.activeAccount ?? "";
+               const signer = context.wallet.activeAccount ?? '';
 
                const txReceipt = await context.wallet.api.getReceipt(
                   messageID
@@ -342,7 +341,7 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
                      errorMessage
                   );
                   context.wallet.dispatchNotification(
-                     "Error processing the message: " + messageID
+                     'Error processing the message: ' + messageID
                   );
                   throw Error(errorMessage);
                }
@@ -354,12 +353,12 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
                   address,
                   datacap,
                   signer,
-                  ""
+                  ''
                );
 
                // send notifications
                context.wallet.dispatchNotification(
-                  "Verify Client Message sent with ID: " + messageID
+                  'Verify Client Message sent with ID: ' + messageID
                );
 
                // context.loadClientRequests();
@@ -368,7 +367,7 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
           setApproveLoading(false)
   
           context.wallet.dispatchNotification(
-            "Verification failed: " + e.message
+            'Verification failed: ' + e.message
           );
         } finally {
           await Logger.BasicLogger({ message: Logger.CLIENT_ALLOCATION_REQUEST })
@@ -379,11 +378,11 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
 
    const verifyLargeClients = async (i?: LargeRequestData[]) => {
       setApproveLoading(true);
-      let thisStateLargeRequestList = Array.isArray(i)
+      const thisStateLargeRequestList = Array.isArray(i)
          ? i
          : context.largeClientRequests;
       console.log(
-         "thisStateLargeRequestList",
+         'thisStateLargeRequestList',
          thisStateLargeRequestList
       );
       for (const request of thisStateLargeRequestList) {
@@ -397,8 +396,8 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
             const pendingForClient = pendingTxs?.filter((tx: any) => tx?.parsed?.params?.address == request.address && tx?.parsed?.params?.cap == anyToBytes(request.datacap))
             const mostRecentTx = pendingForClient[pendingForClient.length-1]
            
-            let errorMessage = "";
-            const PHASE = "DATACAP-SIGN";
+            let errorMessage = '';
+            const PHASE = 'DATACAP-SIGN';
             const datacap = anyToBytes(request.datacap);
             let address = request.address;
             context.wallet.dispatchNotification(
@@ -412,15 +411,15 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
             let messageID;
             const signer = context.wallet.activeAccount
                ? context.wallet.activeAccount
-               : "";
+               : '';
             await context.postLogs(
                `starting to sign datacap request. approvals: ${request.approvals} -signer: ${signer}`,
-               "DEBUG",
-               "",
+               'DEBUG',
+               '',
                request.issue_number,
                PHASE
             );
-            let action = "";
+            let action = '';
             if (mostRecentTx) {
                messageID = await context.wallet.api.approvePending(
                   request.multisig,
@@ -433,12 +432,12 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
                ]);
                await context.postLogs(
                   `Datacap GRANTED: ${messageID} - signer: ${signer}`,
-                  "INFO",
-                  "datacap_granted",
+                  'INFO',
+                  'datacap_granted',
                   request.issue_number,
                   PHASE
                );
-               action = "Approved";
+               action = 'Approved';
             } else {
                messageID =
                   await context.wallet.api.multisigVerifyClient(
@@ -452,19 +451,19 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
                request.approvals = true;
                await context.postLogs(
                   `Datacap PROPOSED: ${messageID} - signer: ${signer}`,
-                  "INFO",
-                  "datacap_proposed",
+                  'INFO',
+                  'datacap_proposed',
                   request.issue_number,
                   PHASE
                );
-               action = "Proposed";
+               action = 'Proposed';
             }
 
             if (!messageID) {
-               errorMessage += `#### the transaction was unsuccessful - retry later.`;
+               errorMessage += '#### the transaction was unsuccessful - retry later.';
                await context.updateGithubVerifiedLarge(
                   request.issue_number,
-                  "",
+                  '',
                   address,
                   datacap,
                   signer,
@@ -481,43 +480,43 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
             address,
             datacap,
             signer,
-            "",
+            '',
             action
           );
 
-          if (action === "Proposed") {
+          if (action === 'Proposed') {
             await Logger.BasicLogger({ message: Logger.REQUEST_PROPOSED })
           } else {
             await Logger.BasicLogger({ message: Logger.REQUEST_APPROVED })
           }
 
           context.wallet.dispatchNotification(
-            "Transaction successful! Verify Client Message sent with ID: " +
+            'Transaction successful! Verify Client Message sent with ID: ' +
             messageID
           );
           await context.postLogs(
             `Transaction successful! Verify Client Message sent with ID: ${messageID}`,
-            "DEBUG",
-            "",
+            'DEBUG',
+            '',
             request.issue_number,
             PHASE
           );
           setApproveLoading(false)
-          //UPDATE THE CONTEXT
+          // UPDATE THE CONTEXT
           context.updateContextState(
             thisStateLargeRequestList,
-            "largeClientRequests"
+            'largeClientRequests'
           );
         } catch (e: any) {
           context.wallet.dispatchNotification(
-            "Verification failed: " + e.message
+            'Verification failed: ' + e.message
           );
           await context.postLogs(
             `The transaction to sign the datacap failed: ${e.message}`,
-            "ERROR",
-            "",
+            'ERROR',
+            '',
             request.issue_number,
-            "DATACAP-SIGN"
+            'DATACAP-SIGN'
           );
           // console.log(e.stack)
           setApproveLoading(false)
@@ -527,24 +526,24 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
 
    const activeTable = (tabs: any) => {
       const tables: any = {
-         "1": (
+         '1': (
             <PublicRequestTable
                setSelectedClientRequests={setSelectedClientRequests}
             />
          ),
-         "2": (
+         '2': (
             <VerifiedClientsTable
                verifiedClients={props.notaryProps.clients}
             />
          ),
-         "3": (
+         '3': (
             <LargeRequestTable
                setSelectedLargeClientRequests={
                   setSelectedLargeClientRequests
                }
             />
          ),
-         "4": (
+         '4': (
             <CancelProposalTable
                dataCancel={dataCancel}
                setDataCancel={setDataCancel}
@@ -578,25 +577,25 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
                      onClick={verifyLargeClients}
                   />
                   <div className="tabssadd">
-                     {tabs === "1" && (
+                     {tabs === '1' && (
                         <ButtonPrimary
                            onClick={() => requestDatacap()}
                         >
                            Approve Private Request
                         </ButtonPrimary>
                      )}
-                     {tabs === "1" && (
+                     {tabs === '1' && (
                         <ButtonPrimary
                            onClick={() => verifyNewDatacap()}
                         >
                            Verify new datacap
                         </ButtonPrimary>
                      )}
-                     {tabs === "4" &&
+                     {tabs === '4' &&
                         (dataCancelLoading ? (
                            <BeatLoader
                               size={15}
-                              color={"rgb(24,160,237)"}
+                              color={'rgb(24,160,237)'}
                            />
                         ) : (
                            <ButtonPrimary
@@ -606,27 +605,27 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
                            </ButtonPrimary>
                         ))}
 
-                     {tabs === "1" || tabs === "2" || tabs === "3" ? (
+                     {tabs === '1' || tabs === '2' || tabs === '3' ? (
                         <>
                            {approveLoading ? (
                               <BeatLoader
                                  size={15}
-                                 color={"rgb(24,160,237)"}
+                                 color={'rgb(24,160,237)'}
                               />
                            ) : (
                               <ButtonPrimary
                                  onClick={(e: any) =>
                                     checkNotaryIsVerifiedAndShowWarnVerify(
                                        e,
-                                       tabs === "3"
-                                          ? "Large"
-                                          : "Notary"
+                                       tabs === '3'
+                                          ? 'Large'
+                                          : 'Notary'
                                     )
                                  }
                               >
-                                 {tabs === "3"
-                                    ? "Approve Request"
-                                    : "Verify client"}
+                                 {tabs === '3'
+                                    ? 'Approve Request'
+                                    : 'Verify client'}
                               </ButtonPrimary>
                            )}
                         </>
@@ -637,7 +636,7 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
                {context.github.githubLogged && activeTable(tabs)}
 
                {!context.github.githubLogged ? (
-                  <div style={{ marginTop: "50px" }}>
+                  <div style={{ marginTop: '50px' }}>
                      <div id="githublogin">
                         <LoginGithub
                            redirectUri={config.oauthUri}
@@ -651,7 +650,7 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
                               );
                            }}
                            onFailure={(response: any) => {
-                              console.log("failure", response);
+                              console.log('failure', response);
                            }}
                         />
                      </div>
@@ -659,7 +658,7 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
                ) : (
                   <div
                      className="alignright"
-                     style={{ marginBottom: "40px" }}
+                     style={{ marginBottom: '40px' }}
                   >
                      <ButtonSecondary
                         className="buttonsecondary"

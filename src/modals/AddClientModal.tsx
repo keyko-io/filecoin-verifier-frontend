@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import { Data } from '../context/Data/Index'
 import { config } from '../config'
-import { anyToBytes } from "../utils/Filters"
+import { anyToBytes } from '../utils/Filters'
 // @ts-ignore
-import { dispatchCustomEvent, H4, Input, ButtonPrimary, SelectMenu, LoaderSpinner } from "slate-react-system";
+import { dispatchCustomEvent, H4, Input, ButtonPrimary, SelectMenu, LoaderSpinner } from 'slate-react-system';
 
 type States = {
     address: string
@@ -24,7 +24,7 @@ type ModalProps = {
 class AddClientModal extends Component<ModalProps, States> {
     public static contextType = Data
 
-    constructor(props: {}) {
+    constructor(props: any) {
         super(props);
         this.state = {
             address: '',
@@ -90,13 +90,13 @@ class AddClientModal extends Component<ModalProps, States> {
 
     handleChange = (e: any) => {
         this.setState({ [e.target.name]: e.target.value } as any)
-        if (e.target.name === "datacapExt") {
-            this.setState({ units: this.findUnits(e.target.value) || "" })
+        if (e.target.name === 'datacapExt') {
+            this.setState({ units: this.findUnits(e.target.value) || '' })
         }
     }
 
     deleteModal() {
-        dispatchCustomEvent({ name: "delete-modal", detail: {} })
+        dispatchCustomEvent({ name: 'delete-modal', detail: {} })
     }
 
     render() {

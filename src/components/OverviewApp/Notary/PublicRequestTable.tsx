@@ -1,31 +1,31 @@
-import React, { useContext } from "react"
-import DataTable from "react-data-table-component"
-import { Data } from "../../../context/Data/Index"
+import React, { useContext } from 'react'
+import DataTable from 'react-data-table-component'
+import { Data } from '../../../context/Data/Index'
 import InfoIcon from '@mui/icons-material/Info';
 import Tooltip from '@mui/material/Tooltip';
-import history from "../../../context/History";
+import history from '../../../context/History';
 
 const publicRequestColumns: any = [
     {
-        name: "Name",
+        name: 'Name',
         selector: (row: any) => row.data.name,
         sortable: true,
         grow: 1
     },
     {
-        name: "Address",
+        name: 'Address',
         selector: (row: any) => row.data.address,
         sortable: true,
         grow: 1.2
     },
     {
-        name: "Datacap",
+        name: 'Datacap',
         selector: (row: any) => row.data.datacap,
         sortable: true,
         grow: 0.7
     },
     {
-        name: "Audit Trail",
+        name: 'Audit Trail',
         selector: (row: any) => row.number,
         sortable: true,
         cell: (row: any) => (
@@ -41,7 +41,7 @@ const publicRequestColumns: any = [
     },
     {
         button: true,
-        cell: (row: any) => <span onClick={() => clientDetail(row)} style={{ cursor: "pointer" }}>
+        cell: (row: any) => <span onClick={() => clientDetail(row)} style={{ cursor: 'pointer' }}>
             <Tooltip title="See Client Detail" placement="left" arrow>
                 <InfoIcon />
             </Tooltip>
@@ -55,7 +55,7 @@ const clientDetail = (row: any) => {
     const user = row.owner
     const { address, datacap } = row.data
 
-    history.push("/client", { client, user, address, datacap });
+    history.push('/client', { client, user, address, datacap });
 }
 
 
@@ -67,7 +67,7 @@ const PublicRequestTable = ({ setSelectedClientRequests }: PublicRequestTable2Pr
     const context = useContext(Data)
 
     return (
-        <div style={{ minHeight: "500px" }}>
+        <div style={{ minHeight: '500px' }}>
             <DataTable
                 selectableRows
                 selectableRowsHighlight={true}

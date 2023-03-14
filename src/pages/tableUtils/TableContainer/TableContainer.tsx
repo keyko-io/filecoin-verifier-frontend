@@ -1,4 +1,4 @@
-import "./TableContainer.scss"
+import './TableContainer.scss'
 
 export interface TableContainerProps {
   children: React.ReactNode

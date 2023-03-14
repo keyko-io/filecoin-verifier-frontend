@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react';
 
 export const Github = React.createContext({
     loginGithub: async (code: string) => {},
@@ -7,8 +7,8 @@ export const Github = React.createContext({
     initGithubOcto: {} as any,
     logoutGithub: async () => {},
     githubOctoGenericLogin: async () => {},
-    loggedUser: "",
-    avatarUrl: "",
+    loggedUser: '',
+    avatarUrl: '',
     githubOctoGeneric: {},
     fetchGithubIssues: async (
         owner?: any,

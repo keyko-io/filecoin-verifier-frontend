@@ -1,6 +1,6 @@
 import React from 'react';
 // @ts-ignore
-import { dispatchCustomEvent } from "slate-react-system";
+import { dispatchCustomEvent } from 'slate-react-system';
 import RootKey from '../svg/root-key.svg';
 import Verifiers from '../svg/verifier-wallet.svg';
 import Welcome from '../components/Welcome/Welcome'
@@ -11,12 +11,12 @@ import LogInModal from '../modals/LogInModal'
 
 const options = [
   {
-    title: "Log in as a Root Key Holder",
-    desc: "Here is where you can action pending Notary allocation decisions.",
+    title: 'Log in as a Root Key Holder',
+    desc: 'Here is where you can action pending Notary allocation decisions.',
     imgSrc: RootKey.toString()
   }, {
-    title: "Log in as a Notary",
-    desc: "Here is where you can manage pending public requests and action DataCap allocation decisions.",
+    title: 'Log in as a Notary',
+    desc: 'Here is where you can manage pending public requests and action DataCap allocation decisions.',
     imgSrc: Verifiers.toString()
   }]
 
@@ -25,7 +25,7 @@ const Preonboarding = (e: React.MouseEvent) => {
 
   const proposeVerifier = (index: number) => {
     dispatchCustomEvent({
-      name: "create-modal", detail: {
+      name: 'create-modal', detail: {
         id: Math.random().toString(36).replace(/[^a-z]+/g, '').substr(0, 5),
         modal: <LogInModal type={index.toString()} />
       }

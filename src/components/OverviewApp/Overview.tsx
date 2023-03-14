@@ -1,11 +1,11 @@
 import { useContext, useEffect, useState } from 'react';
 import { Data } from '../../context/Data/Index';
-import { bytesToiB } from "../../utils/Filters"
+import { bytesToiB } from '../../utils/Filters'
 // @ts-ignore
 import RootKeyHolder from './RootKeyHolder';
 import Notary from './Notary';
-import { BeatLoader } from "react-spinners";
-import "./Overview.scss"
+import { BeatLoader } from 'react-spinners';
+import './Overview.scss'
 import { ApprovedVerifiers } from '../../type';
 
 const Overview = () => {
@@ -39,7 +39,7 @@ const Overview = () => {
                                 !context.clientsAmount ?
                                     <div>
                                         <span className="zeroOpaque">0B</span>
-                                        <BeatLoader size={15} color={"rgb(24,160,237)"} />
+                                        <BeatLoader size={15} color={'rgb(24,160,237)'} />
                                     </div>
                                     :
                                     bytesToiB(Number(context.clientsAmount))}</div>
@@ -50,7 +50,7 @@ const Overview = () => {
                                 context.isPendingRequestLoading ?
                                     <div>
                                         <span className="zeroOpaque">0</span>
-                                        <BeatLoader size={15} color={"rgb(24,160,237)"} />
+                                        <BeatLoader size={15} color={'rgb(24,160,237)'} />
                                     </div>
                                     :
                                     context.verifierAndPendingRequests.length}</div>
@@ -61,7 +61,7 @@ const Overview = () => {
                                 approvedNotariesLoading ?
                                     <div>
                                         <span className="zeroOpaque">0</span>
-                                        <BeatLoader size={15} color={"rgb(24,160,237)"} />
+                                        <BeatLoader size={15} color={'rgb(24,160,237)'} />
                                     </div>
                                     : approvedNotariesLength
 

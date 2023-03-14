@@ -8,7 +8,7 @@ import WalletModal from './modals/WalletModal'
 import copy from 'copy-text-to-clipboard'
 import './App.scss';
 // @ts-ignore
-import { dispatchCustomEvent, Toggle, SVG, LoaderSpinner } from "slate-react-system"
+import { dispatchCustomEvent, Toggle, SVG, LoaderSpinner } from 'slate-react-system'
 import { config } from './config'
 import history from './context/History'
 import LogAsNotaryModal from './modals/LogAsNotaryModal'
@@ -38,14 +38,14 @@ const App = () => {
     }
   }
 
-  let isWalletLogged = context.wallet.isLogged
+  const isWalletLogged = context.wallet.isLogged
 
   useEffect(() => {
-    document.body.addEventListener("click", closeModal)
-    if (!isWalletLogged) history.push("/")
+    document.body.addEventListener('click', closeModal)
+    if (!isWalletLogged) history.push('/')
 
     return () => {
-      document.body.removeEventListener("click", closeModal)
+      document.body.removeEventListener('click', closeModal)
     }
   }, [isWalletLogged])
 
@@ -68,7 +68,7 @@ const App = () => {
 
   const openWallet = async () => {
     dispatchCustomEvent({
-      name: "create-modal", detail: {
+      name: 'create-modal', detail: {
         id: Math.random().toString(36).replace(/[^a-z]+/g, '').substr(0, 5),
         modal: <WalletModal />
       }
@@ -77,9 +77,9 @@ const App = () => {
 
   const openLoginModalNotary = async () => {
     dispatchCustomEvent({
-      name: "create-modal", detail: {
+      name: 'create-modal', detail: {
         id: Math.random().toString(36).replace(/[^a-z]+/g, '').substr(0, 5),
-        modal: <LogAsNotaryModal type={"login"} />
+        modal: <LogAsNotaryModal type={'login'} />
       }
     })
   }
@@ -94,8 +94,8 @@ const App = () => {
 
     // if (!context.viewroot && localStorage.getItem("loggedUser")) context.loadClientRequests()
 
-    if (!context.viewroot && !localStorage.getItem("loggedUser")) {
-      context.wallet.dispatchNotification("You should login first for this action!!")
+    if (!context.viewroot && !localStorage.getItem('loggedUser')) {
+      context.wallet.dispatchNotification('You should login first for this action!!')
     }
   }
 
@@ -110,7 +110,7 @@ const App = () => {
 
   return (
     <div className="App">
-      <div className="header" style={{padding : "0rem 10%"}}>
+      <div className="header" style={{padding : '0rem 10%'}}>
         <div className="headerLeftRight">      
           <div className="networkselect" onClick={openNetworkSelect}>
             {networkSelect ?
@@ -126,16 +126,16 @@ const App = () => {
           </div>    
         </div>
 
-        <div style={{display : "flex" , alignItems : "center", justifyContent : "center" , margin: "0rem auto", paddingLeft: "1.5rem"}}>
+        <div style={{display : 'flex' , alignItems : 'center', justifyContent : 'center' , margin: '0rem auto', paddingLeft: '1.5rem'}}>
          <div className="refresh">
             <Button
               size="small"
-              onClick={() => history.push("/logs")}
+              onClick={() => history.push('/logs')}
               variant="text"
             >LOGS
             </Button>
           </div>
-           <div style={{ cursor: "pointer" , margin : "0px 12rem"}} onClick={() => history.push("/")}><img src={Logo} title="Return to home page" alt="Filecoin" /></div>
+           <div style={{ cursor: 'pointer' , margin : '0px 12rem'}} onClick={() => history.push('/')}><img src={Logo} title="Return to home page" alt="Filecoin" /></div>
            <div className="refresh" onClick={refresh}>
             <RefreshIcon />
           </div>
@@ -147,9 +147,9 @@ const App = () => {
             {accountSelect ?
               <div className="accountselectholder" ref={viewSwitch}>
                 <div style={{
-                  display: "flex",
-                  justifyContent : "space-between",
-                  alignItems: "center"
+                  display: 'flex',
+                  justifyContent : 'space-between',
+                  alignItems: 'center'
                 }}>
  
                  <div>
@@ -186,7 +186,7 @@ const App = () => {
                     </div>
                   </React.Fragment>
                   : null}
-                <div className="headertitles" style={{paddingTop : "10px"}}>Account addresses</div>
+                <div className="headertitles" style={{paddingTop : '10px'}}>Account addresses</div>
                 <div className="accountModal">
                   {context.wallet.accounts.map((account, index) => {
                     return <div key={index} className="accountentry" style={{ backgroundColor: index === context.wallet.walletIndex ? '#C7C7C7' : 'inherit' }}>
@@ -224,11 +224,11 @@ const App = () => {
               setAccountSelect(!accountSelect)
             }}>{addressFilter(context.wallet.activeAccount)}, {context.wallet.multisig && !context.viewroot ? context.wallet.multisigAddress.length > 20 ? addressFilter(context.wallet.multisigAddress) : context.wallet.multisigAddress : null}</div>
           </div>
-          <div style={{paddingLeft : "1.5rem"}}>
+          <div style={{paddingLeft : '1.5rem'}}>
             {
               context.github.githubLogged ?
                 <div className="avatarContainer">
-                  <img className="avatarImage" src={localStorage.getItem("avatar") || context.github.avatarUrl} alt="user_profile_photo" />
+                  <img className="avatarImage" src={localStorage.getItem('avatar') || context.github.avatarUrl} alt="user_profile_photo" />
                 </div>
                 :
                 <div className="avatarContainer">

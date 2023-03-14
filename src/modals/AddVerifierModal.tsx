@@ -2,16 +2,16 @@ import { useContext, useState } from 'react';
 import { Data } from '../context/Data/Index'
 import { config } from '../config'
 // @ts-ignore
-import { dispatchCustomEvent, H3, Input, ButtonPrimary, SelectMenu, LoaderSpinner } from "slate-react-system";
+import { dispatchCustomEvent, H3, Input, ButtonPrimary, SelectMenu, LoaderSpinner } from 'slate-react-system';
 
 
 const AddVerifierModal = () => {
     const context = useContext(Data)
 
     const [proposeLoading, setProposeLoading] = useState(false)
-    const [datacap, setDatacap] = useState("1")
-    const [datacapExt, setDatacapExt] = useState("1000000000000")
-    const [accountID, setAccountID] = useState("")
+    const [datacap, setDatacap] = useState('1')
+    const [datacapExt, setDatacapExt] = useState('1000000000000')
+    const [accountID, setAccountID] = useState('')
 
     const handleSubmit = async (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault()
@@ -25,19 +25,19 @@ const AddVerifierModal = () => {
                 verifierAccountID = await context.wallet.api.actorKey(verifierAccountID)
             }
 
-            let messageID = await context.wallet.api.proposeVerifier(verifierAccountID, fullDatacap, context.wallet.walletIndex);
+            const messageID = await context.wallet.api.proposeVerifier(verifierAccountID, fullDatacap, context.wallet.walletIndex);
 
             setProposeLoading(false)
-            setDatacap("1")
-            setDatacapExt("1000000000000")
-            setAccountID("")
+            setDatacap('1')
+            setDatacapExt('1000000000000')
+            setAccountID('')
 
             context.wallet.dispatchNotification('Propose Message sent with ID: ' + messageID)
-            dispatchCustomEvent({ name: "delete-modal", detail: {} })
+            dispatchCustomEvent({ name: 'delete-modal', detail: {} })
         } catch (error: any) {
             setProposeLoading(false)
             context.wallet.dispatchNotification('Proposal failed: ' + error.message)
-            dispatchCustomEvent({ name: "delete-modal", detail: {} })
+            dispatchCustomEvent({ name: 'delete-modal', detail: {} })
         }
     }
 

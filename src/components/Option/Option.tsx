@@ -1,6 +1,6 @@
 // @ts-ignore
-import { ButtonPrimary } from "slate-react-system";
-import "./Option.scss"
+import { ButtonPrimary } from 'slate-react-system';
+import './Option.scss'
 
 type OptionProps = {
     head?: string

@@ -1,10 +1,10 @@
-import { Octokit } from "@octokit/rest";
-import axios from "axios";
-import React from "react";
-import toast from "react-hot-toast";
-import { config } from "../../config";
-import * as Logger from "../../logger";
-import { Github } from "./Index";
+import { Octokit } from '@octokit/rest';
+import axios from 'axios';
+import React from 'react';
+import toast from 'react-hot-toast';
+import { config } from '../../config';
+import * as Logger from '../../logger';
+import { Github } from './Index';
 
 interface WalletProviderStates {
   githubLogged: boolean;
@@ -21,7 +21,7 @@ interface WalletProviderStates {
 }
 
 export default class WalletProvider extends React.Component<
-  {},
+  object,
   WalletProviderStates
 > {
   setStateAsync(state: any) {
@@ -45,18 +45,18 @@ export default class WalletProvider extends React.Component<
   async componentDidMount() {
     const tokenIs = await this.state.checkToken();
 
-    if (tokenIs === "not expired") {
+    if (tokenIs === 'not expired') {
       this.loadGithub();
     }
 
-    if (tokenIs === "expired") {
+    if (tokenIs === 'expired') {
       this.state.logoutGithub();
     }
   }
 
   state = {
-    loggedUser: "",
-    avatarUrl: "",
+    loggedUser: '',
+    avatarUrl: '',
     githubLogged: false,
     githubOcto: {} as any,
     githubOctoGeneric: { logged: false } as any,
@@ -64,11 +64,11 @@ export default class WalletProvider extends React.Component<
       let authjson;
       let githubHandle;
       try {
-        const authrequest = await fetch(config.apiUri + "/api/v1/github", {
-          method: "POST",
+        const authrequest = await fetch(config.apiUri + '/api/v1/github', {
+          method: 'POST',
           headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
           },
           body: JSON.stringify({
             code,
@@ -80,8 +80,8 @@ export default class WalletProvider extends React.Component<
         const expiration =
           new Date().getTime() + Number(authjson.data.expires_in) * 1000;
 
-        localStorage.setItem("tokenExpiration", expiration.toString());
-        localStorage.setItem("githubToken", authjson.data.access_token);
+        localStorage.setItem('tokenExpiration', expiration.toString());
+        localStorage.setItem('githubToken', authjson.data.access_token);
 
         await this.state.initGithubOcto(authjson.data.access_token);
 
@@ -90,22 +90,22 @@ export default class WalletProvider extends React.Component<
         ).data;
 
         githubHandle = login;
-        localStorage.setItem("avatar", avatar_url);
-        localStorage.setItem("loggedUser", login);
+        localStorage.setItem('avatar', avatar_url);
+        localStorage.setItem('loggedUser', login);
 
         this.setState({
           loggedUser: login,
           avatarUrl: avatar_url,
         });
         axios.defaults.headers.common[
-          "Authorization"
+          'Authorization'
         ] = `Bearer ${authjson.data.access_token}`;
 
         await Logger.configureScope({
           githubUsername: githubHandle,
         });
         await Logger.BasicLogger({
-          message: "Github Login Success",
+          message: 'Github Login Success',
         });
       } catch (e: any) {
         this.state.logoutGithub();
@@ -113,10 +113,10 @@ export default class WalletProvider extends React.Component<
           githubUsername: githubHandle,
         });
         await Logger.BasicLogger({
-          message: "Github Login Failed",
+          message: 'Github Login Failed',
         });
-        toast.error("Failed to login. Try again later.");
-        console.log(e, "error occurred while login github");
+        toast.error('Failed to login. Try again later.');
+        console.log(e, 'error occurred while login github');
       }
     },
 
@@ -137,36 +137,36 @@ export default class WalletProvider extends React.Component<
     },
 
     logoutGithub: async () => {
-      localStorage.removeItem("githubToken");
-      localStorage.removeItem("loggedUser");
-      localStorage.removeItem("avatar");
-      localStorage.removeItem("tokenExpiration");
+      localStorage.removeItem('githubToken');
+      localStorage.removeItem('loggedUser');
+      localStorage.removeItem('avatar');
+      localStorage.removeItem('tokenExpiration');
       await this.setStateAsync({
         githubLogged: false,
         githubOcto: undefined,
         loggedUser: null,
       });
-      await Logger.configureScope({ githubUsername: "" });
+      await Logger.configureScope({ githubUsername: '' });
       await Logger.BasicLogger({
-        message: "User Logged Out Github",
+        message: 'User Logged Out Github',
       });
     },
 
     checkToken: async () => {
-      const githubToken = localStorage.getItem("githubToken")!;
+      const githubToken = localStorage.getItem('githubToken')!;
       if (githubToken) {
         const actualTimestamp = new Date().getTime();
-        const expiration = localStorage.getItem("tokenExpiration")! || 0;
+        const expiration = localStorage.getItem('tokenExpiration')! || 0;
         if (Number(expiration) <= actualTimestamp || expiration === 0) {
           this.state.logoutGithub();
-          return "expired";
+          return 'expired';
         }
 
         axios.defaults.headers.common[
-          "Authorization"
-        ] = `Bearer ${githubToken}`; //test -using axios to fetch comments
+          'Authorization'
+        ] = `Bearer ${githubToken}`; // test -using axios to fetch comments
 
-        return "not expired";
+        return 'not expired';
       }
     },
     githubOctoGenericLogin: async () => {
@@ -228,8 +228,8 @@ export default class WalletProvider extends React.Component<
 
   async loadGithub() {
     try {
-      const githubToken = localStorage.getItem("githubToken")!;
-      const loggedUser = localStorage.getItem("loggedUser")!;
+      const githubToken = localStorage.getItem('githubToken')!;
+      const loggedUser = localStorage.getItem('loggedUser')!;
       if (githubToken) {
         const response = await this.state.initGithubOcto(githubToken);
       await response?.auth();
@@ -245,18 +245,18 @@ export default class WalletProvider extends React.Component<
         githubUsername: loggedUser,
       });
       await Logger.BasicLogger({
-        message: "Loaded Github Token Successfully",
+        message: 'Loaded Github Token Successfully',
       });
 
       this.state.githubOctoGenericLogin();
     } catch (error) {
       await Logger.configureScope({
-        githubUsername: "",
+        githubUsername: '',
       });
         this.setState({ githubLogged: false });
-        this.setState({ loggedUser: "" });
+        this.setState({ loggedUser: '' });
       await Logger.BasicLogger({
-        message: "Error: loadGithub token",
+        message: 'Error: loadGithub token',
       });
       console.log(error);
     }

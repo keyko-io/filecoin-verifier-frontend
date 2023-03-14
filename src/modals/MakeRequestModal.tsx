@@ -2,14 +2,14 @@ import React, { Component } from 'react';
 import { Data } from '../context/Data/Index'
 import { config } from '../config'
 // @ts-ignore
-import { dispatchCustomEvent, Input, ButtonPrimary, SelectMenu } from "slate-react-system";
+import { dispatchCustomEvent, Input, ButtonPrimary, SelectMenu } from 'slate-react-system';
 import ConfirmModal from '../pages/ConfirmModal';
-import { anyToBytes } from "../utils/Filters"
+import { anyToBytes } from '../utils/Filters'
 // @ts-ignore
 import LoginGithub from 'react-login-github';
 import { BurnerWallet } from '../context/Wallet/BurnerWallet';
-import history from "../context/History"
-import { CircularProgress } from "@material-ui/core";
+import history from '../context/History'
+import { CircularProgress } from '@material-ui/core';
 import { Notary } from '../pages/Verifiers';
 
 type States = {
@@ -63,10 +63,10 @@ class MakeRequestModal extends Component<ModalProps, States> {
     handleRedirection = (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault()
 
-        dispatchCustomEvent({ name: "delete-modal", detail: {} })
+        dispatchCustomEvent({ name: 'delete-modal', detail: {} })
 
         history.push({
-            pathname: "/ldn-application",
+            pathname: '/ldn-application',
             state: {
                 address: this.state.address,
                 region: this.state.region,
@@ -79,7 +79,7 @@ class MakeRequestModal extends Component<ModalProps, States> {
     handleSubmit = async (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault()
 
-        if ((parseInt(this.state.datacap) > 1024 && this.state.datacapExt === "TiB")) {
+        if ((parseInt(this.state.datacap) > 1024 && this.state.datacapExt === 'TiB')) {
 
             this.setState({ redirect: true })
 
@@ -130,14 +130,14 @@ class MakeRequestModal extends Component<ModalProps, States> {
                     address: this.state.address,
                     datacap: this.state.datacap,
                     datacapUnit: this.state.datacapExt,
-                    subject: "New Request of Datacap",
-                    datetimeRequested: ""
+                    subject: 'New Request of Datacap',
+                    datetimeRequested: ''
                 })
             })
             const request = await emailrequest.json()
             if (request.success) {
                 dispatchCustomEvent({
-                    name: "create-modal", detail: {
+                    name: 'create-modal', detail: {
                         id: Math.random().toString(36).replace(/[^a-z]+/g, '').substr(0, 5),
                         modal: <ConfirmModal />
                     }
@@ -145,9 +145,9 @@ class MakeRequestModal extends Component<ModalProps, States> {
             }
             this.setState({ submitLoading: false })
         } catch (error) {
-            console.log("ERROR: " + error)
+            console.log('ERROR: ' + error)
             dispatchCustomEvent({
-                name: "create-modal", detail: {
+                name: 'create-modal', detail: {
                     id: Math.random().toString(36).replace(/[^a-z]+/g, '').substr(0, 5),
                     modal: <ConfirmModal error={true} />
                 }
@@ -189,7 +189,7 @@ class MakeRequestModal extends Component<ModalProps, States> {
         }
         if (response) {
             dispatchCustomEvent({
-                name: "create-modal", detail: {
+                name: 'create-modal', detail: {
                     id: Math.random().toString(36).replace(/[^a-z]+/g, '').substr(0, 5),
                     modal: <ConfirmModal url={response} />
                 }
@@ -216,10 +216,10 @@ class MakeRequestModal extends Component<ModalProps, States> {
                 <form>
                     <div className="title">Datacap Allocation Request</div>
                     {this.state.redirect && <div
-                        style={{ fontSize: "18px", padding: "40px 60px", zIndex: "10", position: "absolute", top: "0", left: "0", background: "white", color: "black", width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center", flexDirection: "column" }}
+                        style={{ fontSize: '18px', padding: '40px 60px', zIndex: '10', position: 'absolute', top: '0', left: '0', background: 'white', color: 'black', width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column' }}
                     >
-                        <div style={{ lineHeight: "1.3" }}>Direct notary allocations are in the 0-1024 TiB range. To request more DataCap, please apply for a large dataset instead. Click here to apply.</div>
-                        <button onClick={this.handleRedirection} style={{ marginTop: "40px", fontSize: "18px", background: "#0090ff", padding: "12px 32px", borderRadius: "6px", border: "none", color: "white", cursor: "pointer" }}>continue</button>
+                        <div style={{ lineHeight: '1.3' }}>Direct notary allocations are in the 0-1024 TiB range. To request more DataCap, please apply for a large dataset instead. Click here to apply.</div>
+                        <button onClick={this.handleRedirection} style={{ marginTop: '40px', fontSize: '18px', background: '#0090ff', padding: '12px 32px', borderRadius: '6px', border: 'none', color: 'white', cursor: 'pointer' }}>continue</button>
                     </div>}
                     <div className="makerequest">
                         <div className="inputholder">
@@ -290,7 +290,7 @@ class MakeRequestModal extends Component<ModalProps, States> {
                                     onChange={this.handleChange}
                                 /> Github - create issue
                             </div>
-                            {this.props.verifier.private_request === "true" ?
+                            {this.props.verifier.private_request === 'true' ?
                                 <div className="methodtype">
                                     <input
                                         type="radio"
@@ -311,7 +311,7 @@ class MakeRequestModal extends Component<ModalProps, States> {
                     <div className="centerbutton buttondiv" style={this.props.verifier.docs_url ? {} : { paddingTop: 0, marginTop: 0 }}>
                         <div id="sendbutton">
                             {this.context.github.githubLogged || this.state.emailMethod ?
-                                <ButtonPrimary onClick={this.handleSubmit}>{this.state.submitLoading ? <CircularProgress size={16} style={{ color: "white" }} /> : 'Send Request'}</ButtonPrimary>
+                                <ButtonPrimary onClick={this.handleSubmit}>{this.state.submitLoading ? <CircularProgress size={16} style={{ color: 'white' }} /> : 'Send Request'}</ButtonPrimary>
                                 : null
                             }
                         </div>

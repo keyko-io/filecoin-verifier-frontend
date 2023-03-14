@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react';
 import {
     VerifiedData,
     DirectIssue,
@@ -6,11 +6,11 @@ import {
     VerifiedCachedData,
     ApprovedVerifiers,
     TransactionAndIssue,
-} from "../../type";
+} from '../../type';
 import {
     GithubProviderStates,
     WalletProviderStates,
-} from "../contextType";
+} from '../contextType';
 
 export const Data = React.createContext({
     formatLargeRequestData: async (i: LargeRequestData[]) => ({} as any),
@@ -37,7 +37,7 @@ export const Data = React.createContext({
     setSelectedLargeClientRequests: (rowNumbers: any[]) => {},
     setIsVerifyWalletLoading: (value: boolean) => {},
     getLDNIssuesAndTransactions: () => {},
-    getLastUniqueId: async (issueNumber: number) => "",
+    getLastUniqueId: async (issueNumber: number) => '',
     loadClientRequests: async () => {},
     loadVerifierAndPendingRequests: async () => {},
     switchview: () => {},
@@ -71,8 +71,8 @@ export const Data = React.createContext({
     acceptedNotariesLoading: false,
     selectedNotaryRequests: [] as any,
     clients: [] as any,
-    clientsAmount: "",
-    searchString: "",
+    clientsAmount: '',
+    searchString: '',
     approvedNotariesLoading: true,
     ldnRequestsLoading: false,
     isAddressVerified: false,

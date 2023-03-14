@@ -6,22 +6,22 @@ import Welcome from '../components/Welcome/Welcome'
 import history from '../context/History'
 
 // @ts-ignore
-import { dispatchCustomEvent } from "slate-react-system";
+import { dispatchCustomEvent } from 'slate-react-system';
 import VerificationOptionsModal from '../modals/VerificationOptionsModal';
 import LearnMore from '../components/LearnMore/LearnMore';
 
 
 const options = [
   {
-    title: "Get Verified",
-    subtitle: "Large vs. Small Storage Request",
-    desc: "Get a small amount of DataCap (32GB) through an automated Notary to make a few deals to test on the network, or apply to a specific Notary for more DataCap.",
+    title: 'Get Verified',
+    subtitle: 'Large vs. Small Storage Request',
+    desc: 'Get a small amount of DataCap (32GB) through an automated Notary to make a few deals to test on the network, or apply to a specific Notary for more DataCap.',
     imgSrc: TiB.toString()
   },
   {
-    title: "Find a Storage Provider",
-    subtitle: "... to store your data!",
-    desc: "Filecoin has a diversity of miners spread out across the globe - find one who can support your use case!",
+    title: 'Find a Storage Provider',
+    subtitle: '... to store your data!',
+    desc: 'Filecoin has a diversity of miners spread out across the globe - find one who can support your use case!',
     imgSrc: Mining.toString()
   }]
 
@@ -31,7 +31,7 @@ const Landing = () => {
       showModal()
     } else {
       history.push({
-        pathname: "/miners"
+        pathname: '/miners'
       })
     }
   }
@@ -39,7 +39,7 @@ const Landing = () => {
 
   const showModal = () => {
     dispatchCustomEvent({
-      name: "create-modal", detail: {
+      name: 'create-modal', detail: {
         id: Math.random().toString(36).replace(/[^a-z]+/g, '').substr(0, 5),
         modal: <VerificationOptionsModal />
       }
@@ -62,7 +62,7 @@ const Landing = () => {
               desc={option.desc}
               imgSrc={option.imgSrc}
               onClick={() => changeActive(index)}
-              buttonName={index === 0 ? "Get DataCap" : "Find a Storage Provider"}
+              buttonName={index === 0 ? 'Get DataCap' : 'Find a Storage Provider'}
             />
           })}
         </div>

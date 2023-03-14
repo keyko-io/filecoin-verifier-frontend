@@ -1,5 +1,5 @@
 // @ts-ignore
-import { dispatchCustomEvent } from "slate-react-system";
+import { dispatchCustomEvent } from 'slate-react-system';
 
 const VerificationOptionsModal = () => {
     const onClick = (option?: string) => {
@@ -8,13 +8,13 @@ const VerificationOptionsModal = () => {
         } else {
             window.open('https://github.com/filecoin-project/filecoin-plus-large-datasets', '_blank')
         }
-        dispatchCustomEvent({ name: "delete-modal", detail: {} })
+        dispatchCustomEvent({ name: 'delete-modal', detail: {} })
     }
 
     return (
         <div className="verificationoptions">
             <div className="methods">Select a Verification Method</div>
-            <div className="buttoncard" onClick={(e) => onClick("automatic")} >
+            <div className="buttoncard" onClick={(e) => onClick('automatic')} >
                 <div className="intro">
                     <div className="title">Automatic Verification</div>
                 </div>

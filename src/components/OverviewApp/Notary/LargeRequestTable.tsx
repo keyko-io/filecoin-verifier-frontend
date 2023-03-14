@@ -1,17 +1,17 @@
-import { ldnParser } from "@keyko-io/filecoin-verifier-tools";
-import { CircularProgress } from "@material-ui/core";
-import { useContext, useEffect, useState } from "react";
-import DataTable from "react-data-table-component";
-import { config } from "../../../config";
-import { Data } from "../../../context/Data/Index";
-import { LargeRequestData } from "../../../type";
-import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
-import NodeDataModal from "./NodeDataModal";
-import SearchInput from "./SearchInput";
-import { useLargeRequestsContext } from "../../../context/LargeRequests";
+import { ldnParser } from '@keyko-io/filecoin-verifier-tools';
+import { CircularProgress } from '@material-ui/core';
+import { useContext, useEffect, useState } from 'react';
+import DataTable from 'react-data-table-component';
+import { config } from '../../../config';
+import { Data } from '../../../context/Data/Index';
+import { LargeRequestData } from '../../../type';
+import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
+import NodeDataModal from './NodeDataModal';
+import SearchInput from './SearchInput';
+import { useLargeRequestsContext } from '../../../context/LargeRequests';
 
 const CANT_SIGN_MESSAGE =
-    "You can currently only approve the allocation requests associated with the multisig organization you signed in with. Signing proposals for additional DataCap allocations will require you to sign in again";
+    'You can currently only approve the allocation requests associated with the multisig organization you signed in with. Signing proposals for additional DataCap allocations will require you to sign in again';
 
 const mapNotaryAddressToGithubHandle = async (address: string) => {
     const verifRegJson : any= await fetch(config.verifiers_registry_url) 
@@ -20,7 +20,7 @@ const mapNotaryAddressToGithubHandle = async (address: string) => {
         json.notaries.find(
             (notary: any) =>
                 notary.ldn_config.signing_address === address
-        )?.github_user[0] || "";
+        )?.github_user[0] || '';
     return githubHandle;
 };
 
@@ -61,7 +61,7 @@ const formatIssues = async (
                 .reverse()
                 .find((comment: any) =>
                     comment.body.includes(
-                        "## DataCap Allocation requested"
+                        '## DataCap Allocation requested'
                     )
                 );
             if (!comment?.body) return;
@@ -98,8 +98,8 @@ const LargeRequestTable = (props: LargeRequestTableProps) => {
 
     const [currentPage, setCurrentPage] = useState(1);
     const [open, setOpen] = useState(false);
-    const [proposer, setProposer] = useState("");
-    const [txId, setTxId] = useState("");
+    const [proposer, setProposer] = useState('');
+    const [txId, setTxId] = useState('');
 
     const handleOpen = async (
         multisig: string,
@@ -124,8 +124,8 @@ const LargeRequestTable = (props: LargeRequestTableProps) => {
 
     const handleClose = () => {
         setOpen(false);
-        setProposer("");
-        setTxId("");
+        setProposer('');
+        setTxId('');
     };
 
     useEffect(() => {
@@ -139,12 +139,12 @@ const LargeRequestTable = (props: LargeRequestTableProps) => {
             setIsLoadingGithubData(true);
             const allReadyToSignIssues =
                 await context.github.githubOcto.issues.listForRepo(
-                    "GET /repos/{owner}/{repo}/issues",
+                    'GET /repos/{owner}/{repo}/issues',
                     {
                         owner: config.onboardingLargeOwner,
                         repo: config.onboardingLargeClientRepo,
-                        state: "open",
-                        labels: "bot:readyToSign",
+                        state: 'open',
+                        labels: 'bot:readyToSign',
                         page,
                         per_page: 10,
                     }
@@ -154,7 +154,7 @@ const LargeRequestTable = (props: LargeRequestTableProps) => {
                     allReadyToSignIssues.data,
                     context.github.githubOcto
                 );
-                console.log("formattedIssues", formattedIssues);
+                console.log('formattedIssues', formattedIssues);
                 setData(formattedIssues);
                 setIsLoadingGithubData(false);
             }
@@ -170,14 +170,14 @@ const LargeRequestTable = (props: LargeRequestTableProps) => {
 
     const largeReqColumns = [
         {
-            name: "Client",
+            name: 'Client',
             selector: (row: any) => row?.name,
             sortable: true,
             grow: 1.2,
             wrap: true,
         },
         {
-            name: "Address",
+            name: 'Address',
             selector: (row: LargeRequestData) => row?.address,
             sortable: true,
             cell: (row: LargeRequestData) => (
@@ -191,21 +191,21 @@ const LargeRequestTable = (props: LargeRequestTableProps) => {
             ),
         },
         {
-            name: "Multisig",
+            name: 'Multisig',
             selector: (row: LargeRequestData) => row?.multisig,
             sortable: true,
             grow: 0.5,
             center: true,
         },
         {
-            name: "Datacap",
+            name: 'Datacap',
             selector: (row: LargeRequestData) => row?.datacap,
             sortable: true,
             grow: 0.5,
             center: true,
         },
         {
-            name: "Audit Trail",
+            name: 'Audit Trail',
             selector: (row: LargeRequestData) => row?.issue_number,
             sortable: true,
             grow: 0.5,
@@ -221,12 +221,12 @@ const LargeRequestTable = (props: LargeRequestTableProps) => {
             center: true,
         },
         {
-            name: "Node Data",
+            name: 'Node Data',
             selector: (row: LargeRequestData) => row?.tx?.id,
             grow: 0.5,
             cell: (row: LargeRequestData) => (
                 <div
-                    style={{ cursor: "pointer" }}
+                    style={{ cursor: 'pointer' }}
                     onClick={() =>
                         handleOpen(row.multisig, row.address)
                     }
@@ -241,7 +241,7 @@ const LargeRequestTable = (props: LargeRequestTableProps) => {
     return (
         <div
             className="large-request-table"
-            style={{ minHeight: "500px" }}
+            style={{ minHeight: '500px' }}
         >
             <NodeDataModal
                 isLoadingNodeData={isLoadingNodeData}
@@ -250,21 +250,21 @@ const LargeRequestTable = (props: LargeRequestTableProps) => {
                 nodeInfo={{
                     proposer,
                     txId,
-                    approvals: txId !== "" ? 1 : 0,
+                    approvals: txId !== '' ? 1 : 0,
                 }}
             />
             {context.ldnRequestsLoading ? (
-                <div style={{ width: "100%", textAlign: "center" }}>
+                <div style={{ width: '100%', textAlign: 'center' }}>
                     <CircularProgress
                         style={{
-                            margin: "8rem auto",
-                            color: "#0090ff",
+                            margin: '8rem auto',
+                            color: '#0090ff',
                         }}
                     />
                 </div>
             ) : (
                 <>
-                    <div style={{ display: "grid" }}>
+                    <div style={{ display: 'grid' }}>
                         <SearchInput
                             updateData={setData}
                             fetchTableData={fetchTableData}
@@ -305,13 +305,13 @@ const LargeRequestTable = (props: LargeRequestTableProps) => {
                         progressComponent={
                             <div
                             style={{
-                                width: "1280px",
+                                width: '1280px',
                             }}
                         >
                             <CircularProgress
                                 style={{
-                                    margin: "10rem auto",
-                                    color: "#0090ff",
+                                    margin: '10rem auto',
+                                    color: '#0090ff',
                                 }}
                             />
                         </div>

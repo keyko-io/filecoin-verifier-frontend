@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 exports.__esModule = true;
 exports.config = void 0;
 exports.config = {
@@ -21,7 +21,7 @@ exports.config = {
             token: process.env.REACT_APP_NERPANET_TOKEN,
             clientRepo: 'filecoin-clients-onboarding-test',
             notaryRepo: 'filecoin-notaries-onboarding'
-        } /*,{
+        } /* ,{
             name: 'Localhost',
             code: 1,
             url: 'ws://localhost:1234/rpc/v0',
@@ -31,26 +31,26 @@ exports.config = {
         }*/
     ],
     datacapExt: [
-        { value: "1", name: "B" },
-        { value: "1000", name: "KiB" },
-        { value: "1000000", name: "MiB" },
-        { value: "1000000000", name: "GiB" },
-        { value: "1000000000000", name: "TiB" },
-        { value: "1000000000000000", name: "PiB" },
-        { value: "1000000000000000000", name: "EiB" },
-        { value: "1000000000000000000000", name: "ZiB" },
-        { value: "1000000000000000000000000", name: "YiB" }
+        { value: '1', name: 'B' },
+        { value: '1000', name: 'KiB' },
+        { value: '1000000', name: 'MiB' },
+        { value: '1000000000', name: 'GiB' },
+        { value: '1000000000000', name: 'TiB' },
+        { value: '1000000000000000', name: 'PiB' },
+        { value: '1000000000000000000', name: 'EiB' },
+        { value: '1000000000000000000000', name: 'ZiB' },
+        { value: '1000000000000000000000000', name: 'YiB' }
     ],
     datacapExtName: [
-        { value: "1B", name: "B" },
-        { value: "KiB", name: "KiB" },
-        { value: "MiB", name: "MiB" },
-        { value: "GiB", name: "GiB" },
-        { value: "TiB", name: "TiB" },
-        { value: "PiB", name: "PiB" },
-        { value: "EiB", name: "EiB" },
-        { value: "ZiB", name: "ZiB" },
-        { value: "YiB", name: "YiB" }
+        { value: '1B', name: 'B' },
+        { value: 'KiB', name: 'KiB' },
+        { value: 'MiB', name: 'MiB' },
+        { value: 'GiB', name: 'GiB' },
+        { value: 'TiB', name: 'TiB' },
+        { value: 'PiB', name: 'PiB' },
+        { value: 'EiB', name: 'EiB' },
+        { value: 'ZiB', name: 'ZiB' },
+        { value: 'YiB', name: 'YiB' }
     ],
     dataSource: process.env.REACT_APP_VERIFIES_DATA || 'verifiers-dev',
     rkhtreshold: 1

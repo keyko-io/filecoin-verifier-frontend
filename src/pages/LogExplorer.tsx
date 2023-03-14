@@ -26,7 +26,7 @@ const LogExplorer = () => {
   const onTop = () => {
     window.scrollTo({
       top: 0,
-      behavior: "smooth"
+      behavior: 'smooth'
     });
   }
 
@@ -34,28 +34,28 @@ const LogExplorer = () => {
     onTop()
   }, []);
 
-  const [issueNumber, setIssueNumber] = useState("")
+  const [issueNumber, setIssueNumber] = useState('')
   const [srchButtonDisabled, setSrchButtonDisabled] = useState(false)
   const [maxLogsNumber, setMaxLogsNumber] = useState(10)
-  const [searchText, setSearchText] = useState("")
-  const [date, setDate] = useState("")
+  const [searchText, setSearchText] = useState('')
+  const [date, setDate] = useState('')
   const [logs, setLogs] = useState<LogsItem[]>([])
-  const [sortBy, setSortBy] = useState("dateTimestamp")
+  const [sortBy, setSortBy] = useState('dateTimestamp')
   const [isLogsLoading, setIsLogsLoading] = useState(false)
   const [isSearched, setIsSearched] = useState(false)
 
   const columns = [
-    { key: "dateTimestamp", name: "Date", width: "98px" },
-    { key: "type", name: "Type" },
-    { key: "repo", name: "Phase" },
-    { key: "actionKeyword", name: "Action" },
-    { key: "message", name: "Message" },
-    { key: "issue_number", name: "Issue Number" },
+    { key: 'dateTimestamp', name: 'Date', width: '98px' },
+    { key: 'type', name: 'Type' },
+    { key: 'repo', name: 'Phase' },
+    { key: 'actionKeyword', name: 'Action' },
+    { key: 'message', name: 'Message' },
+    { key: 'issue_number', name: 'Issue Number' },
   ]
 
   useEffect(() => {
-    if (history.location.search.split("=")[1]) {
-      selectIssueNumber(history.location.search.split("=")[1])
+    if (history.location.search.split('=')[1]) {
+      selectIssueNumber(history.location.search.split('=')[1])
       setIsSearched(true)
     }
 
@@ -72,14 +72,14 @@ const LogExplorer = () => {
     try {
       const res = (
         await fetch(
-          "https://cbqluey8wa.execute-api.us-east-1.amazonaws.com/dev",
+          'https://cbqluey8wa.execute-api.us-east-1.amazonaws.com/dev',
           {
-            headers: { "x-api-key": config.loggerApiKey },
-            method: "POST",
+            headers: { 'x-api-key': config.loggerApiKey },
+            method: 'POST',
             body: JSON.stringify({
-              type: "GET_LOGS",
-              searchType: "issue_number",
-              operation: "=",
+              type: 'GET_LOGS',
+              searchType: 'issue_number',
+              operation: '=',
               search: issue_number,
             }),
           }
@@ -113,8 +113,8 @@ const LogExplorer = () => {
 
   const formatItems = (items: LogsItem[]) => {
     const newItemsArray = []
-    for (let item of items) {
-      let obj: any = {}
+    for (const item of items) {
+      const obj: any = {}
       for (const [key, value] of Object.entries(item)) {
         for (const [keyx, valuex] of Object.entries(value as string)) {
           obj[key] = valuex
@@ -135,7 +135,7 @@ const LogExplorer = () => {
         <div className="wrapperverifiers">
           <div className="tableselects">
             <div className="tabletitle">
-              <div className="title">Select issue number to show corresponding logs <br /> <span style={{ fontWeight: "normal", fontSize: "14px" }}> - type 0 to see general logs</span> </div>
+              <div className="title">Select issue number to show corresponding logs <br /> <span style={{ fontWeight: 'normal', fontSize: '14px' }}> - type 0 to see general logs</span> </div>
 
               <TextField
                 className="inputRounded-1"
@@ -145,7 +145,7 @@ const LogExplorer = () => {
                 size="small"
                 value={searchText}
                 onChange={(e) => setSearchText(e.target.value)} />
-              <div style={{ padding: "0 6px" }}>
+              <div style={{ padding: '0 6px' }}>
                 <TextField
                   id="date"
                   label="select date"
@@ -159,7 +159,7 @@ const LogExplorer = () => {
                 />
               </div>
 
-              <form style={{ display: "flex" }}>
+              <form style={{ display: 'flex' }}>
                 <TextField id="issue-number-id"
                   label="Search Issue Number"
                   variant="filled"
@@ -170,7 +170,7 @@ const LogExplorer = () => {
                 />
 
                 <Button
-                  disabled={issueNumber === "" ? true : srchButtonDisabled}
+                  disabled={issueNumber === '' ? true : srchButtonDisabled}
                   size="small"
                   endIcon={!isLogsLoading && <SearchIcon />}
                   onClick={(e) => {
@@ -181,9 +181,9 @@ const LogExplorer = () => {
                   variant="contained"
                   color="primary"
                   style={{
-                    backgroundColor: isLogsLoading ? "#3f51b5" : "", borderLeft: issueNumber === "" ? "1px solid #111212" : "", borderTopLeftRadius: "0", borderBottomLeftRadius: "0", height: "45.63px", width: "155px", fontWeight: "bold", boxSizing: "border-box"
+                    backgroundColor: isLogsLoading ? '#3f51b5' : '', borderLeft: issueNumber === '' ? '1px solid #111212' : '', borderTopLeftRadius: '0', borderBottomLeftRadius: '0', height: '45.63px', width: '155px', fontWeight: 'bold', boxSizing: 'border-box'
                   }}
-                > {isLogsLoading ? <CircularProgress style={{ color: "white", height: "18px", width: " 18px" }} /> : "Search Logs"}
+                > {isLogsLoading ? <CircularProgress style={{ color: 'white', height: '18px', width: ' 18px' }} /> : 'Search Logs'}
                 </Button>
               </form>
             </div>
@@ -192,7 +192,7 @@ const LogExplorer = () => {
           <div className="verifiers">
             <div className="tableverifiers">
               <table>
-                <thead style={{ textAlign: "center" }}>
+                <thead style={{ textAlign: 'center' }}>
                   <tr>
                     {
                       columns.map((column, i) =>
@@ -203,24 +203,24 @@ const LogExplorer = () => {
                 <tbody>
                   {
                     logs
-                      .filter((item) => item.message.match(new RegExp(searchText, "gi")) || item.repo.match(new RegExp(searchText, "gi")))
+                      .filter((item) => item.message.match(new RegExp(searchText, 'gi')) || item.repo.match(new RegExp(searchText, 'gi')))
                       .filter((item) => date ? new Date(item.dateTimestamp).toLocaleDateString('fr-CA', { year: 'numeric', month: '2-digit', day: '2-digit' }) === date : true)
                       .slice(0, maxLogsNumber)
                       .map((item, i) =>
-                        <tr key={i} style={{ textAlign: "center" }}>
+                        <tr key={i} style={{ textAlign: 'center' }}>
                           <td >{new Date(item.dateTimestamp).toLocaleDateString()} {new Date(item.dateTimestamp).toLocaleTimeString()} </td>
                           <td >{item.type} </td>
                           <td >{item.repo} </td>
                           <td >{item.actionKeyword} </td>
                           <td >{item.message} </td>
                           {
-                            item.repo === "RKH-SIGN" ?
+                            item.repo === 'RKH-SIGN' ?
                               <td ><a target="_blank" rel="noopener noreferrer" href={NOTARY_PREFIX_URL.concat(item.issue_number)}>#{item.issue_number}</a> </td> :
                               <td ><a target="_blank" rel="noopener noreferrer" href={LDN_PREFIX_URL.concat(item.issue_number)}>#{item.issue_number}</a> </td>
                           }
                         </tr>
                       )}
-                  <tr style={{ textAlign: "center" }}>
+                  <tr style={{ textAlign: 'center' }}>
                     {!isLogsLoading ? <td colSpan={7}>
                       {logs.length ?
                         <Button
@@ -241,10 +241,10 @@ const LogExplorer = () => {
           </div>
         </div>
       </div>
-      <div style={{ display: "flex", justifyContent: "center", marginBottom: "30px" }}>
-        <div className='gotoTopLogs' onClick={onTop}><KeyboardArrowUpIcon style={{ fontSize: "60px" }} /></div>
+      <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '30px' }}>
+        <div className='gotoTopLogs' onClick={onTop}><KeyboardArrowUpIcon style={{ fontSize: '60px' }} /></div>
       </div>
-      <div style={{ display: "flex", justifyContent: "center", margin: "30px", fontSize: "16px" }}>
+      <div style={{ display: 'flex', justifyContent: 'center', margin: '30px', fontSize: '16px' }}>
         Click the arrow to go to the top of the page.
       </div>
     </div >

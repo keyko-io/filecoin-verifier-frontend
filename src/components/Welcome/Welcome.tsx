@@ -1,4 +1,4 @@
-import "./Welcome.scss"
+import './Welcome.scss'
 
 type WelcomeProps = {
   title: string,

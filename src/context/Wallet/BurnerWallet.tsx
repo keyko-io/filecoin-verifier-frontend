@@ -1,17 +1,17 @@
 import { config } from '../../config'
-import signer from "@zondax/filecoin-signing-tools/js"
+import signer from '@zondax/filecoin-signing-tools/js'
 import { VerifyAPI } from '@keyko-io/filecoin-verifier-tools'
 import { ConfigLotusNode } from '../contextType'
 
 export class BurnerWallet {
     // Notary: 
-    mnemonic: string = 'exit mystery juice city argue breeze film learn orange dynamic marine diary antenna road couple surge marine assume loop thought leader liquid rotate believe'
+    mnemonic = 'exit mystery juice city argue breeze film learn orange dynamic marine diary antenna road couple surge marine assume loop thought leader liquid rotate believe'
     // RKH
     // mnemonic: string = 'robot matrix ribbon husband feature attitude noise imitate matrix shaft resist cliff lab now gold menu grocery truth deliver camp about stand consider number'
     client: any
     api: any
     lotusNode: ConfigLotusNode
-    networkIndex: number = 0
+    networkIndex = 0
 
     public loadWallet = async (networkIndex: number) => {
         this.networkIndex = networkIndex
@@ -26,7 +26,7 @@ export class BurnerWallet {
                 } : null
             )
             , { sign: this.sign, getAccounts: this.getAccounts }
-            , this.lotusNode.name !== "Mainnet" // if node != Mainnet => testnet = true
+            , this.lotusNode.name !== 'Mainnet' // if node != Mainnet => testnet = true
         )
     }
 

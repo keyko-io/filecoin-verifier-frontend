@@ -1,4 +1,4 @@
-import {ldnParser} from "@keyko-io/filecoin-verifier-tools";
+import {ldnParser} from '@keyko-io/filecoin-verifier-tools';
 
 
 export const createParentComment = (coreInfo: any) => {
@@ -104,7 +104,7 @@ Please answer here.
 
 }
 
-export const updateTemplate = (issueBody: any, otherInfo: any, coreInfo: any) => { //add coreInfo to use only this template
+export const updateTemplate = (issueBody: any, otherInfo: any, coreInfo: any) => { // add coreInfo to use only this template
 
     return `---
 name: Large Dataset Notary application

@@ -8,14 +8,14 @@ import { Data } from '../context/Data/Index';
 import { config } from '../config';
 import { createParentComment, updateTemplate } from './issueUtils/templates';
 import { coreInfo, otherInfo, guidelines, regionOptions, labelsIssueCreation, steps, URL_README } from './issueUtils/constants';
-import { ldnParser } from "@keyko-io/filecoin-verifier-tools";
+import { ldnParser } from '@keyko-io/filecoin-verifier-tools';
 
 
-//view 0: log in with github 
-//view 1: choose between create a new issue or continue a previous
-//view 3: core info of the issue
-//view 4: other info of the issue (3 sub-view 'stepViewFour')
-//view 2: (not implemented) reconnect a previous issue to keep the allocation flow going
+// view 0: log in with github 
+// view 1: choose between create a new issue or continue a previous
+// view 3: core info of the issue
+// view 4: other info of the issue (3 sub-view 'stepViewFour')
+// view 2: (not implemented) reconnect a previous issue to keep the allocation flow going
 
 type LdnApplicationProps = {
   location?: {
@@ -79,9 +79,9 @@ class LdnApplication extends Component<LdnApplicationProps> {
         }
       )).data
 
-      let addressList = []
+      const addressList = []
 
-      for (let issue of issues) {
+      for (const issue of issues) {
         const psiAddress = ldnParser.parseIssue(issue.body).address
         addressList.push(psiAddress)
       }
@@ -102,9 +102,9 @@ class LdnApplication extends Component<LdnApplicationProps> {
   continueEditingPreviousIssue(issue: any) {
 
     const parsedIssue = ldnParser.parseIssue(issue.body)
-    //console.log(parsedIssue)
+    // console.log(parsedIssue)
     this.setState({ view: 3, issue: issue, isNewIssue: false })
-    for (let [k, v] of Object.entries(parsedIssue)) {
+    for (const [k, v] of Object.entries(parsedIssue)) {
       const value = v as string
       if (k === 'datacapRequested' || k === 'dataCapWeeklyAllocation') {
         const rgNmbers = /[0-9]/g
@@ -115,7 +115,7 @@ class LdnApplication extends Component<LdnApplicationProps> {
         this.setDatacapMeasure(null, k, measure)
       }
       else if (k !== 'correct' && k && v) {
-        //console.log(k, v)
+        // console.log(k, v)
         this.updateCoreInfoContent(k, v as string)
       }
     }
@@ -127,8 +127,8 @@ class LdnApplication extends Component<LdnApplicationProps> {
 
   updateOtherInfoContent(issue: any) {
     const parsedOtherInfoIssue = ldnParser.parseOtherInfoIssue(issue.body)
-    let otherInfo = this.state.otherInfo
-    for (let info of otherInfo) {
+    const otherInfo = this.state.otherInfo
+    for (const info of otherInfo) {
       const value = parsedOtherInfoIssue[info.name]
       info.value = value
     }
@@ -156,7 +156,7 @@ class LdnApplication extends Component<LdnApplicationProps> {
 
 
   fillTextAreas(name: any, value: any) {
-    let otherInfo = this.state.otherInfo
+    const otherInfo = this.state.otherInfo
     const elementToUpdateIndex: any = otherInfo.findIndex((info: any) => info.name === name)
     if (otherInfo[elementToUpdateIndex]) {
       otherInfo[elementToUpdateIndex].value = value
@@ -171,7 +171,7 @@ class LdnApplication extends Component<LdnApplicationProps> {
   validateDatacapAndAddress(coreInfo: any, name: any, value: any, elementToUpdateIndex: any) {
     let hasError = false
 
-    if (coreInfo[elementToUpdateIndex].value !== "") {
+    if (coreInfo[elementToUpdateIndex].value !== '') {
       if (value === 'PiB' && Number(coreInfo[elementToUpdateIndex].value) > 5) {
 
         hasError = true
@@ -190,7 +190,7 @@ class LdnApplication extends Component<LdnApplicationProps> {
         coreInfo[elementToUpdateIndex].errorMessage = 'You can ask max 999 TiB'
       }
 
-      if (coreInfo[elementToUpdateIndex].name === "address" && (coreInfo[elementToUpdateIndex].value.substring(0, 2) !== "f1" && coreInfo[elementToUpdateIndex].value.substring(0, 2) !== "f3")) {
+      if (coreInfo[elementToUpdateIndex].name === 'address' && (coreInfo[elementToUpdateIndex].value.substring(0, 2) !== 'f1' && coreInfo[elementToUpdateIndex].value.substring(0, 2) !== 'f3')) {
         hasError = true
         coreInfo[elementToUpdateIndex].errorMessage = 'address has to start with f1 or f3'
       }
@@ -200,11 +200,11 @@ class LdnApplication extends Component<LdnApplicationProps> {
   }
 
   updateCoreInfoContent(name: any, value: string, isMeasure?: boolean) {
-    let coreInfo = this.state.coreInfo
+    const coreInfo = this.state.coreInfo
     let hasError = false
     const elementToUpdateIndex: any = coreInfo.findIndex((info: any) => info.name === name)
     if (coreInfo[elementToUpdateIndex]) {
-      if (isMeasure || coreInfo[elementToUpdateIndex].type === 'number' || coreInfo[elementToUpdateIndex].name === "address")
+      if (isMeasure || coreInfo[elementToUpdateIndex].type === 'number' || coreInfo[elementToUpdateIndex].name === 'address')
         hasError = this.validateDatacapAndAddress(coreInfo, name, value, elementToUpdateIndex)
       if (isMeasure) {
         coreInfo[elementToUpdateIndex].measure = value
@@ -222,7 +222,7 @@ class LdnApplication extends Component<LdnApplicationProps> {
 
   addressListIncludesAddressInput(address: any) {
     if (this.state.addressList.includes(address)) {
-      alert("error: You did use already this address for another issue. Please, use another one!")
+      alert('error: You did use already this address for another issue. Please, use another one!')
       return true
     }
     return false
@@ -242,9 +242,9 @@ class LdnApplication extends Component<LdnApplicationProps> {
   }
 
   validateIssue() {
-    let coreInfo = this.state.coreInfo
+    const coreInfo = this.state.coreInfo
     let hasError = false
-    for (let info of coreInfo) {
+    for (const info of coreInfo) {
       if (!info.value || info.error) {
         info.error = true
         hasError = true
@@ -267,7 +267,7 @@ class LdnApplication extends Component<LdnApplicationProps> {
         this.setState({ isNewIssue: false })
 
       } else {
-        //todo make sure that the relevnt state fields are cleared
+        // todo make sure that the relevnt state fields are cleared
         await this.updateIssueAndContinue()
       }
       this.setState({ view: 4, stepViewFour: 0 })
@@ -284,7 +284,7 @@ class LdnApplication extends Component<LdnApplicationProps> {
       const res = await this.context.github.githubOcto.issues.create({
         owner: config.onboardingOwner,
         repo: config.onboardingLargeClientRepo,
-        title: '[DataCap Allocation] - ' + coreInfo.title, //todo get title differently
+        title: '[DataCap Allocation] - ' + coreInfo.title, // todo get title differently
         body: createParentComment(coreInfo),
         labels: [labelsIssueCreation.WIP_ISSUE]
       })
@@ -311,8 +311,8 @@ class LdnApplication extends Component<LdnApplicationProps> {
 
   isIssueCompleted() {
     let isComplete = true
-    for (let [key, entry] of Object.entries(this.createObjectForOtherInfoTemplate())) {
-      if (entry === "Please answer here." || entry === "") {
+    for (const [key, entry] of Object.entries(this.createObjectForOtherInfoTemplate())) {
+      if (entry === 'Please answer here.' || entry === '') {
         isComplete = false
       }
     }
@@ -357,8 +357,8 @@ class LdnApplication extends Component<LdnApplicationProps> {
 
   createObjectForOtherInfoTemplate() {
     const otherInfo = this.state.otherInfo
-    let retObj: any = {}
-    for (let info of otherInfo) {
+    const retObj: any = {}
+    for (const info of otherInfo) {
       retObj[info.name] = info.value
     }
     return retObj
@@ -366,8 +366,8 @@ class LdnApplication extends Component<LdnApplicationProps> {
 
   createObjectForCoreInfoTemplate() {
     const coreInfo = this.state.coreInfo
-    let retObj: any = {}
-    for (let info of coreInfo) {
+    const retObj: any = {}
+    for (const info of coreInfo) {
       if (info.name === 'datacapRequested' || info.name === 'dataCapWeeklyAllocation') {
         retObj[info.name] = info.value + info.measure
       } else {
@@ -380,9 +380,9 @@ class LdnApplication extends Component<LdnApplicationProps> {
 
   render() {
     return (
-      <div className={this.state.view === 4 ? "viewFourContainer" : "formContainer"} >
+      <div className={this.state.view === 4 ? 'viewFourContainer' : 'formContainer'} >
         {/* <div className="guideline-container"> */}
-        <div style={{ maxWidth: this.state.view === 5 ? "30%" : "" }} className={guidelines[this.state.view].className}>
+        <div style={{ maxWidth: this.state.view === 5 ? '30%' : '' }} className={guidelines[this.state.view].className}>
           <div className="guideText">{guidelines[this.state.view].title}</div>
           <span style={{ paddingTop: '10px' }}></span>
           <div className="guideText">{guidelines[this.state.view].description}</div>
@@ -390,7 +390,7 @@ class LdnApplication extends Component<LdnApplicationProps> {
           {
             this.state.view === 5 &&
             <div className="guideText">
-              <a target='_blank' rel="noopener noreferrer" href={guidelines[this.state.view].link + "/" + this.state.issueNumber}> repo</a>
+              <a target='_blank' rel="noopener noreferrer" href={guidelines[this.state.view].link + '/' + this.state.issueNumber}> repo</a>
             </div>
           }
           {
@@ -432,7 +432,7 @@ class LdnApplication extends Component<LdnApplicationProps> {
                     this.setState({ loggedUser: this.context.github.loggedUser })
                     this.fetchIssuesAndSelectView()
                   } catch (error) {
-                    console.log("this is ", error)
+                    console.log('this is ', error)
                   }
                 }}
                 onFailure={(response: any) => {
@@ -472,7 +472,7 @@ class LdnApplication extends Component<LdnApplicationProps> {
           <div className="content">
             <form >
               {coreInfo.map((item: any, index: any) =>
-                <div key={index} style={{ marginBottom: "12px" }} >
+                <div key={index} style={{ marginBottom: '12px' }} >
                   {
                     item.type === 'number' ?
                       <div className='select-slot'>
@@ -492,7 +492,7 @@ class LdnApplication extends Component<LdnApplicationProps> {
 
 
                         <Select
-                          style={{ minWidth: "70px", background: "rgba(0, 0, 0, 0.09)", borderLeft: "1.5px solid black", borderTopRightRadius: "4px" }}
+                          style={{ minWidth: '70px', background: 'rgba(0, 0, 0, 0.09)', borderLeft: '1.5px solid black', borderTopRightRadius: '4px' }}
                           labelId={item.name + 'dc-label'}
                           error={this.state.coreInfo[index].error}
                           id={item.name}
@@ -559,7 +559,7 @@ class LdnApplication extends Component<LdnApplicationProps> {
             <div className='otherInfoButtonContainer'>
               {!this.state.isNewIssue && <Button variant="contained" color="primary" onClick={() => this.prevStep()}>Back</Button>}
               <span style={{ marginRight: '10px' }}></span>
-              <Button style={{ float: "right" }} variant="contained" color="primary" onClick={() => this.createUpdateIssue()}>Save Issue and Continue</Button>
+              <Button style={{ float: 'right' }} variant="contained" color="primary" onClick={() => this.createUpdateIssue()}>Save Issue and Continue</Button>
             </div>
           </div>
         }
@@ -593,7 +593,7 @@ class LdnApplication extends Component<LdnApplicationProps> {
                     <div className='otherInfoButtonContainer'>
                       <Button variant="contained" color="primary" onClick={() => this.prevStep()}>Back</Button>
                       <span style={{ marginRight: '10px' }}></span>
-                      <Button variant="contained" color="primary" onClick={() => this.updateIssueAndContinue()}>{otherInfo.some(item => item.value === "") ? "Save Draft" : "Submit Issue"}</Button>
+                      <Button variant="contained" color="primary" onClick={() => this.updateIssueAndContinue()}>{otherInfo.some(item => item.value === '') ? 'Save Draft' : 'Submit Issue'}</Button>
 
                     </div>
               }

@@ -4,18 +4,18 @@ import { config } from '../../config'
 // @ts-ignore
 import TransportWebUSB from '@ledgerhq/hw-transport-webusb'
 // @ts-ignore
-import FilecoinApp from "@zondax/ledger-filecoin"
-import signer from "@zondax/filecoin-signing-tools/js"
+import FilecoinApp from '@zondax/ledger-filecoin'
+import signer from '@zondax/filecoin-signing-tools/js'
 import { VerifyAPI } from '@keyko-io/filecoin-verifier-tools'
 import { ConfigLotusNode } from '../contextType'
 
 export class LedgerWallet {
 
-  ledgerBusy: boolean = false
+  ledgerBusy = false
   ledgerApp: any = false
   api: any
   lotusNode: ConfigLotusNode
-  networkIndex: number = 0
+  networkIndex = 0
 
   public loadWallet = async (networkIndex: number) => {
     this.networkIndex = networkIndex
@@ -29,7 +29,7 @@ export class LedgerWallet {
         }
       )
       , { sign: this.sign, getAccounts: this.getAccounts }
-      , this.lotusNode.name !== "Mainnet" // if node != Mainnet => testnet = true
+      , this.lotusNode.name !== 'Mainnet' // if node != Mainnet => testnet = true
     )
 
 
@@ -107,8 +107,8 @@ export class LedgerWallet {
         GasPremium: filecoinMessage.gaspremium,
         Method: filecoinMessage.method,
         Nonce: filecoinMessage.nonce,
-        Params: Buffer.from(filecoinMessage.params, "hex").toString(
-          "base64"
+        Params: Buffer.from(filecoinMessage.params, 'hex').toString(
+          'base64'
         ),
         To: filecoinMessage.to,
         Value: filecoinMessage.value,
@@ -116,7 +116,7 @@ export class LedgerWallet {
       Signature: {
         Data: signedMessage.signature_compact.toString('base64'),
         Type: 1
-        //Type: signedMessage.signature.type,
+        // Type: signedMessage.signature.type,
       },
     });
 

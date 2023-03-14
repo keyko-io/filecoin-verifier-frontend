@@ -1,8 +1,8 @@
 import {
     createContext,
     useContext
-} from "react";
-import { Data } from "./Data/Index";
+} from 'react';
+import { Data } from './Data/Index';
 
 interface NodeDataState {
     getMultisigInfo: (multisigAddress: string) => any;

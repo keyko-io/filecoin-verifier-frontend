@@ -1,12 +1,12 @@
 import {version} from '../../../package.json';
-import logo from "../../svg/filecoin-logo.svg"
-import "./Footer.scss"
+import logo from '../../svg/filecoin-logo.svg'
+import './Footer.scss'
 
 const resourcesLinks = [
-  { link: "https://docs.filecoin.io/store/filecoin-plus/", desc: "Filecoin Plus Documentation" },
-  { link: "https://github.com/filecoin-project/notary-governance", desc: "Notary Repository" },
-  { link: "https://github.com/filecoin-project/filecoin-plus-client-onboarding", desc: "Client Onboarding" },
-  { link: "https://github.com/filecoin-project/filecoin-plus-large-datasets", desc: "Fil+ for Large Datasets" }
+  { link: 'https://docs.filecoin.io/store/filecoin-plus/', desc: 'Filecoin Plus Documentation' },
+  { link: 'https://github.com/filecoin-project/notary-governance', desc: 'Notary Repository' },
+  { link: 'https://github.com/filecoin-project/filecoin-plus-client-onboarding', desc: 'Client Onboarding' },
+  { link: 'https://github.com/filecoin-project/filecoin-plus-large-datasets', desc: 'Fil+ for Large Datasets' }
 ]
 
 const Footer = () => {

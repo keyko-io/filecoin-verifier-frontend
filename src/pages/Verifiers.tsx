@@ -1,15 +1,15 @@
-import { useEffect, useState } from "react"
-import DataTable from "react-data-table-component"
-import Welcome from "../components/Welcome/Welcome"
-import MakeRequestModal from "../modals/MakeRequestModal"
-import TableContainer from "./tableUtils/TableContainer/TableContainer"
+import { useEffect, useState } from 'react'
+import DataTable from 'react-data-table-component'
+import Welcome from '../components/Welcome/Welcome'
+import MakeRequestModal from '../modals/MakeRequestModal'
+import TableContainer from './tableUtils/TableContainer/TableContainer'
 // @ts-ignore
-import { dispatchCustomEvent } from "slate-react-system"
-import TableRightCornerContainer from "./tableUtils/TableRightCornerContainer/TableRightCornerContainer"
-import { columns } from "./tableUtils/verifiersColumns"
-import lodash from "lodash"
-import { config } from "../config"
-import toast from "react-hot-toast"
+import { dispatchCustomEvent } from 'slate-react-system'
+import TableRightCornerContainer from './tableUtils/TableRightCornerContainer/TableRightCornerContainer'
+import { columns } from './tableUtils/verifiersColumns'
+import lodash from 'lodash'
+import { config } from '../config'
+import toast from 'react-hot-toast'
 
 export interface Notary {
   id: number
@@ -41,27 +41,27 @@ export interface PreviousConfig {
 }
 
 const base = {
-   fontSize: "14px",
-   boxShadow: "rgb(0 0 0 / 35%) 0px 1px 4px",
-   border: "none",
-   padding: "12px 10px",
-   borderRadius: "4px",
-   fontWeight: "bold",
-   cursor: "pointer",
-   marginRight: "15px",
+   fontSize: '14px',
+   boxShadow: 'rgb(0 0 0 / 35%) 0px 1px 4px',
+   border: 'none',
+   padding: '12px 10px',
+   borderRadius: '4px',
+   fontWeight: 'bold',
+   cursor: 'pointer',
+   marginRight: '15px',
 }
 
 const buttonStyle = {
   ...base,
-  color: "#fff",
-  backgroundColor: "#0091ff",
+  color: '#fff',
+  backgroundColor: '#0091ff',
 }
 
 const linkStyle = {
   ...base,
-  textDecoration: "none",
-  color: "#0091ff",
-  backgroundColor: "#fff",
+  textDecoration: 'none',
+  color: '#0091ff',
+  backgroundColor: '#fff',
 }
 
 const Verifiers = () => {
@@ -76,16 +76,16 @@ const Verifiers = () => {
 
   async function contactVerifier() {
     if (!selectedNotary) {
-      toast.error("You should select one verifier")
+      toast.error('You should select one verifier')
       return
     }
 
     dispatchCustomEvent({
-      name: "create-modal",
+      name: 'create-modal',
       detail: {
         id: Math.random()
           .toString(36)
-          .replace(/[^a-z]+/g, "")
+          .replace(/[^a-z]+/g, '')
           .substr(0, 5),
         modal: <MakeRequestModal verifier={selectedNotary} />,
       },

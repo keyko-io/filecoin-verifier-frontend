@@ -1,14 +1,14 @@
-import React, { useContext, useState } from "react";
-import RootKey from "../svg/root-key.svg";
-import Verifiers from "../svg/verifier-wallet.svg";
-import Logo from "../svg/logo-button.svg";
-import Ledger from "../svg/ledger-logo.svg";
-import history from "../context/History";
-import { Data } from "../context/Data/Index";
+import React, { useContext, useState } from 'react';
+import RootKey from '../svg/root-key.svg';
+import Verifiers from '../svg/verifier-wallet.svg';
+import Logo from '../svg/logo-button.svg';
+import Ledger from '../svg/ledger-logo.svg';
+import history from '../context/History';
+import { Data } from '../context/Data/Index';
 // @ts-ignore
-import { ButtonPrimary, dispatchCustomEvent } from "slate-react-system";
-import { config } from "../config";
-import { CircularProgress } from "@material-ui/core";
+import { ButtonPrimary, dispatchCustomEvent } from 'slate-react-system';
+import { config } from '../config';
+import { CircularProgress } from '@material-ui/core';
 
 type ModalProps = {
   type: string;
@@ -20,26 +20,26 @@ const LogInModal = (props: ModalProps) => {
   const [multisig, setMultisig] = useState(false)
   const [ledgerLoading, setLedgerLoading] = useState(false)
   const [browserLoading, setBrowserLoading] = useState(false)
-  const [address, setAddress] = useState("")
+  const [address, setAddress] = useState('')
 
   const loadLedgerWallet = async () => {
     setLedgerLoading(true)
     try {
-      const logged = await context.wallet.loadWallet("Ledger", {
+      const logged = await context.wallet.loadWallet('Ledger', {
         multisig,
         multisigAddress: address,
       });
 
       if (logged) {
         setLedgerLoading(false)
-        if (context.viewroot === false && props.type === "0") {
+        if (context.viewroot === false && props.type === '0') {
           context.switchview();
         }
 
-        dispatchCustomEvent({ name: "delete-modal", detail: {} });
+        dispatchCustomEvent({ name: 'delete-modal', detail: {} });
 
         history.push({
-          pathname: "/app",
+          pathname: '/app',
         });
       }
     } catch (error) {
@@ -51,20 +51,20 @@ const LogInModal = (props: ModalProps) => {
   const loadBurnerWallet = async () => {
     setBrowserLoading(true)
     try {
-      const logged = await context.wallet.loadWallet("Burner", {
+      const logged = await context.wallet.loadWallet('Burner', {
         multisig,
         multisigAddress: address,
       });
       if (logged) {
         setBrowserLoading(false)
-        if (context.viewroot === false && props.type === "0") {
+        if (context.viewroot === false && props.type === '0') {
           context.switchview();
         }
 
-        dispatchCustomEvent({ name: "delete-modal", detail: {} });
+        dispatchCustomEvent({ name: 'delete-modal', detail: {} });
 
         history.push({
-          pathname: "/app",
+          pathname: '/app',
         });
       }
     } catch (error) {
@@ -75,10 +75,10 @@ const LogInModal = (props: ModalProps) => {
 
   return (
     <div className="loginmodal">
-      {props.type === "0" ? (
+      {props.type === '0' ? (
         <React.Fragment>
           <div className="imgheader">
-            <img src={RootKey} alt={"RootKey"} />
+            <img src={RootKey} alt={'RootKey'} />
           </div>
           <div className="info">
             <div className="title">Log in as a Root Key Holder</div>
@@ -91,32 +91,32 @@ const LogInModal = (props: ModalProps) => {
           <div className="buttons">
             {config.dev_mode === 'dev' ? (
               <div className="button left">
-                <ButtonPrimary onClick={loadBurnerWallet} style={{ minWidth: "220px", boxShadow: "none" }}>
-                  {!browserLoading && <img src={Logo} alt={"Logo"} />}
-                  {browserLoading ? <CircularProgress size={20} style={{ color: "rgb(0, 144, 255)" }} /> : "Load Browser Wallet"}
+                <ButtonPrimary onClick={loadBurnerWallet} style={{ minWidth: '220px', boxShadow: 'none' }}>
+                  {!browserLoading && <img src={Logo} alt={'Logo'} />}
+                  {browserLoading ? <CircularProgress size={20} style={{ color: 'rgb(0, 144, 255)' }} /> : 'Load Browser Wallet'}
                 </ButtonPrimary>
               </div>
             ) : null}
             <div
               className={
                 config.dev_mode === 'dev'
-                  ? "button right"
-                  : "button center"
+                  ? 'button right'
+                  : 'button center'
               }
             >
-              <ButtonPrimary onClick={loadLedgerWallet} style={{ minWidth: "220px", boxShadow: "none" }}>
-                {!ledgerLoading && <img src={Ledger} alt={"Ledger"} />}
-                {ledgerLoading ? <CircularProgress size={20} style={{ color: "rgb(0, 144, 255)" }} /> : "Load Ledger Wallet"}
+              <ButtonPrimary onClick={loadLedgerWallet} style={{ minWidth: '220px', boxShadow: 'none' }}>
+                {!ledgerLoading && <img src={Ledger} alt={'Ledger'} />}
+                {ledgerLoading ? <CircularProgress size={20} style={{ color: 'rgb(0, 144, 255)' }} /> : 'Load Ledger Wallet'}
 
               </ButtonPrimary>
-              <p style={{ marginTop: "10px" }}>Please ensure you have “expert mode” enabled</p>
+              <p style={{ marginTop: '10px' }}>Please ensure you have “expert mode” enabled</p>
             </div>
           </div>
         </React.Fragment>
       ) : (
         <React.Fragment>
           <div className="imgheader">
-            <img src={Verifiers} alt={"Verifiers"} />
+            <img src={Verifiers} alt={'Verifiers'} />
           </div>
           <div className="info">
             <div className="title">Log in as a Notary</div>
@@ -128,13 +128,13 @@ const LogInModal = (props: ModalProps) => {
           </div>
           <div className="tabs">
             <div
-              className={multisig ? "tab" : "tab selected"}
+              className={multisig ? 'tab' : 'tab selected'}
               onClick={() => setMultisig(false)}
             >
               Individual
             </div>
             {config.dev_mode === 'dev' && (
-              <div className={multisig ? "tab selected" : "tab"} onClick={() => setMultisig(true)}>
+              <div className={multisig ? 'tab selected' : 'tab'} onClick={() => setMultisig(true)}>
                 Organization
               </div>
             )}
@@ -142,9 +142,9 @@ const LogInModal = (props: ModalProps) => {
           <div className="buttons">
             {config.dev_mode === 'dev' ? (
               <div className="button left">
-                <ButtonPrimary onClick={loadBurnerWallet} style={{ minWidth: "220px", boxShadow: "none" }}>
-                  {!browserLoading && <img src={Logo} alt={"Logo"} />}
-                  {browserLoading ? <CircularProgress size={20} style={{ color: "rgb(0, 144, 255)" }} /> : "Load Browser Wallet"}
+                <ButtonPrimary onClick={loadBurnerWallet} style={{ minWidth: '220px', boxShadow: 'none' }}>
+                  {!browserLoading && <img src={Logo} alt={'Logo'} />}
+                  {browserLoading ? <CircularProgress size={20} style={{ color: 'rgb(0, 144, 255)' }} /> : 'Load Browser Wallet'}
                 </ButtonPrimary>
                 {multisig ? (
                   <input
@@ -157,10 +157,10 @@ const LogInModal = (props: ModalProps) => {
                 ) : null}
               </div>
             ) : null}
-            <div className={config.dev_mode === 'dev' ? "button right" : "button center"}>
-              <ButtonPrimary onClick={loadLedgerWallet} style={{ minWidth: "220px", boxShadow: "none" }}>
-                {!ledgerLoading && <img src={Ledger} alt={"Ledger"} />}
-                {ledgerLoading ? <CircularProgress size={20} style={{ color: "rgb(0, 144, 255)" }} /> : "Load Ledger Wallet"}
+            <div className={config.dev_mode === 'dev' ? 'button right' : 'button center'}>
+              <ButtonPrimary onClick={loadLedgerWallet} style={{ minWidth: '220px', boxShadow: 'none' }}>
+                {!ledgerLoading && <img src={Ledger} alt={'Ledger'} />}
+                {ledgerLoading ? <CircularProgress size={20} style={{ color: 'rgb(0, 144, 255)' }} /> : 'Load Ledger Wallet'}
               </ButtonPrimary>
               {multisig ? (
                 <input
@@ -171,7 +171,7 @@ const LogInModal = (props: ModalProps) => {
                   onChange={(e) => setAddress(e.target.value)}
                 />
               ) : null}
-              <p style={{ marginTop: "10px" }}>Please ensure you have “expert mode” enabled</p>
+              <p style={{ marginTop: '10px' }}>Please ensure you have “expert mode” enabled</p>
             </div>
           </div>
         </React.Fragment>

@@ -1,5 +1,5 @@
 export const searchAllColumnsFromTable = ({ rows, query }: any) => {
-  let cols = rows[0] && Object.keys(rows[0])
+  const cols = rows[0] && Object.keys(rows[0])
 
   return rows.filter((row: any) => {
 

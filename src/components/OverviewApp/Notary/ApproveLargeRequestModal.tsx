@@ -1,8 +1,8 @@
-import { Modal} from "@mui/material";
+import { Modal} from '@mui/material';
 // @ts-ignore
-import { useLargeRequestsContext } from "../../../context/LargeRequests";
-import { LargeRequestData } from "../../../type";
-import CloseIcon from "@mui/icons-material/Close";
+import { useLargeRequestsContext } from '../../../context/LargeRequests';
+import { LargeRequestData } from '../../../type';
+import CloseIcon from '@mui/icons-material/Close';
 
 type ModalProps = {
     selectedClientRequests: LargeRequestData[];
@@ -12,10 +12,10 @@ type ModalProps = {
 };
 
 const closeIconStyle = {
-    position: "absolute",
-    top: "12px",
-    right: "12px",
-    cursor: "pointer",
+    position: 'absolute',
+    top: '12px',
+    right: '12px',
+    cursor: 'pointer',
 };
 
 const ApproveLargeRequestModal = (props: ModalProps) => {
@@ -28,15 +28,15 @@ const ApproveLargeRequestModal = (props: ModalProps) => {
         handleClose,
     } = props;
 
-    const message = "You are about to send a message to assign DataCap to the following addresses:";
+    const message = 'You are about to send a message to assign DataCap to the following addresses:';
 
     const onClickHandler = async () => {
         const isSignable = await areRequestsSignable(selectedClientRequests)
-        console.log("isSignable", isSignable);
+        console.log('isSignable', isSignable);
         handleClose();
         if (!isSignable) {
             alert(
-                "you are not allowed to sign one or more of the selected transactions"
+                'you are not allowed to sign one or more of the selected transactions'
             );
             return;
         }
@@ -49,15 +49,15 @@ const ApproveLargeRequestModal = (props: ModalProps) => {
             <div
                 className="warnmodalledger"
                 style={{
-                    backgroundColor: "white",
+                    backgroundColor: 'white',
                     height: 250 + 30 * selectedClientRequests.length,
-                    position : "absolute",
-                    top : "50%",
-                    left: "50%" ,
-                    transform : "translate(-50%, -50%)",
-                    padding: "1.8rem",
-                    borderRadius: "0.4rem",
-                    minWidth: "700px"
+                    position : 'absolute',
+                    top : '50%',
+                    left: '50%' ,
+                    transform : 'translate(-50%, -50%)',
+                    padding: '1.8rem',
+                    borderRadius: '0.4rem',
+                    minWidth: '700px'
                 }}
             >   
              <CloseIcon
@@ -91,11 +91,11 @@ const ApproveLargeRequestModal = (props: ModalProps) => {
                     message.            
                         <button
                           style={{
-                            border: "none",
-                            padding : "8px 24px",
-                            borderRadius : "4px",
-                            marginTop : "1rem",
-                            cursor: "pointer"
+                            border: 'none',
+                            padding : '8px 24px',
+                            borderRadius : '4px',
+                            marginTop : '1rem',
+                            cursor: 'pointer'
                           }}
                             onClick={() => onClickHandler()}
                         >

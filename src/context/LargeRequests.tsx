@@ -3,11 +3,11 @@ import {
     useContext,
     useEffect,
     useState,
-} from "react";
-import { LargeRequestData } from "../type";
-import { anyToBytes } from "../utils/Filters";
-import { Data } from "./Data/Index";
-import { useNodeDataContext } from "./NodeData";
+} from 'react';
+import { LargeRequestData } from '../type';
+import { anyToBytes } from '../utils/Filters';
+import { Data } from './Data/Index';
+import { useNodeDataContext } from './NodeData';
 
 interface LargeRequestsState {
     areRequestsSignable: any;

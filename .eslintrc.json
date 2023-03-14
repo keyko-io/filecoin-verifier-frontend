@@ -19,14 +19,18 @@
   "plugins": ["react", "react-hooks", "@typescript-eslint", "prettier"],
   "rules": {
     "react/react-in-jsx-scope": "off",
-    "camelcase": "error",
     "spaced-comment": "error",
     "quotes": ["error", "single"],
-    "no-duplicate-imports": "error"
+    "no-duplicate-imports": "error",
+    "@typescript-eslint/ban-ts-comment": "off",
+    "no-async-promise-executor" : "off",
+    "no-case-declarations" : "warn",
+    "@typescript-eslint/no-empty-function": "warn"
   },
   "settings": {
     "import/resolver": {
       "typescript": {}
     }
-  }
+  },
+  "ignorePatterns": ["dist/"]
 }

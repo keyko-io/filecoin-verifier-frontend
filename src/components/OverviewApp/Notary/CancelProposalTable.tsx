@@ -1,8 +1,8 @@
-import { CircularProgress } from "@material-ui/core"
-import { useContext, useEffect, useState } from "react"
-import DataTable from "react-data-table-component"
-import { Data } from "../../../context/Data/Index"
-import { ldnParser } from "@keyko-io/filecoin-verifier-tools";
+import { CircularProgress } from '@material-ui/core'
+import { useContext, useEffect, useState } from 'react'
+import DataTable from 'react-data-table-component'
+import { Data } from '../../../context/Data/Index'
+import { ldnParser } from '@keyko-io/filecoin-verifier-tools';
 
 type DataCancelType = {
   clientAddress: string,
@@ -17,16 +17,16 @@ type DataCancelType = {
 
 export const cancelColumns = [
   {
-    name: "Client Name",
+    name: 'Client Name',
     selector: (row: DataCancelType) => row.clientName,
   },
   {
-    name: "Client Address",
+    name: 'Client Address',
     selector: (row: DataCancelType) => row.clientAddress,
     grow: 2,
   },
   {
-    name: "Issue Number",
+    name: 'Issue Number',
     selector: (row: DataCancelType) => row.issueNumber,
     cell: (row: DataCancelType) => (
       <a
@@ -39,11 +39,11 @@ export const cancelColumns = [
     ),
   },
   {
-    name: "TxId",
+    name: 'TxId',
     selector: (row: DataCancelType) => row.tx.id,
   },
   {
-    name: "Datacap",
+    name: 'Datacap',
     selector: (row: DataCancelType) => row.datacap,
   },
 ]
@@ -66,7 +66,7 @@ const CancelProposalTable = ({ setCancelProposalData, dataCancel, dataCancelLoad
 
   const getPending = async () => {
     setIsTableDataLoading(true)
-    //get issue from the context
+    // get issue from the context
     let transactionsData = []
 
     if (context.txsIssueGitHub) {
@@ -76,7 +76,7 @@ const CancelProposalTable = ({ setCancelProposalData, dataCancel, dataCancelLoad
       transactionsData = LDNIssuesAndTransactions.transactionAndIssue.filter((item: any) => item.issue)
     }
 
-    //this is converting id with the short version because we have short version in the array of signers
+    // this is converting id with the short version because we have short version in the array of signers
     // let id = await context.wallet.api.actorAddress(context.wallet.activeAccount) ?  await context.wallet.api.actorAddress(context.wallet.activeAccount) : context.wallet.activeAccount
     let id;
     try {
@@ -87,10 +87,10 @@ const CancelProposalTable = ({ setCancelProposalData, dataCancel, dataCancelLoad
 
     const dataByActiveAccount: any = []
 
-    //check if the activeAccount id is in the array
-    for (let transaction of transactionsData) {
+    // check if the activeAccount id is in the array
+    for (const transaction of transactionsData) {
       if (Array.isArray(transaction.tx)) {
-        for (let txId of transaction.tx) {
+        for (const txId of transaction.tx) {
           if (txId.signers.includes(id)) {
             dataByActiveAccount.push(transaction)
           }
@@ -98,13 +98,13 @@ const CancelProposalTable = ({ setCancelProposalData, dataCancel, dataCancelLoad
       }
     }
 
-    //manipulate the data for the table and also the cancel function usage
+    // manipulate the data for the table and also the cancel function usage
     const DataCancel: DataCancelType[] = dataByActiveAccount.map((item: any) => {
 
-      //getting client name
+      // getting client name
       const { name } = ldnParser.parseIssue(item.issue[0].issueInfo.issue.body)
 
-      //getting comment with the signer id
+      // getting comment with the signer id
       const comment = item.issue[0].issueInfo.comments.filter((c: any) => c.body.includes(context.wallet.activeAccount)).reverse()
 
       return {
@@ -124,7 +124,7 @@ const CancelProposalTable = ({ setCancelProposalData, dataCancel, dataCancelLoad
   }
 
   return (
-    <div style={{ minHeight: "500px" }}>
+    <div style={{ minHeight: '500px' }}>
       <DataTable
         selectableRows
         selectableRowsHighlight={true}
@@ -136,7 +136,7 @@ const CancelProposalTable = ({ setCancelProposalData, dataCancel, dataCancelLoad
         columns={cancelColumns}
         noDataComponent="You don't have any pending request yet"
         progressPending={dataCancelLoading || tableDataLoading}
-        progressComponent={<CircularProgress style={{ marginTop: "3rem", color: "#0090ff" }} />}
+        progressComponent={<CircularProgress style={{ marginTop: '3rem', color: '#0090ff' }} />}
       />
     </div>
 

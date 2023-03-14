@@ -1,15 +1,15 @@
 import { useContext, useState } from 'react';
 import { Wallet } from '../context/Wallet/Index'
 // @ts-ignore
-import { dispatchCustomEvent, H3, Input, ButtonPrimary } from "slate-react-system";
+import { dispatchCustomEvent, H3, Input, ButtonPrimary } from 'slate-react-system';
 
 const WalletModal = () => {
   const context = useContext(Wallet)
-  const [seedphrase, setSeedPhrase] = useState("")
+  const [seedphrase, setSeedPhrase] = useState('')
 
   const handleImport = () => {
     context.importSeed(seedphrase)
-    dispatchCustomEvent({ name: "delete-modal", detail: {} })
+    dispatchCustomEvent({ name: 'delete-modal', detail: {} })
   }
 
   return (
