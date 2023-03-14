@@ -1,5 +1,6 @@
 // @ts-ignore
 import RootKey from '../svg/rkh-verifiers.svg'
+// @ts-ignore
 import Cients from '../svg/client-miners.svg'
 import Option from '../components/Option/Option'
 import history from '../context/History'

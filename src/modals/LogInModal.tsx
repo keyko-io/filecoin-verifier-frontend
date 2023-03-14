@@ -1,7 +1,15 @@
 import React, { useContext, useState } from 'react'
+
+// @ts-ignore
 import RootKey from '../svg/root-key.svg'
+
+// @ts-ignore
 import Verifiers from '../svg/verifier-wallet.svg'
+
+// @ts-ignore
 import Logo from '../svg/logo-button.svg'
+
+// @ts-ignore
 import Ledger from '../svg/ledger-logo.svg'
 import history from '../context/History'
 import { Data } from '../context/Data/Index'

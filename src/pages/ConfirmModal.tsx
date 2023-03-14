@@ -1,5 +1,6 @@
 // @ts-ignore
 import { ButtonPrimary, dispatchCustomEvent } from 'slate-react-system'
+// @ts-ignore
 import Sent from '../svg/sent.svg'
 
 type ConfirmModalProps = {

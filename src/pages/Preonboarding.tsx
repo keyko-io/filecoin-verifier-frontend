@@ -1,7 +1,9 @@
 import React from 'react'
 // @ts-ignore
 import { dispatchCustomEvent } from 'slate-react-system'
+// @ts-ignore
 import RootKey from '../svg/root-key.svg'
+// @ts-ignore
 import Verifiers from '../svg/verifier-wallet.svg'
 import Welcome from '../components/Welcome/Welcome'
 import LearnMore from '../components/LearnMore/LearnMore'

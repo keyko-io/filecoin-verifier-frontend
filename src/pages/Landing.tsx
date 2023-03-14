@@ -1,5 +1,6 @@
 // @ts-ignore
 import TiB from '../svg/tib.svg'
+// @ts-ignore
 import Mining from '../svg/mining.png'
 import Option from '../components/Option/Option'
 import Welcome from '../components/Welcome/Welcome'
