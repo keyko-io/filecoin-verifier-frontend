@@ -11,7 +11,7 @@ export type VerifiedCachedData = {
 
 export interface LargeRequestData {
     address: string;
-    approvals: number | boolean;
+    approvals: number | boolean | null;
     data: any;
     datacap: string;
     issue_number: number;

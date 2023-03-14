@@ -29,6 +29,7 @@ import { Integrations } from "@sentry/tracing";
 import Verifiers from "./pages/Verifiers";
 import Miners from "./pages/Miners";
 import StatusPage from "./pages/StatusPage";
+import LargeRequestsProvider from "./context/LargeRequests";
 
 // redirect to domain if user access fleek url
 if (window.location.host.includes("fleek") && config.willRedirect) {
@@ -37,6 +38,9 @@ if (window.location.host.includes("fleek") && config.willRedirect) {
 
 const startSentry = () => {
     try {
+        if (process.env.NODE_ENV === "development") {
+            return;
+        }
         const sentryDSN =
             process.env.REACT_APP_SENTRY_DSN ||
             "https://e434fb51144f42c5adc29d6cf075256e@o4504711585005568.ingest.sentry.io/4504711588413440"; // hmm..
@@ -58,7 +62,6 @@ const startSentry = () => {
         console.log("error", error);
     }
 };
-
 startSentry();
 
 const root = ReactDOM.createRoot(
@@ -78,87 +81,87 @@ root.render(
                                         wallet={wallet}
                                         github={github}
                                     >
-                                        <Router history={history}>
-                                            <Layout>
-                                                <Switch>
-                                                    <Route
-                                                        exact
-                                                        path={"/"}
-                                                        component={
-                                                            Onboarding
-                                                        }
-                                                    ></Route>
-                                                    <Route
-                                                        path={"/app"}
-                                                        component={
-                                                            App
-                                                        }
-                                                    ></Route>
-                                                    <Route
-                                                        path={
-                                                            "/wallet"
-                                                        }
-                                                        component={
-                                                            Preonboarding
-                                                        }
-                                                    ></Route>
-                                                    <Route
-                                                        path={
-                                                            "/landing"
-                                                        }
-                                                        component={
-                                                            Landing
-                                                        }
-                                                    ></Route>
-                                                    <Route
-                                                        path={
-                                                            "/verifiers"
-                                                        }
-                                                        component={
-                                                            Verifiers
-                                                        }
-                                                    ></Route>
-                                                    <Route
-                                                        path={
-                                                            "/ldn-application"
-                                                        }
-                                                        component={
-                                                            LdnApplication
-                                                        }
-                                                    ></Route>
-                                                    <Route
-                                                        path={
-                                                            "/miners"
-                                                        }
-                                                        component={
-                                                            Miners
-                                                        }
-                                                    ></Route>
-                                                    <Route
-                                                        path={
-                                                            "/client"
-                                                        }
-                                                        component={
-                                                            ClientDetails
-                                                        }
-                                                    ></Route>
-                                                    <Route
-                                                        path={"/logs"}
-                                                        component={
-                                                            LogExplorer
-                                                        }
-                                                    ></Route>
-                                                    <Route
-                                                        path={
-                                                            "/status"
-                                                        }
-                                                        component={
-                                                            StatusPage
-                                                        }
-                                                    ></Route>
-                                                </Switch>
-                                            </Layout>
-                                        </Router>
+                                            <Router history={history}>
+                                                <Layout>
+                                                    <Switch>
+                                                        <Route
+                                                            exact
+                                                            path={"/"}
+                                                            component={
+                                                                Onboarding
+                                                            }
+                                                        ></Route>
+                                                        <Route
+                                                            path={"/app"}
+                                                            component={
+                                                                App
+                                                            }
+                                                        ></Route>
+                                                        <Route
+                                                            path={
+                                                                "/wallet"
+                                                            }
+                                                            component={
+                                                                Preonboarding
+                                                            }
+                                                        ></Route>
+                                                        <Route
+                                                            path={
+                                                                "/landing"
+                                                            }
+                                                            component={
+                                                                Landing
+                                                            }
+                                                        ></Route>
+                                                        <Route
+                                                            path={
+                                                                "/verifiers"
+                                                            }
+                                                            component={
+                                                                Verifiers
+                                                            }
+                                                        ></Route>
+                                                        <Route
+                                                            path={
+                                                                "/ldn-application"
+                                                            }
+                                                            component={
+                                                                LdnApplication
+                                                            }
+                                                        ></Route>
+                                                        <Route
+                                                            path={
+                                                                "/miners"
+                                                            }
+                                                            component={
+                                                                Miners
+                                                            }
+                                                        ></Route>
+                                                        <Route
+                                                            path={
+                                                                "/client"
+                                                            }
+                                                            component={
+                                                                ClientDetails
+                                                            }
+                                                        ></Route>
+                                                        <Route
+                                                            path={"/logs"}
+                                                            component={
+                                                                LogExplorer
+                                                            }
+                                                        ></Route>
+                                                        <Route
+                                                            path={
+                                                                "/status"
+                                                            }
+                                                            component={
+                                                                StatusPage
+                                                            }
+                                                        ></Route>
+                                                    </Switch>
+                                                </Layout>
+                                            </Router>
                                         <GlobalNotification
                                             style={{
                                                 bottom: 0,
