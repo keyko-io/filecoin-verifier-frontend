@@ -1,73 +1,57 @@
-import { ldnParser } from '@keyko-io/filecoin-verifier-tools';
-import { CircularProgress } from '@material-ui/core';
-import { useContext, useEffect, useState } from 'react';
-import DataTable from 'react-data-table-component';
-import { config } from '../../../config';
-import { Data } from '../../../context/Data/Index';
-import { LargeRequestData } from '../../../type';
-import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
-import NodeDataModal from './NodeDataModal';
-import SearchInput from './SearchInput';
-import { useLargeRequestsContext } from '../../../context/LargeRequests';
+import { ldnParser } from '@keyko-io/filecoin-verifier-tools'
+import { CircularProgress } from '@material-ui/core'
+import { useContext, useEffect, useState } from 'react'
+import DataTable from 'react-data-table-component'
+import { config } from '../../../config'
+import { Data } from '../../../context/Data/Index'
+import { LargeRequestData } from '../../../type'
+import MoreHorizIcon from '@mui/icons-material/MoreHoriz'
+import NodeDataModal from './NodeDataModal'
+import SearchInput from './SearchInput'
+import { useLargeRequestsContext } from '../../../context/LargeRequests'
 
 const CANT_SIGN_MESSAGE =
-    'You can currently only approve the allocation requests associated with the multisig organization you signed in with. Signing proposals for additional DataCap allocations will require you to sign in again';
+    'You can currently only approve the allocation requests associated with the multisig organization you signed in with. Signing proposals for additional DataCap allocations will require you to sign in again'
 
 const mapNotaryAddressToGithubHandle = async (address: string) => {
-    const verifRegJson : any= await fetch(config.verifiers_registry_url) 
-    const json =await verifRegJson.json()
+    const verifRegJson: any = await fetch(config.verifiers_registry_url)
+    const json = await verifRegJson.json()
     const githubHandle =
-        json.notaries.find(
-            (notary: any) =>
-                notary.ldn_config.signing_address === address
-        )?.github_user[0] || '';
-    return githubHandle;
-};
+        json.notaries.find((notary: any) => notary.ldn_config.signing_address === address)
+            ?.github_user[0] || ''
+    return githubHandle
+}
 
 export const isSignable = (
     approvals: number,
     approverSignerAddress: string,
-    activeAccountAddress: string
+    activeAccountAddress: string,
 ) => {
     const approverIsNotProposer = approverSignerAddress
         ? approverSignerAddress !== activeAccountAddress
-        : false;
-    const msigIncludeSigner = false;
-    const signable = approvals
-        ? msigIncludeSigner && approverIsNotProposer
-        : msigIncludeSigner;
+        : false
+    const msigIncludeSigner = false
+    const signable = approvals ? msigIncludeSigner && approverIsNotProposer : msigIncludeSigner
 
-    return signable;
-};
+    return signable
+}
 
-const formatIssues = async (
-    data: { body: string }[],
-    githubOcto: any
-): Promise<any[]> => {
-    const parsedIssueData: any = [];
+const formatIssues = async (data: { body: string }[], githubOcto: any): Promise<any[]> => {
+    const parsedIssueData: any = []
     await Promise.all(
         data?.map(async (issue: any) => {
-            if (!issue.body) return;
-            const parsed = ldnParser.parseIssue(issue.body);
-            const comments = await githubOcto.paginate(
-                githubOcto.issues.listComments,
-                {
-                    owner: config.onboardingLargeOwner,
-                    repo: config.onboardingLargeClientRepo,
-                    issue_number: issue.number,
-                }
-            );
+            if (!issue.body) return
+            const parsed = ldnParser.parseIssue(issue.body)
+            const comments = await githubOcto.paginate(githubOcto.issues.listComments, {
+                owner: config.onboardingLargeOwner,
+                repo: config.onboardingLargeClientRepo,
+                issue_number: issue.number,
+            })
             const comment = comments
                 .reverse()
-                .find((comment: any) =>
-                    comment.body.includes(
-                        '## DataCap Allocation requested'
-                    )
-                );
-            if (!comment?.body) return;
-            const commentParsed = ldnParser.parseReleaseRequest(
-                comment.body
-            );
+                .find((comment: any) => comment.body.includes('## DataCap Allocation requested'))
+            if (!comment?.body) return
+            const commentParsed = ldnParser.parseReleaseRequest(comment.body)
             parsedIssueData.push({
                 ...parsed,
                 issue_number: issue.number,
@@ -75,98 +59,85 @@ const formatIssues = async (
                 comments,
                 multisig: commentParsed.notaryAddress,
                 datacap: commentParsed.allocationDatacap,
-            });
-        })
-    );
-    return parsedIssueData.sort((a: any, b: any) => b.issue_number > a.issue_number);
-};
+            })
+        }),
+    )
+    return parsedIssueData.sort((a: any, b: any) => b.issue_number > a.issue_number)
+}
 
 type LargeRequestTableProps = {
-    setSelectedLargeClientRequests: any;
-};
+    setSelectedLargeClientRequests: any
+}
 
 const LargeRequestTable = (props: LargeRequestTableProps) => {
-    const { setSelectedLargeClientRequests } = props;
-    const { count } = useLargeRequestsContext();
-    const context = useContext(Data);
+    const { setSelectedLargeClientRequests } = props
+    const { count } = useLargeRequestsContext()
+    const context = useContext(Data)
 
-    const [isLoadingGithubData, setIsLoadingGithubData] =
-        useState<boolean>(false);
-    const [isLoadingNodeData, setLoadingNodeData] =
-        useState<boolean>(false);
-    const [data, setData] = useState<any>([]);
+    const [isLoadingGithubData, setIsLoadingGithubData] = useState<boolean>(false)
+    const [isLoadingNodeData, setLoadingNodeData] = useState<boolean>(false)
+    const [data, setData] = useState<any>([])
 
-    const [currentPage, setCurrentPage] = useState(1);
-    const [open, setOpen] = useState(false);
-    const [proposer, setProposer] = useState('');
-    const [txId, setTxId] = useState('');
+    const [currentPage, setCurrentPage] = useState(1)
+    const [open, setOpen] = useState(false)
+    const [proposer, setProposer] = useState('')
+    const [txId, setTxId] = useState('')
 
-    const handleOpen = async (
-        multisig: string,
-        clientAddress: string
-    ) => {
-        setLoadingNodeData(true);
-        setOpen(true);
-        const nodeData = await context.getNodeData(
-            multisig,
-            clientAddress
-        );
+    const handleOpen = async (multisig: string, clientAddress: string) => {
+        setLoadingNodeData(true)
+        setOpen(true)
+        const nodeData = await context.getNodeData(multisig, clientAddress)
         if (nodeData?.signerAddress) {
-            const notaryGithubHandle = await mapNotaryAddressToGithubHandle(
-                nodeData.signerAddress
-            );
-            setProposer(notaryGithubHandle);
-            setTxId(nodeData?.txId);
-            setLoadingNodeData(false);
+            const notaryGithubHandle = await mapNotaryAddressToGithubHandle(nodeData.signerAddress)
+            setProposer(notaryGithubHandle)
+            setTxId(nodeData?.txId)
+            setLoadingNodeData(false)
         }
-        setLoadingNodeData(false);
-    };
+        setLoadingNodeData(false)
+    }
 
     const handleClose = () => {
-        setOpen(false);
-        setProposer('');
-        setTxId('');
-    };
+        setOpen(false)
+        setProposer('')
+        setTxId('')
+    }
 
     useEffect(() => {
-        currentPage >= 1 &&
-            data?.length &&
-            fetchTableData(currentPage); // NOT GREAT SOLUTION
-    }, [currentPage]);
+        currentPage >= 1 && data?.length && fetchTableData(currentPage) // NOT GREAT SOLUTION
+    }, [currentPage])
 
     const fetchTableData = async (page: number) => {
         try {
-            setIsLoadingGithubData(true);
-            const allReadyToSignIssues =
-                await context.github.githubOcto.issues.listForRepo(
-                    'GET /repos/{owner}/{repo}/issues',
-                    {
-                        owner: config.onboardingLargeOwner,
-                        repo: config.onboardingLargeClientRepo,
-                        state: 'open',
-                        labels: 'bot:readyToSign',
-                        page,
-                        per_page: 10,
-                    }
-                );
+            setIsLoadingGithubData(true)
+            const allReadyToSignIssues = await context.github.githubOcto.issues.listForRepo(
+                'GET /repos/{owner}/{repo}/issues',
+                {
+                    owner: config.onboardingLargeOwner,
+                    repo: config.onboardingLargeClientRepo,
+                    state: 'open',
+                    labels: 'bot:readyToSign',
+                    page,
+                    per_page: 10,
+                },
+            )
             if (allReadyToSignIssues.data) {
                 const formattedIssues = await formatIssues(
                     allReadyToSignIssues.data,
-                    context.github.githubOcto
-                );
-                console.log('formattedIssues', formattedIssues);
-                setData(formattedIssues);
-                setIsLoadingGithubData(false);
+                    context.github.githubOcto,
+                )
+                console.log('formattedIssues', formattedIssues)
+                setData(formattedIssues)
+                setIsLoadingGithubData(false)
             }
         } catch (error) {
-            console.log(error);
-            setIsLoadingGithubData(false);
+            console.log(error)
+            setIsLoadingGithubData(false)
         }
-    };
+    }
 
     useEffect(() => {
-        fetchTableData(1);
-    }, [context.github]);
+        fetchTableData(1)
+    }, [context.github])
 
     const largeReqColumns = [
         {
@@ -181,12 +152,9 @@ const LargeRequestTable = (props: LargeRequestTableProps) => {
             selector: (row: LargeRequestData) => row?.address,
             sortable: true,
             cell: (row: LargeRequestData) => (
-                <div>{`${row?.address?.substring(
-                    0,
-                    9
-                )}...${row?.address.substring(
+                <div>{`${row?.address?.substring(0, 9)}...${row?.address.substring(
                     row?.address.length - 9,
-                    row?.address.length
+                    row?.address.length,
                 )}`}</div>
             ),
         },
@@ -210,11 +178,7 @@ const LargeRequestTable = (props: LargeRequestTableProps) => {
             sortable: true,
             grow: 0.5,
             cell: (row: LargeRequestData) => (
-                <a
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    href={row?.url}
-                >
+                <a target='_blank' rel='noopener noreferrer' href={row?.url}>
                     #{row?.issue_number}
                 </a>
             ),
@@ -227,22 +191,17 @@ const LargeRequestTable = (props: LargeRequestTableProps) => {
             cell: (row: LargeRequestData) => (
                 <div
                     style={{ cursor: 'pointer' }}
-                    onClick={() =>
-                        handleOpen(row.multisig, row.address)
-                    }
+                    onClick={() => handleOpen(row.multisig, row.address)}
                 >
                     <MoreHorizIcon />
                 </div>
             ),
             center: true,
         },
-    ];
+    ]
 
     return (
-        <div
-            className="large-request-table"
-            style={{ minHeight: '500px' }}
-        >
+        <div className='large-request-table' style={{ minHeight: '500px' }}>
             <NodeDataModal
                 isLoadingNodeData={isLoadingNodeData}
                 open={open}
@@ -265,33 +224,23 @@ const LargeRequestTable = (props: LargeRequestTableProps) => {
             ) : (
                 <>
                     <div style={{ display: 'grid' }}>
-                        <SearchInput
-                            updateData={setData}
-                            fetchTableData={fetchTableData}
-                        />
+                        <SearchInput updateData={setData} fetchTableData={fetchTableData} />
                     </div>
                     <DataTable
                         columns={largeReqColumns}
                         selectableRowsHighlight
                         onSelectedRowsChange={({ selectedRows }) => {
-                            setSelectedLargeClientRequests(
-                                selectedRows
-                            );
+                            setSelectedLargeClientRequests(selectedRows)
                         }}
                         onRowClicked={(row) => {
                             if (!row.signable) {
-                                context.wallet.dispatchNotification(
-                                    CANT_SIGN_MESSAGE
-                                );
+                                context.wallet.dispatchNotification(CANT_SIGN_MESSAGE)
                             }
                         }}
                         selectableRows
                         progressPending={isLoadingGithubData}
-                        onChangePage={(
-                            page: number,
-                            totalRows: number
-                        ) => {
-                            setCurrentPage(page);
+                        onChangePage={(page: number, totalRows: number) => {
+                            setCurrentPage(page)
                         }}
                         selectableRowsNoSelectAll={true}
                         pagination
@@ -304,23 +253,23 @@ const LargeRequestTable = (props: LargeRequestTableProps) => {
                         data={data}
                         progressComponent={
                             <div
-                            style={{
-                                width: '1280px',
-                            }}
-                        >
-                            <CircularProgress
                                 style={{
-                                    margin: '10rem auto',
-                                    color: '#0090ff',
+                                    width: '1280px',
                                 }}
-                            />
-                        </div>
+                            >
+                                <CircularProgress
+                                    style={{
+                                        margin: '10rem auto',
+                                        color: '#0090ff',
+                                    }}
+                                />
+                            </div>
                         }
                     />
                 </>
             )}
         </div>
-    );
-};
+    )
+}
 
-export default LargeRequestTable;
+export default LargeRequestTable

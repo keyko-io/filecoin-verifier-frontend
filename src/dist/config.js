@@ -1,26 +1,28 @@
-'use strict';
-exports.__esModule = true;
-exports.config = void 0;
+'use strict'
+exports.__esModule = true
+exports.config = void 0
 exports.config = {
     apiUri: process.env.REACT_APP_API_URI || 'http://localhost:4000',
     apiToken: process.env.REACT_APP_API_TOKEN || '',
     verifiers: process.env.REACT_APP_VERIFIERS || 'DEV',
     onboardingClientRepo: process.env.REACT_ONBOARDING_REPO || 'filecoin-clients-onboarding-test',
     githubApp: process.env.REACT_APP_GITHUB_APP || 'Iv1.10e7aaed4654db3c',
-    lotusNodes: [{
+    lotusNodes: [
+        {
             name: 'Mainnet',
             code: 461,
             url: 'https://api.node.glif.io',
             token: process.env.REACT_APP_MAINNET_TOKEN,
             clientRepo: 'filecoin-clients-onboarding',
-            notaryRepo: 'filecoin-notaries-onboarding'
-        }, {
+            notaryRepo: 'filecoin-notaries-onboarding',
+        },
+        {
             name: 'Nerpanet',
             code: 1,
             url: 'https://beta-verify.filecoin.io/api/rpc/v0',
             token: process.env.REACT_APP_NERPANET_TOKEN,
             clientRepo: 'filecoin-clients-onboarding-test',
-            notaryRepo: 'filecoin-notaries-onboarding'
+            notaryRepo: 'filecoin-notaries-onboarding',
         } /* ,{
             name: 'Localhost',
             code: 1,
@@ -28,7 +30,7 @@ exports.config = {
             token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBbGxvdyI6WyJyZWFkIiwid3JpdGUiLCJzaWduIiwiYWRtaW4iXX0.OJlFIgYG3D23RjWWXfjdTluG6Qx2EOgwMeWQxnUQrMM'
             clientRepo: 'filecoin-clients-onboarding-test',
             notaryRepo: 'filecoin-notaries-onboarding',
-        }*/
+        }*/,
     ],
     datacapExt: [
         { value: '1', name: 'B' },
@@ -39,7 +41,7 @@ exports.config = {
         { value: '1000000000000000', name: 'PiB' },
         { value: '1000000000000000000', name: 'EiB' },
         { value: '1000000000000000000000', name: 'ZiB' },
-        { value: '1000000000000000000000000', name: 'YiB' }
+        { value: '1000000000000000000000000', name: 'YiB' },
     ],
     datacapExtName: [
         { value: '1B', name: 'B' },
@@ -50,8 +52,8 @@ exports.config = {
         { value: 'PiB', name: 'PiB' },
         { value: 'EiB', name: 'EiB' },
         { value: 'ZiB', name: 'ZiB' },
-        { value: 'YiB', name: 'YiB' }
+        { value: 'YiB', name: 'YiB' },
     ],
     dataSource: process.env.REACT_APP_VERIFIES_DATA || 'verifiers-dev',
-    rkhtreshold: 1
-};
+    rkhtreshold: 1,
+}

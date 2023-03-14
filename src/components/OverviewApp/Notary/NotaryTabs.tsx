@@ -1,29 +1,24 @@
-import { useContext, useEffect, useState } from 'react';
-import { config } from '../../../config';
-import * as Logger from '../../../logger';
-import { Data } from '../../../context/Data/Index';
-import { useLargeRequestsContext } from '../../../context/LargeRequests';
+import { useContext, useEffect, useState } from 'react'
+import { config } from '../../../config'
+import * as Logger from '../../../logger'
+import { Data } from '../../../context/Data/Index'
+import { useLargeRequestsContext } from '../../../context/LargeRequests'
 
 type NotaryTabsProps = {
-    tabs: string;
-    changeStateTabs: (indexTab: string) => void;
-    verifiedClientsLength: number;
-};
+    tabs: string
+    changeStateTabs: (indexTab: string) => void
+    verifiedClientsLength: number
+}
 
-const NotaryTabs = ({
-    changeStateTabs,
-    tabs,
-    verifiedClientsLength,
-}: NotaryTabsProps) => {
-    const context = useContext(Data);
-    const { count } = useLargeRequestsContext();
+const NotaryTabs = ({ changeStateTabs, tabs, verifiedClientsLength }: NotaryTabsProps) => {
+    const context = useContext(Data)
+    const { count } = useLargeRequestsContext()
 
     const selectedTab = (tabIndex: string) => {
-        return tabs === tabIndex ? 'selected' : '';
-    };
+        return tabs === tabIndex ? 'selected' : ''
+    }
 
     const user = context.github.loggedUser
-
 
     // FIXME
     // useEffect(() => {
@@ -62,11 +57,11 @@ const NotaryTabs = ({
 
     return (
         <>
-            <div className="tabs">
+            <div className='tabs'>
                 <div
                     className={selectedTab('1')}
                     onClick={() => {
-                        changeStateTabs('1');
+                        changeStateTabs('1')
                     }}
                 >
                     Public Requests ({context.clientRequests.length})
@@ -74,7 +69,7 @@ const NotaryTabs = ({
                 <div
                     className={selectedTab('2')}
                     onClick={() => {
-                        changeStateTabs('2');
+                        changeStateTabs('2')
                     }}
                 >
                     Verified clients ({verifiedClientsLength})
@@ -82,24 +77,23 @@ const NotaryTabs = ({
                 <div
                     className={selectedTab('3')}
                     onClick={() => {
-                        changeStateTabs('3');
+                        changeStateTabs('3')
                     }}
                 >
-                    Large Requests (
-                    {count})
+                    Large Requests ({count})
                 </div>
 
                 <div
                     className={selectedTab('4')}
                     onClick={() => {
-                        changeStateTabs('4');
+                        changeStateTabs('4')
                     }}
                 >
                     Proposed Requests
                 </div>
             </div>
         </>
-    );
-};
+    )
+}
 
-export default NotaryTabs;
+export default NotaryTabs

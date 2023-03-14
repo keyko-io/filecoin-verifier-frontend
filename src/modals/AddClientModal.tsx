@@ -1,22 +1,29 @@
-import React, { Component } from 'react';
+import React, { Component } from 'react'
 import { Data } from '../context/Data/Index'
 import { config } from '../config'
 import { anyToBytes } from '../utils/Filters'
 // @ts-ignore
-import { dispatchCustomEvent, H4, Input, ButtonPrimary, SelectMenu, LoaderSpinner } from 'slate-react-system';
+import {
+    dispatchCustomEvent,
+    H4,
+    Input,
+    ButtonPrimary,
+    SelectMenu,
+    LoaderSpinner,
+} from 'slate-react-system'
 
 type States = {
     address: string
     datacap: string
     datacapExt: string
     submitLoading: boolean
-    issueNumber: string,
+    issueNumber: string
     units: string
-};
+}
 
 type ModalProps = {
-    newDatacap?: boolean,
-    clientRequest?: any[],
+    newDatacap?: boolean
+    clientRequest?: any[]
     requestNumber?: any
     selected?: any[]
 }
@@ -25,26 +32,27 @@ class AddClientModal extends Component<ModalProps, States> {
     public static contextType = Data
 
     constructor(props: any) {
-        super(props);
+        super(props)
         this.state = {
             address: '',
             datacap: '1',
             datacapExt: '1099511627776', // 1 TiB
             submitLoading: false,
             issueNumber: '',
-            units: 'TiB'
+            units: 'TiB',
         }
     }
 
     componentDidMount() {
         if (this.props.clientRequest && this.props.selected) {
             const requestSelected = this.props.selected || ''
-            const request = this.props.clientRequest.find(element => element.number === requestSelected);
+            const request = this.props.clientRequest.find(
+                (element) => element.number === requestSelected,
+            )
             this.setState({
                 issueNumber: request.issue_number,
-                address: request.data.address
+                address: request.data.address,
             })
-
         }
     }
 
@@ -58,22 +66,40 @@ class AddClientModal extends Component<ModalProps, States> {
 
             let messageID
             if (this.context.wallet.multisig) {
-                messageID = await this.context.wallet.api.multisigVerifyClient(this.context.wallet.multisigID, this.state.address, BigInt(fullDatacap), this.context.wallet.walletIndex)
+                messageID = await this.context.wallet.api.multisigVerifyClient(
+                    this.context.wallet.multisigID,
+                    this.state.address,
+                    BigInt(fullDatacap),
+                    this.context.wallet.walletIndex,
+                )
             } else {
-                messageID = await this.context.wallet.api.verifyClient(this.state.address, BigInt(fullDatacap), this.context.wallet.walletIndex)
+                messageID = await this.context.wallet.api.verifyClient(
+                    this.state.address,
+                    BigInt(fullDatacap),
+                    this.context.wallet.walletIndex,
+                )
             }
 
             if (this.props.newDatacap) {
-                this.context.updateGithubVerified(this.state.issueNumber, messageID, this.state.address, dataCapIssue, this.context.wallet.activeAccount, '')
+                this.context.updateGithubVerified(
+                    this.state.issueNumber,
+                    messageID,
+                    this.state.address,
+                    dataCapIssue,
+                    this.context.wallet.activeAccount,
+                    '',
+                )
             }
 
             this.setState({
                 address: '',
                 datacap: '1',
                 datacapExt: '1099511627776', // 1 TiB
-                submitLoading: false
+                submitLoading: false,
             })
-            this.context.wallet.dispatchNotification('Verify Client Message sent with ID: ' + messageID)
+            this.context.wallet.dispatchNotification(
+                'Verify Client Message sent with ID: ' + messageID,
+            )
             this.deleteModal()
             this.setState({ submitLoading: false })
         } catch (e: any) {
@@ -84,7 +110,7 @@ class AddClientModal extends Component<ModalProps, States> {
     }
 
     findUnits = (value: string) => {
-        const element = config.datacapExt.find(ele => ele.value === value)
+        const element = config.datacapExt.find((ele) => ele.value === value)
         return element?.name
     }
 
@@ -101,34 +127,38 @@ class AddClientModal extends Component<ModalProps, States> {
 
     render() {
         return (
-            <div className="addmodal">
+            <div className='addmodal'>
                 <form>
-                    {this.props.newDatacap ? <H4>Set new Datacap</H4> : <H4>Approve Private Request</H4>}
+                    {this.props.newDatacap ? (
+                        <H4>Set new Datacap</H4>
+                    ) : (
+                        <H4>Approve Private Request</H4>
+                    )}
                     <div>
                         <div>
-                            <div className="inputholder">
+                            <div className='inputholder'>
                                 <Input
-                                    description="Address"
-                                    name="address"
+                                    description='Address'
+                                    name='address'
                                     value={this.state.address}
-                                    placeholder="XXXXXXXXXXX"
+                                    placeholder='XXXXXXXXXXX'
                                     onChange={this.handleChange}
                                     readOnly={this.props.clientRequest ? true : false}
                                 />
                             </div>
-                            <div className="datacapholder">
-                                <div className="datacap">
+                            <div className='datacapholder'>
+                                <div className='datacap'>
                                     <Input
-                                        description="Datacap Request"
-                                        name="datacap"
+                                        description='Datacap Request'
+                                        name='datacap'
                                         value={this.state.datacap}
-                                        placeholder="1099511627776"
+                                        placeholder='1099511627776'
                                         onChange={this.handleChange}
                                     />
                                 </div>
-                                <div className="datacapext">
+                                <div className='datacapext'>
                                     <SelectMenu
-                                        name="datacapExt"
+                                        name='datacapExt'
                                         value={this.state.datacapExt}
                                         onChange={this.handleChange}
                                         options={config.datacapExt}
@@ -136,13 +166,15 @@ class AddClientModal extends Component<ModalProps, States> {
                                 </div>
                             </div>
                         </div>
-
                     </div>
-                    <div className="ledgermessage">You are about to send a message to assign DataCap to this address.
+                    <div className='ledgermessage'>
+                        You are about to send a message to assign DataCap to this address.
                         <p>Please check your Ledger to sign and send the message.</p>
                     </div>
-                    <div className="centerbutton buttonverify">
-                        <ButtonPrimary onClick={this.handleSubmit}>{this.state.submitLoading ? <LoaderSpinner /> : 'Send Request'}</ButtonPrimary>
+                    <div className='centerbutton buttonverify'>
+                        <ButtonPrimary onClick={this.handleSubmit}>
+                            {this.state.submitLoading ? <LoaderSpinner /> : 'Send Request'}
+                        </ButtonPrimary>
                     </div>
                 </form>
             </div>
@@ -150,4 +182,4 @@ class AddClientModal extends Component<ModalProps, States> {
     }
 }
 
-export default AddClientModal;
+export default AddClientModal

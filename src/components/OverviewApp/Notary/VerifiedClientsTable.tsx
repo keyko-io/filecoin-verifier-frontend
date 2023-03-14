@@ -15,11 +15,7 @@ export const verifiedColumns: any = [
         sortable: true,
         grow: 3,
         cell: (row: any) => (
-            <span>
-                {row.key || (
-                    <BeatLoader size={5} color={'rgb(24,160,237)'} />
-                )}
-            </span>
+            <span>{row.key || <BeatLoader size={5} color={'rgb(24,160,237)'} />}</span>
         ),
     },
     {
@@ -31,7 +27,7 @@ export const verifiedColumns: any = [
 ]
 
 type VerifiedClientsTableProps = {
-    verifiedClients: any;
+    verifiedClients: any
 }
 
 const VerifiedClientsTable = ({ verifiedClients }: VerifiedClientsTableProps) => {
@@ -45,7 +41,6 @@ const VerifiedClientsTable = ({ verifiedClients }: VerifiedClientsTableProps) =>
                 paginationPerPage={10}
             />
         </div>
-
     )
 }
 

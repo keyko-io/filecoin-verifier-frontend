@@ -1,9 +1,15 @@
-import { useContext, useState } from 'react';
+import { useContext, useState } from 'react'
 import { Data } from '../context/Data/Index'
 import { config } from '../config'
 // @ts-ignore
-import { dispatchCustomEvent, H3, Input, ButtonPrimary, SelectMenu, LoaderSpinner } from 'slate-react-system';
-
+import {
+    dispatchCustomEvent,
+    H3,
+    Input,
+    ButtonPrimary,
+    SelectMenu,
+    LoaderSpinner,
+} from 'slate-react-system'
 
 const AddVerifierModal = () => {
     const context = useContext(Data)
@@ -25,7 +31,11 @@ const AddVerifierModal = () => {
                 verifierAccountID = await context.wallet.api.actorKey(verifierAccountID)
             }
 
-            const messageID = await context.wallet.api.proposeVerifier(verifierAccountID, fullDatacap, context.wallet.walletIndex);
+            const messageID = await context.wallet.api.proposeVerifier(
+                verifierAccountID,
+                fullDatacap,
+                context.wallet.walletIndex,
+            )
 
             setProposeLoading(false)
             setDatacap('1')
@@ -41,44 +51,50 @@ const AddVerifierModal = () => {
         }
     }
 
-
-
     return (
-        <div className="addmodal">
+        <div className='addmodal'>
             <H3>Add verifier</H3>
             <form>
-                <div className="inputholder">
+                <div className='inputholder'>
                     <Input
-                        description="Notary Account ID"
-                        name="verifierAccountID"
+                        description='Notary Account ID'
+                        name='verifierAccountID'
                         value={accountID}
-                        placeholder="xxxxxx"
-                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => setAccountID(e.target.value)}
+                        placeholder='xxxxxx'
+                        onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                            setAccountID(e.target.value)
+                        }
                     />
                 </div>
-                <div className="datacapholder">
-                    <div className="datacap">
+                <div className='datacapholder'>
+                    <div className='datacap'>
                         <Input
-                            description="Notary datacap"
-                            name="datacap"
+                            description='Notary datacap'
+                            name='datacap'
                             value={datacap}
-                            placeholder="1"
-                            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setDatacap(e.target.value)}
+                            placeholder='1'
+                            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                                setDatacap(e.target.value)
+                            }
                         />
                     </div>
-                    <div className="datacapext">
+                    <div className='datacapext'>
                         <SelectMenu
-                            name="datacapExt"
+                            name='datacapExt'
                             value={datacapExt}
-                            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setDatacapExt(e.target.value)}
+                            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                                setDatacapExt(e.target.value)
+                            }
                             options={config.datacapExt}
                         />
                     </div>
                 </div>
-                <ButtonPrimary onClick={handleSubmit}>{proposeLoading ? <LoaderSpinner /> : 'Propose Notary'}</ButtonPrimary>
+                <ButtonPrimary onClick={handleSubmit}>
+                    {proposeLoading ? <LoaderSpinner /> : 'Propose Notary'}
+                </ButtonPrimary>
             </form>
         </div>
     )
 }
 
-export default AddVerifierModal;
+export default AddVerifierModal

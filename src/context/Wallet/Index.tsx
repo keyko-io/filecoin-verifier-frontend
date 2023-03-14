@@ -1,7 +1,6 @@
 import React from 'react'
 import { LoadWalletOptionsType } from '../contextType'
 
-
 export const Wallet = React.createContext({
     isLogged: false,
     isLoading: false,
@@ -17,11 +16,13 @@ export const Wallet = React.createContext({
     multisig: false,
     multisigAddress: '',
     multisigID: '',
-    sign: async () => { },
+    sign: async () => {},
     getAccounts: async (nStart?: number) => [] as any,
-    importSeed: async (seedphrase: string) => { },
-    selectNetwork: async (network: number) => { },
-    selectAccount: async (index: number) => { },
-    loadWallet: async (type: string, options?: LoadWalletOptionsType) => { return false },
-    dispatchNotification: (message: string) => { }
+    importSeed: async (seedphrase: string) => {},
+    selectNetwork: async (network: number) => {},
+    selectAccount: async (index: number) => {},
+    loadWallet: async (type: string, options?: LoadWalletOptionsType) => {
+        return false
+    },
+    dispatchNotification: (message: string) => {},
 })

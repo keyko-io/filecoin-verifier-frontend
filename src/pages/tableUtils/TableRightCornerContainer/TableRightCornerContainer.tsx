@@ -1,15 +1,11 @@
 import './TableRightCornerContainer.scss'
 
 export interface TableRightCornerContainerProps {
-  children: React.ReactNode
+    children: React.ReactNode
 }
 
 const TableRightCornerContainer = ({ children }: TableRightCornerContainerProps) => {
-  return (
-    <div className='tableRightCorner_container'>{children}</div>
-  )
+    return <div className='tableRightCorner_container'>{children}</div>
 }
 
 export default TableRightCornerContainer
-
-

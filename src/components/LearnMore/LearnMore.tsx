@@ -1,11 +1,11 @@
-import { useLocation } from 'react-router-dom';
+import { useLocation } from 'react-router-dom'
 // @ts-ignore
-import { ButtonPrimary } from 'slate-react-system';
+import { ButtonPrimary } from 'slate-react-system'
 import './LearnMore.scss'
-import history from '../../context/History';
+import history from '../../context/History'
 
 const LearnMore = () => {
-    const { pathname } = useLocation();
+    const { pathname } = useLocation()
 
     const checkDatacap = () => {
         window.open('https://verify.glif.io/', '_blank')
@@ -13,7 +13,7 @@ const LearnMore = () => {
 
     const goTo = (params: string) => {
         history.push({
-            pathname: `/${params}`
+            pathname: `/${params}`,
         })
     }
 
@@ -22,15 +22,20 @@ const LearnMore = () => {
     }
 
     return (
-        <div className="learnmore">
-            {pathname !== '/' ?
+        <div className='learnmore'>
+            {pathname !== '/' ? (
                 <ButtonPrimary onClick={checkDatacap}>Check Remaining DataCap</ButtonPrimary>
-                : <ButtonPrimary style={{ marginRight: '30px' }} onClick={() => goTo('logs')}>See the logs</ButtonPrimary>}
-            <ButtonPrimary style={{ margin: '0px 30px', }} onClick={navigate}>Learn More</ButtonPrimary>
+            ) : (
+                <ButtonPrimary style={{ marginRight: '30px' }} onClick={() => goTo('logs')}>
+                    See the logs
+                </ButtonPrimary>
+            )}
+            <ButtonPrimary style={{ margin: '0px 30px' }} onClick={navigate}>
+                Learn More
+            </ButtonPrimary>
             <ButtonPrimary onClick={() => goTo('status')}>Status Page</ButtonPrimary>
-        </div >
+        </div>
     )
-
 }
 
-export default LearnMore;
+export default LearnMore

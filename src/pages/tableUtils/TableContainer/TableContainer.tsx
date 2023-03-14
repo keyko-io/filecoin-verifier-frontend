@@ -1,12 +1,11 @@
 import './TableContainer.scss'
 
 export interface TableContainerProps {
-  children: React.ReactNode
+    children: React.ReactNode
 }
 
 const TableContainer = ({ children }: TableContainerProps) => {
-  return <div className="table-container">{children}</div>;
-};
+    return <div className='table-container'>{children}</div>
+}
 
-export default TableContainer;
-
+export default TableContainer

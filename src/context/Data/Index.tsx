@@ -1,4 +1,4 @@
-import React from 'react';
+import React from 'react'
 import {
     VerifiedData,
     DirectIssue,
@@ -6,21 +6,14 @@ import {
     VerifiedCachedData,
     ApprovedVerifiers,
     TransactionAndIssue,
-} from '../../type';
-import {
-    GithubProviderStates,
-    WalletProviderStates,
-} from '../contextType';
+} from '../../type'
+import { GithubProviderStates, WalletProviderStates } from '../contextType'
 
 export const Data = React.createContext({
     formatLargeRequestData: async (i: LargeRequestData[]) => ({} as any),
     getLargeRequestSearchInputData: async () => ({} as any),
-    getNodeData: async (address: string, clientAddress: string) =>
-        ({} as any),
-    assignToIssue: async (
-        issue_number: number,
-        assignees: string[]
-    ) => {},
+    getNodeData: async (address: string, clientAddress: string) => ({} as any),
+    assignToIssue: async (issue_number: number, assignees: string[]) => {},
     search: (query: string) => {},
     searchUserIssues: async (user: string) => [] as any[],
     postLogs: async (
@@ -28,7 +21,7 @@ export const Data = React.createContext({
         type: string,
         actionKeyword: string,
         issueNumber: number,
-        repo: string
+        repo: string,
     ) => ({} as any),
     updateIsVerifiedAddress: (val: boolean) => {},
     verifyWalletAddress: async () => undefined as boolean | undefined,
@@ -48,7 +41,7 @@ export const Data = React.createContext({
         address: string,
         datacap: number,
         signer: string,
-        errorMessage: string
+        errorMessage: string,
     ) => {},
     updateGithubVerifiedLarge: async (
         requestNumber: number,
@@ -57,7 +50,7 @@ export const Data = React.createContext({
         datacap: any,
         signer: string,
         errorMessage: string,
-        action?: string
+        action?: string,
     ) => {},
     createRequest: async (data: any) => {},
     selectNotaryRequest: (selectedNotaryItems: any) => {},
@@ -84,4 +77,4 @@ export const Data = React.createContext({
     // passed by props
     github: {} as GithubProviderStates,
     wallet: {} as WalletProviderStates,
-});
+})

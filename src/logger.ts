@@ -1,38 +1,34 @@
-import * as Sentry from '@sentry/react';
+import * as Sentry from '@sentry/react'
 
-export const BasicLogger = async ({
-    message,
-}: {
-    message: string;
-}): Promise<boolean> => {
+export const BasicLogger = async ({ message }: { message: string }): Promise<boolean> => {
     try {
         if (process.env.NODE_ENV === 'development') {
-            return false;
+            return false
         }
-        await Sentry.captureMessage(message);
-        return true;
+        await Sentry.captureMessage(message)
+        return true
     } catch (error) {
-        return false;
+        return false
     }
-};
+}
 
 export interface SentryScope {
-    githubUsername: string;
+    githubUsername: string
 }
 
 export const configureScope = async (data: SentryScope) => {
     try {
         if (process.env.NODE_ENV === 'development') {
-            return false;
+            return false
         }
         await Sentry.configureScope(function (scope) {
-            scope.setTag('githubUsername', data.githubUsername);
-        });
-        return true;
+            scope.setTag('githubUsername', data.githubUsername)
+        })
+        return true
     } catch (error) {
-        return false;
+        return false
     }
-};
+}
 
 export const REQUEST_PROPOSED = 'Request Proposed'
 export const REQUEST_APPROVED = 'Request Approved'

@@ -4,8 +4,9 @@ import { VerifyAPI } from '@keyko-io/filecoin-verifier-tools'
 import { ConfigLotusNode } from '../contextType'
 
 export class BurnerWallet {
-    // Notary: 
-    mnemonic = 'exit mystery juice city argue breeze film learn orange dynamic marine diary antenna road couple surge marine assume loop thought leader liquid rotate believe'
+    // Notary:
+    mnemonic =
+        'exit mystery juice city argue breeze film learn orange dynamic marine diary antenna road couple surge marine assume loop thought leader liquid rotate believe'
     // RKH
     // mnemonic: string = 'robot matrix ribbon husband feature attitude noise imitate matrix shaft resist cliff lab now gold menu grocery truth deliver camp about stand consider number'
     client: any
@@ -18,15 +19,17 @@ export class BurnerWallet {
         this.lotusNode = config.lotusNodes[networkIndex]
         this.api = new VerifyAPI(
             VerifyAPI.browserProvider(
-                this.lotusNode.url
-                , config.dev_mode === 'dev' ? {
-                    token: async () => {
-                        return this.lotusNode?.token
-                    }
-                } : null
-            )
-            , { sign: this.sign, getAccounts: this.getAccounts }
-            , this.lotusNode.name !== 'Mainnet' // if node != Mainnet => testnet = true
+                this.lotusNode.url,
+                config.dev_mode === 'dev'
+                    ? {
+                          token: async () => {
+                              return this.lotusNode?.token
+                          },
+                      }
+                    : null,
+            ),
+            { sign: this.sign, getAccounts: this.getAccounts },
+            this.lotusNode.name !== 'Mainnet', // if node != Mainnet => testnet = true
         )
     }
 
@@ -45,17 +48,19 @@ export class BurnerWallet {
         const accounts = []
         for (let i = nStart; i < config.numberOfWalletAccounts; i += 1) {
             accounts.push(
-                signer.keyDerive(this.mnemonic, `m/44'/${this.lotusNode.code}'/0/0/${i}`, '').address
+                signer.keyDerive(this.mnemonic, `m/44'/${this.lotusNode.code}'/0/0/${i}`, '')
+                    .address,
             )
         }
         return accounts
     }
 
     public sign = async (filecoinMessage: string, indexAccount: number) => {
-        const private_hexstring = signer.keyDerive(this.mnemonic, `m/44'/${this.lotusNode.code}'/0/0/${indexAccount}`, '').private_hexstring
-        return signer.transactionSignLotus(
-            filecoinMessage,
-            private_hexstring
-        )
+        const private_hexstring = signer.keyDerive(
+            this.mnemonic,
+            `m/44'/${this.lotusNode.code}'/0/0/${indexAccount}`,
+            '',
+        ).private_hexstring
+        return signer.transactionSignLotus(filecoinMessage, private_hexstring)
     }
 }

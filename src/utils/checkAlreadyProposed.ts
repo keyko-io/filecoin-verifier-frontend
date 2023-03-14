@@ -9,11 +9,11 @@ export const checkAlreadyProposed = async (issueNumber: number, context: any) =>
                 owner: config.onboardingLargeOwner,
                 repo: config.onboardingLargeClientRepo,
                 issue_number: issueNumber,
-            }
-        );
+            },
+        )
 
-        const rgxProposed = /##\s*request\s*proposed/mi
-        const rgxApproved = /##\s*request\s*approved/mi
+        const rgxProposed = /##\s*request\s*proposed/im
+        const rgxApproved = /##\s*request\s*approved/im
         const regexRequest = /##\s*DataCap\s*Allocation\s*requested/m
 
         const proposedComms = comments.filter((comment: any) => rgxProposed.test(comment.body))
@@ -40,19 +40,18 @@ export const checkAlreadyProposed = async (issueNumber: number, context: any) =>
             lastApprovedTimestamp = parseInt(moment(lastApprovedDate).format('X'))
         }
 
-
         // if proposed comment is more recent than approved comment
         // and proposed comment is more recent than the request comment
         // it means that the last comment is the proposed comment --> return true
-        if (lastProposedTimestamp > lastApprovedTimestamp && lastProposedTimestamp > lastRequestedTimestamp) {
+        if (
+            lastProposedTimestamp > lastApprovedTimestamp &&
+            lastProposedTimestamp > lastRequestedTimestamp
+        ) {
             return true
         }
 
         return false
-
     } catch (error) {
         console.log(error)
     }
-
-
 }

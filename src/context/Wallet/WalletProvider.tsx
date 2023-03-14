@@ -3,25 +3,26 @@ import { Wallet } from './Index'
 import { LedgerWallet } from './LedgerWallet'
 import { BurnerWallet } from './BurnerWallet'
 // @ts-ignore
-import { dispatchCustomEvent } from 'slate-react-system';
-import { config } from '../../config';
+import { dispatchCustomEvent } from 'slate-react-system'
+import { config } from '../../config'
 import { withCookies } from 'react-cookie'
-import { LoadWalletOptionsType, WalletProviderProps, WalletProviderStates } from '../contextType';
+import { LoadWalletOptionsType, WalletProviderProps, WalletProviderStates } from '../contextType'
 
 async function getActiveAccounts(api: any, accounts: any) {
-    const accountsActive: any = {};
+    const accountsActive: any = {}
     await Promise.allSettled(
         accounts.map(
-            (acc: any) => new Promise<any>(async (resolve, reject) => {
-                try {
-                    const key = await api.actorAddress(acc)
-                    accountsActive[acc] = key
-                    resolve(key)
-                } catch (error) {
-                    reject(error)
-                }
-            })
-        )
+            (acc: any) =>
+                new Promise<any>(async (resolve, reject) => {
+                    try {
+                        const key = await api.actorAddress(acc)
+                        accountsActive[acc] = key
+                        resolve(key)
+                    } catch (error) {
+                        reject(error)
+                    }
+                }),
+        ),
     )
     return accountsActive
 }
@@ -30,7 +31,7 @@ class WalletProvider extends React.Component<WalletProviderProps, WalletProvider
     setStateAsync(state: any) {
         return new Promise((resolve: any) => {
             this.setState(state, resolve)
-        });
+        })
     }
     loadLedger = async (options: any = {}) => {
         try {
@@ -38,16 +39,16 @@ class WalletProvider extends React.Component<WalletProviderProps, WalletProvider
             await wallet.loadWallet(this.state.networkIndex)
             const accounts: any = await wallet.getAccounts()
             const accountsActive = await getActiveAccounts(wallet.api, accounts)
-            const { cookies } = this.props;
+            const { cookies } = this.props
             const walletCookie = cookies.get('wallet')
             let lastWallet
-            let walletIndex = - 1
+            let walletIndex = -1
             if (walletCookie) {
                 for (let index = 0; index < accounts.length; index++) {
                     if (accounts[index] === walletCookie) {
                         lastWallet = accounts[index]
                         walletIndex = index
-                        break;
+                        break
                     }
                 }
             }
@@ -67,7 +68,9 @@ class WalletProvider extends React.Component<WalletProviderProps, WalletProvider
                         const actor = await wallet.api.actorKey(multisigInfo.signers[index])
                         multisigActors.push(actor)
                     }
-                    const index = accounts.findIndex((account: any) => multisigActors.includes(account))
+                    const index = accounts.findIndex((account: any) =>
+                        multisigActors.includes(account),
+                    )
                     if (index !== -1) {
                         lastWallet = accounts[index]
                         walletIndex = index
@@ -107,14 +110,14 @@ class WalletProvider extends React.Component<WalletProviderProps, WalletProvider
                 accountsActive,
                 multisig: options.multisig ? true : false,
                 multisigAddress: options.multisig ? options.multisigAddress : '',
-                multisigID: multisigID
+                multisigID: multisigID,
             })
             // this.loadGithub()
             return true
         } catch (e: any) {
             this.setState({
                 isLogged: false,
-                isLoading: false
+                isLoading: false,
             })
             this.state.dispatchNotification('Ledger ' + e.toString())
             return false
@@ -127,16 +130,16 @@ class WalletProvider extends React.Component<WalletProviderProps, WalletProvider
             await wallet.loadWallet(this.state.networkIndex)
             const accounts: any[] = await wallet.getAccounts()
             const accountsActive = await getActiveAccounts(wallet.api, accounts)
-            const { cookies } = this.props;
+            const { cookies } = this.props
             const walletCookie = cookies.get('wallet')
             let lastWallet
-            let walletIndex = - 1
+            let walletIndex = -1
             if (walletCookie) {
                 for (let index = 0; index < accounts.length; index++) {
                     if (accounts[index] === walletCookie) {
                         lastWallet = accounts[index]
                         walletIndex = index
-                        break;
+                        break
                     }
                 }
             }
@@ -182,7 +185,7 @@ class WalletProvider extends React.Component<WalletProviderProps, WalletProvider
                 accountsActive,
                 multisig: options.multisig ? true : false,
                 multisigAddress: options.multisig ? options.multisigAddress : '',
-                multisigID: multisigID
+                multisigID: multisigID,
             })
             return true
         } catch (e: any) {
@@ -190,12 +193,11 @@ class WalletProvider extends React.Component<WalletProviderProps, WalletProvider
         }
     }
 
-
-
     initNetworkIndex = () => {
-
         const activeIndex = config.lotusNodes
-            .map((node: any, index: number) => { return { name: node.name, index: index } })
+            .map((node: any, index: number) => {
+                return { name: node.name, index: index }
+            })
             .filter((node: any, index: number) => config.networks.includes(node.name))
 
         return activeIndex[0].index
@@ -206,8 +208,8 @@ class WalletProvider extends React.Component<WalletProviderProps, WalletProvider
         isLoading: false,
         wallet: '',
         api: {} as any,
-        sign: async () => { },
-        getAccounts: async () => { },
+        sign: async () => {},
+        getAccounts: async () => {},
         walletIndex: 0,
         networkIndex: this.initNetworkIndex(),
         accounts: [],
@@ -228,7 +230,7 @@ class WalletProvider extends React.Component<WalletProviderProps, WalletProvider
                     getAccounts: wallet.getAccounts,
                     activeAccount: accounts[this.state.walletIndex],
                     accounts,
-                    accountsActive
+                    accountsActive,
                 })
             } catch (error) {
                 console.log(error)
@@ -249,11 +251,11 @@ class WalletProvider extends React.Component<WalletProviderProps, WalletProvider
                 const accounts: any = await this.state.getAccounts()
                 this.setState({
                     walletIndex: index,
-                    activeAccount: accounts[index]
+                    activeAccount: accounts[index],
                 })
-                const { cookies } = this.props;
+                const { cookies } = this.props
 
-                cookies.set('wallet', accounts[index], { path: '/' });
+                cookies.set('wallet', accounts[index], { path: '/' })
             } catch (e: any) {
                 // console.log('select account', e)
             }
@@ -275,26 +277,26 @@ class WalletProvider extends React.Component<WalletProviderProps, WalletProvider
         },
         dispatchNotification: (message: string) => {
             dispatchCustomEvent({
-                name: 'create-notification', detail: {
-                    id: Math.random().toString(36).replace(/[^a-z]+/g, '').substr(0, 5),
+                name: 'create-notification',
+                detail: {
+                    id: Math.random()
+                        .toString(36)
+                        .replace(/[^a-z]+/g, '')
+                        .substr(0, 5),
                     description: message,
                     dark: true,
-                    timeout: 5000
-                }
-            });
+                    timeout: 5000,
+                },
+            })
         },
         multisig: false,
         multisigAddress: '',
         multisigActor: '',
-        multisigID: ''
+        multisigID: '',
     }
 
     render() {
-        return (
-            <Wallet.Provider value={this.state}>
-                {this.props.children}
-            </Wallet.Provider>
-        )
+        return <Wallet.Provider value={this.state}>{this.props.children}</Wallet.Provider>
     }
 }
 

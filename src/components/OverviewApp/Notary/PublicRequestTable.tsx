@@ -1,53 +1,51 @@
 import React, { useContext } from 'react'
 import DataTable from 'react-data-table-component'
 import { Data } from '../../../context/Data/Index'
-import InfoIcon from '@mui/icons-material/Info';
-import Tooltip from '@mui/material/Tooltip';
-import history from '../../../context/History';
+import InfoIcon from '@mui/icons-material/Info'
+import Tooltip from '@mui/material/Tooltip'
+import history from '../../../context/History'
 
 const publicRequestColumns: any = [
     {
         name: 'Name',
         selector: (row: any) => row.data.name,
         sortable: true,
-        grow: 1
+        grow: 1,
     },
     {
         name: 'Address',
         selector: (row: any) => row.data.address,
         sortable: true,
-        grow: 1.2
+        grow: 1.2,
     },
     {
         name: 'Datacap',
         selector: (row: any) => row.data.datacap,
         sortable: true,
-        grow: 0.7
+        grow: 0.7,
     },
     {
         name: 'Audit Trail',
         selector: (row: any) => row.number,
         sortable: true,
         cell: (row: any) => (
-            <a
-                target="_blank"
-                rel="noopener noreferrer"
-                href={row.url}
-            >
+            <a target='_blank' rel='noopener noreferrer' href={row.url}>
                 #{row.number}
             </a>
         ),
-        grow: 0.7
+        grow: 0.7,
     },
     {
         button: true,
-        cell: (row: any) => <span onClick={() => clientDetail(row)} style={{ cursor: 'pointer' }}>
-            <Tooltip title="See Client Detail" placement="left" arrow>
-                <InfoIcon />
-            </Tooltip>
-        </span>,
-        grow: 0.5
-    }
+        cell: (row: any) => (
+            <span onClick={() => clientDetail(row)} style={{ cursor: 'pointer' }}>
+                <Tooltip title='See Client Detail' placement='left' arrow>
+                    <InfoIcon />
+                </Tooltip>
+            </span>
+        ),
+        grow: 0.5,
+    },
 ]
 
 const clientDetail = (row: any) => {
@@ -55,9 +53,8 @@ const clientDetail = (row: any) => {
     const user = row.owner
     const { address, datacap } = row.data
 
-    history.push('/client', { client, user, address, datacap });
+    history.push('/client', { client, user, address, datacap })
 }
-
 
 type PublicRequestTable2Props = {
     setSelectedClientRequests: any
@@ -81,7 +78,7 @@ const PublicRequestTable = ({ setSelectedClientRequests }: PublicRequestTable2Pr
                 pagination
                 paginationRowsPerPageOptions={[10, 20, 30]}
                 paginationPerPage={10}
-                noDataComponent="No client requests yet"
+                noDataComponent='No client requests yet'
             />
         </div>
     )

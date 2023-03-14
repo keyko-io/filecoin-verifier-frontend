@@ -10,7 +10,13 @@ export function addressFilter(input: string) {
 }
 
 export function anyToBytes(inputDatacap: string) {
-    const formatDc = inputDatacap.replace(/[\s]/g, '').replace(/[t]/g, 'T').replace(/[b]/g, 'B').replace(/[p]/g, 'P').replace(/[I]/g, 'i').replace(/\s*/g, '')
+    const formatDc = inputDatacap
+        .replace(/[\s]/g, '')
+        .replace(/[t]/g, 'T')
+        .replace(/[b]/g, 'B')
+        .replace(/[p]/g, 'P')
+        .replace(/[I]/g, 'i')
+        .replace(/\s*/g, '')
     const ext = formatDc.replace(/[0-9.]/g, '')
     const datacap = formatDc.replace(/[^0-9.]/g, '')
     const bytes = Number(byteConverter.convert(parseFloat(datacap), ext, 'B').toFixed())
@@ -19,10 +25,16 @@ export function anyToBytes(inputDatacap: string) {
 
 export function bytesToiB(inputBytes: number) {
     // const autoscale = byteConverter.autoScale(Number(inputBytes), 'B', { preferByte: true, preferBinary: true } as any)
-    let autoscale = byteConverter.autoScale(inputBytes, 'B', { preferByte: true, preferBinary: true } as any)
+    let autoscale = byteConverter.autoScale(inputBytes, 'B', {
+        preferByte: true,
+        preferBinary: true,
+    } as any)
     // this is bc it cannot convert 1099511627776000 to 1PiB and it convert to 9 YiB
     if (autoscale.dataFormat === 'YiB') {
-        autoscale = byteConverter.autoScale(inputBytes-32, 'B', { preferByte: true, preferBinary: true } as any)
+        autoscale = byteConverter.autoScale(inputBytes - 32, 'B', {
+            preferByte: true,
+            preferBinary: true,
+        } as any)
         return `${Number(autoscale.value).toFixed(2)}${autoscale.dataFormat}`
     }
     return `${Number(autoscale.value).toFixed(2)}${autoscale.dataFormat}`
@@ -30,15 +42,20 @@ export function bytesToiB(inputBytes: number) {
 }
 
 export function bytesToB(inputBytes: any) {
-    const autoscale = byteConverter.autoScale(Number(inputBytes), 'B', { preferByte: true, preferDecimal: true } as any)
-    return `${Number.isInteger(autoscale.value) ? autoscale.value : autoscale.value.toFixed(1)}${autoscale.dataFormat}`
+    const autoscale = byteConverter.autoScale(Number(inputBytes), 'B', {
+        preferByte: true,
+        preferDecimal: true,
+    } as any)
+    return `${Number.isInteger(autoscale.value) ? autoscale.value : autoscale.value.toFixed(1)}${
+        autoscale.dataFormat
+    }`
 }
 
 export function anyToFil(val: string): string {
     if (val === 'not found') {
         return val
     }
-    const n = Number(val);
+    const n = Number(val)
     let retVal = ''
     if (val === '0') {
         retVal = '0 FIL'
@@ -60,7 +77,7 @@ export function filToAny(val: string): number {
         return -1
     }
     const num = Number(val.slice(0, val.indexOf(' ')))
-    let retVal = 0;
+    let retVal = 0
 
     if (val === '0') {
         retVal = 0

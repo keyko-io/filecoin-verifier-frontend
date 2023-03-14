@@ -1,7 +1,7 @@
-import { Divider, Box, Typography, Modal } from '@mui/material';
-import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
-import CloseIcon from '@mui/icons-material/Close';
-import { CircularProgress } from '@material-ui/core';
+import { Divider, Box, Typography, Modal } from '@mui/material'
+import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight'
+import CloseIcon from '@mui/icons-material/Close'
+import { CircularProgress } from '@material-ui/core'
 
 const style = {
     position: 'absolute' as const,
@@ -14,45 +14,37 @@ const style = {
     borderRadius: '6px',
     px: 8,
     py: 5,
-};
+}
 
 const closeIconStyle = {
     position: 'absolute',
     top: '12px',
     right: '12px',
     cursor: 'pointer',
-};
+}
 
 type NodeDataModalProps = {
-    open: boolean;
-    handleClose: () => void;
+    open: boolean
+    handleClose: () => void
     nodeInfo: {
-        proposer: string;
-        txId: string;
-        approvals: number;
-    };
-    isLoadingNodeData: boolean;
-};
+        proposer: string
+        txId: string
+        approvals: number
+    }
+    isLoadingNodeData: boolean
+}
 
-const NodeDataModal = ({
-    open,
-    handleClose,
-    nodeInfo,
-    isLoadingNodeData,
-}: NodeDataModalProps) => {
+const NodeDataModal = ({ open, handleClose, nodeInfo, isLoadingNodeData }: NodeDataModalProps) => {
     return (
         <Modal
             open={open}
             onClose={handleClose}
-            aria-labelledby="modal-modal-title"
-            aria-describedby="modal-modal-description"
+            aria-labelledby='modal-modal-title'
+            aria-describedby='modal-modal-description'
         >
             <Box sx={style}>
-                <CloseIcon
-                    sx={closeIconStyle}
-                    onClick={handleClose}
-                />
-                <Typography variant="h6" mb={1.5} textAlign="center">
+                <CloseIcon sx={closeIconStyle} onClick={handleClose} />
+                <Typography variant='h6' mb={1.5} textAlign='center'>
                     Transaction Information
                 </Typography>
                 {isLoadingNodeData ? (
@@ -74,9 +66,7 @@ const NodeDataModal = ({
                                 alignItems: 'center',
                             }}
                         >
-                            <KeyboardArrowRightIcon
-                                sx={{ color: 'rgb(0, 144, 255)' }}
-                            />
+                            <KeyboardArrowRightIcon sx={{ color: 'rgb(0, 144, 255)' }} />
                             <span style={{ marginLeft: '1rem' }}>
                                 Proposer : {nodeInfo.proposer || '-'}
                             </span>
@@ -90,9 +80,7 @@ const NodeDataModal = ({
                                 alignItems: 'center',
                             }}
                         >
-                            <KeyboardArrowRightIcon
-                                sx={{ color: 'rgb(0, 144, 255)' }}
-                            />
+                            <KeyboardArrowRightIcon sx={{ color: 'rgb(0, 144, 255)' }} />
                             <span style={{ marginLeft: '1rem' }}>
                                 {' '}
                                 TxId : {nodeInfo.txId || '-'}
@@ -107,9 +95,7 @@ const NodeDataModal = ({
                                 alignItems: 'center',
                             }}
                         >
-                            <KeyboardArrowRightIcon
-                                sx={{ color: 'rgb(0, 144, 255)' }}
-                            />
+                            <KeyboardArrowRightIcon sx={{ color: 'rgb(0, 144, 255)' }} />
                             <span style={{ marginLeft: '1rem' }}>
                                 Approvals : {nodeInfo.approvals || '0'}
                             </span>
@@ -120,7 +106,7 @@ const NodeDataModal = ({
                 )}
             </Box>
         </Modal>
-    );
-};
+    )
+}
 
-export default NodeDataModal;
+export default NodeDataModal

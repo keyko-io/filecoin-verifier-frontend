@@ -1,4 +1,3 @@
-
 const datacapExt = [
     { value: '1', name: 'B' },
     { value: '1024', name: 'KiB' },
@@ -8,7 +7,7 @@ const datacapExt = [
     { value: '1125899906842624', name: 'PiB' },
     { value: '1152921504606847000', name: 'EiB' },
     { value: '1180591620717411303424', name: 'ZiB' },
-    { value: '1208925819614629174706151275', name: 'YiB' }
+    { value: '1208925819614629174706151275', name: 'YiB' },
 ]
 const datacapExtName = [
     { value: '1B', name: 'B' },
@@ -19,7 +18,7 @@ const datacapExtName = [
     { value: 'PiB', name: 'PiB' },
     { value: 'EiB', name: 'EiB' },
     { value: 'ZiB', name: 'ZiB' },
-    { value: 'YiB', name: 'YiB' }
+    { value: 'YiB', name: 'YiB' },
 ]
 const datacapExtOptions = [
     { value: 'B', name: 'B' },
@@ -30,7 +29,7 @@ const datacapExtOptions = [
     { value: 'PiB', name: 'PiB' },
     { value: 'EiB', name: 'EiB' },
     { value: 'ZiB', name: 'ZiB' },
-    { value: 'YiB', name: 'YiB' }
+    { value: 'YiB', name: 'YiB' },
 ]
 const regions = [
     { value: 'Africa', name: 'Africa' },
@@ -39,8 +38,7 @@ const regions = [
     { value: 'Greater China', name: 'Greater China' },
     { value: 'North America', name: 'North America' },
     { value: 'Oceania', name: 'Oceania' },
-    { value: 'South America', name: 'South America' }
-
+    { value: 'South America', name: 'South America' },
 ]
 
 const localConfig = {
@@ -56,7 +54,8 @@ const localConfig = {
     networks: 'Localhost',
     domain: process.env.REACT_APP_DOMAIN || 'https://plus.fil.org/',
     githubGenericToken: process.env.REACT_APP_GITHUB_GENERIC_TOKEN,
-    minersUrl: 'https://raw.githubusercontent.com/filecoin-project/filecoin-plus-client-onboarding/main/miners.md',
+    minersUrl:
+        'https://raw.githubusercontent.com/filecoin-project/filecoin-plus-client-onboarding/main/miners.md',
     defaultAssign: ['fabriziogianni7', 'huseyincansoylu'],
     willRedirect: false,
     validateAddress: process.env.REACT_APP_VALIDATE_ADDRESS || true,
@@ -65,17 +64,19 @@ const localConfig = {
     metrics_api_environment: process.env.REACT_APP_METRICS_API_ENVIRONMENT || 'test',
     loggerApiKey: process.env.REACT_APP_X_API_KEY || '',
     secretRecieverAddress: 't0100',
-    lotusNodes: [{
-        name: 'Localhost',
-        code: 1,
-        url: 'wss://lotus.filecoin.nevermined.rocks/rpc/v0',
-        token: process.env.REACT_APP_LOCAL_NODE_TOKEN,
-        notaryRepo: 'filecoin-notaries-onboarding',
-        notaryOwner: 'keyko-io',
-        rkhMultisig: 't080',
-        rkhtreshold: 1,
-        largeClientRequestAssign: ['fabriziogianni7', 'huseyincansoylu'],
-    }],
+    lotusNodes: [
+        {
+            name: 'Localhost',
+            code: 1,
+            url: 'wss://lotus.filecoin.nevermined.rocks/rpc/v0',
+            token: process.env.REACT_APP_LOCAL_NODE_TOKEN,
+            notaryRepo: 'filecoin-notaries-onboarding',
+            notaryOwner: 'keyko-io',
+            rkhMultisig: 't080',
+            rkhtreshold: 1,
+            largeClientRequestAssign: ['fabriziogianni7', 'huseyincansoylu'],
+        },
+    ],
     datacapExt,
     datacapExtName,
     datacapExtOptions,
@@ -83,8 +84,9 @@ const localConfig = {
     dev_mode: process.env.REACT_APP_MODE,
     status_issue_number: 1419,
     status_issue_url: 'https://github.com/keyko-io/filecoin-large-clients-onboarding/issues/1419',
-    verifiers_registry_url: 'https://raw.githubusercontent.com/keyko-io/filecoin-content/main/json/test/verifiers-registry_test.json',
-    numberOfWalletAccounts : 20
+    verifiers_registry_url:
+        'https://raw.githubusercontent.com/keyko-io/filecoin-content/main/json/test/verifiers-registry_test.json',
+    numberOfWalletAccounts: 20,
 }
 
 const prodConfig = {
@@ -100,7 +102,8 @@ const prodConfig = {
     networks: 'Mainnet',
     domain: process.env.REACT_APP_DOMAIN || 'https://plus.fil.org/',
     githubGenericToken: process.env.REACT_APP_GITHUB_GENERIC_TOKEN,
-    minersUrl: 'https://raw.githubusercontent.com/filecoin-project/filecoin-plus-client-onboarding/main/miners.md',
+    minersUrl:
+        'https://raw.githubusercontent.com/filecoin-project/filecoin-plus-client-onboarding/main/miners.md',
     defaultAssign: ['galen-mcandrew'],
     willRedirect: false,
     validateAddress: process.env.REACT_APP_VALIDATE_ADDRESS || true,
@@ -109,29 +112,30 @@ const prodConfig = {
     metrics_api_environment: process.env.REACT_APP_METRICS_API_ENVIRONMENT || 'test',
     loggerApiKey: process.env.REACT_APP_X_API_KEY || '',
     secretRecieverAddress: process.env.REACT_APP_SECRET_RECIEVER_ADDRESS,
-    lotusNodes: [{
-        name: 'Mainnet',
-        code: 461,
-        url: 'https://node.glif.io/space06/lotus/rpc/v0',
-        token: process.env.REACT_APP_MAINNET_TOKEN,
-        notaryRepo: 'notary-governance',
-        notaryOwner: 'filecoin-project',
-        rkhMultisig: 'f080',
-        rkhtreshold: 2,
-        largeClientRequestAssign: ['galen-mcandrew'],
-    }],
+    lotusNodes: [
+        {
+            name: 'Mainnet',
+            code: 461,
+            url: 'https://node.glif.io/space06/lotus/rpc/v0',
+            token: process.env.REACT_APP_MAINNET_TOKEN,
+            notaryRepo: 'notary-governance',
+            notaryOwner: 'filecoin-project',
+            rkhMultisig: 'f080',
+            rkhtreshold: 2,
+            largeClientRequestAssign: ['galen-mcandrew'],
+        },
+    ],
     datacapExt,
     datacapExtName,
     datacapExtOptions,
     regions,
     dev_mode: process.env.REACT_APP_MODE,
     status_issue_number: 1427,
-    status_issue_url: 'https://github.com/filecoin-project/filecoin-plus-large-datasets/issues/1427',
-    verifiers_registry_url : 'https://raw.githubusercontent.com/keyko-io/filecoin-content/main/json/prod/verifiers-registry.json',
-    numberOfWalletAccounts : 20
+    status_issue_url:
+        'https://github.com/filecoin-project/filecoin-plus-large-datasets/issues/1427',
+    verifiers_registry_url:
+        'https://raw.githubusercontent.com/keyko-io/filecoin-content/main/json/prod/verifiers-registry.json',
+    numberOfWalletAccounts: 20,
 }
 
-export const config =
-    process.env.REACT_APP_NETWORKS !== 'Mainnet' ? localConfig : prodConfig
-
-
+export const config = process.env.REACT_APP_NETWORKS !== 'Mainnet' ? localConfig : prodConfig

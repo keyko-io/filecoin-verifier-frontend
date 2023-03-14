@@ -12,10 +12,10 @@ export enum EVENT_TYPE {
  * @approvers who approved the last request
  */
 export type MetricsApiParams = {
-    name: string,
-    clientAddress: string,
-    msigAddress?: string,
-    amount?: string,
+    name: string
+    clientAddress: string
+    msigAddress?: string
+    amount?: string
     requestNumber?: string | number
     messageCid?: string
 }
