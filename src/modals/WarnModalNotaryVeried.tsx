@@ -21,7 +21,7 @@ const WarnModalNotaryVerified = ({ onClick }: WarnModalNotaryVerifiedProps) => {
             {github.githubLogged ? (
                 <div className='message' style={{ marginTop: '12px' }}>
                     {!isVerifyWalletLoading ? (
-                        "Hello! Please, to continue, click the button to verify your wallet. You won't have to do this again in the future. Thank you and happy Notarying!"
+                        'Hello! Please, to continue, click the button to verify your wallet. You won"t have to do this again in the future. Thank you and happy Notarying!'
                     ) : (
                         <div>
                             Please, do not leave the page and wait for the confirmation alert.If the

@@ -22,7 +22,7 @@ type RootKeyHolderState = {
     refRequests: any
 }
 
-export default class RootKeyHolder extends Component<object, RootKeyHolderState> {
+export default class RootKeyHolder extends Component<unknown, RootKeyHolderState> {
     public static contextType = Data
 
     state = {

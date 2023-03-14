@@ -20,7 +20,7 @@ interface WalletProviderStates {
     fetchGithubComments: any
 }
 
-export default class WalletProvider extends React.Component<object, WalletProviderStates> {
+export default class WalletProvider extends React.Component<unknown, WalletProviderStates> {
     setStateAsync(state: any) {
         return new Promise((resolve: any) => {
             this.setState(state, resolve)
