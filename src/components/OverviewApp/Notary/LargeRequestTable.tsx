@@ -78,7 +78,7 @@ const formatIssues = async (
             });
         })
     );
-    return parsedIssueData.sort((a, b) => b.issue_number > a.issue_number );
+    return parsedIssueData.sort((a: any, b: any) => b.issue_number > a.issue_number);
 };
 
 type LargeRequestTableProps = {
