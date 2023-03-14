@@ -1,6 +1,8 @@
 import React, { useContext, useEffect, useRef, useState } from 'react'
 import Overview from './components/OverviewApp/Overview'
+// @ts-ignore
 import Logo from './svg/logo.svg'
+// @ts-ignore
 import Network from './svg/filecoin-network.svg'
 import { Data } from './context/Data/Index'
 import { addressFilter, bytesToiB } from './utils/Filters'

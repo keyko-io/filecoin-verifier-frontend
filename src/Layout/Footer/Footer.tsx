@@ -1,4 +1,5 @@
 import { version } from '../../../package.json'
+// @ts-ignore
 import logo from '../../svg/filecoin-logo.svg'
 import './Footer.scss'
 
