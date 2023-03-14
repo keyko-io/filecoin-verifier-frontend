@@ -23,7 +23,7 @@ function SearchInput(props: any) {
             return undefined;
         }
         (async () => {
-            if ((!searchTerm || searchTerm.length < 3) && open) {
+            if ((!searchTerm || searchTerm.length < 2) && open) {
                 await fetchTableData(1);
                 return;
             }
