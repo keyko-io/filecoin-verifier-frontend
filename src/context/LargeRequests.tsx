@@ -53,8 +53,6 @@ export default function LargeRequestsProvider({ children }: any) {
                             ];
                         if (!activeAccount) resolve(false);
                         const multisigInfo = await getMultisigInfo(request.multisig);
-                        console.log("multisigInfo", multisigInfo);
-                        console.log("activeAccount", activeAccount);
 
                         const isMultisigIncludesCurrentSigner =
                             multisigInfo.signers.includes(activeAccount);

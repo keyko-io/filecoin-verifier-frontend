@@ -78,7 +78,7 @@ const formatIssues = async (
             });
         })
     );
-    return parsedIssueData;
+    return parsedIssueData.sort((a, b) => b.issue_number > a.issue_number );
 };
 
 type LargeRequestTableProps = {
@@ -111,12 +111,10 @@ const LargeRequestTable = (props: LargeRequestTableProps) => {
             multisig,
             clientAddress
         );
-        console.log("nodeData", nodeData);
         if (nodeData?.signerAddress) {
             const notaryGithubHandle = await mapNotaryAddressToGithubHandle(
                 nodeData.signerAddress
             );
-            console.log("notaryGithubHandle", notaryGithubHandle);
             setProposer(notaryGithubHandle);
             setTxId(nodeData?.txId);
             setLoadingNodeData(false);
@@ -129,21 +127,6 @@ const LargeRequestTable = (props: LargeRequestTableProps) => {
         setProposer("");
         setTxId("");
     };
-
-    // const changePage = async () => {
-    //     try {
-    //         setIsLoadingGithubData(true);
-    //         const formattedIssues = await formatIssues(
-    //             [], // FIXME
-    //             context.github.githubOcto
-    //         );
-    //         setData(formattedIssues);
-    //         setIsLoadingGithubData(false);
-    //     } catch (error) {
-    //         console.log(error);
-    //         setIsLoadingGithubData(false);
-    //     }
-    // };
 
     useEffect(() => {
         currentPage >= 1 &&
@@ -171,6 +154,7 @@ const LargeRequestTable = (props: LargeRequestTableProps) => {
                     allReadyToSignIssues.data,
                     context.github.githubOcto
                 );
+                console.log("formattedIssues", formattedIssues);
                 setData(formattedIssues);
                 setIsLoadingGithubData(false);
             }
