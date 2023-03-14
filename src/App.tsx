@@ -15,10 +15,6 @@ import LogAsNotaryModal from './modals/LogAsNotaryModal'
 import { Button } from '@material-ui/core';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import RefreshIcon from '@mui/icons-material/Refresh';
-import SearchIcon from '@mui/icons-material/Search';
-import Paper from '@mui/material/Paper';
-import InputBase from '@mui/material/InputBase';
-import IconButton from '@mui/material/IconButton';
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { fab } from '@fortawesome/free-brands-svg-icons'
 import { far } from '@fortawesome/free-regular-svg-icons'
@@ -31,7 +27,7 @@ const App = () => {
 
   const [networkSelect, setNetworkSelect] = useState(false)
   const [accountSelect, setAccountSelect] = useState(false)
-  const [search, setSearch] = useState("")
+ 
 
   const modalRef = useRef<HTMLDivElement>(null)
   const viewSwitch = useRef<HTMLDivElement>(null)
@@ -112,16 +108,10 @@ const App = () => {
     return 0
   }
 
-  const handleSearch = async (e: any) => {
-    e.preventDefault()
-    context.search(search)
-  }
-
   return (
     <div className="App">
-      <div className="header">
-        <div className="headerLeftRight">
-          <div style={{ cursor: "pointer" }} onClick={() => history.push("/")}><img src={Logo} title="Return to home page" alt="Filecoin" /></div>
+      <div className="header" style={{padding : "0rem 10%"}}>
+        <div className="headerLeftRight">      
           <div className="networkselect" onClick={openNetworkSelect}>
             {networkSelect ?
               <div className="networkselectholder">
@@ -133,8 +123,11 @@ const App = () => {
               : null}
             <div className="headertitles">Network selected</div>
             <div className="addressholder">{config.lotusNodes[context.wallet.networkIndex].name}</div>
-          </div>
-          <div className="refresh">
+          </div>    
+        </div>
+
+        <div style={{display : "flex" , alignItems : "center", justifyContent : "center" , margin: "0rem auto", paddingLeft: "1.5rem"}}>
+         <div className="refresh">
             <Button
               size="small"
               onClick={() => history.push("/logs")}
@@ -142,30 +135,14 @@ const App = () => {
             >LOGS
             </Button>
           </div>
-        </div>
-
-        {/* 
-        <Paper
-          component="form"
-          onSubmit={handleSearch}
-          sx={{ p: '2px 4px', display: 'flex', alignItems: 'center', width: 300, height: 40 }}
-          elevation={3}
-        >
-          <InputBase
-            sx={{ ml: 1, flex: 1 }}
-            placeholder="Search"
-            onChange={(e) => setSearch(e.target.value)}
-          />
-          <IconButton type="button" aria-label="search" onClick={handleSearch}>
-            <SearchIcon  sx={{ color: "rgb(0, 127, 255)", fontSize: "24px" }} />
-          </IconButton>
-        </Paper>
-         */}
-
-        <div className="headerLeftRight">
-          <div className="refresh" onClick={refresh}>
+           <div style={{ cursor: "pointer" , margin : "0px 12rem"}} onClick={() => history.push("/")}><img src={Logo} title="Return to home page" alt="Filecoin" /></div>
+           <div className="refresh" onClick={refresh}>
             <RefreshIcon />
           </div>
+        </div>
+
+
+        <div className="headerLeftRight">       
           <div className="accountholder" onClick={openAccountSelect} ref={modalRef}>
             {accountSelect ?
               <div className="accountselectholder" ref={viewSwitch}>
@@ -247,7 +224,7 @@ const App = () => {
               setAccountSelect(!accountSelect)
             }}>{addressFilter(context.wallet.activeAccount)}, {context.wallet.multisig && !context.viewroot ? context.wallet.multisigAddress.length > 20 ? addressFilter(context.wallet.multisigAddress) : context.wallet.multisigAddress : null}</div>
           </div>
-          <div>
+          <div style={{paddingLeft : "1.5rem"}}>
             {
               context.github.githubLogged ?
                 <div className="avatarContainer">
