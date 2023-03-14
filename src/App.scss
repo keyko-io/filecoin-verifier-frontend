@@ -39,9 +39,7 @@
  
     .headerLeftRight {
       display: flex;
-      flex: 1;
       align-items: center;
-      justify-content: space-around;
     }
   
     .WalletMenu {
@@ -160,8 +158,8 @@
     width: 250px;
     position: absolute;
     padding: 24px 16px;
-    top: 70px;
-    left: 0px;
+    top: 55px;
+    left: -10px;
     border: 1px solid #c7c7c7;
     border-radius: 8px;
     background-color: #fff;
