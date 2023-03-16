@@ -26,6 +26,7 @@ import LargeRequestsProvider from "../../context/LargeRequests";
 import ApproveLargeRequestModal from "./Notary/ApproveLargeRequestModal";
 import NodeDataProvider from "../../context/NodeData";
 import { LargeRequestData } from "../../type";
+import { preventDoublePropose } from "../../utils/preventDoublePropose";
 
 type NotaryProps = {
    clients: any[];
@@ -440,6 +441,22 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
                );
                action = "Approved";
             } else {
+              console.log(request.issue_number, "=1")
+
+              const isProposed = await preventDoublePropose(
+                context,
+                request.issue_number
+              )
+    
+              console.log(isProposed, "=2")
+    
+              if (isProposed) {
+                alert(
+                  "There is already one pending proposal for this issue. Please, contact the governance team."
+                )
+                return
+              }
+
                messageID =
                   await context.wallet.api.multisigVerifyClient(
                      request.multisig,

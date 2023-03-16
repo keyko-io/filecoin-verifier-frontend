@@ -7,7 +7,6 @@ import Notary from "./Notary"
 import { BeatLoader } from "react-spinners"
 import "./Overview.scss"
 import { ApprovedVerifiers } from "../../type"
-import { preventDoublePropose } from "../../utils/preventDoublePropose"
 
 const Overview = () => {
   const context = useContext(Data)
@@ -18,8 +17,6 @@ const Overview = () => {
   >(null)
 
   useEffect(() => {
-    preventDoublePropose(context, 1482).then((data) => console.log(data))
-
     context.loadClients()
 
     setApprovedNotariesLoading(true)

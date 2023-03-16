@@ -29,6 +29,10 @@ export const preventDoublePropose = async (
     }
   }
 
+  if (!proposeComment) {
+    return false
+  }
+
   const { uuid: datacapId } = ldnParser.parseReleaseRequest(datacapCommment)
 
   const { uuid: proposeId } =
