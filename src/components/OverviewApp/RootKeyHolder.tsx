@@ -39,6 +39,7 @@ export default class RootKeyHolder extends Component<{},
   componentDidMount() {
     this.context.loadVerifierAndPendingRequests();
     this.context.loadVerified(1)
+    console.log("githubOctoGeneric",this.context.github.githubOctoGeneric)
   }
 
   showApproved = async () => {
@@ -188,15 +189,15 @@ export default class RootKeyHolder extends Component<{},
               messageID =
                 tx.datacap === 0
                   ? await this.context.wallet.api.removeVerifier(
-                    tx.verifier,
-                    tx.signer,
+                    tx.parsed.params.verifier, 
+                    this.context.wallet.activeAccount,
                     tx.id,
                     this.context.wallet.walletIndex
                   )
                   : await this.context.wallet.api.approveVerifier(
-                    tx.verifier,
-                    BigInt(tx.datacap),
-                    tx.signer,
+                    tx.parsed.params.verifier, //[1].txs[0].parsed.params.verifier
+                    BigInt(tx.parsed.params.cap), //[0].txs[0].parsed.params.cap
+                    this.context.wallet.activeAccount,
                     tx.id,
                     this.context.wallet.walletIndex
                   );
