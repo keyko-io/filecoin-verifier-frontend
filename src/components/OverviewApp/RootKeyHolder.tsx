@@ -190,14 +190,14 @@ export default class RootKeyHolder extends Component<{},
                 tx.datacap === 0
                   ? await this.context.wallet.api.removeVerifier(
                     tx.parsed.params.verifier, 
-                    this.context.wallet.activeAccount,
+                    this.context.wallet.accountsActive[this.context.wallet.activeAccount],
                     tx.id,
                     this.context.wallet.walletIndex
                   )
                   : await this.context.wallet.api.approveVerifier(
                     tx.parsed.params.verifier, //[1].txs[0].parsed.params.verifier
                     BigInt(tx.parsed.params.cap), //[0].txs[0].parsed.params.cap
-                    this.context.wallet.activeAccount,
+                    this.context.wallet.accountsActive[this.context.wallet.activeAccount],
                     tx.id,
                     this.context.wallet.walletIndex
                   );
