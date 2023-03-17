@@ -94,9 +94,8 @@ export default function LargeRequestsProvider({ children }: any) {
                 })
             )
         )
-        return !areSignable.map((a: any) => a.value).includes(false)
 
-
+        return areSignable.every((a : any) => a.value);
     };
 
     const IState: LargeRequestsState = {
