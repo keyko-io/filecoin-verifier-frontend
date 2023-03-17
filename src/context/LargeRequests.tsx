@@ -51,7 +51,12 @@ export default function LargeRequestsProvider({ children }: any) {
                             context.wallet.accountsActive[
                             context.wallet.activeAccount
                             ];
-                        if (!activeAccount) resolve(false);
+
+                        if (!activeAccount) {
+                            console.log("we could not load active accounts") 
+                            resolve(false);
+                        } 
+
                         const multisigInfo = await getMultisigInfo(request.multisig);
 
                         const isMultisigIncludesCurrentSigner =
@@ -89,9 +94,8 @@ export default function LargeRequestsProvider({ children }: any) {
                 })
             )
         )
-        return !areSignable.map((a: any) => a.value).includes(false)
 
-
+        return areSignable.every((a : any) => a.value);
     };
 
     const IState: LargeRequestsState = {
