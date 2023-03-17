@@ -13,6 +13,7 @@ import { CircularProgress } from "@material-ui/core";
 import { notaryParser, metrics } from "@keyko-io/filecoin-verifier-tools";
 import { VerifiedData } from "../../type";
 import * as Logger from "../../logger";
+import { methods } from "@keyko-io/filecoin-verifier-tools";
 
 type RootKeyHolderState = {
   tabs: string;
@@ -39,7 +40,7 @@ export default class RootKeyHolder extends Component<{},
   componentDidMount() {
     this.context.loadVerifierAndPendingRequests();
     this.context.loadVerified(1)
-    console.log("githubOctoGeneric",this.context.github.githubOctoGeneric)
+    console.log("githubOctoGeneric", this.context.github.githubOctoGeneric)
   }
 
   showApproved = async () => {
@@ -184,23 +185,13 @@ export default class RootKeyHolder extends Component<{},
               request.issue_number,
               PHASE
             );
-            // for each tx
+
+            const walletIndex = this.context.wallet.walletIndex
+            const rootkey = config.networks == "Mainnet" ? methods.mainnet.rootkey : methods.testnet.rootkey
             for (const tx of request.txs) {
-              messageID =
-                tx.datacap === 0
-                  ? await this.context.wallet.api.removeVerifier(
-                    tx.parsed.params.verifier, 
-                    this.context.wallet.accountsActive[this.context.wallet.activeAccount],
-                    tx.id,
-                    this.context.wallet.walletIndex
-                  )
-                  : await this.context.wallet.api.approveVerifier(
-                    tx.parsed.params.verifier, //[1].txs[0].parsed.params.verifier
-                    BigInt(tx.parsed.params.cap), //[0].txs[0].parsed.params.cap
-                    this.context.wallet.accountsActive[this.context.wallet.activeAccount],
-                    tx.id,
-                    this.context.wallet.walletIndex
-                  );
+
+                // this is a workaround because method approveVerifier stopped working - now just approving the TX
+                messageID = await this.context.wallet.api.send(rootkey.approve(tx.id, tx.tx), walletIndex)
 
               const txReceipt = await this.context.wallet.api.getReceipt(
                 messageID
@@ -283,7 +274,6 @@ export default class RootKeyHolder extends Component<{},
                 : "status:Error";
           }
 
-    
           if (messageIds.length === 0) {
             await this.context.postLogs(
               `Message ID not returned from node call`,
@@ -385,7 +375,6 @@ export default class RootKeyHolder extends Component<{},
           this.context.wallet.dispatchNotification("Failed: " + e.message);
 
           this.setState({ approveLoading: false });
-    
           await this.context.postLogs(
             `Error approving the multisig: ${e.message}`,
             "ERROR",
