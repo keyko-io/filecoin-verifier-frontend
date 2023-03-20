@@ -165,7 +165,9 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
          "Localhost"
       ) {
          try {
-            const isVerified: any = await context.checkVerifyWallet();
+            //feat temporary disabled
+            const isVerified: any = true
+            // const isVerified: any = await context.checkVerifyWallet();
             if (!isVerified) {
                await e.preventDefault();
                dispatchCustomEvent({
