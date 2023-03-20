@@ -154,7 +154,7 @@ const LargeRequestTable = (props: LargeRequestTableProps) => {
                     allReadyToSignIssues.data,
                     context.github.githubOcto
                 );
-                console.log("formattedIssues", formattedIssues);
+  
                 setData(formattedIssues);
                 setIsLoadingGithubData(false);
             }
