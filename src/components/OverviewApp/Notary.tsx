@@ -26,6 +26,7 @@ import LargeRequestsProvider from "../../context/LargeRequests";
 import ApproveLargeRequestModal from "./Notary/ApproveLargeRequestModal";
 import NodeDataProvider from "../../context/NodeData";
 import { LargeRequestData } from "../../type";
+import { preventDoublePropose } from "../../utils/preventDoublePropose";
 
 type NotaryProps = {
    clients: any[];
@@ -165,7 +166,9 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
          "Localhost"
       ) {
          try {
-            const isVerified: any = await context.checkVerifyWallet();
+            //feat temporary disabled
+            const isVerified: any = true
+            // const isVerified: any = await context.checkVerifyWallet();
             if (!isVerified) {
                await e.preventDefault();
                dispatchCustomEvent({
@@ -306,7 +309,6 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
         let errorMessage = "";
         try {
           const datacap: number = anyToBytes(request.data.datacap);
-          console.log("datacap", datacap);
           address = request.data.address;
           if (address.length < 12) {
             address = await context.wallet.api.actorKey(address);
@@ -382,10 +384,7 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
       let thisStateLargeRequestList = Array.isArray(i)
          ? i
          : context.largeClientRequests;
-      console.log(
-         "thisStateLargeRequestList",
-         thisStateLargeRequestList
-      );
+  
       for (const request of thisStateLargeRequestList) {
          try {
 
@@ -401,9 +400,7 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
             const PHASE = "DATACAP-SIGN";
             const datacap = anyToBytes(request.datacap);
             let address = request.address;
-            context.wallet.dispatchNotification(
-               `datacap being approved: ${request.datacap} \nclient address: ${address}`
-            );
+          
 
           if (address.length < 12) {
             address = await context.wallet.api.actorKey(address);
@@ -439,7 +436,28 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
                   PHASE
                );
                action = "Approved";
+
+               context.wallet.dispatchNotification(
+                  `datacap being approved: ${request.datacap} \nclient address: ${address}`
+               );
+
             } else {
+              const isProposed = await preventDoublePropose(
+                context,
+                request.issue_number
+              )
+ 
+              if (isProposed) {
+               closeApproveLargeRequestModal();
+               setApproveLoading(false);
+               await Logger.BasicLogger({ message: `Prevented Double Propose - Issue number: ${request.issue_number}`})  
+                toast.error(
+                   "There is already one pending proposal for this issue. Please, contact the governance team." , {
+                     duration : 5000
+                   })
+                return;
+              }
+
                messageID =
                   await context.wallet.api.multisigVerifyClient(
                      request.multisig,
@@ -448,7 +466,6 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
                      context.wallet.walletIndex
                   );
 
-               console.log(request);
                request.approvals = true;
                await context.postLogs(
                   `Datacap PROPOSED: ${messageID} - signer: ${signer}`,
@@ -519,7 +536,7 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
             request.issue_number,
             "DATACAP-SIGN"
           );
-          // console.log(e.stack)
+  
           setApproveLoading(false)
         }
       }
