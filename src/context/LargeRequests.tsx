@@ -8,6 +8,7 @@ import { LargeRequestData } from "../type";
 import { anyToBytes } from "../utils/Filters";
 import { Data } from "./Data/Index";
 import { useNodeDataContext } from "./NodeData";
+import * as Logger from "../logger"
 
 interface LargeRequestsState {
     areRequestsSignable: any;
@@ -53,7 +54,7 @@ export default function LargeRequestsProvider({ children }: any) {
                             ];
 
                         if (!activeAccount) {
-                            console.log("we could not load active accounts") 
+                            await Logger.BasicLogger({ message: "could not load active accounts" })
                             resolve(false);
                         } 
 

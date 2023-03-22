@@ -25,6 +25,7 @@ import {
     DataProviderProps,
     DataProviderStates,
 } from "../contextType";
+import * as Logger from "../../logger"
 
 interface ParseLargeRequestData {
     address: string;
@@ -1063,6 +1064,9 @@ export default class DataProvider extends React.Component<
                         idPattern,
                         comment[0].body
                     );
+ 
+                    await Logger.BasicLogger({ message: `id could not find ${issueNumber}`})
+
                     return Id;
                 } catch (error) {
                     console.log(error);
