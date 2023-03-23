@@ -1064,9 +1064,11 @@ export default class DataProvider extends React.Component<
                         idPattern,
                         comment[0].body
                     );
- 
-                    await Logger.BasicLogger({ message: `id could not find ${issueNumber}`})
-
+  
+                    if(!Id){
+                        await Logger.BasicLogger({ message: `id could not find ${issueNumber}`})
+                    }
+                    
                     return Id;
                 } catch (error) {
                     console.log(error);
