@@ -26,7 +26,7 @@ import {
     DataProviderStates,
 } from "../contextType";
 import * as Logger from "../../logger"
-import Sentry from "@sentry/react"
+import * as Sentry from "@sentry/react";
 
 interface ParseLargeRequestData {
     address: string;
