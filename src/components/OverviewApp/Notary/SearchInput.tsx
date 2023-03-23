@@ -23,41 +23,35 @@ function SearchInput(props: any) {
             return undefined;
         }
         (async () => {
-            if ((!searchTerm || searchTerm.length < 2) && open) {
+            if (!searchTerm && open) {
                 await fetchTableData(1);
                 return;
             }
+            //fuse.js search
             const searchConfig = {
                 keys: [
                     "name",
-                    "multisig",
+                    "Multisig",
                     "datacap",
                     "issue_number",
                     "address",
                 ],
-                location: 0,
-                distance: 90,
-                threshold: 0.3,
+                threshold: 0.2,
             };
-
-            console.log("data", data);
             const fuse = new Fuse(data, searchConfig);
             let searchResult = fuse.search(searchTerm);
-            let result = searchResult.map((i) => i.item).slice(0, 10);
-            console.log("result", result);
+            let result = searchResult.slice(0, 10).map((i) => i.item);
             const formattedResult =
                 await context.formatLargeRequestData(result);
-            console.log("formattedResult", formattedResult);
             if (active) {
                 updateData(formattedResult);
-                // setOptions(result)
             }
         })();
 
         return () => {
             active = false;
         };
-    }, [loading, context, data, searchTerm]);
+    }, [loading, context, open, data, searchTerm]);
 
     return (
         <Autocomplete

@@ -14,8 +14,10 @@ const CANT_SIGN_MESSAGE =
     "You can currently only approve the allocation requests associated with the multisig organization you signed in with. Signing proposals for additional DataCap allocations will require you to sign in again";
 
 const mapNotaryAddressToGithubHandle = async (address: string) => {
-    const verifRegJson : any= await fetch(config.verifiers_registry_url) 
-    const json =await verifRegJson.json()
+    const verifRegJson: any = await fetch(
+        config.verifiers_registry_url
+    );
+    const json = await verifRegJson.json();
     const githubHandle =
         json.notaries.find(
             (notary: any) =>
@@ -78,7 +80,7 @@ const formatIssues = async (
             });
         })
     );
-    return parsedIssueData.sort((a: any, b: any) => b.issue_number > a.issue_number);
+    return parsedIssueData;
 };
 
 type LargeRequestTableProps = {
@@ -94,7 +96,11 @@ const LargeRequestTable = (props: LargeRequestTableProps) => {
         useState<boolean>(false);
     const [isLoadingNodeData, setLoadingNodeData] =
         useState<boolean>(false);
-    const [data, setData] = useState<any>([]);
+    const [data, updateData] = useState<LargeRequestData[]>([]);
+
+    const setData = (data: LargeRequestData[]) => {
+        updateData(data);
+    };
 
     const [currentPage, setCurrentPage] = useState(1);
     const [open, setOpen] = useState(false);
@@ -112,9 +118,10 @@ const LargeRequestTable = (props: LargeRequestTableProps) => {
             clientAddress
         );
         if (nodeData?.signerAddress) {
-            const notaryGithubHandle = await mapNotaryAddressToGithubHandle(
-                nodeData.signerAddress
-            );
+            const notaryGithubHandle =
+                await mapNotaryAddressToGithubHandle(
+                    nodeData.signerAddress
+                );
             setProposer(notaryGithubHandle);
             setTxId(nodeData?.txId);
             setLoadingNodeData(false);
@@ -154,7 +161,7 @@ const LargeRequestTable = (props: LargeRequestTableProps) => {
                     allReadyToSignIssues.data,
                     context.github.githubOcto
                 );
-  
+
                 setData(formattedIssues);
                 setIsLoadingGithubData(false);
             }
@@ -191,6 +198,7 @@ const LargeRequestTable = (props: LargeRequestTableProps) => {
             ),
         },
         {
+            id: "multisig",
             name: "Multisig",
             selector: (row: LargeRequestData) => row?.multisig,
             sortable: true,
@@ -205,6 +213,7 @@ const LargeRequestTable = (props: LargeRequestTableProps) => {
             center: true,
         },
         {
+            id: "auditTrail",
             name: "Audit Trail",
             selector: (row: LargeRequestData) => row?.issue_number,
             sortable: true,
@@ -215,7 +224,7 @@ const LargeRequestTable = (props: LargeRequestTableProps) => {
                     rel="noopener noreferrer"
                     href={row?.url}
                 >
-                    #{row?.issue_number}
+                    {row?.issue_number}
                 </a>
             ),
             center: true,
@@ -271,6 +280,8 @@ const LargeRequestTable = (props: LargeRequestTableProps) => {
                         />
                     </div>
                     <DataTable
+                        defaultSortAsc={false}
+                        defaultSortFieldId="auditTrail"
                         columns={largeReqColumns}
                         selectableRowsHighlight
                         onSelectedRowsChange={({ selectedRows }) => {
@@ -299,22 +310,21 @@ const LargeRequestTable = (props: LargeRequestTableProps) => {
                         paginationTotalRows={count > 0 ? count : 500}
                         paginationRowsPerPageOptions={[10]}
                         paginationPerPage={10}
-                        defaultSortFieldId={1}
                         noContextMenu={true}
                         data={data}
                         progressComponent={
                             <div
-                            style={{
-                                width: "1280px",
-                            }}
-                        >
-                            <CircularProgress
                                 style={{
-                                    margin: "10rem auto",
-                                    color: "#0090ff",
+                                    width: "1280px",
                                 }}
-                            />
-                        </div>
+                            >
+                                <CircularProgress
+                                    style={{
+                                        margin: "10rem auto",
+                                        color: "#0090ff",
+                                    }}
+                                />
+                            </div>
                         }
                     />
                 </>
