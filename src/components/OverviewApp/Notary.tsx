@@ -22,6 +22,7 @@ import {
 import toast from "react-hot-toast";
 import { ldnParser } from "@keyko-io/filecoin-verifier-tools";
 import * as Logger from "../../logger";
+import * as Sentry from "@sentry/react"
 import LargeRequestsProvider from "../../context/LargeRequests";
 import ApproveLargeRequestModal from "./Notary/ApproveLargeRequestModal";
 import NodeDataProvider from "../../context/NodeData";
@@ -489,6 +490,7 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
                );
 
                context.wallet.dispatchNotification(errorMessage);
+               await Logger.BasicLogger({ message: `Message ID not found ${request.issue_number}`})  
                throw Error(errorMessage);
             }
 
@@ -529,6 +531,13 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
           context.wallet.dispatchNotification(
             "Verification failed: " + e.message
           );
+
+          Sentry.captureMessage('Unsuccessful transaction', {
+            extra: {
+              errorMessage: e.message,
+            }
+          })
+
           await context.postLogs(
             `The transaction to sign the datacap failed: ${e.message}`,
             "ERROR",
