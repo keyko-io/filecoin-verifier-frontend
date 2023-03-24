@@ -26,6 +26,7 @@ import {
     DataProviderStates,
 } from "../contextType";
 import * as Logger from "../../logger"
+import * as Sentry from "@sentry/react";
 
 interface ParseLargeRequestData {
     address: string;
@@ -1070,8 +1071,12 @@ export default class DataProvider extends React.Component<
                     }
                     
                     return Id;
-                } catch (error) {
-                    console.log(error);
+                } catch (error: any) {
+                    Sentry.captureMessage('error occured while fetching ID', {
+                        extra: {
+                          errorMessage: error.message,
+                        }
+                      })
                 }
             },
             updateGithubVerified: async (
