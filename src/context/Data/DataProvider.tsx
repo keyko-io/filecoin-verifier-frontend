@@ -170,7 +170,7 @@ export default class DataProvider extends React.Component<
                         });
                     })
                 );
-                return parsedIssueData;
+                return parsedIssueData
             },
             getLargeRequestSearchInputData: async () => {
                 if (
