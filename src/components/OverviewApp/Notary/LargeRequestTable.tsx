@@ -51,6 +51,9 @@ const formatIssues = async (
         data?.map(async (issue: any) => {
             if (!issue.body) return;
             const parsed = ldnParser.parseIssue(issue.body);
+
+            const approvals = issue.labels.some((item : any) => item.id === 5098807499)
+
             const comments = await githubOcto.paginate(
                 githubOcto.issues.listComments,
                 {
@@ -77,6 +80,7 @@ const formatIssues = async (
                 comments,
                 multisig: commentParsed.notaryAddress,
                 datacap: commentParsed.allocationDatacap,
+                approvalInfoFromLabels : approvals ? 1 : 0
             });
         })
     );
@@ -231,11 +235,11 @@ const LargeRequestTable = (props: LargeRequestTableProps) => {
         },
         {
             name: "Approvals",
-            selector: () => {},
+            selector: (row : LargeRequestData) => row?.approvalInfoFromLabels,
             grow: 0.5,
             center: true,
             cell: (row : LargeRequestData) => (
-                <div>1</div>
+                <div>{row?.approvalInfoFromLabels}</div>
             )
         },
         {
