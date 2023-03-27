@@ -9,6 +9,7 @@ import { Data } from "../context/Data/Index";
 import { ButtonPrimary, dispatchCustomEvent } from "slate-react-system";
 import { config } from "../config";
 import { CircularProgress } from "@material-ui/core";
+import * as Logger from "../logger"
 
 type ModalProps = {
   type: string;
@@ -31,6 +32,7 @@ const LogInModal = (props: ModalProps) => {
       });
 
       if (logged) {
+        await Logger.BasicLogger({ message: Logger.LEDGER_LOGIN_SUCCESS })
         setLedgerLoading(false)
         if (context.viewroot === false && props.type === "0") {
           context.switchview();
@@ -43,6 +45,7 @@ const LogInModal = (props: ModalProps) => {
         });
       }
     } catch (error) {
+      await Logger.BasicLogger({ message: Logger.LEDGER_LOGIN_FAILED })
       console.log(error)
       setLedgerLoading(false)
     }
@@ -56,7 +59,7 @@ const LogInModal = (props: ModalProps) => {
         multisigAddress: address,
       });
       if (logged) {
-        setBrowserLoading(false)
+           setBrowserLoading(false)
         if (context.viewroot === false && props.type === "0") {
           context.switchview();
         }
