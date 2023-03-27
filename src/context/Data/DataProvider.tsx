@@ -1046,6 +1046,9 @@ export default class DataProvider extends React.Component<
                 }
             },
             getLastUniqueId: async (issueNumber: number) => {
+                if (this.props.github.githubOctoGeneric.logged === false) {
+                    await this.props.github.githubOctoGenericLogin();
+                }
                 try {
                     const comments =
                         await this.props.github.fetchGithubComments(
