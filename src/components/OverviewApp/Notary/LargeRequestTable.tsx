@@ -180,7 +180,7 @@ const LargeRequestTable = (props: LargeRequestTableProps) => {
             name: "Client",
             selector: (row: any) => row?.name,
             sortable: true,
-            grow: 1.2,
+            grow: 1,
             wrap: true,
         },
         {
@@ -228,6 +228,15 @@ const LargeRequestTable = (props: LargeRequestTableProps) => {
                 </a>
             ),
             center: true,
+        },
+        {
+            name: "Approvals",
+            selector: () => {},
+            grow: 0.5,
+            center: true,
+            cell: (row : LargeRequestData) => (
+                <div>1</div>
+            )
         },
         {
             name: "Node Data",
