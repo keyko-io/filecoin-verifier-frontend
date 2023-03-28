@@ -21,6 +21,7 @@ export interface LargeRequestData {
     signable: boolean;
     tx: any;
     url: string;
+    approvalInfoFromLabels? : number
 }
 
 export interface DirectIssue {
