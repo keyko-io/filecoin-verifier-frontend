@@ -189,10 +189,14 @@ export default class DataProvider extends React.Component<
                 const response = allGHIssues.map((issue: any) => {
                     const parsed: ParseLargeRequestData =
                         ldnParser.parseIssue(issue.body);
+
+                    const approvalInfo = issue.labels.some((label : any) => label.name === "status:StartSignDatacap")    
+
                     const res = {
                         ...parsed,
                         issue_number: issue?.number,
                         url: issue?.html_url,
+                        approvalInfoFromLabels : approvalInfo ? 1 : 0
                         // comments,
                         // multisig: commentParsed?.notaryAddress,
                         // datacap: commentParsed?.allocationDatacap,

@@ -51,6 +51,9 @@ const formatIssues = async (
         data?.map(async (issue: any) => {
             if (!issue.body) return;
             const parsed = ldnParser.parseIssue(issue.body);
+
+            const approvalInfo = issue.labels.some((label : any) => label.name === "status:StartSignDatacap")
+
             const comments = await githubOcto.paginate(
                 githubOcto.issues.listComments,
                 {
@@ -77,6 +80,7 @@ const formatIssues = async (
                 comments,
                 multisig: commentParsed.notaryAddress,
                 datacap: commentParsed.allocationDatacap,
+                approvalInfoFromLabels : approvalInfo ? 1 : 0
             });
         })
     );
@@ -180,7 +184,7 @@ const LargeRequestTable = (props: LargeRequestTableProps) => {
             name: "Client",
             selector: (row: any) => row?.name,
             sortable: true,
-            grow: 1.2,
+            grow: 1,
             wrap: true,
         },
         {
@@ -228,6 +232,15 @@ const LargeRequestTable = (props: LargeRequestTableProps) => {
                 </a>
             ),
             center: true,
+        },
+        {
+            name: "Approvals",
+            selector: (row : LargeRequestData) => row?.approvalInfoFromLabels,
+            grow: 0.5,
+            center: true,
+            cell: (row : LargeRequestData) => (
+                <div>{row?.approvalInfoFromLabels}</div>
+            )
         },
         {
             name: "Node Data",
