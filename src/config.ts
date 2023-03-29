@@ -112,7 +112,7 @@ const prodConfig = {
     lotusNodes: [{
         name: 'Mainnet',
         code: 461,
-        url: 'https://node.glif.io/space06/lotus/rpc/v0',
+        url: 'https://node.glif.io/space06/lotus/rpc/v1',
         token: process.env.REACT_APP_MAINNET_TOKEN,
         notaryRepo: 'notary-governance',
         notaryOwner: 'filecoin-project',
