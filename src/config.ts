@@ -95,7 +95,7 @@ const prodConfig = {
     onboardingLargeClientRepo: 'filecoin-plus-large-datasets',
     onboardingLargeOwner: 'filecoin-project',
     onboardingNotaryOwner: 'notary-governance',
-    githubApp: process.env.REACT_APP_GITHUB_APP || 'Iv1.10e7aaed4654db3c',
+    githubApp: process.env.REACT_APP_GITHUB_APP || 'Iv1.1490209508f9ed93',
     oauthUri: process.env.REACT_APP_OAUTH_URI || 'http://localhost:3000/oauth/',
     networks: 'Mainnet',
     domain: process.env.REACT_APP_DOMAIN || "https://plus.fil.org/",
@@ -112,7 +112,7 @@ const prodConfig = {
     lotusNodes: [{
         name: 'Mainnet',
         code: 461,
-        url: 'https://node.glif.io/space06/lotus/rpc/v0',
+        url: 'https://node.glif.io/space06/lotus/rpc/v1',
         token: process.env.REACT_APP_MAINNET_TOKEN,
         notaryRepo: 'notary-governance',
         notaryOwner: 'filecoin-project',
