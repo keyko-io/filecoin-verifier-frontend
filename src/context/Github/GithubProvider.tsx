@@ -66,10 +66,10 @@ export default class WalletProvider extends React.Component<
       try {
         const authrequest = await fetch(config.apiUri + "/api/v1/github", {
           method: "POST",
+          mode: "cors",
           headers: {
             Accept: "application/json",
             "Content-Type": "application/json",
-            'Access-Control-Allow-Origin': '*'
           },
           body: JSON.stringify({
             code,
