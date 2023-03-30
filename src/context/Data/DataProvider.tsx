@@ -25,8 +25,9 @@ import {
     DataProviderProps,
     DataProviderStates,
 } from "../contextType";
-import * as Logger from "../../logger"
+import * as Logger from "../../logger";
 import * as Sentry from "@sentry/react";
+import { ISSUE_LABELS } from "../../constants";
 
 interface ParseLargeRequestData {
     address: string;
@@ -101,33 +102,35 @@ export default class DataProvider extends React.Component<
                         return;
                     }
 
-          const logArray = [
-            {
-              message,
-              type,
-              actionKeyword,
-              repo,
-              issueNumber: issueNumber.toString(),
+                    const logArray = [
+                        {
+                            message,
+                            type,
+                            actionKeyword,
+                            repo,
+                            issueNumber: issueNumber.toString(),
+                        },
+                    ];
+                    const res = (
+                        await fetch(
+                            "https://cbqluey8wa.execute-api.us-east-1.amazonaws.com/dev",
+                            {
+                                headers: {
+                                    "x-api-key": config.loggerApiKey,
+                                },
+                                method: "POST",
+                                body: JSON.stringify({
+                                    type: "POST_CUSTOM_LOGS",
+                                    logArray: logArray,
+                                }),
+                            }
+                        )
+                    ).json();
+                    return res;
+                } catch (error) {
+                    console.log(error);
+                }
             },
-          ];
-          const res = (
-            await fetch(
-              "https://cbqluey8wa.execute-api.us-east-1.amazonaws.com/dev",
-              {
-                headers: { "x-api-key": config.loggerApiKey },
-                method: "POST",
-                body: JSON.stringify({
-                  type: "POST_CUSTOM_LOGS",
-                  logArray: logArray,
-                }),
-              }
-            )
-          ).json();
-          return res;
-        } catch (error) {
-          console.log(error);
-        }
-      },
             //@ts-ignore
             formatLargeRequestData: async (
                 requests: ParseLargeRequestData[]
@@ -135,43 +138,48 @@ export default class DataProvider extends React.Component<
                 if (!requests) return [];
                 const parsedIssueData: any = [];
                 await Promise.all(
-                        requests?.map(async (issue: ParseLargeRequestData) => {
-                        const comments =
-                            await this.props.github.githubOcto.paginate(
-                                this.props.github.githubOcto.issues
-                                    .listComments,
-                                {
-                                    owner: config.onboardingLargeOwner,
-                                    repo: config.onboardingLargeClientRepo,
-                                    issue_number: issue.issue_number,
-                                }
-                            );
+                    requests?.map(
+                        async (issue: ParseLargeRequestData) => {
+                            const comments =
+                                await this.props.github.githubOcto.paginate(
+                                    this.props.github.githubOcto
+                                        .issues.listComments,
+                                    {
+                                        owner: config.onboardingLargeOwner,
+                                        repo: config.onboardingLargeClientRepo,
+                                        issue_number:
+                                            issue.issue_number,
+                                    }
+                                );
 
-                        const comment = comments
-                            .reverse()
-                            .find((comment: any) =>
-                                comment?.body?.includes(
-                                    "## DataCap Allocation requested"
-                                )
-                            );
+                            const comment = comments
+                                .reverse()
+                                .find((comment: any) =>
+                                    comment?.body?.includes(
+                                        "## DataCap Allocation requested"
+                                    )
+                                );
 
-                        if (!comment?.body) return;
-                        const commentParsed =
-                            ldnParser.parseReleaseRequest(
-                                comment.body
-                            );
-                        parsedIssueData.push({
-                            ...issue,
-                            comments,
-                            multisig: commentParsed?.notaryAddress,
-                            datacap: commentParsed?.allocationDatacap,
-                            proposer: null,
-                            tx: null,
-                            approvals: null,
-                        });
-                    })
+                            if (!comment?.body) return;
+                            const commentParsed =
+                                ldnParser.parseReleaseRequest(
+                                    comment.body
+                                );
+                            parsedIssueData.push({
+                                ...issue,
+                                comments,
+                                multisig:
+                                    commentParsed?.notaryAddress,
+                                datacap:
+                                    commentParsed?.allocationDatacap,
+                                proposer: null,
+                                tx: null,
+                                approvals: null,
+                            });
+                        }
+                    )
                 );
-                return parsedIssueData
+                return parsedIssueData;
             },
             getLargeRequestSearchInputData: async () => {
                 if (
@@ -184,19 +192,22 @@ export default class DataProvider extends React.Component<
                         config.onboardingLargeOwner,
                         config.onboardingLargeClientRepo,
                         "open",
-                        "bot:readyToSign"
+                        ISSUE_LABELS.BOT_READY_TO_SIGN
                     );
                 const response = allGHIssues.map((issue: any) => {
                     const parsed: ParseLargeRequestData =
                         ldnParser.parseIssue(issue.body);
 
-                    const approvalInfo = issue.labels.some((label : any) => label.name === "status:StartSignDatacap")    
+                    const approvalInfo = issue.labels.some(
+                        (label: any) =>
+                            label.name === ISSUE_LABELS.STATUS_START_SIGN_DATACAP
+                    );
 
                     const res = {
                         ...parsed,
                         issue_number: issue?.number,
                         url: issue?.html_url,
-                        approvalInfoFromLabels : approvalInfo ? 1 : 0
+                        approvalInfoFromLabels: approvalInfo ? 1 : 0,
                         // comments,
                         // multisig: commentParsed?.notaryAddress,
                         // datacap: commentParsed?.allocationDatacap,
@@ -253,15 +264,15 @@ export default class DataProvider extends React.Component<
                 // );
                 // return parsedIssueData;
             },
-      getLDNIssuesAndTransactions: async () => {
-        //GETTING ISSUES
+            getLDNIssuesAndTransactions: async () => {
+                //GETTING ISSUES
 
                 const rawLargeIssuesAll =
                     await this.props.github.fetchGithubIssues(
                         config.onboardingLargeOwner,
                         config.onboardingLargeClientRepo,
                         "open",
-                        "bot:readyToSign"
+                        ISSUE_LABELS.BOT_READY_TO_SIGN
                     );
 
                 // const rawLargeIssuesAll = await this.props.github.githubOcto.paginate(
@@ -280,7 +291,7 @@ export default class DataProvider extends React.Component<
                         (item: any) =>
                             !item.labels.find(
                                 (l: any) =>
-                                    l.name === "status:needsDiligence"
+                                    l.name ===ISSUE_LABELS.STATUS_NEED_DILIGENCE
                             )
                     )
                     .slice(0, 10);
@@ -448,11 +459,6 @@ export default class DataProvider extends React.Component<
                     }
                 );
 
-                console.log(
-                    issuesByClientAddress,
-                    "issuesByClientAddress"
-                );
-
                 let transactionAndIssue = [];
                 for (let msigGroup of issuesByClientAddress) {
                     const txsByCientList: TxsByClientAddress[] =
@@ -567,19 +573,8 @@ export default class DataProvider extends React.Component<
                             config.onboardingOwner,
                             config.onboardingClientRepo,
                             "open",
-                            "state:Verifying"
+                            ISSUE_LABELS.STATUS_VERIFYING
                         );
-
-                    // const rawDirectIssues = await this.props.github.githubOcto.paginate(
-                    //   this.props.github.githubOcto.issues.listForRepo,
-                    //   {
-                    //     owner: config.onboardingOwner,
-                    //     repo: config.onboardingClientRepo,
-                    //     assignee: "*",
-                    //     state: "open",
-                    //     labels: "state:Verifying",
-                    //   }
-                    // );
 
                     const issues: DirectIssue[] = [];
 
@@ -611,11 +606,14 @@ export default class DataProvider extends React.Component<
                     const txsIssueGitHub =
                         ldnIssueTxs.filteredTxsIssue;
 
-          this.setState({ txsIssueGitHub })
+                    this.setState({ txsIssueGitHub });
 
-          const res = await fetch(config.verifiers_registry_url)
-  
-          const verifierRegistry : { notaries : Notary[] } = await res.json()
+                    const res = await fetch(
+                        config.verifiers_registry_url
+                    );
+
+                    const verifierRegistry: { notaries: Notary[] } =
+                        await res.json();
 
                     const largeissues: any = await Promise.allSettled(
                         txsIssueGitHub.map(
@@ -638,18 +636,26 @@ export default class DataProvider extends React.Component<
                                                     account
                                                 );
 
+                                            let signerAddress: any;
+                                            let signerGitHandle;
+                                            if (elem.tx) {
+                                                signerAddress =
+                                                    await this.props.wallet.api.actorKey(
+                                                        elem.tx[0]
+                                                            .signers[0]
+                                                    );
 
-                    let signerAddress: any;
-                    let signerGitHandle;
-                    if (elem.tx) {
-                      signerAddress = await this.props.wallet.api.actorKey(elem.tx[0].signers[0])
-
-                      signerGitHandle =
-                        verifierRegistry.notaries.find(
-                          (notary) =>
-                            notary.ldn_config.signing_address === signerAddress
-                        )?.github_user[0] || "none";
-                    }
+                                                signerGitHandle =
+                                                    verifierRegistry.notaries.find(
+                                                        (notary) =>
+                                                            notary
+                                                                .ldn_config
+                                                                .signing_address ===
+                                                            signerAddress
+                                                    )
+                                                        ?.github_user[0] ||
+                                                    "none";
+                                            }
 
                                             const approverIsNotProposer =
                                                 signerAddress
@@ -732,63 +738,71 @@ export default class DataProvider extends React.Component<
 
                     // LARGE ISSUES: filecoin-plus-large-datasets  END /////////////////////
 
-          this.setState({
-            clientRequests: issues,
-            largeClientRequests,
+                    this.setState({
+                        clientRequests: issues,
+                        largeClientRequests,
+                        ldnRequestsLoading: false,
+                    });
+                } catch (error) {
+                    console.error(error);
+                    this.setState({ ldnRequestsLoading: false });
+                    this.props.wallet.dispatchNotification(
+                        "While loading data error happened, please try again"
+                    );
+                }
+            },
+            searchUserIssues: async (user: string) => {
+                await this.props.github.githubOctoGenericLogin();
+                const rawIssues =
+                    await this.props.github.githubOcto.search.issuesAndPullRequests(
+                        {
+                            q: `type:issue+user:${user}+repo:${config.onboardingOwner}/${config.onboardingClientRepo}`,
+                        }
+                    );
+                const issues: any[] = [];
+                for (const rawIssue of rawIssues.data.items) {
+                    const data = simpleClientParser.parseIssue(
+                        rawIssue.body
+                    );
+                    if (data.correct) {
+                        issues.push({
+                            number: rawIssue.number,
+                            url: rawIssue.html_url,
+                            owner: rawIssue.user.login,
+                            created_at: rawIssue.created_at,
+                            state: rawIssue.state,
+                            labels: rawIssue.labels,
+                            data,
+                        });
+                    }
+                }
+                return issues;
+            },
+            clientRequests: [],
+            largeClientRequests: [],
+            approvedNotariesLoading: true,
             ldnRequestsLoading: false,
-          });
-        } catch (error) {
-          console.error(error);
-          this.setState({ ldnRequestsLoading: false });
-          this.props.wallet.dispatchNotification(
-            "While loading data error happened, please try again"
-          );
-        }
-      },
-      searchUserIssues: async (user: string) => {
-        await this.props.github.githubOctoGenericLogin();
-        const rawIssues =
-          await this.props.github.githubOcto.search.issuesAndPullRequests({
-            q: `type:issue+user:${user}+repo:${config.onboardingOwner}/${config.onboardingClientRepo}`,
-          });
-        const issues: any[] = [];
-        for (const rawIssue of rawIssues.data.items) {
-          const data = simpleClientParser.parseIssue(rawIssue.body);
-          if (data.correct) {
-            issues.push({
-              number: rawIssue.number,
-              url: rawIssue.html_url,
-              owner: rawIssue.user.login,
-              created_at: rawIssue.created_at,
-              state: rawIssue.state,
-              labels: rawIssue.labels,
-              data,
-            });
-          }
-        }
-        return issues;
-      },
-      clientRequests: [],
-      largeClientRequests: [],
-      approvedNotariesLoading: true,
-      ldnRequestsLoading: false,
-      loadVerifierAndPendingRequests: async () => {
-        this.setState({ isPendingRequestLoading: true })
-        try {
-          if (this.props.github.githubOctoGeneric.logged === false) {
-            await this.props.github.githubOctoGenericLogin();
-         
-          }
-    
-          const allIssues = await this.props.github.githubOctoGeneric.octokit.paginate(
-            this.props.github.githubOctoGeneric.octokit.issues.listForRepo,
-            {
-              owner: config.onboardingOwner,
-              repo: config.onboardingNotaryOwner,
-              state: "open",
-              labels : "Notary Application"
-            }
-          )
+            loadVerifierAndPendingRequests: async () => {
+                this.setState({ isPendingRequestLoading: true });
+                try {
+                    if (
+                        this.props.github.githubOctoGeneric.logged ===
+                        false
+                    ) {
+                        await this.props.github.githubOctoGenericLogin();
+                    }
+
+                    const allIssues =
+                        await this.props.github.githubOctoGeneric.octokit.paginate(
+                            this.props.github.githubOctoGeneric
+                                .octokit.issues.listForRepo,
+                            {
+                                owner: config.onboardingOwner,
+                                repo: config.onboardingNotaryOwner,
+                                state: "open",
+                                labels: ISSUE_LABELS.NOTARY_APPLICATION
+                            }
+                        );
 
                     const msigRequests = allIssues
                         .filter(
@@ -796,15 +810,14 @@ export default class DataProvider extends React.Component<
                                 !issue.labels.find(
                                     (l: any) =>
                                         l.name ===
-                                        "status:AddedOnchain"
+                                        ISSUE_LABELS.STATUS_ADDED_ON_CHAIN
                                 )
                         )
                         .filter((issue: any) =>
                             issue.labels.find(
                                 (l: any) =>
-                                    l.name === "status:Approved" ||
-                                    l.name ===
-                                        "status:StartSignOnchain"
+                                    l.name === ISSUE_LABELS.STATUS_APPROVED ||
+                                    l.name === ISSUE_LABELS.STATUS_START_SIGN_DATACAP
                             )
                         );
 
@@ -1050,7 +1063,10 @@ export default class DataProvider extends React.Component<
                 }
             },
             getLastUniqueId: async (issueNumber: number) => {
-                if (this.props.github.githubOctoGeneric.logged === false) {
+                if (
+                    this.props.github.githubOctoGeneric.logged ===
+                    false
+                ) {
                     await this.props.github.githubOctoGenericLogin();
                 }
                 try {
@@ -1072,19 +1088,95 @@ export default class DataProvider extends React.Component<
                         idPattern,
                         comment[0].body
                     );
-  
-                    if(!Id){
-                        await Logger.BasicLogger({ message: `id could not find ${issueNumber}`})
+
+                    if (!Id) {
+                        await Logger.BasicLogger({
+                            message: `id could not find ${issueNumber}`,
+                        });
                     }
-                    
+
                     return Id;
                 } catch (error: any) {
-                    Sentry.captureMessage('error occured while fetching ID', {
-                        extra: {
-                          errorMessage: error.message,
+                    Sentry.captureMessage(
+                        "error occured while fetching ID",
+                        {
+                            extra: {
+                                errorMessage: error.message,
+                            },
                         }
-                      })
+                    );
                 }
+            },
+            createComment: async (
+                owner: string,
+                repo: string,
+                issueNumber: number,
+                comment: string
+            ) => {
+                try {
+                    await this.props.github.githubOcto.issues.createComment(
+                        {
+                            owner: owner,
+                            repo: repo,
+                            issue_number: issueNumber,
+                            body: comment,
+                        }
+                    );
+                } catch (error) {
+                    console.log(error);
+                }
+                return;
+                // await this.props.github.githubOcto.issues.removeAllLabels(
+                //     {
+                //         owner: config.onboardingOwner,
+                //         repo: config.onboardingClientRepo,
+                //         issue_number: requestNumber,
+                //     }
+                // );
+                // await this.props.github.githubOcto.issues.addLabels({
+                //     owner: config.onboardingOwner,
+                //     repo: config.onboardingClientRepo,
+                //     issue_number: requestNumber,
+                //     labels: [ISSUE_LABELS.STATUS_ERROR],
+                // });
+            },
+            addLabels: async (
+                owner: string,
+                repo: string,
+                issueNumber: number,
+                labels: string[]
+            ) => {
+                try {
+                    await this.props.github.githubOcto.issues.addLabels(
+                        {
+                            owner,
+                            repo,
+                            issue_number: issueNumber,
+                            labels,
+                        }
+                    );
+                } catch (error) {
+                    console.log(error);
+                }
+                return;
+            },
+            removeAllLabels: async (
+                owner: string,
+                repo: string,
+                issueNumber: number
+            ) => {
+                try {
+                    await this.props.github.githubOcto.issues.removeAllLabels(
+                        {
+                            owner,
+                            repo,
+                            issue_number: issueNumber,
+                        }
+                    );
+                } catch (error) {
+                    console.log(error);
+                }
+                return;
             },
             updateGithubVerified: async (
                 requestNumber: number,
@@ -1114,7 +1206,7 @@ export default class DataProvider extends React.Component<
                             owner: config.onboardingOwner,
                             repo: config.onboardingClientRepo,
                             issue_number: requestNumber,
-                            labels: ["status:Error"],
+                            labels: [ISSUE_LABELS.STATUS_ERROR],
                         }
                     );
                     await this.props.github.githubOcto.issues.createComment(
@@ -1140,7 +1232,7 @@ export default class DataProvider extends React.Component<
                     owner: config.onboardingOwner,
                     repo: config.onboardingClientRepo,
                     issue_number: requestNumber,
-                    labels: ["state:Granted"],
+                    labels: [ISSUE_LABELS.STATUS_GRANTED],
                 });
                 await this.props.github.githubOcto.issues.createComment(
                     {
@@ -1191,7 +1283,7 @@ export default class DataProvider extends React.Component<
                             owner: config.onboardingLargeOwner,
                             repo: config.onboardingLargeClientRepo,
                             issue_number: requestNumber,
-                            labels: ["status:Error"],
+                            labels: [ISSUE_LABELS.STATUS_ERROR],
                         }
                     );
                     await this.props.github.githubOcto.issues.createComment(
@@ -1465,6 +1557,7 @@ export default class DataProvider extends React.Component<
     render() {
         return (
             <Data.Provider
+                //@ts-ignore
                 value={{
                     ...this.state,
                     github: this.props.github,

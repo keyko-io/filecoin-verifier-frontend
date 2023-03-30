@@ -14,6 +14,7 @@ import { notaryParser, metrics } from "@keyko-io/filecoin-verifier-tools";
 import { VerifiedData } from "../../type";
 import * as Logger from "../../logger";
 import { methods } from "@keyko-io/filecoin-verifier-tools";
+import { ISSUE_LABELS } from "../../constants";
 
 type RootKeyHolderState = {
   tabs: string;
@@ -209,7 +210,7 @@ export default class RootKeyHolder extends Component<{},
             // comment to issue
             commentContent = `## The request has been signed by a new Root Key Holder\n#### Message sent to Filecoin Network\n>${messageIds.join()}\n${errorMessage}\n${filfox}`;
             label =
-              errorMessage === "" ? "status:AddedOnchain" : "status:Error";
+              errorMessage === "" ? ISSUE_LABELS.STATUS_ADDED_ON_CHAIN : ISSUE_LABELS.STATUS_ERROR;
           } else {
             await this.context.postLogs(
               `multisig ${request.addresses[0]} - going to propose the address.`,
@@ -269,9 +270,9 @@ export default class RootKeyHolder extends Component<{},
               errorMessage === ""
                 ? config.lotusNodes[this.context.wallet.networkIndex]
                   .rkhtreshold > 1
-                  ? "status:StartSignOnchain"
-                  : "status:AddedOnchain"
-                : "status:Error";
+                  ? ISSUE_LABELS.STATUS_START_SIGN_DATACAP
+                  : ISSUE_LABELS.STATUS_ADDED_ON_CHAIN
+                : ISSUE_LABELS.STATUS_ERROR;
           }
 
           if (messageIds.length === 0) {
@@ -330,12 +331,12 @@ export default class RootKeyHolder extends Component<{},
                 repo: config.lotusNodes[this.context.wallet.networkIndex]
                   .notaryRepo,
                 issue_number: request.issue_number,
-                labels: [label, "Notary Application"],
+                labels: [label, ISSUE_LABELS.NOTARY_APPLICATION],
               }
             );
           }
           //metrics
-          if (label === "status:AddedOnchain") {
+          if (label === ISSUE_LABELS.STATUS_ADDED_ON_CHAIN) {
             const notaryGovissue =
               await this.context.github.githubOctoGeneric.octokit.issues.get({
                 owner:
