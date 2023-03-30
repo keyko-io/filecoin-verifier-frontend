@@ -146,7 +146,7 @@ const ManualDatacapRequest = () => {
       }}
     >
       <Box sx={{ width: "500px", mt: "10rem" }}>
-        <Typography variant="h6" textAlign="center" mb="2rem">
+        <Typography variant="h5" textAlign="center" mb="2rem">
           Create Datacap Request
         </Typography>
         <Stack direction="column" spacing={5}>
