@@ -69,6 +69,7 @@ export default class WalletProvider extends React.Component<
           headers: {
             Accept: "application/json",
             "Content-Type": "application/json",
+            'Access-Control-Allow-Origin': '*'
           },
           body: JSON.stringify({
             code,
@@ -185,7 +186,7 @@ export default class WalletProvider extends React.Component<
       state: any,
       labels: any
     ) => {
-      if(!this?.state || !Object.keys(this?.state?.githubOcto).length) return;
+      if (!this?.state || !Object.keys(this?.state?.githubOcto).length) return;
       const rawIssues = await this?.state?.githubOcto?.paginate(
         this?.state?.githubOcto?.issues?.listForRepo,
         {
@@ -232,7 +233,7 @@ export default class WalletProvider extends React.Component<
       const loggedUser = localStorage.getItem("loggedUser")!;
       if (githubToken) {
         const response = await this.state.initGithubOcto(githubToken);
-      await response?.auth();
+        await response?.auth();
       }
       if (!githubToken) {
         this.setState({ githubLogged: false });
@@ -253,8 +254,8 @@ export default class WalletProvider extends React.Component<
       await Logger.configureScope({
         githubUsername: "",
       });
-        this.setState({ githubLogged: false });
-        this.setState({ loggedUser: "" });
+      this.setState({ githubLogged: false });
+      this.setState({ loggedUser: "" });
       await Logger.BasicLogger({
         message: "Error: loadGithub token",
       });
