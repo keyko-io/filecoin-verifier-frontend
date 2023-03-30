@@ -6,6 +6,9 @@ export const BasicLogger = async ({
     message: string;
 }): Promise<boolean> => {
     try {
+        if (process.env.NODE_ENV === "development") {
+            return false;
+        }
         await Sentry.captureMessage(message);
         return true;
     } catch (error) {
@@ -19,6 +22,9 @@ export interface SentryScope {
 
 export const configureScope = async (data: SentryScope) => {
     try {
+        if (process.env.NODE_ENV === "development") {
+            return false;
+        }
         await Sentry.configureScope(function (scope) {
             scope.setTag("githubUsername", data.githubUsername);
         });
@@ -27,3 +33,15 @@ export const configureScope = async (data: SentryScope) => {
         return false;
     }
 };
+
+
+// SIGNATURES 
+export const REQUEST_PROPOSED = "Request Proposed"
+export const REQUEST_APPROVED = "Request Approved"
+export const PROPOSE_CANCELLED = "Propose Cancelled"
+export const RKH_SIGN_ON_CHAIN = "Sign On Chain - Notary Application"
+export const CLIENT_ALLOCATION_REQUEST = "Client Allocation Request"
+
+// LEDGER LOGIN
+export const LEDGER_LOGIN_SUCCESS = "Ledger Login Successful"
+export const LEDGER_LOGIN_FAILED = "Ledger Login Failed"

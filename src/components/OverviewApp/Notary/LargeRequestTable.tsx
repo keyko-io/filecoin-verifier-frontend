@@ -1,136 +1,349 @@
-import { CircularProgress } from "@material-ui/core"
-import { useContext, useEffect, useState } from "react"
-import DataTable from "react-data-table-component"
-import { Data } from "../../../context/Data/Index"
-import { LargeRequestData } from "../../../type"
+import { ldnParser } from "@keyko-io/filecoin-verifier-tools";
+import { CircularProgress } from "@material-ui/core";
+import { useContext, useEffect, useState } from "react";
+import DataTable from "react-data-table-component";
+import { config } from "../../../config";
+import { Data } from "../../../context/Data/Index";
+import { LargeRequestData } from "../../../type";
+import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
+import NodeDataModal from "./NodeDataModal";
+import SearchInput from "./SearchInput";
+import { useLargeRequestsContext } from "../../../context/LargeRequests";
 
-export const largeReqColumns = [
-    {
-        name: "Client",
-        selector: (row: LargeRequestData) => row.data,
-        sortable: true,
-        grow: 1.2,
-        wrap: true
-    },
-    {
-        name: "Address",
-        selector: (row: LargeRequestData) => row.address,
-        sortable: true,
-        cell: (row: LargeRequestData) => <div>{`${row.address.substring(0, 9)}...${row.address.substring(row.address.length - 9, row.address.length)}`}</div>
-    },
-    {
-        name: "Multisig",
-        selector: (row: LargeRequestData) => row.multisig,
-        sortable: true,
-        grow: 0.5
-    },
-    {
-        name: "Datacap",
-        selector: (row: LargeRequestData) => row.datacap,
-        sortable: true,
-        grow: 0.5
-    },
-    {
-        name: "Audit Trail",
-        selector: (row: LargeRequestData) => row.issue_number,
-        sortable: true,
-        grow: 0.5,
-        cell: (row: LargeRequestData) => <a
-            target="_blank"
-            rel="noopener noreferrer"
-            href={row.url}>#{row.issue_number}</a>,
-    },
-    {
-        name: "Proposer",
-        selector: (row: LargeRequestData) => row.proposer.signerGitHandle,
-        sortable: true,
-        cell: (row: LargeRequestData) => <span >{row.proposer.signerGitHandle || "-"}</span>,
-        grow: 0.5,
-    },
-    {
-        name: "TxId",
-        selector: (row: LargeRequestData) => row.tx.id,
-        grow: 0.5,
-    },
-    {
-        name: "Approvals",
-        selector: (row: LargeRequestData) => row.approvals,
-        sortable: true,
-        grow: 0.5,
-    },
-]
+const CANT_SIGN_MESSAGE =
+    "You can currently only approve the allocation requests associated with the multisig organization you signed in with. Signing proposals for additional DataCap allocations will require you to sign in again";
+
+const mapNotaryAddressToGithubHandle = async (address: string) => {
+    const verifRegJson: any = await fetch(
+        config.verifiers_registry_url
+    );
+    const json = await verifRegJson.json();
+    const githubHandle =
+        json.notaries.find(
+            (notary: any) =>
+                notary.ldn_config.signing_address === address
+        )?.github_user[0] || "";
+    return githubHandle;
+};
+
+export const isSignable = (
+    approvals: number,
+    approverSignerAddress: string,
+    activeAccountAddress: string
+) => {
+    const approverIsNotProposer = approverSignerAddress
+        ? approverSignerAddress !== activeAccountAddress
+        : false;
+    const msigIncludeSigner = false;
+    const signable = approvals
+        ? msigIncludeSigner && approverIsNotProposer
+        : msigIncludeSigner;
+
+    return signable;
+};
+
+const formatIssues = async (
+    data: { body: string }[],
+    githubOcto: any
+): Promise<any[]> => {
+    const parsedIssueData: any = [];
+    await Promise.all(
+        data?.map(async (issue: any) => {
+            if (!issue.body) return;
+            const parsed = ldnParser.parseIssue(issue.body);
+
+            const approvalInfo = issue.labels.some((label : any) => label.name === "status:StartSignDatacap")
+
+            const comments = await githubOcto.paginate(
+                githubOcto.issues.listComments,
+                {
+                    owner: config.onboardingLargeOwner,
+                    repo: config.onboardingLargeClientRepo,
+                    issue_number: issue.number,
+                }
+            );
+            const comment = comments
+                .reverse()
+                .find((comment: any) =>
+                    comment.body.includes(
+                        "## DataCap Allocation requested"
+                    )
+                );
+            if (!comment?.body) return;
+            const commentParsed = ldnParser.parseReleaseRequest(
+                comment.body
+            );
+            parsedIssueData.push({
+                ...parsed,
+                issue_number: issue.number,
+                url: issue.html_url,
+                comments,
+                multisig: commentParsed.notaryAddress,
+                datacap: commentParsed.allocationDatacap,
+                approvalInfoFromLabels : approvalInfo ? 1 : 0
+            });
+        })
+    );
+    return parsedIssueData;
+};
 
 type LargeRequestTableProps = {
-    setSelectedLargeClientRequests: any
-    dataForLargeRequestTable: LargeRequestData[],
-    largeRequestListLoading: boolean
-    setDataForLargeRequestTable: any
-}
+    setSelectedLargeClientRequests: any;
+};
 
-const LargeRequestTable = ({ setSelectedLargeClientRequests, largeRequestListLoading, dataForLargeRequestTable, setDataForLargeRequestTable }: LargeRequestTableProps) => {
+const LargeRequestTable = (props: LargeRequestTableProps) => {
+    const { setSelectedLargeClientRequests } = props;
+    const { count } = useLargeRequestsContext();
+    const context = useContext(Data);
 
-    const context = useContext(Data)
+    const [isLoadingGithubData, setIsLoadingGithubData] =
+        useState<boolean>(false);
+    const [isLoadingNodeData, setLoadingNodeData] =
+        useState<boolean>(false);
+    const [data, updateData] = useState<LargeRequestData[]>([]);
 
-    const CANT_SIGN_MESSAGE = "You can currently only approve the allocation requests associated with the multisig organization you signed in with. Signing proposals for additional DataCap allocations will require you to sign in again";
+    const setData = (data: LargeRequestData[]) => {
+        updateData(data);
+    };
 
-    const [searched, setSearched] = useState(false)
+    const [currentPage, setCurrentPage] = useState(1);
+    const [open, setOpen] = useState(false);
+    const [proposer, setProposer] = useState("");
+    const [txId, setTxId] = useState("");
+
+    const handleOpen = async (
+        multisig: string,
+        clientAddress: string
+    ) => {
+        setLoadingNodeData(true);
+        setOpen(true);
+        const nodeData = await context.getNodeData(
+            multisig,
+            clientAddress
+        );
+        if (nodeData?.signerAddress) {
+            const notaryGithubHandle =
+                await mapNotaryAddressToGithubHandle(
+                    nodeData.signerAddress
+                );
+            setProposer(notaryGithubHandle);
+            setTxId(nodeData?.txId);
+            setLoadingNodeData(false);
+        }
+        setLoadingNodeData(false);
+    };
+
+    const handleClose = () => {
+        setOpen(false);
+        setProposer("");
+        setTxId("");
+    };
 
     useEffect(() => {
-        if (context.searchString) {
-            setDataForLargeRequestTable((prev: any) => prev.filter((item: any) => item.searchBy.toLowerCase().includes(context.searchString.toLowerCase())))
-            setSearched(true)
-        }
-        if (context.searchString === "" && context.largeClientRequests) {
-            const data = context.largeClientRequests
-                .map((item) => ({ ...item, data: item.data.name, searchBy: `${item?.data?.name} ${item?.issue_number} ${item?.multisig} ${item?.address} ${item?.datacap} ${item?.tx?.id}` }))
-                .map((item) => item.tx !== null ? item : { ...item, tx: "", })
-            setDataForLargeRequestTable(data)
-        }
-    }, [context.searchString, context.largeClientRequests])
+        currentPage >= 1 &&
+            data?.length &&
+            fetchTableData(currentPage); // NOT GREAT SOLUTION
+    }, [currentPage]);
 
+    const fetchTableData = async (page: number) => {
+        try {
+            setIsLoadingGithubData(true);
+            const allReadyToSignIssues =
+                await context.github.githubOcto.issues.listForRepo(
+                    "GET /repos/{owner}/{repo}/issues",
+                    {
+                        owner: config.onboardingLargeOwner,
+                        repo: config.onboardingLargeClientRepo,
+                        state: "open",
+                        labels: "bot:readyToSign",
+                        page,
+                        per_page: 10,
+                    }
+                );
+            if (allReadyToSignIssues.data) {
+                const formattedIssues = await formatIssues(
+                    allReadyToSignIssues.data,
+                    context.github.githubOcto
+                );
+
+                setData(formattedIssues);
+                setIsLoadingGithubData(false);
+            }
+        } catch (error) {
+            console.log(error);
+            setIsLoadingGithubData(false);
+        }
+    };
+
+    useEffect(() => {
+        fetchTableData(1);
+    }, [context.github]);
+
+    const largeReqColumns = [
+        {
+            name: "Client",
+            selector: (row: any) => row?.name,
+            sortable: true,
+            grow: 1,
+            wrap: true,
+        },
+        {
+            name: "Address",
+            selector: (row: LargeRequestData) => row?.address,
+            sortable: true,
+            cell: (row: LargeRequestData) => (
+                <div>{`${row?.address?.substring(
+                    0,
+                    9
+                )}...${row?.address.substring(
+                    row?.address.length - 9,
+                    row?.address.length
+                )}`}</div>
+            ),
+        },
+        {
+            id: "multisig",
+            name: "Multisig",
+            selector: (row: LargeRequestData) => row?.multisig,
+            sortable: true,
+            grow: 0.5,
+            center: true,
+        },
+        {
+            name: "Datacap",
+            selector: (row: LargeRequestData) => row?.datacap,
+            sortable: true,
+            grow: 0.5,
+            center: true,
+        },
+        {
+            id: "auditTrail",
+            name: "Audit Trail",
+            selector: (row: LargeRequestData) => row?.issue_number,
+            sortable: true,
+            grow: 0.5,
+            cell: (row: LargeRequestData) => (
+                <a
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    href={row?.url}
+                >
+                    {row?.issue_number}
+                </a>
+            ),
+            center: true,
+        },
+        {
+            name: "Approvals",
+            selector: (row : LargeRequestData) => row?.approvalInfoFromLabels,
+            grow: 0.5,
+            center: true,
+            cell: (row : LargeRequestData) => (
+                <div>{row?.approvalInfoFromLabels}</div>
+            )
+        },
+        {
+            name: "Node Data",
+            selector: (row: LargeRequestData) => row?.tx?.id,
+            grow: 0.5,
+            cell: (row: LargeRequestData) => (
+                <div
+                    style={{ cursor: "pointer" }}
+                    onClick={() =>
+                        handleOpen(row.multisig, row.address)
+                    }
+                >
+                    <MoreHorizIcon />
+                </div>
+            ),
+            center: true,
+        },
+    ];
 
     return (
-        <div className="large-request-table" style={{ minHeight: "500px" }}>
-            {!context.ldnRequestsLoading && <p style={{ margin: "0.8rem  1.2rem", color: "#373D3F" }}>
-                * <i style={{ textDecoration: "underline", textUnderlineOffset: "4px" }}>You can use the searchbar to find a datacap request</i>
-            </p>}
-            {context.ldnRequestsLoading ?
-                <div style={{ width: "100%" }} >
-                    <CircularProgress style={{ margin: "8rem auto", color: "#0090ff" }} />
+        <div
+            className="large-request-table"
+            style={{ minHeight: "500px" }}
+        >
+            <NodeDataModal
+                isLoadingNodeData={isLoadingNodeData}
+                open={open}
+                handleClose={handleClose}
+                nodeInfo={{
+                    proposer,
+                    txId,
+                    approvals: txId !== "" ? 1 : 0,
+                }}
+            />
+            {context.ldnRequestsLoading ? (
+                <div style={{ width: "100%", textAlign: "center" }}>
+                    <CircularProgress
+                        style={{
+                            margin: "8rem auto",
+                            color: "#0090ff",
+                        }}
+                    />
                 </div>
-                :
-                <DataTable
-                    columns={largeReqColumns}
-                    selectableRowDisabled={(row) => !row.signable}
-                    selectableRowsHighlight
-                    selectableRows
-                    selectableRowsNoSelectAll={true}
-                    pagination
-                    paginationRowsPerPageOptions={[10, 20, 30]}
-                    paginationPerPage={10}
-                    defaultSortFieldId={1}
-                    noDataComponent={searched ?
-                        <div style={{ marginTop: "7rem", fontSize: "1.5rem" }}>
-                            We could not find the data you are looking for :(
-                        </div>
-                        : "No large client requests yet"}
-                    onSelectedRowsChange={({ selectedRows }) => {
-                        const rowNumbers = selectedRows.map((row) => row.issue_number)
-                        setSelectedLargeClientRequests(rowNumbers)
-                    }}
-                    onRowClicked={(row) => {
-                        if (!row.signable) {
-                            context.wallet.dispatchNotification(CANT_SIGN_MESSAGE)
+            ) : (
+                <>
+                    <div style={{ display: "grid" }}>
+                        <SearchInput
+                            updateData={setData}
+                            fetchTableData={fetchTableData}
+                        />
+                    </div>
+                    <DataTable
+                        defaultSortAsc={false}
+                        defaultSortFieldId="auditTrail"
+                        columns={largeReqColumns}
+                        selectableRowsHighlight
+                        onSelectedRowsChange={({ selectedRows }) => {
+                            setSelectedLargeClientRequests(
+                                selectedRows
+                            );
+                        }}
+                        onRowClicked={(row) => {
+                            if (!row.signable) {
+                                context.wallet.dispatchNotification(
+                                    CANT_SIGN_MESSAGE
+                                );
+                            }
+                        }}
+                        selectableRows
+                        progressPending={isLoadingGithubData}
+                        onChangePage={(
+                            page: number,
+                            totalRows: number
+                        ) => {
+                            setCurrentPage(page);
+                        }}
+                        selectableRowsNoSelectAll={true}
+                        pagination
+                        paginationServer
+                        paginationTotalRows={count > 0 ? count : 500}
+                        paginationRowsPerPageOptions={[10]}
+                        paginationPerPage={10}
+                        noContextMenu={true}
+                        data={data}
+                        progressComponent={
+                            <div
+                                style={{
+                                    width: "1280px",
+                                }}
+                            >
+                                <CircularProgress
+                                    style={{
+                                        margin: "10rem auto",
+                                        color: "#0090ff",
+                                    }}
+                                />
+                            </div>
                         }
-                    }}
-                    noContextMenu={true}
-                    data={dataForLargeRequestTable}
-                    progressPending={largeRequestListLoading || context.ldnRequestsLoading}
-                    progressComponent={<CircularProgress style={{ margin: "4rem auto", color: "#0090ff" }} />}
-                />}
+                    />
+                </>
+            )}
         </div>
+    );
+};
 
-    )
-}
-
-export default LargeRequestTable
+export default LargeRequestTable;

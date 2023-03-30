@@ -82,8 +82,9 @@ const localConfig = {
     regions,
     dev_mode: process.env.REACT_APP_MODE,
     status_issue_number: 1419,
-    status_issue_url: "https://github.com/keyko-io/filecoin-large-clients-onboarding/issues/1419"
-
+    status_issue_url: "https://github.com/keyko-io/filecoin-large-clients-onboarding/issues/1419",
+    verifiers_registry_url: "https://raw.githubusercontent.com/keyko-io/filecoin-content/main/json/test/verifiers-registry_test.json",
+    numberOfWalletAccounts : 20
 }
 
 const prodConfig = {
@@ -94,7 +95,7 @@ const prodConfig = {
     onboardingLargeClientRepo: 'filecoin-plus-large-datasets',
     onboardingLargeOwner: 'filecoin-project',
     onboardingNotaryOwner: 'notary-governance',
-    githubApp: process.env.REACT_APP_GITHUB_APP || 'Iv1.10e7aaed4654db3c',
+    githubApp: process.env.REACT_APP_GITHUB_APP || 'Iv1.1490209508f9ed93',
     oauthUri: process.env.REACT_APP_OAUTH_URI || 'http://localhost:3000/oauth/',
     networks: 'Mainnet',
     domain: process.env.REACT_APP_DOMAIN || "https://plus.fil.org/",
@@ -111,7 +112,7 @@ const prodConfig = {
     lotusNodes: [{
         name: 'Mainnet',
         code: 461,
-        url: 'https://node.glif.io/space06/lotus/rpc/v0',
+        url: 'https://node.glif.io/space06/lotus/rpc/v1',
         token: process.env.REACT_APP_MAINNET_TOKEN,
         notaryRepo: 'notary-governance',
         notaryOwner: 'filecoin-project',
@@ -125,8 +126,9 @@ const prodConfig = {
     regions,
     dev_mode: process.env.REACT_APP_MODE,
     status_issue_number: 1427,
-    status_issue_url: "https://github.com/filecoin-project/filecoin-plus-large-datasets/issues/1427"
-
+    status_issue_url: "https://github.com/filecoin-project/filecoin-plus-large-datasets/issues/1427",
+    verifiers_registry_url : "https://raw.githubusercontent.com/keyko-io/filecoin-content/main/json/prod/verifiers-registry.json",
+    numberOfWalletAccounts : 20
 }
 
 export const config =

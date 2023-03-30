@@ -1863,10 +1863,10 @@
     "@jridgewell/resolve-uri" "3.1.0"
     "@jridgewell/sourcemap-codec" "1.4.14"
 
-"@keyko-io/filecoin-verifier-tools@^2.0.4":
-  version "2.1.0"
-  resolved "https://registry.yarnpkg.com/@keyko-io/filecoin-verifier-tools/-/filecoin-verifier-tools-2.1.0.tgz#481817d3f2525d84391dad77d10f6b9501a05549"
-  integrity sha512-OOwaohlSyVLIKqJ0TZY0dtgX3nb4YV5jb3s/ghjW421bTbiS597BG7AqFxbP2FRI/kiiCdQjuG++HJdqKMa9ew==
+"@keyko-io/filecoin-verifier-tools@^2.1.1":
+  version "2.1.1"
+  resolved "https://registry.yarnpkg.com/@keyko-io/filecoin-verifier-tools/-/filecoin-verifier-tools-2.1.1.tgz#699f947808d789d37d92800ac2e3c4868f723d11"
+  integrity sha512-wrH5VtQdudl+k9A9ib91/avCjoyvlOO+5gloW6nM51yyjWlOY+tO+KBCvOCRgQKo/KDMUEFlm5pugmOKVJO4IA==
   dependencies:
     "@babel/core" "^7.20.12"
     "@babel/helper-compilation-targets" "^7.20.7"
@@ -7029,6 +7029,11 @@ functions-have-names@^1.2.2:
   version "1.2.3"
   resolved "https://registry.yarnpkg.com/functions-have-names/-/functions-have-names-1.2.3.tgz#0404fe4ee2ba2f607f0e0ec3c80bae994133b834"
   integrity sha512-xckBUXyTIqT97tq2x2AMb+g163b5JFysYk0x4qxNFwbfQkmNZoiRHb6sPzI9/QV33WeuvVYBUIiD4NzNIyqaRQ==
+
+fuse.js@^6.6.2:
+  version "6.6.2"
+  resolved "https://registry.yarnpkg.com/fuse.js/-/fuse.js-6.6.2.tgz#fe463fed4b98c0226ac3da2856a415576dc9a111"
+  integrity sha512-cJaJkxCCxC8qIIcPBF9yGxY0W/tVZS3uEISDxhYIdtk8OL93pe+6Zj7LjCqVV4dzbqcriOZ+kQ/NE4RXZHsIGA==
 
 gaxios@^5.0.0, gaxios@^5.0.1:
   version "5.0.2"

@@ -41,9 +41,9 @@ export class BurnerWallet {
         return this
     }
 
-    public getAccounts = async (nStart = 0, nEnd = 10) => {
+    public getAccounts = async (nStart = 0) => {
         const accounts = []
-        for (let i = nStart; i < nEnd; i += 1) {
+        for (let i = nStart; i < config.numberOfWalletAccounts; i += 1) {
             accounts.push(
                 signer.keyDerive(this.mnemonic, `m/44'/${this.lotusNode.code}'/0/0/${i}`, '').address
             )
