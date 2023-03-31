@@ -8,7 +8,7 @@ import GithubProvider from "./context/Github/GithubProvider";
 import DataProvider from "./context/Data/DataProvider";
 import { Wallet } from "./context/Wallet/Index";
 import { Github } from "./context/Github/Index";
-import { Router, Route, Switch } from "react-router-dom";
+import { HashRouter as Router, Route, Switch } from "react-router-dom";
 // @ts-ignore
 import { GlobalNotification, GlobalModal } from "slate-react-system";
 import "./fonts/SuisseIntl-Regular.woff";
