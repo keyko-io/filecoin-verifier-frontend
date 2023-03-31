@@ -8,7 +8,7 @@ import GithubProvider from "./context/Github/GithubProvider";
 import DataProvider from "./context/Data/DataProvider";
 import { Wallet } from "./context/Wallet/Index";
 import { Github } from "./context/Github/Index";
-import { HashRouter as Router, Route, Switch } from "react-router-dom";
+import { HashRouter, Router, Route, Switch } from "react-router-dom";
 // @ts-ignore
 import { GlobalNotification, GlobalModal } from "slate-react-system";
 import "./fonts/SuisseIntl-Regular.woff";
@@ -29,7 +29,6 @@ import { Integrations } from "@sentry/tracing";
 import Verifiers from "./pages/Verifiers";
 import Miners from "./pages/Miners";
 import StatusPage from "./pages/StatusPage";
-import LargeRequestsProvider from "./context/LargeRequests";
 
 // redirect to domain if user access fleek url
 if (window.location.host.includes("fleek") && config.willRedirect) {
@@ -68,6 +67,7 @@ const root = ReactDOM.createRoot(
     document.getElementById("root") as HTMLElement
 );
 
+
 root.render(
     <>
         <CookiesProvider>
@@ -81,6 +81,9 @@ root.render(
                                         wallet={wallet}
                                         github={github}
                                     >
+                                        <HashRouter>
+
+
                                             <Router history={history}>
                                                 <Layout>
                                                     <Switch>
@@ -162,6 +165,7 @@ root.render(
                                                     </Switch>
                                                 </Layout>
                                             </Router>
+                                        </HashRouter>
                                         <GlobalNotification
                                             style={{
                                                 bottom: 0,
