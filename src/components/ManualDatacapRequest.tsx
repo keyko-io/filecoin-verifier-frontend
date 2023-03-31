@@ -38,6 +38,7 @@ const ManualDatacapRequest = () => {
 
   const [formData, setFormData] = useState(initialFormState)
   const [isLoading, setIsLoading] = useState(false)
+  const [isHelperTextShown, setIsHelperTextShown] = useState(false)
 
   const fillOutForm = async () => {
     if (!formData.issueNumber) {
@@ -51,7 +52,7 @@ const ManualDatacapRequest = () => {
     )
 
     if (!data) {
-      toast.error("no issue with this number")
+      toast.error("something went wrong please try again!")
       return
     }
 
@@ -68,6 +69,11 @@ const ManualDatacapRequest = () => {
 
     const commentParsed = ldnParser.parseReleaseRequest(lastDatacapComment.body)
 
+    if (!commentParsed.correct) {
+      toast.error("last datacap comment has missing information")
+      return
+    }
+
     const regex = /### Request number (\d+)/
     const match = lastDatacapComment.body.match(regex)
     let numberOfRequest = Number(match && match[1])
@@ -81,6 +87,7 @@ const ManualDatacapRequest = () => {
       requestNumber: (numberOfRequest + 1).toString(),
       dataCap: commentParsed.allocationDatacap,
     }))
+    setIsHelperTextShown(true)
   }
 
   const HandleForm = (e: any) => {
@@ -89,12 +96,14 @@ const ManualDatacapRequest = () => {
 
   const createRequest = async () => {
     setIsLoading(true)
+    setIsHelperTextShown(false)
     const isAnyValueEmpty = Object.values(formData).some(
       (value) => value === ""
     )
 
     if (isAnyValueEmpty) {
       toast.error("all fields are required")
+      setIsLoading(false)
       return
     }
 
@@ -177,6 +186,12 @@ const ManualDatacapRequest = () => {
               name="dataCap"
               onChange={HandleForm}
               value={formData.dataCap}
+              helperText={
+                isHelperTextShown
+                  ? "please adjust datacap field before sending the request"
+                  : ""
+              }
+              FormHelperTextProps={{ sx: { color: "red" } }}
             />
             <TextField
               size="small"

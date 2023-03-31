@@ -28,7 +28,16 @@ import { fas } from "@fortawesome/free-solid-svg-icons"
 
 library.add(fab, far, fas)
 
-const adminList = ["huseyincansoylu"]
+const adminList = [
+  "huseyincansoylu",
+  "fabriziogianni7",
+  "jbesraa",
+  "galen-mcandrew",
+  "panges2",
+  "dkkapur",
+  "Kevin-FF-USA",
+  "simonkim0515",
+]
 
 const App = () => {
   const context = useContext(Data)
