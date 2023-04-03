@@ -36,4 +36,6 @@ export const ISSUE_LABELS = {
     APPLICATION_ADDRESS_NOT_VALID: "State: Address Not Valid",
     EFIL_PLUS: "Efil+",
     APPLICATION_COMPLETED: "Application: Completed",
+    NOTARY_APPLICATION: "Notary: Application",
+    APPLICATION_WIP_ISSUE: "Application: WIP Issue",
 }
