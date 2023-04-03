@@ -38,6 +38,7 @@ if (window.location.host.includes("fleek") && config.willRedirect) {
 }
 
 const startSentry = () => {
+
   try {
     if (process.env.NODE_ENV === "development") {
       return
