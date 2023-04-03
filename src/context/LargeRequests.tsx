@@ -8,16 +8,9 @@ import { LargeRequestData } from "../type";
 import { anyToBytes } from "../utils/Filters";
 import { Data } from "./Data/Index";
 import { useNodeDataContext } from "./NodeData";
-import * as Logger from "../logger";
-import {
-    constructNewStatusComment,
-    STATUS_LABELS,
-} from "../constants";
-import { BasicLogger } from "../logger";
-import { config } from "../config";
+import * as Logger from "../logger"
 
 interface LargeRequestsState {
-    changeRequestStatus: any;
     areRequestsSignable: any;
     count: number;
     data: LargeRequestData[];
@@ -29,9 +22,6 @@ export const LargeRequestsContext = createContext(
 
 export const useLargeRequestsContext = () =>
     useContext(LargeRequestsContext);
-
-const owner = config.onboardingOwner;
-const repo = config.onboardingLargeClientRepo;
 
 export default function LargeRequestsProvider({ children }: any) {
     const context = useContext(Data);
@@ -47,106 +37,72 @@ export default function LargeRequestsProvider({ children }: any) {
         handler();
     }, [context]);
 
-    const changeRequestStatus = async (
-        newStatus: string,
-        issueNumber: number
-    ) => {
-        const newStatusLabels = STATUS_LABELS[newStatus];
-        const newStatusComment = constructNewStatusComment(newStatus);
-        await BasicLogger({
-            message: "NOTARY X CHANGED REQUEST Y STATE TO " + newStatus,
-        });
-        // update github issue with new labels
-        await context.addLabels(owner, repo, issueNumber, newStatusLabels);
-        await context.createComment(owner, repo, issueNumber, newStatusComment);
-        // await context.createComment();
-    };
-
     const areRequestsSignable = async (
+
         requests: LargeRequestData[]
     ): Promise<boolean> => {
+
         const areSignable = await Promise.allSettled(
             requests.map(
-                (request: LargeRequestData) =>
-                    new Promise<boolean>(async (resolve, reject) => {
-                        try {
-                            if (!request.multisig) resolve(false);
-                            const activeAccount =
-                                context.wallet.accountsActive[
-                                    context.wallet.activeAccount
-                                ];
+                (request: LargeRequestData) => new Promise<boolean>(async (resolve, reject) => {
+                    try {
 
-                            if (!activeAccount) {
-                                await Logger.BasicLogger({
-                                    message:
-                                        "could not load active accounts",
-                                });
-                                resolve(false);
-                            }
+                        if (!request.multisig) resolve(false);
+                        const activeAccount =
+                            context.wallet.accountsActive[
+                            context.wallet.activeAccount
+                            ];
 
-                            const multisigInfo =
-                                await getMultisigInfo(
-                                    request.multisig
-                                );
+                        if (!activeAccount) {
+                            await Logger.BasicLogger({ message: "could not load active accounts" })
+                            resolve(false);
+                        } 
 
-                            const isMultisigIncludesCurrentSigner =
-                                multisigInfo.signers.includes(
-                                    activeAccount
-                                );
+                        const multisigInfo = await getMultisigInfo(request.multisig);
 
-                            const pendingTxs =
-                                await context.wallet.api.pendingTransactions(
-                                    String(request.multisig)
-                                );
-                            // we get most recent txn with same address and and datacap requested of the request
-                            const pendingForClient =
-                                pendingTxs?.filter(
-                                    (tx: any) =>
-                                        tx?.parsed?.params?.address ==
-                                            request.address &&
-                                        tx?.parsed?.params?.cap ==
-                                            anyToBytes(
-                                                request.datacap
-                                            )
-                                );
-                            const mostRecentTx =
-                                pendingForClient[
-                                    pendingForClient.length - 1
-                                ];
+                        const isMultisigIncludesCurrentSigner =
+                            multisigInfo.signers.includes(activeAccount);
 
-                            if (!mostRecentTx) {
-                                resolve(true); // Request Didnt start
-                            }
-                            // if (approvals >=    1)  //TODO manage the case when there is more than 1 request
-                            else if (mostRecentTx) {
-                                // Request was proposed by one notary and needs approval of second notary
-                                const proposer =
-                                    mostRecentTx.signers[0];
-                                const approverIsNotProposer =
-                                    proposer !== activeAccount;
+                        const pendingTxs =
+                            await context.wallet.api.pendingTransactions(
+                                String(request.multisig)
+                            );
+                        // we get most recent txn with same address and and datacap requested of the request
+                        const pendingForClient = pendingTxs?.filter((tx: any) => tx?.parsed?.params?.address == request.address && tx?.parsed?.params?.cap == anyToBytes(request.datacap))
+                        const mostRecentTx = pendingForClient[pendingForClient.length - 1]
 
-                                resolve(
-                                    isMultisigIncludesCurrentSigner &&
-                                        approverIsNotProposer
-                                );
-                            } else {
-                                resolve(false);
-                            }
-                        } catch (error) {
-                            reject(error);
+                        if (!mostRecentTx) {
+                            resolve(true); // Request Didnt start
                         }
-                    })
-            )
-        );
+                        // if (approvals >=    1)  //TODO manage the case when there is more than 1 request
+                        else if (mostRecentTx) {
+                            // Request was proposed by one notary and needs approval of second notary
+                            const proposer = mostRecentTx.signers[0];
+                            const approverIsNotProposer = proposer !== activeAccount
 
-        return areSignable.every((a: any) => a.value);
+
+                            resolve(
+                                isMultisigIncludesCurrentSigner &&
+                                approverIsNotProposer
+                            );
+                        }
+                        else {
+                            resolve(false);
+                        }
+                    } catch (error) {
+                        reject(error)
+                    }
+                })
+            )
+        )
+
+        return areSignable.every((a : any) => a.value);
     };
 
     const IState: LargeRequestsState = {
         count: data.length,
         data: data,
-        areRequestsSignable,
-        changeRequestStatus,
+        areRequestsSignable
     };
 
     return (
