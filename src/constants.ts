@@ -35,5 +35,5 @@ export const ISSUE_LABELS = {
     WARN_CHECK_TRANSACTION: "Warn: Check Transaction",
     APPLICATION_ADDRESS_NOT_VALID: "State: Address Not Valid",
     EFIL_PLUS: "Efil+",
-    APPLICATION_COMPLETED: "Application:completed",
+    APPLICATION_COMPLETED: "Application: Completed",
 }
