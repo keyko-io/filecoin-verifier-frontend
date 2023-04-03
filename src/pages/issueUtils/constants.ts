@@ -50,11 +50,6 @@ export const regionOptions = [
   'South America',
 ]
 
-export enum labelsIssueCreation {
-  WIP_ISSUE = 'Application:WIPissue',
-  ISSUE_COMPLETED = 'Application:completed',
-}
-
 export const steps = ['Main Info', 'Project Details', 'Use-Case Details', 'DataCap Allocation Plan']
 
 export const URL_README = `https://github.com/${config.onboardingOwner}/${config.onboardingLargeClientRepo}/blob/main/README.md`

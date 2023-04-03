@@ -1,4 +1,5 @@
 import { ldnParser } from "@keyko-io/filecoin-verifier-tools";
+import DisplaySettingsIcon from "@mui/icons-material/DisplaySettings";
 import { CircularProgress } from "@material-ui/core";
 import { useContext, useEffect, useState } from "react";
 import DataTable from "react-data-table-component";
@@ -9,6 +10,8 @@ import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import NodeDataModal from "./NodeDataModal";
 import SearchInput from "./SearchInput";
 import { useLargeRequestsContext } from "../../../context/LargeRequests";
+import ActionsModal from "./ActionsModal";
+import { ISSUE_LABELS } from "../../../constants";
 
 const CANT_SIGN_MESSAGE =
     "You can currently only approve the allocation requests associated with the multisig organization you signed in with. Signing proposals for additional DataCap allocations will require you to sign in again";
@@ -52,7 +55,10 @@ const formatIssues = async (
             if (!issue.body) return;
             const parsed = ldnParser.parseIssue(issue.body);
 
-            const approvalInfo = issue.labels.some((label : any) => label.name === "status:StartSignDatacap")
+            const approvalInfo = issue.labels.some(
+                (label: any) =>
+                    label.name === ISSUE_LABELS.STATUS_START_SIGN_DATACAP
+            );
 
             const comments = await githubOcto.paginate(
                 githubOcto.issues.listComments,
@@ -80,7 +86,7 @@ const formatIssues = async (
                 comments,
                 multisig: commentParsed.notaryAddress,
                 datacap: commentParsed.allocationDatacap,
-                approvalInfoFromLabels : approvalInfo ? 1 : 0
+                approvalInfoFromLabels: approvalInfo ? 1 : 0,
             });
         })
     );
@@ -93,30 +99,35 @@ type LargeRequestTableProps = {
 
 const LargeRequestTable = (props: LargeRequestTableProps) => {
     const { setSelectedLargeClientRequests } = props;
-    const { count } = useLargeRequestsContext();
+    const { count, changeRequestStatus } = useLargeRequestsContext();
     const context = useContext(Data);
 
     const [isLoadingGithubData, setIsLoadingGithubData] =
         useState<boolean>(false);
     const [isLoadingNodeData, setLoadingNodeData] =
         useState<boolean>(false);
+    const [isActionsModalOpen, setIsActionsModalOpen] =
+        useState<boolean>(false);
     const [data, updateData] = useState<LargeRequestData[]>([]);
+    const [selectedRequestForActions, setSelectedRequestForActions] =
+        useState<LargeRequestData>({} as LargeRequestData);
 
     const setData = (data: LargeRequestData[]) => {
         updateData(data);
     };
 
     const [currentPage, setCurrentPage] = useState(1);
-    const [open, setOpen] = useState(false);
+    const [isNodeDataModalOpen, setIsNodeDataModalOpen] =
+        useState(false);
     const [proposer, setProposer] = useState("");
     const [txId, setTxId] = useState("");
 
-    const handleOpen = async (
+    const handleNodeDataModalOpen = async (
         multisig: string,
         clientAddress: string
     ) => {
         setLoadingNodeData(true);
-        setOpen(true);
+        setIsNodeDataModalOpen(true);
         const nodeData = await context.getNodeData(
             multisig,
             clientAddress
@@ -133,8 +144,8 @@ const LargeRequestTable = (props: LargeRequestTableProps) => {
         setLoadingNodeData(false);
     };
 
-    const handleClose = () => {
-        setOpen(false);
+    const handleNodeDataModalClose = () => {
+        setIsNodeDataModalOpen(false);
         setProposer("");
         setTxId("");
     };
@@ -155,7 +166,7 @@ const LargeRequestTable = (props: LargeRequestTableProps) => {
                         owner: config.onboardingLargeOwner,
                         repo: config.onboardingLargeClientRepo,
                         state: "open",
-                        labels: "bot:readyToSign",
+                        labels: ISSUE_LABELS.BOT_READY_TO_SIGN,
                         page,
                         per_page: 10,
                     }
@@ -235,12 +246,13 @@ const LargeRequestTable = (props: LargeRequestTableProps) => {
         },
         {
             name: "Approvals",
-            selector: (row : LargeRequestData) => row?.approvalInfoFromLabels,
+            selector: (row: LargeRequestData) =>
+                row?.approvalInfoFromLabels,
             grow: 0.5,
             center: true,
-            cell: (row : LargeRequestData) => (
+            cell: (row: LargeRequestData) => (
                 <div>{row?.approvalInfoFromLabels}</div>
-            )
+            ),
         },
         {
             name: "Node Data",
@@ -250,7 +262,10 @@ const LargeRequestTable = (props: LargeRequestTableProps) => {
                 <div
                     style={{ cursor: "pointer" }}
                     onClick={() =>
-                        handleOpen(row.multisig, row.address)
+                        handleNodeDataModalOpen(
+                            row.multisig,
+                            row.address
+                        )
                     }
                 >
                     <MoreHorizIcon />
@@ -258,17 +273,44 @@ const LargeRequestTable = (props: LargeRequestTableProps) => {
             ),
             center: true,
         },
+        {
+            name: "Actions",
+            selector: (row: LargeRequestData) => row?.tx?.id,
+            grow: 0.5,
+            cell: (row: LargeRequestData) => (
+                <div
+                    style={{ color: "gray" }}
+                    onClick={() => {
+                        // setSelectedRequestForActions(row);
+                        // setIsActionsModalOpen(true);
+                    }}
+                >
+                    <DisplaySettingsIcon />
+                </div>
+            ),
+            center: true,
+        },
     ];
+
+    const handleChangeStatus = async (newStatus: string) => {
+        console.log("newStatus", newStatus);
+        await changeRequestStatus(newStatus, selectedRequestForActions.issue_number);
+    };
 
     return (
         <div
             className="large-request-table"
             style={{ minHeight: "500px" }}
         >
+            <ActionsModal
+                handleChangeStatus={handleChangeStatus}
+                open={isActionsModalOpen}
+                handleClose={() => setIsActionsModalOpen(false)}
+            />
             <NodeDataModal
                 isLoadingNodeData={isLoadingNodeData}
-                open={open}
-                handleClose={handleClose}
+                open={isNodeDataModalOpen}
+                handleClose={handleNodeDataModalClose}
                 nodeInfo={{
                     proposer,
                     txId,

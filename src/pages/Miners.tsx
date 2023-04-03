@@ -18,7 +18,6 @@ const Miners = () => {
   useEffect(() => {
     const getData = async () => {
       const data = await loadData()
-      console.log(data, "hey")
       setMiners(data)
       setLoading(false)
     }
