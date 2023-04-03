@@ -35,4 +35,5 @@ export const ISSUE_LABELS = {
     APPLICATION_WIP_ISSUE: "Application:WIPissue",
     NOTARY_APPLICATION: "Notary Application",
     EFIL_PLUS: "Efil+",
+    APPLICATION_COMPLETED: "Application:completed",
 }
