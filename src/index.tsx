@@ -57,7 +57,6 @@ const startSentry = () => {
             ],
             tracesSampleRate: 1.0,
         });
-        console.log("sentry init", response);
     } catch (error) {
         console.log("error", error);
     }
