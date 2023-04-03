@@ -52,9 +52,7 @@ export default function LargeRequestsProvider({ children }: any) {
         issueNumber: number
     ) => {
         const newStatusLabels = STATUS_LABELS[newStatus];
-        console.log("newStatusLabels", newStatusLabels);
         const newStatusComment = constructNewStatusComment(newStatus);
-        console.log("newStatusComment", newStatusComment);
         await BasicLogger({
             message: "NOTARY X CHANGED REQUEST Y STATE TO " + newStatus,
         });

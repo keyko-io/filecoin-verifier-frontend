@@ -32,7 +32,6 @@ const ApproveLargeRequestModal = (props: ModalProps) => {
 
     const onClickHandler = async () => {
         const isSignable = await areRequestsSignable(selectedClientRequests)
-        console.log("isSignable", isSignable);
         handleClose();
         if (!isSignable) {
             alert(
@@ -40,7 +39,6 @@ const ApproveLargeRequestModal = (props: ModalProps) => {
             );
             return;
         }
-        // console.log("verifyLargeRequest");
         await verifyLargeRequest(selectedClientRequests);
     };
 
