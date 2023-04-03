@@ -169,7 +169,6 @@ export default class WalletProvider extends React.Component<
         return "not expired";
       }
     },
-
     githubOctoGenericLogin: async () => {
       if (this.state.githubOctoGeneric.logged === false) {
         const octokit = new Octokit({
@@ -199,7 +198,6 @@ export default class WalletProvider extends React.Component<
       );
       return rawIssues;
     },
-
     fetchGithubComments: async (
       owner: any,
       repo: any,
