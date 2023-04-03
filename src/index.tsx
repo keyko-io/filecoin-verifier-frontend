@@ -8,7 +8,7 @@ import GithubProvider from "./context/Github/GithubProvider";
 import DataProvider from "./context/Data/DataProvider";
 import { Wallet } from "./context/Wallet/Index";
 import { Github } from "./context/Github/Index";
-import { HashRouter, Router, Route, Switch } from "react-router-dom";
+import { Router, Route, Switch } from "react-router-dom";
 // @ts-ignore
 import { GlobalNotification, GlobalModal } from "slate-react-system";
 import "./fonts/SuisseIntl-Regular.woff";
@@ -81,10 +81,7 @@ root.render(
                                         wallet={wallet}
                                         github={github}
                                     >
-                                        <HashRouter>
-
-
-                                            <Router history={history}>
+                                           <Router history={history}>
                                                 <Layout>
                                                     <Switch>
                                                         <Route
@@ -164,8 +161,7 @@ root.render(
                                                         ></Route>
                                                     </Switch>
                                                 </Layout>
-                                            </Router>
-                                        </HashRouter>
+                                            </Router>                           
                                         <GlobalNotification
                                             style={{
                                                 bottom: 0,
