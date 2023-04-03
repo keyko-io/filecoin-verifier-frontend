@@ -7,9 +7,8 @@ import LoginGithub from 'react-login-github';
 import { Data } from '../context/Data/Index';
 import { config } from '../config';
 import { createParentComment, updateTemplate } from './issueUtils/templates';
-import { coreInfo, otherInfo, guidelines, regionOptions, steps, URL_README } from './issueUtils/constants';
+import { coreInfo, otherInfo, guidelines, regionOptions, labelsIssueCreation, steps, URL_README } from './issueUtils/constants';
 import { ldnParser } from "@keyko-io/filecoin-verifier-tools";
-import { ISSUE_LABELS } from '../constants';
 
 
 //view 0: log in with github 
@@ -76,7 +75,7 @@ class LdnApplication extends Component<LdnApplicationProps> {
       const issues = (await this.context.github.githubOcto.issues.list(
         {
           filter: 'created',
-          labels: [ISSUE_LABELS.APPLICATION_WIP_ISSUE]
+          labels: [labelsIssueCreation.WIP_ISSUE]
         }
       )).data
 
@@ -287,7 +286,7 @@ class LdnApplication extends Component<LdnApplicationProps> {
         repo: config.onboardingLargeClientRepo,
         title: '[DataCap Allocation] - ' + coreInfo.title, //todo get title differently
         body: createParentComment(coreInfo),
-        labels: [ISSUE_LABELS.APPLICATION_WIP_ISSUE]
+        labels: [labelsIssueCreation.WIP_ISSUE]
       })
 
 
@@ -337,7 +336,7 @@ class LdnApplication extends Component<LdnApplicationProps> {
           repo: config.onboardingLargeClientRepo,
           issue_number: this.state.issueNumber,
           body: temp,
-          labels: this.isIssueCompleted() ? [ISSUE_LABELS.APPLICATION_COMPLETED] : [ISSUE_LABELS.APPLICATION_WIP_ISSUE]
+          labels: this.isIssueCompleted() ? [labelsIssueCreation.ISSUE_COMPLETED] : [labelsIssueCreation.WIP_ISSUE]
         })
         this.setState({ view: 5 })
       }
