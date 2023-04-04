@@ -8,12 +8,14 @@ import {
 } from "@mui/material"
 import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight"
 import WestIcon from "@mui/icons-material/West"
+import { SidebarOperationKey } from "../pages/Admin"
 
 type AdminSidebarProps = {
   setIsDrawerOpen: (isDrawerOpen: boolean) => void
+  setOperation : (operation : SidebarOperationKey) => void
 }
 
-const AdminSidebar = ({ setIsDrawerOpen }: AdminSidebarProps) => {
+const AdminSidebar = ({ setIsDrawerOpen, setOperation }: AdminSidebarProps) => {
   return (
     <Box
       sx={{
@@ -29,6 +31,7 @@ const AdminSidebar = ({ setIsDrawerOpen }: AdminSidebarProps) => {
           background: "linear-gradient(to right, #0091FF, #1F77D0)",
           color: "white",
         }}
+        onClick={() => setOperation(SidebarOperationKey.MANUAL_DATACAP)}
       >
         <ListItemButton>
           <ListItemIcon sx={{ minWidth: "40px" }}>
@@ -36,6 +39,24 @@ const AdminSidebar = ({ setIsDrawerOpen }: AdminSidebarProps) => {
           </ListItemIcon>
           <ListItemText
             primary="Create Datacap Request"
+            sx={{ paddingY: "10px" }}
+          />
+        </ListItemButton>
+      </ListItem>
+      <ListItem
+        disablePadding
+        sx={{
+          background: "linear-gradient(to right, #0091FF, #1F77D0)",
+          color: "white",
+        }}
+        onClick={() => setOperation(SidebarOperationKey.ISSUE_HISTORY)}
+      >
+        <ListItemButton>
+          <ListItemIcon sx={{ minWidth: "40px" }}>
+            <KeyboardArrowRightIcon sx={{ color: "white" }} />
+          </ListItemIcon>
+          <ListItemText
+            primary="Issue History Summary"
             sx={{ paddingY: "10px" }}
           />
         </ListItemButton>
