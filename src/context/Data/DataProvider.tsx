@@ -513,6 +513,7 @@ export default class DataProvider extends React.Component<
                     return { signerAddress: "", txId: "" };
                 }
             },
+<<<<<<< HEAD
 
             loadClientRequests: async () => {
                 try {
@@ -682,6 +683,7 @@ export default class DataProvider extends React.Component<
 
                     // LARGE ISSUES: filecoin-plus-large-datasets  END /////////////////////
 
+<<<<<<< HEAD
                     this.setState({
                         clientRequests: issues,
                         largeClientRequests,
@@ -704,6 +706,25 @@ export default class DataProvider extends React.Component<
                 const issues: any[] = [];
                 for (const rawIssue of rawIssues.data.items) {
                     const data = simpleClientParser.parseIssue(rawIssue.body);
+=======
+          this.setState({
+            clientRequests: issues,
+            largeClientRequests,
+=======
+            searchUserIssues: async (user: string) => {
+                await this.props.github.githubOctoGenericLogin();
+                const rawIssues =
+                    await this.props.github.githubOcto.search.issuesAndPullRequests(
+                        {
+                            q: `type:issue+user:${user}+repo:${config.onboardingOwner}/${config.onboardingClientRepo}`,
+                        }
+                    );
+                const issues: any[] = [];
+                for (const rawIssue of rawIssues.data.items) {
+                    const data = simpleClientParser.parseIssue(
+                        rawIssue.body
+                    );
+>>>>>>> 832ba1a (fix conflict)
                     if (data.correct) {
                         issues.push({
                             number: rawIssue.number,
