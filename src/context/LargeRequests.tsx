@@ -10,10 +10,14 @@ import { Data } from "./Data/Index";
 import { useNodeDataContext } from "./NodeData";
 import * as Logger from "../logger"
 
+const owner = config.onboardingOwner;
+const repo = config.onboardingLargeClientRepo;
+
 interface LargeRequestsState {
     areRequestsSignable: any;
     count: number;
     data: LargeRequestData[];
+    extractRepliesByClient: (i: LargeRequestData) => any;
 }
 
 export const LargeRequestsContext = createContext(
@@ -36,6 +40,33 @@ export default function LargeRequestsProvider({ children }: any) {
         };
         handler();
     }, [context]);
+
+    const changeRequestStatus = async (
+        newStatus: string,
+        issueNumber: number
+    ) => {
+        const newStatusLabels = STATUS_LABELS[newStatus];
+        const newStatusComment = constructNewStatusComment(newStatus);
+        await BasicLogger({
+            message:
+                "NOTARY X CHANGED REQUEST Y STATE TO " + newStatus,
+        });
+        // update github issue with new labels
+        await context.addLabels(
+            owner,
+            repo,
+            issueNumber,
+            newStatusLabels
+        );
+        await context.createComment(
+            owner,
+            repo,
+            issueNumber,
+            newStatusComment
+        );
+        // await context.createComment();
+    };
+
 
     const areRequestsSignable = async (
 
@@ -99,10 +130,26 @@ export default function LargeRequestsProvider({ children }: any) {
         return areSignable.every((a : any) => a.value);
     };
 
+    const extractRepliesByClient = (row: LargeRequestData) => {
+        const issueAuthor = row.user;
+        const repliesByAuthor = row?.comments?.filter((comment) => {
+            const clientReplyTitle =
+                "I have provided the additional required information:";
+            const sliced = comment.body.slice(0, 53).trim();
+            return (
+                comment?.user?.login === issueAuthor &&
+                sliced === clientReplyTitle
+            );
+        });
+        return repliesByAuthor;
+    };
+
     const IState: LargeRequestsState = {
         count: data.length,
         data: data,
-        areRequestsSignable
+        areRequestsSignable,
+        changeRequestStatus,
+        extractRepliesByClient,
     };
 
     return (
