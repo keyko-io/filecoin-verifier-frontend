@@ -1,4 +1,4 @@
-import { Box, Stack, Typography } from "@mui/material"
+import { Box, Chip, Stack, Typography } from "@mui/material"
 import { useContext, useState } from "react"
 import { Data } from "../context/Data/Index"
 import { config } from "../config"
@@ -10,6 +10,7 @@ const IssueHistory = () => {
   const [historyData, setHistoryData] = useState<any>(null)
   const [issueNumber, setIssueNumber] = useState<any>("")
   const [loading, setIsLoading] = useState(false)
+  const [labels, setLabels] = useState<any>(null)
 
   const handleForm = (e: any) => {
     e.preventDefault()
@@ -17,47 +18,79 @@ const IssueHistory = () => {
   }
 
   const getData = async (issueNumber: string) => {
-    setIsLoading(true)
-    const comments = await context.github.fetchGithubComments(
-      config.onboardingLargeOwner,
-      config.onboardingLargeClientRepo,
-      Number(issueNumber)
-    )
-
-    if (!comments) {
-      toast.error("no comments with this issue number")
+    if (issueNumber === "") {
+      toast.error("issue number is required")
       setIsLoading(false)
       return
     }
+    try {
+      setIsLoading(true)
+      const comments = await context.github.fetchGithubComments(
+        config.onboardingLargeOwner,
+        config.onboardingLargeClientRepo,
+        Number(issueNumber)
+      )
 
-    const issueHistory = []
+      const issue = await context.github.githubOcto.issues.get({
+        owner: config.onboardingLargeOwner,
+        repo: config.onboardingLargeClientRepo,
+        issue_number: issueNumber,
+      })
 
-    for (let i = 0; i < comments.length; i++) {
-      if (comments[i].body.includes("Request Proposed")) {
+      if (!issue) {
+        toast.error("no issue with this number")
+        setIsLoading(false)
+        return
+      }
+
+      setLabels(issue?.data?.labels)
+
+      if (!comments) {
+        toast.error("no comments with this issue number")
+        setIsLoading(false)
+        return
+      }
+
+      const issueHistory = []
+
+      for (let i = 0; i < comments.length; i++) {
+        const comment = comments[i]
+        const body = comment.body
+        let commentType = ""
+        let color = ""
+
+        switch (true) {
+          case body.indexOf("Request Proposed") !== -1:
+            commentType = "proposal"
+            color = "#1E90FF"
+            break
+          case body.indexOf("Request Approved") !== -1:
+            commentType = "approval"
+            color = "#32CD32"
+            break
+          case body.indexOf("DataCap Allocation requested") !== -1:
+            commentType = "request"
+            color = "#FFA500"
+            break
+          default:
+            continue
+        }
+
         issueHistory.push({
-          comment: comments[i],
-          commentType: "proposal",
-          color: "#1E90FF",
+          comment,
+          commentType,
+          color,
         })
       }
-      if (comments[i].body.includes("Request Approved")) {
-        issueHistory.push({
-          comment: comments[i],
-          commentType: "approval",
-          color: "#32CD32",
-        })
-      }
-      if (comments[i].body.includes("DataCap Allocation requested")) {
-        issueHistory.push({
-          comment: comments[i],
-          commentType: "request",
-          color: "#FFA500",
-        })
-      }
+
+      setIsLoading(false)
+      setHistoryData(issueHistory)
+    } catch (error: any) {
+      toast.error(error.message)
+      setIsLoading(false)
+      setLabels(null)
+      setHistoryData(null)
     }
-    
-    setIsLoading(false)
-    setHistoryData(issueHistory)
   }
 
   return (
@@ -67,43 +100,70 @@ const IssueHistory = () => {
         width: "100%",
       }}
     >
-      <Box sx={{ width: "100%", padding: "4rem" }}>
-        <Typography variant="h5" mb="2rem">
-          History Summary
-        </Typography>
+      <Stack sx={{ width: "100%", padding: "4rem" }} direction="row">
+        <Stack sx={{ flex: "1" }}>
+          <Typography variant="h5" mb="2rem">
+            Issue History Summary
+          </Typography>
 
-        <Stack direction="row" mb={4}>
-          <form onSubmit={handleForm}>
-            <TextField
-              size="small"
-              label="Search by issue number"
-              name="issueNumber"
-              fullWidth
-              onChange={(e) => setIssueNumber(e.target.value)}
-              value={issueNumber}
-              variant="outlined"
-              style={{ width: "250px" }}
-            />
-          </form>
+          <Stack direction="row" mb={4}>
+            <form onSubmit={handleForm}>
+              <TextField
+                size="small"
+                label="Search by issue number"
+                name="issueNumber"
+                fullWidth
+                onChange={(e) => setIssueNumber(e.target.value)}
+                value={issueNumber}
+                variant="outlined"
+                style={{ width: "250px" }}
+              />
+            </form>
+          </Stack>
+
+          {loading ? (
+            "loading..."
+          ) : (
+            <div style={{ display: "flex", flexWrap: "wrap" }}>
+              {historyData?.map((data: any) => (
+                <a
+                  href={data.comment.html_url}
+                  target="_blank"
+                  rel="noreferrer"
+                  style={{ textDecoration: "none" }}
+                  key={data.comment.id}
+                >
+                  <div style={{ paddingBottom: "10px" }}>
+                    <span style={{ color: data.color }}>
+                      {data.commentType}
+                    </span>
+                    <span
+                      style={{
+                        paddingLeft: "10px",
+                        paddingRight: "10px",
+                        color: "black",
+                      }}
+                    >
+                      &gt;
+                    </span>
+                  </div>
+                </a>
+              ))}
+              {historyData?.length === 0 && "no request yet"}
+            </div>
+          )}
         </Stack>
-
-        {loading ? (
-          "loading..."
-        ) : (
-          <div style={{ display: "flex", flexWrap: "wrap" }}>
-            {historyData?.map((data: any) => (
-              <a href={data.comment.html_url} target="_blank" rel="noreferrer" style={{textDecoration : "none"}}>
-                <div style={{ paddingBottom: "10px" }}>
-                  <span style={{ color: data.color }}>{data.commentType}</span>
-                  <span style={{ paddingLeft: "10px", paddingRight: "10px", color : "black" }}>
-                    &gt;
-                  </span>
-                </div>
-              </a>
+        <Stack sx={{ flex: "1" }}>
+          <Typography variant="h5" mb="2rem">
+            Labels Check
+          </Typography>
+          <Stack sx={{ width: "200px" }} spacing={2}>
+            {labels?.map((label: any) => (
+              <Chip label={label.name} />
             ))}
-          </div>
-        )}
-      </Box>
+          </Stack>
+        </Stack>
+      </Stack>
     </Box>
   )
 }
