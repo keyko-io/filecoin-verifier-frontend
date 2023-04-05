@@ -869,6 +869,77 @@ export default class DataProvider extends React.Component<
                     })
                 }
             },
+                createComment: async (
+                owner: string,
+                repo: string,
+                issueNumber: number,
+                comment: string
+            ) => {
+                try {
+                    await this.props.github.githubOcto.issues.createComment(
+                        {
+                            owner: owner,
+                            repo: repo,
+                            issue_number: issueNumber,
+                            body: comment,
+                        }
+                    );
+                } catch (error) {
+                    console.log(error);
+                }
+                return;
+                // await this.props.github.githubOcto.issues.removeAllLabels(
+                //     {
+                //         owner: config.onboardingOwner,
+                //         repo: config.onboardingClientRepo,
+                //         issue_number: requestNumber,
+                //     }
+                // );
+                // await this.props.github.githubOcto.issues.addLabels({
+                //     owner: config.onboardingOwner,
+                //     repo: config.onboardingClientRepo,
+                //     issue_number: requestNumber,
+                //     labels: [ISSUE_LABELS.STATUS_ERROR],
+                // });
+            },
+            addLabels: async (
+                owner: string,
+                repo: string,
+                issueNumber: number,
+                labels: string[]
+            ) => {
+                try {
+                    await this.props.github.githubOcto.issues.addLabels(
+                        {
+                            owner,
+                            repo,
+                            issue_number: issueNumber,
+                            labels,
+                        }
+                    );
+                } catch (error) {
+                    console.log(error);
+                }
+                return;
+            },
+            removeAllLabels: async (
+                owner: string,
+                repo: string,
+                issueNumber: number
+            ) => {
+                try {
+                    await this.props.github.githubOcto.issues.removeAllLabels(
+                        {
+                            owner,
+                            repo,
+                            issue_number: issueNumber,
+                        }
+                    );
+                } catch (error) {
+                    console.log(error);
+                }
+                return;
+            },
             updateGithubVerified: async (
                 requestNumber: number,
                 messageID: string,

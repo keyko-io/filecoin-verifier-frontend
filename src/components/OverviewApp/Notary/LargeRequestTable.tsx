@@ -9,6 +9,8 @@ import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import NodeDataModal from "./NodeDataModal";
 import SearchInput from "./SearchInput";
 import { useLargeRequestsContext } from "../../../context/LargeRequests";
+import { ISSUE_LABELS } from "../../../constants";
+import ActionsModal from "./ActionsModal";
 
 const CANT_SIGN_MESSAGE =
     "You can currently only approve the allocation requests associated with the multisig organization you signed in with. Signing proposals for additional DataCap allocations will require you to sign in again";
@@ -112,6 +114,10 @@ const LargeRequestTable = (props: LargeRequestTableProps) => {
     const setData = (data: LargeRequestData[]) => {
         updateData(data);
     };
+    const [selectedRequestForActions, setSelectedRequestForActions] =
+        useState<LargeRequestData>({} as LargeRequestData);
+    const [isActionsModalOpen, setIsActionsModalOpen] =
+        useState<boolean>(false);
 
     const [currentPage, setCurrentPage] = useState(1);
     const [open, setOpen] = useState(false);
@@ -162,7 +168,7 @@ const LargeRequestTable = (props: LargeRequestTableProps) => {
                         owner: config.onboardingLargeOwner,
                         repo: config.onboardingLargeClientRepo,
                         state: "open",
-                        labels: "bot:readyToSign",
+                        labels: ISSUE_LABELS.BOT_READY_TO_SIGN,
                         page,
                         per_page: 10,
                     }
@@ -281,8 +287,7 @@ const LargeRequestTable = (props: LargeRequestTableProps) => {
                             setIsActionsModalOpen(true);
                         }}
                     >
-                        <DisplaySettingsIcon /> (
-                        {repliesByAuthor?.length})
+                        <MoreHorizIcon /> ({repliesByAuthor?.length})
                     </div>
                 );
             },

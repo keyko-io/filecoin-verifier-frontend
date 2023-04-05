@@ -9,6 +9,8 @@ import { anyToBytes } from "../utils/Filters";
 import { Data } from "./Data/Index";
 import { useNodeDataContext } from "./NodeData";
 import * as Logger from "../logger"
+import { constructNewStatusComment, STATUS_LABELS } from "../constants";
+import { config } from "../config";
 
 const owner = config.onboardingOwner;
 const repo = config.onboardingLargeClientRepo;
@@ -47,7 +49,7 @@ export default function LargeRequestsProvider({ children }: any) {
     ) => {
         const newStatusLabels = STATUS_LABELS[newStatus];
         const newStatusComment = constructNewStatusComment(newStatus);
-        await BasicLogger({
+        await Logger.BasicLogger({
             message:
                 "NOTARY X CHANGED REQUEST Y STATE TO " + newStatus,
         });
