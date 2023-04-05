@@ -30,6 +30,7 @@ const AdminSidebar = ({ setIsDrawerOpen, setOperation }: AdminSidebarProps) => {
         sx={{
           background: "linear-gradient(to right, #0091FF, #1F77D0)",
           color: "white",
+          borderBottom : "1px solid white"
         }}
         onClick={() => setOperation(SidebarOperationKey.MANUAL_DATACAP)}
       >
