@@ -157,7 +157,7 @@ const IssueHistory = () => {
           <Typography variant="h5" mb="2rem">
             Labels Check
           </Typography>
-          <Stack sx={{ width: "200px" }} spacing={2}>
+          <Stack sx={{ width: "180px" }} spacing={2}>
             {labels?.map((label: any) => (
               <Chip label={label.name} />
             ))}
