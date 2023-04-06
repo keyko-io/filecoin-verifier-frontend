@@ -14,32 +14,17 @@ export const preventDoublePropose = async (
     }
   )
 
-  const reversedComments = comments.reverse()
+  const lastDcRequest = comments.filter((c: any) => ldnParser.parseReleaseRequest(c.body).correct)?.reverse()[0]
+  const lastProposal = comments.filter((c: any) => ldnParser.parseApprovedRequestWithSignerAddress(c.body).correct && c.body.startsWith("## Request Proposed")
+  )?.reverse()[0]
 
-  let proposeComment
-  let datacapCommment
-  for (let i = 0; i < reversedComments.length; i++) {
-    if (reversedComments[i].body.startsWith("## Request Proposed")) {
-      proposeComment = reversedComments[i].body
-    }
-    if (reversedComments[i].body.startsWith("## DataCap Allocation requested")) {
-      datacapCommment = reversedComments[i].body
-      break
-    }
-  }
+  // compare date of last dc req with date of last proposal
+  // if last dc request is more recent than last proposal return false
+  if (!lastProposal || !lastDcRequest) return false
 
-  if (!proposeComment) {
+  if (new Date(lastDcRequest.created_at).getTime() > new Date(lastProposal.created_at).getTime()) {
     return false
   }
 
-  const { uuid: datacapId } = ldnParser.parseReleaseRequest(datacapCommment)
-
-  const { uuid: proposeId } =
-    ldnParser.parseApprovedRequestWithSignerAddress(proposeComment)
-
-  if (datacapId === proposeId) {
-    return true
-  }
-
-  return false
+  return true
 }
