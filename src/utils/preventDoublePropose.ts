@@ -18,12 +18,11 @@ export const preventDoublePropose = async (
 
   let proposeComment
   let datacapCommment
-
   for (let i = 0; i < reversedComments.length; i++) {
-    if (reversedComments[i].body.includes("Request Proposed")) {
+    if (reversedComments[i].body.startsWith("## Request Proposed")) {
       proposeComment = reversedComments[i].body
     }
-    if (reversedComments[i].body.includes("DataCap Allocation requested")) {
+    if (reversedComments[i].body.startsWith("## DataCap Allocation requested")) {
       datacapCommment = reversedComments[i].body
       break
     }
