@@ -12,7 +12,7 @@ import { SidebarOperationKey } from "../pages/Admin"
 
 type AdminSidebarProps = {
   setIsDrawerOpen: (isDrawerOpen: boolean) => void
-  setOperation : (operation : SidebarOperationKey) => void
+  setOperation: (operation: SidebarOperationKey) => void
 }
 
 const AdminSidebar = ({ setIsDrawerOpen, setOperation }: AdminSidebarProps) => {
@@ -25,43 +25,14 @@ const AdminSidebar = ({ setIsDrawerOpen, setOperation }: AdminSidebarProps) => {
         transition: "transform 0.4s ease-out",
       }}
     >
-      <ListItem
-        disablePadding
-        sx={{
-          background: "linear-gradient(to right, #0091FF, #1F77D0)",
-          color: "white",
-          borderBottom : "1px solid white"
-        }}
-        onClick={() => setOperation(SidebarOperationKey.MANUAL_DATACAP)}
-      >
-        <ListItemButton>
-          <ListItemIcon sx={{ minWidth: "40px" }}>
-            <KeyboardArrowRightIcon sx={{ color: "white" }} />
-          </ListItemIcon>
-          <ListItemText
-            primary="Create Datacap Request"
-            sx={{ paddingY: "10px" }}
-          />
-        </ListItemButton>
-      </ListItem>
-      <ListItem
-        disablePadding
-        sx={{
-          background: "linear-gradient(to right, #0091FF, #1F77D0)",
-          color: "white",
-        }}
-        onClick={() => setOperation(SidebarOperationKey.ISSUE_HISTORY)}
-      >
-        <ListItemButton>
-          <ListItemIcon sx={{ minWidth: "40px" }}>
-            <KeyboardArrowRightIcon sx={{ color: "white" }} />
-          </ListItemIcon>
-          <ListItemText
-            primary="Issue History Summary"
-            sx={{ paddingY: "10px" }}
-          />
-        </ListItemButton>
-      </ListItem>
+      <SidebarListItem
+        itemText="Create Datacap Request"
+        setOperation={() => setOperation(SidebarOperationKey.MANUAL_DATACAP)}
+      />
+      <SidebarListItem
+        itemText="Issue History Summary"
+        setOperation={() => setOperation(SidebarOperationKey.ISSUE_HISTORY)}
+      />
       <IconButton
         aria-label="back"
         size="large"
@@ -75,3 +46,29 @@ const AdminSidebar = ({ setIsDrawerOpen, setOperation }: AdminSidebarProps) => {
 }
 
 export default AdminSidebar
+
+type SidebarListItemProps = {
+  itemText: string
+  setOperation: (operation: SidebarOperationKey) => void
+}
+
+const SidebarListItem = ({ itemText, setOperation }: SidebarListItemProps) => {
+  return (
+    <ListItem
+      disablePadding
+      sx={{
+        background: "linear-gradient(to right, #0091FF, #1F77D0)",
+        color: "white",
+        borderBottom: "1px solid white",
+      }}
+      onClick={() => setOperation(SidebarOperationKey.MANUAL_DATACAP)}
+    >
+      <ListItemButton>
+        <ListItemIcon sx={{ minWidth: "40px" }}>
+          <KeyboardArrowRightIcon sx={{ color: "white" }} />
+        </ListItemIcon>
+        <ListItemText primary={itemText} sx={{ paddingY: "10px" }} />
+      </ListItemButton>
+    </ListItem>
+  )
+}
