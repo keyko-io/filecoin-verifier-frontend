@@ -443,21 +443,22 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
                );
 
             } else {
-              const isProposed = await preventDoublePropose(
-                context,
-                request.issue_number
-              )
+            // NOTE: this does not makes sense cause we already fetch the most recent proposal from the node
+            //   const isProposed = await preventDoublePropose(
+            //     context,
+            //     request.issue_number
+            //   ) 
  
-              if (isProposed) {
-               closeApproveLargeRequestModal();
-               setApproveLoading(false);
-               await Logger.BasicLogger({ message: `Prevented Double Propose - Issue number: ${request.issue_number}`})  
-                toast.error(
-                   "There is already one pending proposal for this issue. Please, contact the governance team." , {
-                     duration : 5000
-                   })
-                return;
-              }
+            //   if (isProposed) {
+            //    closeApproveLargeRequestModal();
+            //    setApproveLoading(false);
+            //    await Logger.BasicLogger({ message: `Prevented Double Propose - Issue number: ${request.issue_number}`})  
+            //     toast.error(
+            //        "There is already one pending proposal for this issue. Please, contact the governance team." , {
+            //          duration : 5000
+            //        })
+            //     return;
+            //   }
 
                messageID =
                   await context.wallet.api.multisigVerifyClient(
