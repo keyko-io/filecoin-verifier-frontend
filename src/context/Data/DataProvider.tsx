@@ -57,6 +57,15 @@ interface TxsByClientAddress {
         [key: string]: LotusTx[];
     };
 }
+const filterByLabel = (issues: any, shouldInclude: string) => {
+    const i = issues.filter((issue: any) =>
+        issue.labels.some((l: any) => {
+            return l.name.toLowerCase().replace(/ /g, '').includes(shouldInclude)
+
+        })
+    )
+    return i
+}
 
 export default class DataProvider extends React.Component<
     DataProviderProps,
@@ -101,33 +110,33 @@ export default class DataProvider extends React.Component<
                         return;
                     }
 
-          const logArray = [
-            {
-              message,
-              type,
-              actionKeyword,
-              repo,
-              issueNumber: issueNumber.toString(),
+                    const logArray = [
+                        {
+                            message,
+                            type,
+                            actionKeyword,
+                            repo,
+                            issueNumber: issueNumber.toString(),
+                        },
+                    ];
+                    const res = (
+                        await fetch(
+                            "https://cbqluey8wa.execute-api.us-east-1.amazonaws.com/dev",
+                            {
+                                headers: { "x-api-key": config.loggerApiKey },
+                                method: "POST",
+                                body: JSON.stringify({
+                                    type: "POST_CUSTOM_LOGS",
+                                    logArray: logArray,
+                                }),
+                            }
+                        )
+                    ).json();
+                    return res;
+                } catch (error) {
+                    console.log(error);
+                }
             },
-          ];
-          const res = (
-            await fetch(
-              "https://cbqluey8wa.execute-api.us-east-1.amazonaws.com/dev",
-              {
-                headers: { "x-api-key": config.loggerApiKey },
-                method: "POST",
-                body: JSON.stringify({
-                  type: "POST_CUSTOM_LOGS",
-                  logArray: logArray,
-                }),
-              }
-            )
-          ).json();
-          return res;
-        } catch (error) {
-          console.log(error);
-        }
-      },
             //@ts-ignore
             formatLargeRequestData: async (
                 requests: ParseLargeRequestData[]
@@ -135,7 +144,7 @@ export default class DataProvider extends React.Component<
                 if (!requests) return [];
                 const parsedIssueData: any = [];
                 await Promise.all(
-                        requests?.map(async (issue: ParseLargeRequestData) => {
+                    requests?.map(async (issue: ParseLargeRequestData) => {
                         const comments =
                             await this.props.github.githubOcto.paginate(
                                 this.props.github.githubOcto.issues
@@ -184,19 +193,23 @@ export default class DataProvider extends React.Component<
                         config.onboardingLargeOwner,
                         config.onboardingLargeClientRepo,
                         "open",
-                        "bot:readyToSign"
+                        // ["bot:readyToSign","Bot: Ready To Sign"]
                     );
-                const response = allGHIssues.map((issue: any) => {
+                const filteredByLabel = filterByLabel(allGHIssues, "readytosign")
+                debugger
+
+                const response = filteredByLabel.map((issue: any) => {
                     const parsed: ParseLargeRequestData =
                         ldnParser.parseIssue(issue.body);
 
-                    const approvalInfo = issue.labels.some((label : any) => label.name === "status:StartSignDatacap")    
+                    const approvalInfo = issue.labels.some((l: any) => l.name.toLowerCase().replace(/ /g, '').includes("startsigndatacap"))
+
 
                     const res = {
                         ...parsed,
                         issue_number: issue?.number,
                         url: issue?.html_url,
-                        approvalInfoFromLabels : approvalInfo ? 1 : 0
+                        approvalInfoFromLabels: approvalInfo ? 1 : 0
                         // comments,
                         // multisig: commentParsed?.notaryAddress,
                         // datacap: commentParsed?.allocationDatacap,
@@ -207,80 +220,26 @@ export default class DataProvider extends React.Component<
                     return res;
                 });
                 return response;
-                // if (!response) return [];
-                // const parsedIssueData: any = [];
-                // await Promise.all(
-                //     rawLargeIssuesAll?.map(async (issue: any) => {
-                //         const parsed = ldnParser.parseIssue(
-                //             issue.body
-                //         );
-                //         const comments =
-                //             await this.props.github.githubOcto.paginate(
-                //                 this.props.github.githubOcto.issues
-                //                     .listComments,
-                //                 {
-                //                     owner: config.onboardingLargeOwner,
-                //                     repo: config.onboardingLargeClientRepo,
-                //                     issue_number: issue.number,
-                //                 }
-                //             );
-
-                //         const comment = comments
-                //             .reverse()
-                //             .find((comment: any) =>
-                //                 comment?.body?.includes(
-                //                     "## DataCap Allocation requested"
-                //                 )
-                //             );
-
-                //         if (!comment?.body) return;
-                //         const commentParsed =
-                //             ldnParser.parseReleaseRequest(
-                //                 comment.body
-                //             );
-                //         parsedIssueData.push({
-                //             ...parsed,
-                //             issue_number: issue?.number,
-                //             url: issue?.html_url,
-                //             comments,
-                //             multisig: commentParsed?.notaryAddress,
-                //             datacap: commentParsed?.allocationDatacap,
-                //             proposer: null,
-                //             tx: null,
-                //             approvals: null,
-                //         });
-                //     })
-                // );
-                // return parsedIssueData;
             },
-      getLDNIssuesAndTransactions: async () => {
-        //GETTING ISSUES
+            getLDNIssuesAndTransactions: async () => {
+                //GETTING ISSUES
 
                 const rawLargeIssuesAll =
                     await this.props.github.fetchGithubIssues(
                         config.onboardingLargeOwner,
                         config.onboardingLargeClientRepo,
                         "open",
-                        "bot:readyToSign"
+                        // "bot:readyToSign"
                     );
+                const rawLargeIssuesAllFilteredByLabel = filterByLabel(rawLargeIssuesAll, "readytosign")
 
-                // const rawLargeIssuesAll = await this.props.github.githubOcto.paginate(
-                //   this.props.github.githubOcto.issues.listForRepo,
-                //   {
-                //     owner: config.onboardingLargeOwner,
-                //     repo: config.onboardingLargeClientRepo,
-                //     assignee: "*",
-                //     state: "open",
-                //     labels: "bot:readyToSign",
-                //   }
-                // );
 
-                const rawLargeIssues = rawLargeIssuesAll
+                const rawLargeIssues = rawLargeIssuesAllFilteredByLabel
                     .filter(
                         (item: any) =>
                             !item.labels.find(
                                 (l: any) =>
-                                    l.name === "status:needsDiligence"
+                                    l.name.toLowerCase().replace(/ /g, '').includes("needsdiligence")
                             )
                     )
                     .slice(0, 10);
@@ -400,7 +359,7 @@ export default class DataProvider extends React.Component<
                                                         (tx: any) =>
                                                             tx.tx
                                                                 .method ===
-                                                                4 &&
+                                                            4 &&
                                                             tx.parsed
                                                     );
 
@@ -536,7 +495,7 @@ export default class DataProvider extends React.Component<
                             tx.tx.method === 4 &&
                             tx.parsed &&
                             tx?.parsed?.params?.address ===
-                                clientAddress
+                            clientAddress
                         );
                     }
                 );
@@ -567,23 +526,14 @@ export default class DataProvider extends React.Component<
                             config.onboardingOwner,
                             config.onboardingClientRepo,
                             "open",
-                            "state:Verifying"
+                            // "state:Verifying"
                         );
+                    const rawDirectIssuesFilteredByLabel = filterByLabel(rawDirectIssues, "verifying")
 
-                    // const rawDirectIssues = await this.props.github.githubOcto.paginate(
-                    //   this.props.github.githubOcto.issues.listForRepo,
-                    //   {
-                    //     owner: config.onboardingOwner,
-                    //     repo: config.onboardingClientRepo,
-                    //     assignee: "*",
-                    //     state: "open",
-                    //     labels: "state:Verifying",
-                    //   }
-                    // );
 
                     const issues: DirectIssue[] = [];
 
-                    for (const rawIssue of rawDirectIssues) {
+                    for (const rawIssue of rawDirectIssuesFilteredByLabel) {
                         const data = simpleClientParser.parseIssue(
                             rawIssue.body
                         );
@@ -611,11 +561,11 @@ export default class DataProvider extends React.Component<
                     const txsIssueGitHub =
                         ldnIssueTxs.filteredTxsIssue;
 
-          this.setState({ txsIssueGitHub })
+                    this.setState({ txsIssueGitHub })
 
-          const res = await fetch(config.verifiers_registry_url)
-  
-          const verifierRegistry : { notaries : Notary[] } = await res.json()
+                    const res = await fetch(config.verifiers_registry_url)
+
+                    const verifierRegistry: { notaries: Notary[] } = await res.json()
 
                     const largeissues: any = await Promise.allSettled(
                         txsIssueGitHub.map(
@@ -630,8 +580,8 @@ export default class DataProvider extends React.Component<
                                             const account =
                                                 this.props.wallet
                                                     .accountsActive[
-                                                    this.props.wallet
-                                                        .activeAccount
+                                                this.props.wallet
+                                                    .activeAccount
                                                 ];
                                             const msigIncludeSigner =
                                                 elem.multisigInfo.signers.includes(
@@ -639,29 +589,29 @@ export default class DataProvider extends React.Component<
                                                 );
 
 
-                    let signerAddress: any;
-                    let signerGitHandle;
-                    if (elem.tx) {
-                      signerAddress = await this.props.wallet.api.actorKey(elem.tx[0].signers[0])
+                                            let signerAddress: any;
+                                            let signerGitHandle;
+                                            if (elem.tx) {
+                                                signerAddress = await this.props.wallet.api.actorKey(elem.tx[0].signers[0])
 
-                      signerGitHandle =
-                        verifierRegistry.notaries.find(
-                          (notary) =>
-                            notary.ldn_config.signing_address === signerAddress
-                        )?.github_user[0] || "none";
-                    }
+                                                signerGitHandle =
+                                                    verifierRegistry.notaries.find(
+                                                        (notary) =>
+                                                            notary.ldn_config.signing_address === signerAddress
+                                                    )?.github_user[0] || "none";
+                                            }
 
                                             const approverIsNotProposer =
                                                 signerAddress
                                                     ? signerAddress !==
-                                                      this.props
-                                                          .wallet
-                                                          .activeAccount
+                                                    this.props
+                                                        .wallet
+                                                        .activeAccount
                                                     : false;
 
                                             let signable = approvals
                                                 ? msigIncludeSigner &&
-                                                  approverIsNotProposer
+                                                approverIsNotProposer
                                                 : msigIncludeSigner;
                                             if (
                                                 config.networks.includes(
@@ -671,54 +621,54 @@ export default class DataProvider extends React.Component<
                                                 signable = true;
                                             const datacap = elem.tx
                                                 ? bytesToiB(
-                                                      parseInt(
-                                                          elem.tx[0]
-                                                              .parsed
-                                                              .params
-                                                              .cap
-                                                      )
-                                                  )
+                                                    parseInt(
+                                                        elem.tx[0]
+                                                            .parsed
+                                                            .params
+                                                            .cap
+                                                    )
+                                                )
                                                 : elem.issue[0]
-                                                      .datacap;
+                                                    .datacap;
 
                                             const obj: LargeRequestData =
-                                                {
-                                                    issue_number:
-                                                        elem.issue[0]
-                                                            .issueInfo
-                                                            .issue_number,
-                                                    url: elem.issue[0]
+                                            {
+                                                issue_number:
+                                                    elem.issue[0]
+                                                        .issueInfo
+                                                        .issue_number,
+                                                url: elem.issue[0]
+                                                    .issueInfo
+                                                    .issue
+                                                    .html_url,
+                                                address:
+                                                    elem.clientAddress,
+                                                multisig:
+                                                    elem.multisigAddress,
+                                                datacap,
+                                                approvals,
+                                                tx: elem.tx
+                                                    ? elem.tx[0]
+                                                    : null,
+                                                proposer: {
+                                                    signeraddress:
+                                                        signerAddress,
+                                                    signerGitHandle:
+                                                        signerGitHandle as string,
+                                                },
+                                                labels: elem.issue[0].issueInfo.issue.labels.map(
+                                                    (i: any) =>
+                                                        i.name
+                                                ),
+                                                data: ldnParser.parseIssue(
+                                                    elem.issue[0]
                                                         .issueInfo
                                                         .issue
-                                                        .html_url,
-                                                    address:
-                                                        elem.clientAddress,
-                                                    multisig:
-                                                        elem.multisigAddress,
-                                                    datacap,
-                                                    approvals,
-                                                    tx: elem.tx
-                                                        ? elem.tx[0]
-                                                        : null,
-                                                    proposer: {
-                                                        signeraddress:
-                                                            signerAddress,
-                                                        signerGitHandle:
-                                                            signerGitHandle as string,
-                                                    },
-                                                    labels: elem.issue[0].issueInfo.issue.labels.map(
-                                                        (i: any) =>
-                                                            i.name
-                                                    ),
-                                                    data: ldnParser.parseIssue(
-                                                        elem.issue[0]
-                                                            .issueInfo
-                                                            .issue
-                                                            .body
-                                                    ),
-                                                    signable:
-                                                        signable,
-                                                };
+                                                        .body
+                                                ),
+                                                signable:
+                                                    signable,
+                                            };
                                             resolve(obj);
                                         } catch (error) {
                                             reject(error);
@@ -732,79 +682,76 @@ export default class DataProvider extends React.Component<
 
                     // LARGE ISSUES: filecoin-plus-large-datasets  END /////////////////////
 
-          this.setState({
-            clientRequests: issues,
-            largeClientRequests,
+                    this.setState({
+                        clientRequests: issues,
+                        largeClientRequests,
+                        ldnRequestsLoading: false,
+                    });
+                } catch (error) {
+                    console.error(error);
+                    this.setState({ ldnRequestsLoading: false });
+                    this.props.wallet.dispatchNotification(
+                        "While loading data error happened, please try again"
+                    );
+                }
+            },
+            searchUserIssues: async (user: string) => {
+                await this.props.github.githubOctoGenericLogin();
+                const rawIssues =
+                    await this.props.github.githubOcto.search.issuesAndPullRequests({
+                        q: `type:issue+user:${user}+repo:${config.onboardingOwner}/${config.onboardingClientRepo}`,
+                    });
+                const issues: any[] = [];
+                for (const rawIssue of rawIssues.data.items) {
+                    const data = simpleClientParser.parseIssue(rawIssue.body);
+                    if (data.correct) {
+                        issues.push({
+                            number: rawIssue.number,
+                            url: rawIssue.html_url,
+                            owner: rawIssue.user.login,
+                            created_at: rawIssue.created_at,
+                            state: rawIssue.state,
+                            labels: rawIssue.labels,
+                            data,
+                        });
+                    }
+                }
+                return issues;
+            },
+            clientRequests: [],
+            largeClientRequests: [],
+            approvedNotariesLoading: true,
             ldnRequestsLoading: false,
-          });
-        } catch (error) {
-          console.error(error);
-          this.setState({ ldnRequestsLoading: false });
-          this.props.wallet.dispatchNotification(
-            "While loading data error happened, please try again"
-          );
-        }
-      },
-      searchUserIssues: async (user: string) => {
-        await this.props.github.githubOctoGenericLogin();
-        const rawIssues =
-          await this.props.github.githubOcto.search.issuesAndPullRequests({
-            q: `type:issue+user:${user}+repo:${config.onboardingOwner}/${config.onboardingClientRepo}`,
-          });
-        const issues: any[] = [];
-        for (const rawIssue of rawIssues.data.items) {
-          const data = simpleClientParser.parseIssue(rawIssue.body);
-          if (data.correct) {
-            issues.push({
-              number: rawIssue.number,
-              url: rawIssue.html_url,
-              owner: rawIssue.user.login,
-              created_at: rawIssue.created_at,
-              state: rawIssue.state,
-              labels: rawIssue.labels,
-              data,
-            });
-          }
-        }
-        return issues;
-      },
-      clientRequests: [],
-      largeClientRequests: [],
-      approvedNotariesLoading: true,
-      ldnRequestsLoading: false,
-      loadVerifierAndPendingRequests: async () => {
-        this.setState({ isPendingRequestLoading: true })
-        try {
-          if (this.props.github.githubOctoGeneric.logged === false) {
-            await this.props.github.githubOctoGenericLogin();
-         
-          }
-    
-          const allIssues = await this.props.github.githubOctoGeneric.octokit.paginate(
-            this.props.github.githubOctoGeneric.octokit.issues.listForRepo,
-            {
-              owner: config.onboardingOwner,
-              repo: config.onboardingNotaryOwner,
-              state: "open",
-              labels : "Notary Application"
-            }
-          )
+            loadVerifierAndPendingRequests: async () => {
+                this.setState({ isPendingRequestLoading: true })
+                try {
+                    if (this.props.github.githubOctoGeneric.logged === false) {
+                        await this.props.github.githubOctoGenericLogin();
+
+                    }
+
+                    const allIssues = await this.props.github.githubOctoGeneric.octokit.paginate(
+                        this.props.github.githubOctoGeneric.octokit.issues.listForRepo,
+                        {
+                            owner: config.onboardingOwner,
+                            repo: config.onboardingNotaryOwner,
+                            state: "open",
+                            labels: "Notary Application"
+                        }
+                    )
 
                     const msigRequests = allIssues
                         .filter(
                             (issue: any) =>
                                 !issue.labels.find(
                                     (l: any) =>
-                                        l.name ===
-                                        "status:AddedOnchain"
+                                        l.name.toLowerCase().replace(/ /g, '').includes("addedonchain")
                                 )
                         )
                         .filter((issue: any) =>
                             issue.labels.find(
                                 (l: any) =>
-                                    l.name === "status:Approved" ||
-                                    l.name ===
-                                        "status:StartSignOnchain"
+                                l.name.toLowerCase().replace(/ /g, '').includes("approved") || l.name.toLowerCase().replace(/ /g, '').includes("startsignonchain")
                             )
                         );
 
@@ -889,10 +836,10 @@ export default class DataProvider extends React.Component<
                         requestsAndComments.map((r: any) => {
                             const datacap = r.tx
                                 ? bytesToiB(
-                                      Number(
-                                          r.tx?.parsed?.params?.cap
-                                      )
-                                  )
+                                    Number(
+                                        r.tx?.parsed?.params?.cap
+                                    )
+                                )
                                 : r?.lastRequest?.datacap;
                             const proposedBy = r.tx
                                 ? r?.tx?.signers[0]
@@ -1072,18 +1019,18 @@ export default class DataProvider extends React.Component<
                         idPattern,
                         comment[0].body
                     );
-  
-                    if(!Id){
-                        await Logger.BasicLogger({ message: `id could not find ${issueNumber}`})
+
+                    if (!Id) {
+                        await Logger.BasicLogger({ message: `id could not find ${issueNumber}` })
                     }
-                    
+
                     return Id;
                 } catch (error: any) {
                     Sentry.captureMessage('error occured while fetching ID', {
                         extra: {
-                          errorMessage: error.message,
+                            errorMessage: error.message,
                         }
-                      })
+                    })
                 }
             },
             updateGithubVerified: async (
@@ -1323,7 +1270,7 @@ export default class DataProvider extends React.Component<
                         this.state.setIsVerifyWalletLoading(false);
                         alert(
                             "Ledger wallet successfully verified with message: " +
-                                msgCid["/"]
+                            msgCid["/"]
                         );
                         // update state
 
@@ -1353,7 +1300,7 @@ export default class DataProvider extends React.Component<
                             if (
                                 address &&
                                 address ===
-                                    this.props.wallet.activeAccount
+                                this.props.wallet.activeAccount
                             ) {
                                 issueNumber = issue.number;
                                 break;
@@ -1414,7 +1361,7 @@ export default class DataProvider extends React.Component<
                         if (
                             address &&
                             address ===
-                                this.props.wallet.activeAccount
+                            this.props.wallet.activeAccount
                         ) {
                             issueNumber = issue.number;
                             break;
