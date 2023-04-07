@@ -1,6 +1,6 @@
 import { Box, Avatar, Typography } from "@mui/material"
-import history from "../context/History"
-import Logo from "../svg/logo.svg"
+import history from "../../context/History"
+import Logo from "../../svg/logo.svg"
 
 const AdminHeader = () => {
   const goHomePage = () => history.push({ pathname: "/" })

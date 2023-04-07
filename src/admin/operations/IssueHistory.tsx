@@ -1,14 +1,16 @@
 import { Box, Chip, Stack, Typography } from "@mui/material"
 import { useContext, useState } from "react"
-import { Data } from "../context/Data/Index"
-import { config } from "../config"
+import { Data } from "../../context/Data/Index"
+import { config } from "../../config"
 import { TextField } from "@material-ui/core"
 import { toast } from "react-hot-toast"
+import HistoryInfo from "../components/HistoryInfo"
+import { historyDataType } from "../types"
 
 const IssueHistory = () => {
   const context = useContext(Data)
-  const [historyData, setHistoryData] = useState<any>(null)
-  const [issueNumber, setIssueNumber] = useState<any>("")
+  const [historyData, setHistoryData] = useState<historyDataType[] | null>(null)
+  const [issueNumber, setIssueNumber] = useState("")
   const [loading, setIsLoading] = useState(false)
   const [labels, setLabels] = useState<any>(null)
 
@@ -51,7 +53,7 @@ const IssueHistory = () => {
         return
       }
 
-      const issueHistory = []
+      const issueHistory: historyDataType[] = []
 
       for (let i = 0; i < comments.length; i++) {
         const comment = comments[i]
@@ -126,28 +128,7 @@ const IssueHistory = () => {
           ) : (
             <div style={{ display: "flex", flexWrap: "wrap" }}>
               {historyData?.map((data: any) => (
-                <a
-                  href={data.comment.html_url}
-                  target="_blank"
-                  rel="noreferrer"
-                  style={{ textDecoration: "none" }}
-                  key={data.comment.id}
-                >
-                  <div style={{ paddingBottom: "10px" }}>
-                    <span style={{ color: data.color }}>
-                      {data.commentType}
-                    </span>
-                    <span
-                      style={{
-                        paddingLeft: "10px",
-                        paddingRight: "10px",
-                        color: "black",
-                      }}
-                    >
-                      &gt;
-                    </span>
-                  </div>
-                </a>
+                <HistoryInfo data={data} />
               ))}
               {historyData?.length === 0 && "no request yet"}
             </div>
