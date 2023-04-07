@@ -63,7 +63,7 @@ export interface GithubProviderStates {
     initGithubOcto: (token: string) => Promise<void>
     logoutGithub: () => Promise<void>
     githubOctoGenericLogin: () => Promise<void>
-    fetchGithubIssues: (owner: any, repo: any, state: any, labels: any) => Promise<any>
+    fetchGithubIssues: (owner: any, repo: any, state: any, labels?: any) => Promise<any>
     fetchGithubComments: (owner: string, repo: string, issueNumber: number, issue?: any) => Promise<any>
     githubLogged: boolean
     loggedUser: string
