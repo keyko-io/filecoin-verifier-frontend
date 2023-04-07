@@ -84,7 +84,8 @@ const localConfig = {
     status_issue_number: 1419,
     status_issue_url: "https://github.com/keyko-io/filecoin-large-clients-onboarding/issues/1419",
     verifiers_registry_url: "https://raw.githubusercontent.com/keyko-io/filecoin-content/main/json/test/verifiers-registry_test.json",
-    numberOfWalletAccounts : 20
+    numberOfWalletAccounts: 20,
+    sentry_private_key: process.env.REACT_APP_SENTRY_PK
 }
 
 const prodConfig = {
@@ -127,8 +128,9 @@ const prodConfig = {
     dev_mode: process.env.REACT_APP_MODE,
     status_issue_number: 1427,
     status_issue_url: "https://github.com/filecoin-project/filecoin-plus-large-datasets/issues/1427",
-    verifiers_registry_url : "https://raw.githubusercontent.com/keyko-io/filecoin-content/main/json/prod/verifiers-registry.json",
-    numberOfWalletAccounts : 20
+    verifiers_registry_url: "https://raw.githubusercontent.com/keyko-io/filecoin-content/main/json/prod/verifiers-registry.json",
+    numberOfWalletAccounts: 20,
+    sentry_private_key: process.env.REACT_APP_SENTRY_PK
 }
 
 export const config =

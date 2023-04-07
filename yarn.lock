@@ -1863,10 +1863,10 @@
     "@jridgewell/resolve-uri" "3.1.0"
     "@jridgewell/sourcemap-codec" "1.4.14"
 
-"@keyko-io/filecoin-verifier-tools@^2.1.1":
-  version "2.1.1"
-  resolved "https://registry.yarnpkg.com/@keyko-io/filecoin-verifier-tools/-/filecoin-verifier-tools-2.1.1.tgz#699f947808d789d37d92800ac2e3c4868f723d11"
-  integrity sha512-wrH5VtQdudl+k9A9ib91/avCjoyvlOO+5gloW6nM51yyjWlOY+tO+KBCvOCRgQKo/KDMUEFlm5pugmOKVJO4IA==
+"@keyko-io/filecoin-verifier-tools@^2.1.2":
+  version "2.1.2"
+  resolved "https://registry.yarnpkg.com/@keyko-io/filecoin-verifier-tools/-/filecoin-verifier-tools-2.1.2.tgz#9dca7ea8904844b3dbd170ed0361767a2b5f259c"
+  integrity sha512-fyn588ex8egRotvmAIRDUQUl6VOBfI2U1a63jByAHerCOHbBQbHD6teBwZLRVkM6b/Qavq0QhgXZHZAAfjsyMg==
   dependencies:
     "@babel/core" "^7.20.12"
     "@babel/helper-compilation-targets" "^7.20.7"

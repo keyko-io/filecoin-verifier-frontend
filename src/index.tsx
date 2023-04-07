@@ -31,6 +31,7 @@ import Miners from "./pages/Miners"
 import StatusPage from "./pages/StatusPage"
 import LargeRequestsProvider from "./context/LargeRequests"
 import Admin from "./pages/Admin"
+import Metrics from "./pages/Metrics"
 
 // redirect to domain if user access fleek url
 if (window.location.host.includes("fleek") && config.willRedirect) {
@@ -52,9 +53,11 @@ const startSentry = () => {
     }
     const response = Sentry.init({
       dsn: sentryDSN,
+      tunnel:"http://localhost:3000/",
       integrations: [
         new Integrations.BrowserTracing({
           tracePropagationTargets: ["*"],
+          tracingOrigins: ["*"] 
         }),
       ],
       tracesSampleRate: 1.0,
@@ -111,6 +114,7 @@ root.render(
                             component={StatusPage}
                           ></Route>
                           <Route path={"/admin"} component={Admin}></Route>
+                          <Route path={"/metrics"} component={Metrics}></Route>
                         </Switch>
                       </Layout>
                     </Router>
