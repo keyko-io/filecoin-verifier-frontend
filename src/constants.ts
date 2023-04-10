@@ -1,17 +1,13 @@
-export enum LARGE_REQUEST_STATUS {
-    WAITING_FOR_CLIENT_REPLY = "WAITING_FOR_CLIENT_REPLY",
-    NEEDS_NOTARY_REVIEW = "NEEDS_NOTARY_REVIEW",
-    ONE_NOTARY_REVIEWED = "ONE_NOTARY_REVIEWED",
-    ONE_NOTARY_APPROVED = "ONE_NOTARY_APPROVED",
-    ONE_NOTARY_DECLINED = "ONE_NOTARY_DECLINED",
-}
 
-export const STATUS_LABELS: any = {
-    WAITING_FOR_CLIENT_REPLY: ["Waiting for client reply"],
-};
-
-export const constructNewStatusComment = (status: string): string => {
-    return `Status: ${STATUS_LABELS[status]}`;
+export const constructNewStatusComment = (
+    status: string,
+    reason: string,
+    freeText: string
+): string => {
+    return `Status: ${STATUS_LABELS[status]} 
+    Reason: ${reason}
+    ${freeText}
+    `;
 };
 
 export const ISSUE_LABELS = {
@@ -37,5 +33,31 @@ export const ISSUE_LABELS = {
     EFIL_PLUS: "Efil+",
     APPLICATION_COMPLETED: "Application: Completed",
     NOTARY_APPLICATION: "Notary: Application",
+    WAITING_FOR_ClIENT: "Waiting For Client Reply",
     APPLICATION_WIP_ISSUE: "Application: WIP Issue",
-}
+};
+
+export const NOTARY_DECLINE_REASONS = [
+    "Conflict of interest",
+    "Not in my expertise or domain",
+    "Outside my regional jurisdiction",
+    "Requested amount does not match dataset",
+    "Client deal-making behavior does not match stated allocation strategy",
+    "Client did not provide information about the Storage Providers they are working with",
+    "Fil+ data distribution noncompliance (Incorrect SPs that client stated that they would work with in their application)",
+    "False information that was provided from application",
+    "Other reason",
+];
+
+export const NOTARY_LDN_STATE_CONTROL = [
+    "Accept",
+    "Decline",
+    "Request More Information",
+];
+
+export const STATUS_LABELS: any = {
+    "Accept": ["One Notary Approved"],
+    "Decline": ["Notary Declined"],
+    "Request More Information": [ISSUE_LABELS.WAITING_FOR_ClIENT],
+};
+
