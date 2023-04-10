@@ -295,10 +295,20 @@ const LargeRequestTable = (props: LargeRequestTableProps) => {
         },
     ];
 
-    const handleChangeStatus = async (newStatus: string) => {
-        console.log("newStatus", newStatus);
+    const handleChangeStatus = async ({
+        selectedStatus,
+        statusReason,
+        freeTextValue
+    }: {
+        selectedStatus: string;
+        statusReason: string;
+        freeTextValue: string
+    }) => {
+        console.log("newStatus", selectedStatus);
         await changeRequestStatus(
-            newStatus,
+            selectedStatus,
+            statusReason,
+            freeTextValue,
             selectedRequestForActions.issue_number
         );
     };

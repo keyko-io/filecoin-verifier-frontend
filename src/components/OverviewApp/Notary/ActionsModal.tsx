@@ -8,7 +8,10 @@ import {
 import CloseIcon from "@mui/icons-material/Close";
 import { Box, Divider, Modal, Typography } from "@mui/material";
 import { useState } from "react";
-import { LARGE_REQUEST_STATUS } from "../../../constants";
+import {
+    NOTARY_DECLINE_REASONS,
+    NOTARY_LDN_STATE_CONTROL,
+} from "../../../constants";
 import { useLargeRequestsContext } from "../../../context/LargeRequests";
 import { LargeRequestData } from "../../../type";
 
@@ -46,13 +49,12 @@ const ActionsModal = ({
     handleClose,
 }: ActionsModalProps) => {
     const { extractRepliesByClient } = useLargeRequestsContext();
+    const [freeTextValue, setFreeTextValue] = useState("");
     const [selectedStatus, setSelectedStatus] = useState("");
+    const [statusReason, setSelectedReason] = useState("");
     const [textareaInputValue, setTextareaInputValue] = useState("");
-
     const clientReplies = extractRepliesByClient(selectedRequest);
-    console.log("clientReplies", clientReplies);
-
-    // const repliesBody = clientReplies.map((c: any) => c.body);
+    console.log("selectedRequest", selectedRequest);
 
     return (
         <Modal
@@ -66,18 +68,46 @@ const ActionsModal = ({
                     sx={closeIconStyle}
                     onClick={handleClose}
                 />
-                {clientReplies &&
-                    clientReplies?.map((r: any) => {
-                        console.log("r", r);
-                        return (
-                            <div style={{ marginBottom: "0.5rem" }}>
-                                <div>Time: {new Date(r.created_at).toUTCString()}</div>
-                                <a href={r.html_url} target="_blank">Link</a>
-                            </div>
-                        );
-                    })}
+                <div style={{ paddingBottom: "1rem" }}>
+                    Replies({clientReplies?.length}):{" "}
+                </div>
+                <div style={{ height: "10rem", overflowY: "scroll" }}>
+                    {clientReplies &&
+                        clientReplies?.map(
+                            (r: {
+                                created_at: string;
+                                html_url: string;
+                            }) => {
+                                return (
+                                    <div
+                                        style={{
+                                            paddingBottom: "0.5rem",
+                                            marginBottom: "0.5rem",
+                                            borderBottom:
+                                                "1px solid black",
+                                            display: "grid",
+                                            gridTemplateColumns:
+                                                "1fr 1fr",
+                                        }}
+                                    >
+                                        <div>
+                                            {new Date(
+                                                r.created_at
+                                            ).toUTCString()}
+                                        </div>
+                                        <a
+                                            href={r.html_url}
+                                            target="_blank"
+                                        >
+                                            Link
+                                        </a>
+                                    </div>
+                                );
+                            }
+                        )}
+                </div>
                 <Typography variant="h6" mb={1.5} textAlign="center">
-                    Change Request Status
+                    Update Request Status
                 </Typography>
                 <>
                     <Divider />
@@ -93,25 +123,59 @@ const ActionsModal = ({
                                 setSelectedStatus(e.target.value);
                             }}
                         >
-                            <MenuItem
-                                value={
-                                    LARGE_REQUEST_STATUS.NEEDS_NOTARY_REVIEW
+                            {NOTARY_LDN_STATE_CONTROL.map(
+                                (r: string) => {
+                                    return (
+                                        <MenuItem value={r}>
+                                            {r}
+                                        </MenuItem>
+                                    );
                                 }
-                            >
-                                Need Notary Review
-                            </MenuItem>
-                            <MenuItem
-                                value={
-                                    LARGE_REQUEST_STATUS.WAITING_FOR_CLIENT_REPLY
-                                }
-                            >
-                                Waiting For Client Reply
-                            </MenuItem>
+                            )}
                         </Select>
-                        <textarea />
+                    </FormControl>
+                    <Divider />
+                    <FormControl fullWidth>
+                        {selectedStatus !== "Accept" && (
+                            <>
+                                <InputLabel id="demo-simple-select-label">
+                                    Reason
+                                </InputLabel>
+                                <Select
+                                    label="Reason"
+                                    value={statusReason}
+                                    onChange={(e) => {
+                                        setSelectedReason(
+                                            //@ts-ignore
+                                            e.target.value
+                                        );
+                                    }}
+                                >
+                                    {NOTARY_DECLINE_REASONS.map(
+                                        (r: string) => {
+                                            return (
+                                                <MenuItem value={r}>
+                                                    {r}
+                                                </MenuItem>
+                                            );
+                                        }
+                                    )}
+                                </Select>
+                            </>
+                        )}
+                        <textarea
+                            value={freeTextValue}
+                            onChange={(e: any) =>
+                                setFreeTextValue(e.target.value)
+                            }
+                        />
                         <Button
                             onClick={() =>
-                                handleChangeStatus(selectedStatus)
+                                handleChangeStatus({
+                                    selectedStatus,
+                                    statusReason,
+                                    freeTextValue,
+                                })
                             }
                             color="primary"
                         >
