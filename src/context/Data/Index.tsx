@@ -13,7 +13,13 @@ import {
 } from "../contextType";
 
 export const Data = React.createContext({
-      addLabels: async (
+    removeLabel: async (
+        owner: string,
+        repo: string,
+        issueNumber: number,
+        label: string
+    ) => {},
+    addLabels: async (
         owner: string,
         repo: string,
         issueNumber: number,
@@ -30,7 +36,8 @@ export const Data = React.createContext({
         repo: string,
         issueNumber: number
     ) => {},
-    formatLargeRequestData: async (i: LargeRequestData[]) => ({} as any),
+    formatLargeRequestData: async (i: LargeRequestData[]) =>
+        ({} as any),
     getLargeRequestSearchInputData: async () => ({} as any),
     getNodeData: async (address: string, clientAddress: string) =>
         ({} as any),

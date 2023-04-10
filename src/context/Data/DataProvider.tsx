@@ -869,7 +869,7 @@ export default class DataProvider extends React.Component<
                     })
                 }
             },
-                createComment: async (
+            createComment: async (
                 owner: string,
                 repo: string,
                 issueNumber: number,
@@ -902,14 +902,35 @@ export default class DataProvider extends React.Component<
                 //     labels: [ISSUE_LABELS.STATUS_ERROR],
                 // });
             },
+            removeLabel: async (
+                owner: string,
+                repo: string,
+                issueNumber: number,
+                label: string
+            ): Promise<boolean> => {
+                try {
+                    const response = await this.props.github.githubOcto.issues.removeLabel(
+                        {
+                            owner,
+                            repo,
+                            issue_number: issueNumber,
+                            name: label,
+                        }
+                    );
+                    return response.status === 200
+                } catch (error) {
+                    console.log(error);
+                    return false
+                }
+            },
             addLabels: async (
                 owner: string,
                 repo: string,
                 issueNumber: number,
                 labels: string[]
-            ) => {
+            ): Promise<boolean> => {
                 try {
-                    await this.props.github.githubOcto.issues.addLabels(
+                    const response = await this.props.github.githubOcto.issues.addLabels(
                         {
                             owner,
                             repo,
@@ -917,10 +938,11 @@ export default class DataProvider extends React.Component<
                             labels,
                         }
                     );
+                    return response.status === 200
                 } catch (error) {
                     console.log(error);
+                    return false
                 }
-                return;
             },
             removeAllLabels: async (
                 owner: string,
@@ -1319,6 +1341,7 @@ export default class DataProvider extends React.Component<
     render() {
         return (
             <Data.Provider
+                //@ts-ignore
                 value={{
                     ...this.state,
                     github: this.props.github,
