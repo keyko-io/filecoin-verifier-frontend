@@ -38,6 +38,7 @@ interface ParseLargeRequestData {
     region: string;
     website: string;
 }
+
 interface LotusTx {
     id: number;
     signers: string[];
@@ -203,7 +204,6 @@ export default class DataProvider extends React.Component<
                         // ["bot:readyToSign","Bot: Ready To Sign"]
                     );
                 const filteredByLabel = filterByLabel(allGHIssues, "readytosign")
-                debugger
 
                 const response = filteredByLabel.map((issue: any) => {
                     const parsed: ParseLargeRequestData =

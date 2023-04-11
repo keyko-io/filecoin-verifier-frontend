@@ -75,7 +75,7 @@ export default function LargeRequestsProvider({ children }: any) {
             owner,
             repo,
             issueNumber,
-            newStatusLabels.map((l: string) => {
+            newStatusLabels.map((l: string) => { // make sure every first letter of each word is in capital case
                 const finalSentence = l.replace(
                     /(^\w{1})|(\s+\w{1})/g,
                     (letter: any) => letter.toUpperCase()
@@ -91,9 +91,7 @@ export default function LargeRequestsProvider({ children }: any) {
                 issueNumber,
                 ISSUE_LABELS.BOT_REVIEW_NEEDED
             );
-            console.log("removeLabelsResponse", removeLabelsResponse);
         }
-        console.log("addLabelsResponse", addLabelsResponse);
         await context.createComment(
             owner,
             repo,
