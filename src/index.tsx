@@ -30,7 +30,7 @@ import Verifiers from "./pages/Verifiers"
 import Miners from "./pages/Miners"
 import StatusPage from "./pages/StatusPage"
 import LargeRequestsProvider from "./context/LargeRequests"
-import Admin from "./pages/Admin"
+import Admin from "./admin"
 
 // redirect to domain if user access fleek url
 if (window.location.host.includes("fleek") && config.willRedirect) {
@@ -38,7 +38,6 @@ if (window.location.host.includes("fleek") && config.willRedirect) {
 }
 
 const startSentry = () => {
-
   try {
     if (process.env.NODE_ENV === "development") {
       return

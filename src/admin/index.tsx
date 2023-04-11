@@ -1,11 +1,12 @@
 import { Box, IconButton } from "@mui/material"
 import { useEffect, useState } from "react"
-import ManualDatacapRequest from "../components/ManualDatacapRequest"
+import ManualDatacapRequest from "./operations/ManualDatacapRequest"
 import history from "../context/History"
 import EastIcon from "@mui/icons-material/East"
-import AdminHeader from "../Layout/AdminHeader"
-import AdminSidebar from "../Layout/AdminSidebar"
-import IssueHistory from "../components/IssueHistory"
+import AdminHeader from "./layout/AdminHeader"
+import AdminSidebar from "./layout/AdminSidebar"
+import IssueHistory from "./operations/IssueHistory"
+import { SidebarOperationKey } from "./types"
 
 type OpenSideBarIconProps = {
   setIsDrawerOpen: (isDrawerOpen: boolean) => void
@@ -28,16 +29,9 @@ const OpenSideBarIcon = ({ setIsDrawerOpen }: OpenSideBarIconProps) => {
   )
 }
 
-export enum SidebarOperationKey {
-  MANUAL_DATACAP = "manuel-datacap",
-  ISSUE_HISTORY = "issue-history",
-}
-
- const SIDEBAR_OPERATIONS : 
-  Record<SidebarOperationKey, JSX.Element>
- = {
-  [SidebarOperationKey.MANUAL_DATACAP] : <ManualDatacapRequest />,
-  [SidebarOperationKey.ISSUE_HISTORY] : <IssueHistory />
+const SIDEBAR_OPERATIONS: Record<SidebarOperationKey, JSX.Element> = {
+  [SidebarOperationKey.MANUAL_DATACAP]: <ManualDatacapRequest />,
+  [SidebarOperationKey.ISSUE_HISTORY]: <IssueHistory />,
 }
 
 const Admin = () => {
@@ -56,22 +50,26 @@ const Admin = () => {
 
       <Box sx={{ display: "flex", height: "calc(100vh - 5rem)" }}>
         {/* SIDEBAR  */}
-        {isDrawerOpen && <AdminSidebar setIsDrawerOpen={setIsDrawerOpen} setOperation={setOperation} />}
+        {isDrawerOpen && (
+          <AdminSidebar
+            setIsDrawerOpen={setIsDrawerOpen}
+            setOperation={setOperation}
+          />
+        )}
         {/* RIGHT SIDE  */}
         <Box sx={{ width: "100%", height: "100%" }}>
           {!isDrawerOpen && (
             <OpenSideBarIcon setIsDrawerOpen={setIsDrawerOpen} />
           )}
-           <Box
-      sx={{
-        display: "flex",
-        justifyContent: "center",
-        height: "100%",
-      }}
-    >
-      {SIDEBAR_OPERATIONS[operation]}
-    </Box>
-          
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "center",
+              height: "100%",
+            }}
+          >
+            {SIDEBAR_OPERATIONS[operation]}
+          </Box>
         </Box>
       </Box>
     </div>

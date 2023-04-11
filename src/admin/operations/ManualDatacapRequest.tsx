@@ -1,29 +1,13 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { Box, TextField, Stack, Typography, Button } from "@mui/material"
 import { useContext, useState } from "react"
-import { Data } from "../context/Data/Index"
-import { config } from "../config"
+import { Data } from "../../context/Data/Index"
+import { config } from "../../config"
 import { ldnParser } from "@keyko-io/filecoin-verifier-tools"
 import { toast } from "react-hot-toast"
 import { v4 as uuidv4 } from "uuid"
 import { LoadingButton } from "@mui/lab"
-
-export const newAllocationRequestComment = (
-  address: string,
-  amountToRequest: string,
-  msigAddress: string,
-  requestNumber: string,
-  uuid: string
-): string => {
-  // #### Remaining dataCap\r> ${dataCapRemaining}\r
-  return `
-## DataCap Allocation requested\r\n
-### Request number ${requestNumber}
-#### Multisig Notary address\r\n> ${msigAddress}\r\n
-#### Client address\r\n> ${address}\r\n
-#### DataCap allocation requested\r\n> ${amountToRequest}\r\n
-#### Id\r\n> ${uuid}`
-}
+import { newAllocationRequestComment } from "../utils"
 
 const initialFormState = {
   issueNumber: "",
