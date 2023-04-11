@@ -6,8 +6,14 @@ import {
     Select,
 } from "@material-ui/core";
 import CloseIcon from "@mui/icons-material/Close";
-import { Box, Divider, Modal, Typography } from "@mui/material";
-import { useState } from "react";
+import {
+    Alert,
+    Box,
+    Divider,
+    Modal,
+    Typography,
+} from "@mui/material";
+import { useEffect, useState } from "react";
 import {
     NOTARY_DECLINE_REASONS,
     NOTARY_LDN_STATE_CONTROL,
@@ -51,15 +57,31 @@ const ActionsModal = ({
     const { extractRepliesByClient } = useLargeRequestsContext();
     const [freeTextValue, setFreeTextValue] = useState("");
     const [selectedStatus, setSelectedStatus] = useState("");
+    const [showAlert, setShowAlert] = useState(false);
+    const [showSuccess, setShowSuccess] = useState(false);
     const [statusReason, setSelectedReason] = useState("");
     const [textareaInputValue, setTextareaInputValue] = useState("");
     const clientReplies = extractRepliesByClient(selectedRequest);
-    console.log("selectedRequest", selectedRequest);
+
+    useEffect(() => {
+        setShowAlert(false);
+        setShowSuccess(false);
+    }, []);
+
+    const preventSubmittion = !selectedStatus
+        ? true
+        : selectedStatus.toLowerCase() != "accept" && !statusReason
+        ? true
+        : false;
 
     return (
         <Modal
             open={open}
-            onClose={handleClose}
+            onClose={() => {
+                setShowAlert(false);
+                setShowSuccess(false);
+                handleClose();
+            }}
             aria-labelledby="modal-modal-title"
             aria-describedby="modal-modal-description"
         >
@@ -170,17 +192,41 @@ const ActionsModal = ({
                             }
                         />
                         <Button
-                            onClick={() =>
-                                handleChangeStatus({
-                                    selectedStatus,
-                                    statusReason,
-                                    freeTextValue,
-                                })
-                            }
+                            disabled={preventSubmittion}
+                            onClick={async () => {
+                                const success =
+                                    await handleChangeStatus({
+                                        selectedStatus,
+                                        statusReason,
+                                        freeTextValue,
+                                    });
+                                if (success) {
+                                    setShowSuccess(true);
+                                    setShowAlert(false);
+                                } else {
+                                    setShowAlert(true);
+                                    setShowSuccess(false);
+                                }
+                            }}
                             color="primary"
                         >
                             Send
                         </Button>
+                        {showSuccess && (
+                            <Alert severity="success">
+                                <Typography variant="body1">
+                                    Status Updated Successfully
+                                </Typography>
+                            </Alert>
+                        )}
+                        {showAlert && (
+                            <Alert severity="info">
+                                <Typography variant="body1">
+                                    Something went wrong, please try
+                                    again
+                                </Typography>
+                            </Alert>
+                        )}
                     </FormControl>
                 </>
             </Box>

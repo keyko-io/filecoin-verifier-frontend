@@ -304,13 +304,13 @@ const LargeRequestTable = (props: LargeRequestTableProps) => {
         statusReason: string;
         freeTextValue: string
     }) => {
-        console.log("newStatus", selectedStatus);
-        await changeRequestStatus(
+        const response = await changeRequestStatus(
             selectedStatus,
             statusReason,
             freeTextValue,
             selectedRequestForActions.issue_number
         );
+        return response
     };
 
     return (

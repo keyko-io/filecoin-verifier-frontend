@@ -874,9 +874,9 @@ export default class DataProvider extends React.Component<
                 repo: string,
                 issueNumber: number,
                 comment: string
-            ) => {
+            ): Promise<boolean> => {
                 try {
-                    await this.props.github.githubOcto.issues.createComment(
+                    const response = await this.props.github.githubOcto.issues.createComment(
                         {
                             owner: owner,
                             repo: repo,
@@ -884,23 +884,14 @@ export default class DataProvider extends React.Component<
                             body: comment,
                         }
                     );
+                    console.log("response", response);
+                    const success = response.status >= 200 && response.status <= 299
+                    console.log("success", success);
+                    return  success
                 } catch (error) {
                     console.log(error);
+                    return false
                 }
-                return;
-                // await this.props.github.githubOcto.issues.removeAllLabels(
-                //     {
-                //         owner: config.onboardingOwner,
-                //         repo: config.onboardingClientRepo,
-                //         issue_number: requestNumber,
-                //     }
-                // );
-                // await this.props.github.githubOcto.issues.addLabels({
-                //     owner: config.onboardingOwner,
-                //     repo: config.onboardingClientRepo,
-                //     issue_number: requestNumber,
-                //     labels: [ISSUE_LABELS.STATUS_ERROR],
-                // });
             },
             removeLabel: async (
                 owner: string,

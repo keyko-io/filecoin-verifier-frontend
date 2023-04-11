@@ -58,7 +58,7 @@ export default function LargeRequestsProvider({ children }: any) {
         statusReason: string,
         freeTextValue: string,
         issueNumber: number
-    ) => {
+    ): Promise<boolean> => {
         const newStatusLabels = STATUS_LABELS[newStatus];
         const newStatusComment = constructNewStatusComment(
             newStatus,
@@ -75,15 +75,24 @@ export default function LargeRequestsProvider({ children }: any) {
             owner,
             repo,
             issueNumber,
-            newStatusLabels.map((l: string) => { // make sure every first letter of each word is in capital case
+            newStatusLabels.map((l: string) => {
                 const finalSentence = l.replace(
                     /(^\w{1})|(\s+\w{1})/g,
+                    // make sure every first letter of each word is in capital case
                     (letter: any) => letter.toUpperCase()
                 );
                 return finalSentence;
             })
         );
+        if (!addLabelsResponse) return false;
 
+        const createCommentResponse = await context.createComment(
+            owner,
+            repo,
+            issueNumber,
+            newStatusComment
+        );
+        if (!createCommentResponse) return false;
         if (newStatus.toLowerCase() !== "accept") {
             const removeLabelsResponse = await context.removeLabel(
                 owner,
@@ -91,13 +100,14 @@ export default function LargeRequestsProvider({ children }: any) {
                 issueNumber,
                 ISSUE_LABELS.BOT_REVIEW_NEEDED
             );
+            return (
+                // removeLabelsResponse &&
+                createCommentResponse &&
+                addLabelsResponse
+            );
         }
-        await context.createComment(
-            owner,
-            repo,
-            issueNumber,
-            newStatusComment
-        );
+
+        return createCommentResponse && addLabelsResponse;
     };
 
     const areRequestsSignable = async (
