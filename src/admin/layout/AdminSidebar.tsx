@@ -26,6 +26,10 @@ const AdminSidebar = ({ setIsDrawerOpen, setOperation }: AdminSidebarProps) => {
         itemText="Issue History Summary"
         setOperation={() => setOperation(SidebarOperationKey.ISSUE_HISTORY)}
       />
+      <SidebarListItem
+        itemText="Review Needed"
+        setOperation={() => setOperation(SidebarOperationKey.REVIEW_NEEDED)}
+      />
       <IconButton
         aria-label="back"
         size="large"

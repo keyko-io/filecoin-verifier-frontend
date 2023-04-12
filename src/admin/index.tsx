@@ -7,6 +7,7 @@ import AdminHeader from "./layout/AdminHeader"
 import AdminSidebar from "./layout/AdminSidebar"
 import IssueHistory from "./operations/IssueHistory"
 import { SidebarOperationKey } from "./types"
+import { ReviewNeeded } from "./operations/ReviewNeeded"
 
 type OpenSideBarIconProps = {
   setIsDrawerOpen: (isDrawerOpen: boolean) => void
@@ -32,6 +33,7 @@ const OpenSideBarIcon = ({ setIsDrawerOpen }: OpenSideBarIconProps) => {
 const SIDEBAR_OPERATIONS: Record<SidebarOperationKey, JSX.Element> = {
   [SidebarOperationKey.MANUAL_DATACAP]: <ManualDatacapRequest />,
   [SidebarOperationKey.ISSUE_HISTORY]: <IssueHistory />,
+  [SidebarOperationKey.REVIEW_NEEDED]: <ReviewNeeded />,
 }
 
 const Admin = () => {
