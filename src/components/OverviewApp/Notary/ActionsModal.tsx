@@ -60,19 +60,24 @@ const ActionsModal = ({
     const [showAlert, setShowAlert] = useState(false);
     const [showSuccess, setShowSuccess] = useState(false);
     const [statusReason, setSelectedReason] = useState("");
-    const [textareaInputValue, setTextareaInputValue] = useState("");
     const clientReplies = extractRepliesByClient(selectedRequest);
+    const [buttonStatus, setButtonStatus] = useState(false);
 
     useEffect(() => {
         setShowAlert(false);
         setShowSuccess(false);
     }, []);
 
-    const preventSubmittion = !selectedStatus
-        ? true
-        : selectedStatus.toLowerCase() != "accept" && !statusReason
-        ? true
-        : false;
+    useEffect(() => {
+        const isDisabled =
+            !selectedStatus || !statusReason
+                ? true
+                : statusReason.toLowerCase().trim() ===
+                      "other reason" && !freeTextValue
+                ? true
+                : false;
+        setButtonStatus(isDisabled);
+    }, [selectedStatus, freeTextValue, statusReason]);
 
     return (
         <Modal
@@ -90,44 +95,56 @@ const ActionsModal = ({
                     sx={closeIconStyle}
                     onClick={handleClose}
                 />
-                <div style={{ paddingBottom: "1rem" }}>
-                    Replies({clientReplies?.length}):{" "}
-                </div>
-                <div style={{ height: "10rem", overflowY: "scroll" }}>
-                    {clientReplies &&
-                        clientReplies?.map(
-                            (r: {
-                                created_at: string;
-                                html_url: string;
-                            }) => {
-                                return (
-                                    <div
-                                        style={{
-                                            paddingBottom: "0.5rem",
-                                            marginBottom: "0.5rem",
-                                            borderBottom:
-                                                "1px solid black",
-                                            display: "grid",
-                                            gridTemplateColumns:
-                                                "1fr 1fr",
-                                        }}
-                                    >
-                                        <div>
-                                            {new Date(
-                                                r.created_at
-                                            ).toUTCString()}
-                                        </div>
-                                        <a
-                                            href={r.html_url}
-                                            target="_blank"
-                                        >
-                                            Link
-                                        </a>
-                                    </div>
-                                );
-                            }
-                        )}
-                </div>
+
+                {Boolean(clientReplies?.length) && (
+                    <>
+                        <div style={{ paddingBottom: "1rem" }}>
+                            Replies({clientReplies?.length}):{" "}
+                        </div>
+                        <div
+                            style={{
+                                height: "10rem",
+                                overflowY: "scroll",
+                            }}
+                        >
+                            {clientReplies &&
+                                clientReplies?.map(
+                                    (r: {
+                                        created_at: string;
+                                        html_url: string;
+                                    }) => {
+                                        return (
+                                            <div
+                                                style={{
+                                                    paddingBottom:
+                                                        "0.5rem",
+                                                    marginBottom:
+                                                        "0.5rem",
+                                                    borderBottom:
+                                                        "1px solid black",
+                                                    display: "grid",
+                                                    gridTemplateColumns:
+                                                        "1fr 1fr",
+                                                }}
+                                            >
+                                                <div>
+                                                    {new Date(
+                                                        r.created_at
+                                                    ).toUTCString()}
+                                                </div>
+                                                <a
+                                                    href={r.html_url}
+                                                    target="_blank"
+                                                >
+                                                    Link
+                                                </a>
+                                            </div>
+                                        );
+                                    }
+                                )}
+                        </div>
+                    </>
+                )}
                 <Typography variant="h6" mb={1.5} textAlign="center">
                     Update Request Status
                 </Typography>
@@ -192,7 +209,7 @@ const ActionsModal = ({
                             }
                         />
                         <Button
-                            disabled={preventSubmittion}
+                            disabled={buttonStatus}
                             onClick={async () => {
                                 const success =
                                     await handleChangeStatus({

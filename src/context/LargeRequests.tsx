@@ -11,10 +11,10 @@ import { useNodeDataContext } from "./NodeData";
 import * as Logger from "../logger";
 import {
     constructNewStatusComment,
-    ISSUE_LABELS,
     STATUS_LABELS,
 } from "../constants";
 import { config } from "../config";
+import { ISSUE_LABELS } from "filecoin-verfier-common";
 
 const owner = config.onboardingOwner;
 const repo = config.onboardingLargeClientRepo;
@@ -75,14 +75,7 @@ export default function LargeRequestsProvider({ children }: any) {
             owner,
             repo,
             issueNumber,
-            newStatusLabels.map((l: string) => {
-                const finalSentence = l.replace(
-                    /(^\w{1})|(\s+\w{1})/g,
-                    // make sure every first letter of each word is in capital case
-                    (letter: any) => letter.toUpperCase()
-                );
-                return finalSentence;
-            })
+            newStatusLabels
         );
         if (!addLabelsResponse) return false;
 
@@ -93,20 +86,6 @@ export default function LargeRequestsProvider({ children }: any) {
             newStatusComment
         );
         if (!createCommentResponse) return false;
-        if (newStatus.toLowerCase() !== "accept") {
-            const removeLabelsResponse = await context.removeLabel(
-                owner,
-                repo,
-                issueNumber,
-                ISSUE_LABELS.BOT_REVIEW_NEEDED
-            );
-            return (
-                // removeLabelsResponse &&
-                createCommentResponse &&
-                addLabelsResponse
-            );
-        }
-
         return createCommentResponse && addLabelsResponse;
     };
 
@@ -193,13 +172,7 @@ export default function LargeRequestsProvider({ children }: any) {
     const extractRepliesByClient = (row: LargeRequestData) => {
         const issueAuthor = row.user;
         const repliesByAuthor = row?.comments?.filter((comment) => {
-            const clientReplyTitle =
-                "I have provided the additional required information:";
-            const sliced = comment.body.slice(0, 53).trim();
-            return (
-                comment?.user?.login === issueAuthor &&
-                sliced === clientReplyTitle
-            );
+            return comment?.user?.login === issueAuthor;
         });
         return repliesByAuthor;
     };

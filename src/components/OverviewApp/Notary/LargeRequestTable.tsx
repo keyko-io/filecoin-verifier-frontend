@@ -9,8 +9,8 @@ import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import NodeDataModal from "./NodeDataModal";
 import SearchInput from "./SearchInput";
 import { useLargeRequestsContext } from "../../../context/LargeRequests";
-import { ISSUE_LABELS } from "../../../constants";
 import ActionsModal from "./ActionsModal";
+import { ISSUE_LABELS } from "filecoin-verfier-common";
 
 const CANT_SIGN_MESSAGE =
     "You can currently only approve the allocation requests associated with the multisig organization you signed in with. Signing proposals for additional DataCap allocations will require you to sign in again";
@@ -58,7 +58,7 @@ const formatIssues = async (
             const approvalInfo = issue.labels.some(
                 (label: any) =>
                     label.name ===
-                    ISSUE_LABELS.STATUS_START_SIGN_DATACAP
+                    ISSUE_LABELS.START_SIGN_DATACAP
             );
 
             const comments = await githubOcto.paginate(
@@ -168,7 +168,7 @@ const LargeRequestTable = (props: LargeRequestTableProps) => {
                         owner: config.onboardingLargeOwner,
                         repo: config.onboardingLargeClientRepo,
                         state: "open",
-                        labels: ISSUE_LABELS.BOT_READY_TO_SIGN,
+                        labels: ISSUE_LABELS.READY_TO_SIGN,
                         page,
                         per_page: 10,
                     }
