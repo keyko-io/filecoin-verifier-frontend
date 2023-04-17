@@ -1,13 +1,15 @@
 export type ApprovedVerifiers = {
-    datacap: string,
-    verifier: string,
-}
+    datacap: string;
+    verifier: string;
+};
 
-export type VerifiedData = ApprovedVerifiers & { verifierAccount: string }
+export type VerifiedData = ApprovedVerifiers & {
+    verifierAccount: string;
+};
 
 export type VerifiedCachedData = {
-    [key: number]: VerifiedData[]
-}
+    [key: number]: VerifiedData[];
+};
 
 export interface LargeRequestData {
     address: string;
@@ -21,14 +23,16 @@ export interface LargeRequestData {
     signable: boolean;
     tx: any;
     url: string;
-    approvalInfoFromLabels? : number
+    comments: { user: { login: string }, body: string, created_at: string, updated_at: string }[];
+    approvalInfoFromLabels?: number;
+    user: string; //github handle
 }
 
 export interface DirectIssue {
-    number: number,
-    url: string,
-    owner: string,
-    data: any
+    number: number;
+    url: string;
+    owner: string;
+    data: any;
 }
 
 export interface TransactionAndIssue {
@@ -38,4 +42,3 @@ export interface TransactionAndIssue {
     tx: any;
     issue: any[];
 }
-

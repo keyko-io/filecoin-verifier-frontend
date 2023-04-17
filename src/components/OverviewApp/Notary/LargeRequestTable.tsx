@@ -9,6 +9,9 @@ import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import NodeDataModal from "./NodeDataModal";
 import SearchInput from "./SearchInput";
 import { useLargeRequestsContext } from "../../../context/LargeRequests";
+import ActionsModal from "./ActionsModal";
+import { ISSUE_LABELS } from "filecoin-verfier-common";
+import { filterByLabel } from "../../../utils";
 
 const CANT_SIGN_MESSAGE =
     "You can currently only approve the allocation requests associated with the multisig organization you signed in with. Signing proposals for additional DataCap allocations will require you to sign in again";
@@ -52,7 +55,10 @@ const formatIssues = async (
             if (!issue.body) return;
             const parsed = ldnParser.parseIssue(issue.body);
 
-            const approvalInfo = issue.labels.some((label : any) => label.name === "status:StartSignDatacap")
+            const approvalInfo = issue.labels.some(
+                (label: any) =>
+                    label.name === ISSUE_LABELS.START_SIGN_DATACAP
+            );
 
             const comments = await githubOcto.paginate(
                 githubOcto.issues.listComments,
@@ -78,9 +84,10 @@ const formatIssues = async (
                 issue_number: issue.number,
                 url: issue.html_url,
                 comments,
+                user: issue.user.login,
                 multisig: commentParsed.notaryAddress,
                 datacap: commentParsed.allocationDatacap,
-                approvalInfoFromLabels : approvalInfo ? 1 : 0
+                approvalInfoFromLabels: approvalInfo ? 1 : 0,
             });
         })
     );
@@ -93,7 +100,8 @@ type LargeRequestTableProps = {
 
 const LargeRequestTable = (props: LargeRequestTableProps) => {
     const { setSelectedLargeClientRequests } = props;
-    const { count } = useLargeRequestsContext();
+    const { count, changeRequestStatus, extractRepliesByClient } =
+        useLargeRequestsContext();
     const context = useContext(Data);
 
     const [isLoadingGithubData, setIsLoadingGithubData] =
@@ -105,6 +113,10 @@ const LargeRequestTable = (props: LargeRequestTableProps) => {
     const setData = (data: LargeRequestData[]) => {
         updateData(data);
     };
+    const [selectedRequestForActions, setSelectedRequestForActions] =
+        useState<LargeRequestData>({} as LargeRequestData);
+    const [isActionsModalOpen, setIsActionsModalOpen] =
+        useState<boolean>(false);
 
     const [currentPage, setCurrentPage] = useState(1);
     const [open, setOpen] = useState(false);
@@ -155,11 +167,13 @@ const LargeRequestTable = (props: LargeRequestTableProps) => {
                         owner: config.onboardingLargeOwner,
                         repo: config.onboardingLargeClientRepo,
                         state: "open",
-                        labels: "bot:readyToSign",
+                        labels: ISSUE_LABELS.READY_TO_SIGN,
                         page,
                         per_page: 10,
                     }
                 );
+
+
             if (allReadyToSignIssues.data) {
                 const formattedIssues = await formatIssues(
                     allReadyToSignIssues.data,
@@ -235,12 +249,13 @@ const LargeRequestTable = (props: LargeRequestTableProps) => {
         },
         {
             name: "Approvals",
-            selector: (row : LargeRequestData) => row?.approvalInfoFromLabels,
+            selector: (row: LargeRequestData) =>
+                row?.approvalInfoFromLabels,
             grow: 0.5,
             center: true,
-            cell: (row : LargeRequestData) => (
+            cell: (row: LargeRequestData) => (
                 <div>{row?.approvalInfoFromLabels}</div>
-            )
+            ),
         },
         {
             name: "Node Data",
@@ -258,13 +273,58 @@ const LargeRequestTable = (props: LargeRequestTableProps) => {
             ),
             center: true,
         },
+        {
+            name: "Actions",
+            selector: (row: LargeRequestData) => row?.tx?.id,
+            grow: 0.5,
+            cell: (row: LargeRequestData) => {
+                const repliesByAuthor = extractRepliesByClient(row);
+
+                return (
+                    <div
+                        style={{ cursor: "pointer" }}
+                        onClick={() => {
+                            setSelectedRequestForActions(row);
+                            setIsActionsModalOpen(true);
+                        }}
+                    >
+                        <MoreHorizIcon /> ({repliesByAuthor?.length})
+                    </div>
+                );
+            },
+            center: true,
+        },
     ];
+
+    const handleChangeStatus = async ({
+        selectedStatus,
+        statusReason,
+        freeTextValue,
+    }: {
+        selectedStatus: string;
+        statusReason: string;
+        freeTextValue: string;
+    }) => {
+        const response = await changeRequestStatus(
+            selectedStatus,
+            statusReason,
+            freeTextValue,
+            selectedRequestForActions.issue_number
+        );
+        return response;
+    };
 
     return (
         <div
             className="large-request-table"
             style={{ minHeight: "500px" }}
         >
+            <ActionsModal
+                selectedRequest={selectedRequestForActions}
+                handleChangeStatus={handleChangeStatus}
+                open={isActionsModalOpen}
+                handleClose={() => setIsActionsModalOpen(false)}
+            />
             <NodeDataModal
                 isLoadingNodeData={isLoadingNodeData}
                 open={open}

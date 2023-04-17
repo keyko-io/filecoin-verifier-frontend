@@ -13,7 +13,31 @@ import {
 } from "../contextType";
 
 export const Data = React.createContext({
-    formatLargeRequestData: async (i: LargeRequestData[]) => ({} as any),
+    removeLabel: async (
+        owner: string,
+        repo: string,
+        issueNumber: number,
+        label: string
+    ) => false,
+    addLabels: async (
+        owner: string,
+        repo: string,
+        issueNumber: number,
+        labels: string[]
+    ) => false,
+    createComment: async (
+        owner: string,
+        repo: string,
+        issueNumber: number,
+        comment: string
+    ) => false,
+    removeAllLabels: async (
+        owner: string,
+        repo: string,
+        issueNumber: number
+    ) => false,
+    formatLargeRequestData: async (i: LargeRequestData[]) =>
+        ({} as any),
     getLargeRequestSearchInputData: async () => ({} as any),
     getNodeData: async (address: string, clientAddress: string) =>
         ({} as any),
