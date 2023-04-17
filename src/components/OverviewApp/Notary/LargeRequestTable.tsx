@@ -168,9 +168,11 @@ const LargeRequestTable = (props: LargeRequestTableProps) => {
                     config.onboardingLargeClientRepo,
                     "open",
                 )
+            debugger
             // that way is retrocompatible with old labels
-            const allReadyToSignIssuesFilteredByLabel = filterByLabel(allReadyToSignIssues, "readytosign").slice(page*10+1,page*10+11)  // always get 10
-           
+            const allReadyToSignIssuesFilteredByLabel = filterByLabel(allReadyToSignIssues, "readytosign")
+            .slice(page == 1 ? 0 : (page-1)*10, page * 10 +1)  // always get 10
+
             if (allReadyToSignIssuesFilteredByLabel) {
                 const formattedIssues = await formatIssues(
                     allReadyToSignIssuesFilteredByLabel,
