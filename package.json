@@ -1,6 +1,6 @@
 {
   "name": "filecoin-verifier-frontend",
-  "version": "2.0.7",
+  "version": "3.0.0",
   "private": true,
   "dependencies": {
     "@emotion/react": "^11.10.5",
