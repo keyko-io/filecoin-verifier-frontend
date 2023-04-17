@@ -50,7 +50,6 @@ const formatIssues = async (
     githubOcto: any
 ): Promise<any[]> => {
     const parsedIssueData: any = [];
-    console.log("data", data);
     await Promise.all(
         data?.map(async (issue: any) => {
             if (!issue.body) return;
@@ -58,8 +57,7 @@ const formatIssues = async (
 
             const approvalInfo = issue.labels.some(
                 (label: any) =>
-                    label.name ===
-                    ISSUE_LABELS.START_SIGN_DATACAP
+                    label.name === ISSUE_LABELS.START_SIGN_DATACAP
             );
 
             const comments = await githubOcto.paginate(
@@ -166,12 +164,31 @@ const LargeRequestTable = (props: LargeRequestTableProps) => {
                 await context.github.fetchGithubIssues(
                     config.onboardingLargeOwner,
                     config.onboardingLargeClientRepo,
-                    "open",
-                )
-            debugger
+                    "open"
+                );
             // that way is retrocompatible with old labels
-            const allReadyToSignIssuesFilteredByLabel = filterByLabel(allReadyToSignIssues, "readytosign")
-            .slice(page == 1 ? 0 : (page-1)*10, page * 10 +1)  // always get 10
+            const allReadyToSignIssuesFilteredByLabel = filterByLabel(
+                allReadyToSignIssues,
+                "readytosign"
+            ).slice(page == 1 ? 0 : (page - 1) * 10, page * 10 + 1); // always get 10
+
+            const allReadyToSignIssueNumber =
+                allReadyToSignIssuesFilteredByLabel.map(
+                    (i: any) => i.number
+                );
+            console.log(
+                "allReadyToSignIssueNumber",
+                allReadyToSignIssueNumber
+            );
+            // add "ready to sign" label to allreadytosignissuenumber
+            console.log("allReadyToSignIssueNumber", allReadyToSignIssueNumber[1]);
+            const issueNumber = allReadyToSignIssueNumber[1];
+            await context.addLabels(
+                config.onboardingLargeOwner,
+                config.onboardingLargeClientRepo,
+                issueNumber,
+                [ISSUE_LABELS.READY_TO_SIGN]
+            );
 
             if (allReadyToSignIssuesFilteredByLabel) {
                 const formattedIssues = await formatIssues(
@@ -298,11 +315,11 @@ const LargeRequestTable = (props: LargeRequestTableProps) => {
     const handleChangeStatus = async ({
         selectedStatus,
         statusReason,
-        freeTextValue
+        freeTextValue,
     }: {
         selectedStatus: string;
         statusReason: string;
-        freeTextValue: string
+        freeTextValue: string;
     }) => {
         const response = await changeRequestStatus(
             selectedStatus,
@@ -310,7 +327,7 @@ const LargeRequestTable = (props: LargeRequestTableProps) => {
             freeTextValue,
             selectedRequestForActions.issue_number
         );
-        return response
+        return response;
     };
 
     return (
