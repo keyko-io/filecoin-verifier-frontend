@@ -161,38 +161,22 @@ const LargeRequestTable = (props: LargeRequestTableProps) => {
         try {
             setIsLoadingGithubData(true);
             const allReadyToSignIssues =
-                await context.github.fetchGithubIssues(
-                    config.onboardingLargeOwner,
-                    config.onboardingLargeClientRepo,
-                    "open"
+                await context.github.githubOcto.issues.listForRepo(
+                    "GET /repos/{owner}/{repo}/issues",
+                    {
+                        owner: config.onboardingLargeOwner,
+                        repo: config.onboardingLargeClientRepo,
+                        state: "open",
+                        labels: ISSUE_LABELS.READY_TO_SIGN,
+                        page,
+                        per_page: 10,
+                    }
                 );
-            // that way is retrocompatible with old labels
-            const allReadyToSignIssuesFilteredByLabel = filterByLabel(
-                allReadyToSignIssues,
-                "readytosign"
-            ).slice(page == 1 ? 0 : (page - 1) * 10, page * 10 + 1); // always get 10
 
-            const allReadyToSignIssueNumber =
-                allReadyToSignIssuesFilteredByLabel.map(
-                    (i: any) => i.number
-                );
-            console.log(
-                "allReadyToSignIssueNumber",
-                allReadyToSignIssueNumber
-            );
-            // add "ready to sign" label to allreadytosignissuenumber
-            console.log("allReadyToSignIssueNumber", allReadyToSignIssueNumber[1]);
-            const issueNumber = allReadyToSignIssueNumber[1];
-            await context.addLabels(
-                config.onboardingLargeOwner,
-                config.onboardingLargeClientRepo,
-                issueNumber,
-                [ISSUE_LABELS.READY_TO_SIGN]
-            );
 
-            if (allReadyToSignIssuesFilteredByLabel) {
+            if (allReadyToSignIssues.data) {
                 const formattedIssues = await formatIssues(
-                    allReadyToSignIssuesFilteredByLabel,
+                    allReadyToSignIssues.data,
                     context.github.githubOcto
                 );
 
