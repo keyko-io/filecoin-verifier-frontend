@@ -11,6 +11,7 @@ import SearchInput from "./SearchInput";
 import { useLargeRequestsContext } from "../../../context/LargeRequests";
 import ActionsModal from "./ActionsModal";
 import { ISSUE_LABELS } from "filecoin-verfier-common";
+import { filterByLabel } from "../../../utils";
 
 const CANT_SIGN_MESSAGE =
     "You can currently only approve the allocation requests associated with the multisig organization you signed in with. Signing proposals for additional DataCap allocations will require you to sign in again";
@@ -162,20 +163,17 @@ const LargeRequestTable = (props: LargeRequestTableProps) => {
         try {
             setIsLoadingGithubData(true);
             const allReadyToSignIssues =
-                await context.github.githubOcto.issues.listForRepo(
-                    "GET /repos/{owner}/{repo}/issues",
-                    {
-                        owner: config.onboardingLargeOwner,
-                        repo: config.onboardingLargeClientRepo,
-                        state: "open",
-                        labels: ISSUE_LABELS.READY_TO_SIGN,
-                        page,
-                        per_page: 10,
-                    }
-                );
-            if (allReadyToSignIssues.data) {
+                await context.github.fetchGithubIssues(
+                    config.onboardingLargeOwner,
+                    config.onboardingLargeClientRepo,
+                    "open",
+                )
+            // that way is retrocompatible with old labels
+            const allReadyToSignIssuesFilteredByLabel = filterByLabel(allReadyToSignIssues, "readytosign").slice(page*10+1,page*10+11)  // always get 10
+           
+            if (allReadyToSignIssuesFilteredByLabel) {
                 const formattedIssues = await formatIssues(
-                    allReadyToSignIssues.data,
+                    allReadyToSignIssuesFilteredByLabel,
                     context.github.githubOcto
                 );
 
