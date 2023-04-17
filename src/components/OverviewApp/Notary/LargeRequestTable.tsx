@@ -9,8 +9,9 @@ import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import NodeDataModal from "./NodeDataModal";
 import SearchInput from "./SearchInput";
 import { useLargeRequestsContext } from "../../../context/LargeRequests";
-import { ISSUE_LABELS } from "../../../constants";
 import ActionsModal from "./ActionsModal";
+import { ISSUE_LABELS } from "filecoin-verfier-common";
+import { filterByLabel } from "../../../utils";
 
 const CANT_SIGN_MESSAGE =
     "You can currently only approve the allocation requests associated with the multisig organization you signed in with. Signing proposals for additional DataCap allocations will require you to sign in again";
@@ -49,7 +50,6 @@ const formatIssues = async (
     githubOcto: any
 ): Promise<any[]> => {
     const parsedIssueData: any = [];
-    console.log("data", data);
     await Promise.all(
         data?.map(async (issue: any) => {
             if (!issue.body) return;
@@ -57,8 +57,7 @@ const formatIssues = async (
 
             const approvalInfo = issue.labels.some(
                 (label: any) =>
-                    label.name ===
-                    ISSUE_LABELS.STATUS_START_SIGN_DATACAP
+                    label.name === ISSUE_LABELS.START_SIGN_DATACAP
             );
 
             const comments = await githubOcto.paginate(
@@ -168,11 +167,13 @@ const LargeRequestTable = (props: LargeRequestTableProps) => {
                         owner: config.onboardingLargeOwner,
                         repo: config.onboardingLargeClientRepo,
                         state: "open",
-                        labels: ISSUE_LABELS.BOT_READY_TO_SIGN,
+                        labels: ISSUE_LABELS.READY_TO_SIGN,
                         page,
                         per_page: 10,
                     }
                 );
+
+
             if (allReadyToSignIssues.data) {
                 const formattedIssues = await formatIssues(
                     allReadyToSignIssues.data,
@@ -298,11 +299,11 @@ const LargeRequestTable = (props: LargeRequestTableProps) => {
     const handleChangeStatus = async ({
         selectedStatus,
         statusReason,
-        freeTextValue
+        freeTextValue,
     }: {
         selectedStatus: string;
         statusReason: string;
-        freeTextValue: string
+        freeTextValue: string;
     }) => {
         const response = await changeRequestStatus(
             selectedStatus,
@@ -310,7 +311,7 @@ const LargeRequestTable = (props: LargeRequestTableProps) => {
             freeTextValue,
             selectedRequestForActions.issue_number
         );
-        return response
+        return response;
     };
 
     return (

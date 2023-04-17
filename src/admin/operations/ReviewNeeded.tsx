@@ -4,6 +4,8 @@ import { config } from "../../config"
 import { Typography } from "@mui/material"
 import DataTable from "react-data-table-component"
 import { ldnParser } from "@keyko-io/filecoin-verifier-tools"
+import {ISSUE_LABELS} from 'filecoin-verfier-common'
+
 
 export const ReviewNeeded = () => {
   const context = useContext(Data)
@@ -19,7 +21,7 @@ export const ReviewNeeded = () => {
           owner: config.onboardingLargeOwner,
           repo: config.onboardingLargeClientRepo,
           state: "open",
-          labels: "bot:reviewNeeded",
+          labels: ISSUE_LABELS.REVIEW_NEEDED,
           sort: "updated",
         }
       )
