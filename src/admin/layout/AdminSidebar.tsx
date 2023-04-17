@@ -1,14 +1,7 @@
-import {
-  Box,
-  ListItem,
-  ListItemButton,
-  ListItemText,
-  ListItemIcon,
-  IconButton,
-} from "@mui/material"
-import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight"
+import { Box, IconButton } from "@mui/material"
 import WestIcon from "@mui/icons-material/West"
-import { SidebarOperationKey } from "../pages/Admin"
+import SidebarListItem from "../components/SidebarListItem"
+import { SidebarOperationKey } from "../types"
 
 type AdminSidebarProps = {
   setIsDrawerOpen: (isDrawerOpen: boolean) => void
@@ -33,6 +26,10 @@ const AdminSidebar = ({ setIsDrawerOpen, setOperation }: AdminSidebarProps) => {
         itemText="Issue History Summary"
         setOperation={() => setOperation(SidebarOperationKey.ISSUE_HISTORY)}
       />
+      <SidebarListItem
+        itemText="Review Needed"
+        setOperation={() => setOperation(SidebarOperationKey.REVIEW_NEEDED)}
+      />
       <IconButton
         aria-label="back"
         size="large"
@@ -46,29 +43,3 @@ const AdminSidebar = ({ setIsDrawerOpen, setOperation }: AdminSidebarProps) => {
 }
 
 export default AdminSidebar
-
-type SidebarListItemProps = {
-  itemText: string
-  setOperation: (operation: SidebarOperationKey) => void
-}
-
-const SidebarListItem = ({ itemText, setOperation }: SidebarListItemProps) => {
-  return (
-    <ListItem
-      disablePadding
-      sx={{
-        background: "linear-gradient(to right, #0091FF, #1F77D0)",
-        color: "white",
-        borderBottom: "1px solid white",
-      }}
-      onClick={() => setOperation(SidebarOperationKey.MANUAL_DATACAP)}
-    >
-      <ListItemButton>
-        <ListItemIcon sx={{ minWidth: "40px" }}>
-          <KeyboardArrowRightIcon sx={{ color: "white" }} />
-        </ListItemIcon>
-        <ListItemText primary={itemText} sx={{ paddingY: "10px" }} />
-      </ListItemButton>
-    </ListItem>
-  )
-}

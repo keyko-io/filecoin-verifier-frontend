@@ -1,6 +1,6 @@
 {
   "name": "filecoin-verifier-frontend",
-  "version": "2.0.7",
+  "version": "3.0.0",
   "private": true,
   "dependencies": {
     "@emotion/react": "^11.10.5",
@@ -40,6 +40,7 @@
     "bignumber.js": "^9.0.1",
     "bluebird": "^3.7.2",
     "copy-text-to-clipboard": "^2.2.0",
+    "filecoin-verfier-common": "^1.0.7",
     "fuse.js": "^6.6.2",
     "himalaya": "^1.1.0",
     "lodash": "^4.17.21",
