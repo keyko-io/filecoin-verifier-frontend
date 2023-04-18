@@ -14,6 +14,7 @@ import { notaryParser, metrics } from "@keyko-io/filecoin-verifier-tools";
 import { VerifiedData } from "../../type";
 import * as Logger from "../../logger";
 import { methods } from "@keyko-io/filecoin-verifier-tools";
+import { ISSUE_LABELS } from "filecoin-verfier-common";
 
 type RootKeyHolderState = {
   tabs: string;
@@ -190,8 +191,8 @@ export default class RootKeyHolder extends Component<{},
             const rootkey = config.networks == "Mainnet" ? methods.mainnet.rootkey : methods.testnet.rootkey
             for (const tx of request.txs) {
 
-                // this is a workaround because method approveVerifier stopped working - now just approving the TX
-                messageID = await this.context.wallet.api.send(rootkey.approve(tx.id, tx.tx), walletIndex)
+              // this is a workaround because method approveVerifier stopped working - now just approving the TX
+              messageID = await this.context.wallet.api.send(rootkey.approve(tx.id, tx.tx), walletIndex)
 
               const txReceipt = await this.context.wallet.api.getReceipt(
                 messageID
@@ -209,7 +210,7 @@ export default class RootKeyHolder extends Component<{},
             // comment to issue
             commentContent = `## The request has been signed by a new Root Key Holder\n#### Message sent to Filecoin Network\n>${messageIds.join()}\n${errorMessage}\n${filfox}`;
             label =
-              errorMessage === "" ? "status:AddedOnchain" : "status:Error";
+              errorMessage === "" ? ISSUE_LABELS.GRANTED : ISSUE_LABELS.ERROR;
           } else {
             await this.context.postLogs(
               `multisig ${request.addresses[0]} - going to propose the address.`,
@@ -269,9 +270,9 @@ export default class RootKeyHolder extends Component<{},
               errorMessage === ""
                 ? config.lotusNodes[this.context.wallet.networkIndex]
                   .rkhtreshold > 1
-                  ? "status:StartSignOnchain"
-                  : "status:AddedOnchain"
-                : "status:Error";
+                  ? ISSUE_LABELS.START_SIGN_DATACAP
+                  : ISSUE_LABELS.GRANTED
+                : ISSUE_LABELS.ERROR;
           }
 
           if (messageIds.length === 0) {
@@ -335,7 +336,7 @@ export default class RootKeyHolder extends Component<{},
             );
           }
           //metrics
-          if (label === "status:AddedOnchain") {
+          if (label ===ISSUE_LABELS.GRANTED) {
             const notaryGovissue =
               await this.context.github.githubOctoGeneric.octokit.issues.get({
                 owner:

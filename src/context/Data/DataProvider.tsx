@@ -9,6 +9,7 @@ import { v4 as uuidv4 } from "uuid";
 import { bytesToiB } from "../../utils/Filters";
 import { notaryLedgerVerifiedComment } from "./comments";
 import { Notary } from "../../pages/Verifiers";
+import { ISSUE_LABELS } from "filecoin-verfier-common";
 import {
     ldnParser,
     notaryParser,
@@ -559,7 +560,7 @@ export default class DataProvider extends React.Component<
                         await this.props.github.githubOctoGenericLogin();
                     }
 
-                    const allIssues =
+                    const msigRequests =
                         await this.props.github.githubOctoGeneric.octokit.paginate(
                             this.props.github.githubOctoGeneric
                                 .octokit.issues.listForRepo,
@@ -567,24 +568,24 @@ export default class DataProvider extends React.Component<
                                 owner: config.onboardingOwner,
                                 repo: config.onboardingNotaryOwner,
                                 state: "open",
-                                labels: "Notary Application",
+                                labels: [ISSUE_LABELS.READY_TO_SIGN, "Notary Application"],
                             }
                         );
 
-                    const msigRequests = allIssues
-                        .filter(
-                            (issue: any) =>
-                                !issue.labels.find(
-                                    (l: any) =>
-                                        l.name.toLowerCase().replace(/ /g, '').includes("addedonchain")
-                                )
-                        )
-                        .filter((issue: any) =>
-                            issue.labels.find(
-                                (l: any) =>
-                                l.name.toLowerCase().replace(/ /g, '').includes("approved") || l.name.toLowerCase().replace(/ /g, '').includes("startsignonchain")
-                            )
-                        );
+                    // const msigRequests = allIssues
+                        // .filter(
+                        //     (issue: any) =>
+                        //         !issue.labels.find(
+                        //             (l: any) =>
+                        //                 l.name.toLowerCase().replace(/ /g, '').includes("addedonchain")
+                        //         )
+                        // )
+                        // .filter((issue: any) =>
+                        //     issue.labels.find(
+                        //         (l: any) =>
+                        //             l.name.toLowerCase().replace(/ /g, '').includes("approved") || l.name.toLowerCase().replace(/ /g, '').includes("startsignonchain")
+                        //     )
+                        // );
 
                     const pendingTxs = (
                         await this.props.wallet.api.pendingRootTransactions()
@@ -614,7 +615,6 @@ export default class DataProvider extends React.Component<
                                                     ].notaryRepo,
                                                     issue.number
                                                 );
-
                                             const parseCommentBody =
                                                 comments.map(
                                                     (c: any) =>
@@ -887,7 +887,7 @@ export default class DataProvider extends React.Component<
                     console.log("response", response);
                     const success = response.status >= 200 && response.status <= 299
                     console.log("success", success);
-                    return  success
+                    return success
                 } catch (error) {
                     console.log(error);
                     return false
@@ -981,7 +981,7 @@ export default class DataProvider extends React.Component<
                             owner: config.onboardingOwner,
                             repo: config.onboardingClientRepo,
                             issue_number: requestNumber,
-                            labels: ["status:Error"],
+                            labels: ISSUE_LABELS.ERROR,
                         }
                     );
                     await this.props.github.githubOcto.issues.createComment(
@@ -1058,7 +1058,7 @@ export default class DataProvider extends React.Component<
                             owner: config.onboardingLargeOwner,
                             repo: config.onboardingLargeClientRepo,
                             issue_number: requestNumber,
-                            labels: ["status:Error"],
+                            labels: ISSUE_LABELS.ERROR,
                         }
                     );
                     await this.props.github.githubOcto.issues.createComment(
