@@ -5,6 +5,7 @@ type InfoType = {
   title: string
   count: string
   usetCount: number
+  stats : number
 }
 
 type InfoCardProps = {
@@ -33,7 +34,7 @@ const InfoCard = ({ info }: InfoCardProps) => {
         >
           {info.title}
         </div>
-        <p style={{ fontSize: "36px" }}>{info.count}</p>
+        <p style={{ fontSize: "36px" }}>{info.stats}</p>
       </div>
     </Grid>
   )
