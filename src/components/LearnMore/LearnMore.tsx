@@ -22,12 +22,13 @@ const LearnMore = () => {
     }
 
     return (
-        <div className="learnmore">
+        <div className="learnmore" style={{display : "flex", justifyContent : "space-around"}}>
             {pathname !== "/" ?
                 <ButtonPrimary onClick={checkDatacap}>Check Remaining DataCap</ButtonPrimary>
-                : <ButtonPrimary style={{ marginRight: "30px" }} onClick={() => goTo("logs")}>See the logs</ButtonPrimary>}
-            <ButtonPrimary style={{ margin: "0px 30px", }} onClick={navigate}>Learn More</ButtonPrimary>
+                : <ButtonPrimary  onClick={() => goTo("logs")}>See the logs</ButtonPrimary>}
+            <ButtonPrimary  onClick={navigate}>Learn More</ButtonPrimary>
             <ButtonPrimary onClick={() => goTo("status")}>Status Page</ButtonPrimary>
+            <ButtonPrimary  onClick={() => goTo("info")}>Sentry Metrics</ButtonPrimary>
         </div >
     )
 
