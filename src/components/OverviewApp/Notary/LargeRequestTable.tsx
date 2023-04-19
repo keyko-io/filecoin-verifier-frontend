@@ -100,8 +100,12 @@ type LargeRequestTableProps = {
 
 const LargeRequestTable = (props: LargeRequestTableProps) => {
     const { setSelectedLargeClientRequests } = props;
-    const { count, changeRequestStatus, extractRepliesByClient } =
-        useLargeRequestsContext();
+    const {
+        count,
+        isNotaryUser,
+        changeRequestStatus,
+        extractRepliesByClient,
+    } = useLargeRequestsContext();
     const context = useContext(Data);
 
     const [isLoadingGithubData, setIsLoadingGithubData] =
@@ -172,7 +176,6 @@ const LargeRequestTable = (props: LargeRequestTableProps) => {
                         per_page: 10,
                     }
                 );
-
 
             if (allReadyToSignIssues.data) {
                 const formattedIssues = await formatIssues(
@@ -319,12 +322,14 @@ const LargeRequestTable = (props: LargeRequestTableProps) => {
             className="large-request-table"
             style={{ minHeight: "500px" }}
         >
-            <ActionsModal
-                selectedRequest={selectedRequestForActions}
-                handleChangeStatus={handleChangeStatus}
-                open={isActionsModalOpen}
-                handleClose={() => setIsActionsModalOpen(false)}
-            />
+            {isNotaryUser() && (
+                <ActionsModal
+                    selectedRequest={selectedRequestForActions}
+                    handleChangeStatus={handleChangeStatus}
+                    open={isActionsModalOpen}
+                    handleClose={() => setIsActionsModalOpen(false)}
+                />
+            )}
             <NodeDataModal
                 isLoadingNodeData={isLoadingNodeData}
                 open={open}
