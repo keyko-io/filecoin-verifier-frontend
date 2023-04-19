@@ -21,6 +21,7 @@ const repo = config.onboardingLargeClientRepo;
 
 interface LargeRequestsState {
     areRequestsSignable: any;
+    isNotaryUser: () => boolean;
     count: number;
     data: LargeRequestData[];
     extractRepliesByClient: (i: LargeRequestData) => any;
@@ -87,6 +88,17 @@ export default function LargeRequestsProvider({ children }: any) {
         );
         if (!createCommentResponse) return false;
         return createCommentResponse && addLabelsResponse;
+    };
+
+    const isNotaryUser = (): boolean => {
+        const activeAccount: string =
+            context.wallet.accountsActive[
+                context.wallet.activeAccount
+            ];
+
+        const allowedNotaryAddresses: string[] = []; // :FIXME
+
+        return allowedNotaryAddresses.includes(activeAccount);
     };
 
     const areRequestsSignable = async (
@@ -183,6 +195,7 @@ export default function LargeRequestsProvider({ children }: any) {
         areRequestsSignable,
         changeRequestStatus,
         extractRepliesByClient,
+        isNotaryUser,
     };
 
     return (
