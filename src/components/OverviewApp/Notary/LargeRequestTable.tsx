@@ -80,16 +80,15 @@ const formatIssues = async (
                 comment.body
             );
 
-            // fetch events
             let events = [];
-
-            if (
+            const isWaitingForClientReplyLabelExist =
                 issue?.labels?.filter(
-                    (l: any) =>
+                    (l: { name: string }) =>
                         l.name ===
                         ISSUE_LABELS.WAITING_FOR_CLIENT_REPLY
-                ).length > 0
-            ) {
+                ).length > 0;
+
+            if (isWaitingForClientReplyLabelExist) {
                 events = await fetch(issue.events_url).then((res) =>
                     res.json()
                 );
@@ -200,7 +199,6 @@ const LargeRequestTable = (props: LargeRequestTableProps) => {
                     allReadyToSignIssues.data,
                     context.github.githubOcto
                 );
-                console.log("formattedIssues", formattedIssues);
 
                 setData(formattedIssues);
                 setIsLoadingGithubData(false);
