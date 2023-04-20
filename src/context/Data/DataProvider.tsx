@@ -573,19 +573,19 @@ export default class DataProvider extends React.Component<
                         );
 
                     // const msigRequests = allIssues
-                        // .filter(
-                        //     (issue: any) =>
-                        //         !issue.labels.find(
-                        //             (l: any) =>
-                        //                 l.name.toLowerCase().replace(/ /g, '').includes("addedonchain")
-                        //         )
-                        // )
-                        // .filter((issue: any) =>
-                        //     issue.labels.find(
-                        //         (l: any) =>
-                        //             l.name.toLowerCase().replace(/ /g, '').includes("approved") || l.name.toLowerCase().replace(/ /g, '').includes("startsignonchain")
-                        //     )
-                        // );
+                    // .filter(
+                    //     (issue: any) =>
+                    //         !issue.labels.find(
+                    //             (l: any) =>
+                    //                 l.name.toLowerCase().replace(/ /g, '').includes("addedonchain")
+                    //         )
+                    // )
+                    // .filter((issue: any) =>
+                    //     issue.labels.find(
+                    //         (l: any) =>
+                    //             l.name.toLowerCase().replace(/ /g, '').includes("approved") || l.name.toLowerCase().replace(/ /g, '').includes("startsignonchain")
+                    //     )
+                    // );
 
                     const pendingTxs = (
                         await this.props.wallet.api.pendingRootTransactions()
@@ -603,16 +603,8 @@ export default class DataProvider extends React.Component<
                                         async (resolve, reject) => {
                                             const comments =
                                                 await this.props.github.fetchGithubComments(
-                                                    config.lotusNodes[
-                                                        this.props
-                                                            .wallet
-                                                            .networkIndex
-                                                    ].notaryOwner,
-                                                    config.lotusNodes[
-                                                        this.props
-                                                            .wallet
-                                                            .networkIndex
-                                                    ].notaryRepo,
+                                                    config.onboardingOwner,
+                                                    config.onboardingNotaryOwner,
                                                     issue.number
                                                 );
                                             const parseCommentBody =
@@ -622,7 +614,6 @@ export default class DataProvider extends React.Component<
                                                             c.body
                                                         )
                                                 );
-
                                             const filteredCorrectRequests =
                                                 parseCommentBody.filter(
                                                     (o: any) =>
@@ -632,9 +623,13 @@ export default class DataProvider extends React.Component<
                                             const lastRequest =
                                                 filteredCorrectRequests.reverse()[0];
 
-                                            const msigAddress =
+                                            let verifierAddress =
                                                 lastRequest?.address ||
                                                 null;
+
+                                            if (verifierAddress?.startsWith("t1") || verifierAddress?.startsWith("f1")) {
+                                                verifierAddress = await this.props.wallet.api.actorAddress(verifierAddress);
+                                            }
 
                                             const tx =
                                                 pendingTxs.find(
@@ -642,13 +637,13 @@ export default class DataProvider extends React.Component<
                                                         ptx.parsed
                                                             .params
                                                             .verifier ===
-                                                        msigAddress
+                                                        verifierAddress
                                                 );
                                             resolve({
                                                 issue,
                                                 comments,
                                                 lastRequest,
-                                                msigAddress,
+                                                msigAddress: verifierAddress,
                                                 tx,
                                             });
                                         }
