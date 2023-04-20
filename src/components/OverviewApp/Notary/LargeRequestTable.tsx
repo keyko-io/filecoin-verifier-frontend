@@ -1,17 +1,17 @@
 import { ldnParser } from "@keyko-io/filecoin-verifier-tools";
 import { CircularProgress } from "@material-ui/core";
+import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
+import SettingsIcon from "@mui/icons-material/Settings";
+import { ISSUE_LABELS } from "filecoin-verfier-common";
 import { useContext, useEffect, useState } from "react";
 import DataTable from "react-data-table-component";
 import { config } from "../../../config";
 import { Data } from "../../../context/Data/Index";
+import { useLargeRequestsContext } from "../../../context/LargeRequests";
 import { LargeRequestData } from "../../../type";
-import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
+import ActionsModal from "./ActionsModal";
 import NodeDataModal from "./NodeDataModal";
 import SearchInput from "./SearchInput";
-import { useLargeRequestsContext } from "../../../context/LargeRequests";
-import ActionsModal from "./ActionsModal";
-import { ISSUE_LABELS } from "filecoin-verfier-common";
-import { filterByLabel } from "../../../utils";
 
 const CANT_SIGN_MESSAGE =
     "You can currently only approve the allocation requests associated with the multisig organization you signed in with. Signing proposals for additional DataCap allocations will require you to sign in again";
@@ -79,10 +79,28 @@ const formatIssues = async (
             const commentParsed = ldnParser.parseReleaseRequest(
                 comment.body
             );
+
+            // fetch events
+            let events = [];
+
+            if (
+                issue?.labels?.filter(
+                    (l: any) =>
+                        l.name ===
+                        ISSUE_LABELS.WAITING_FOR_CLIENT_REPLY
+                ).length > 0
+            ) {
+                events = await fetch(issue.events_url).then((res) =>
+                    res.json()
+                );
+            }
+
             parsedIssueData.push({
                 ...parsed,
                 issue_number: issue.number,
                 url: issue.html_url,
+                labels: issue.labels,
+                events: events,
                 comments,
                 user: issue.user.login,
                 multisig: commentParsed.notaryAddress,
@@ -182,6 +200,7 @@ const LargeRequestTable = (props: LargeRequestTableProps) => {
                     allReadyToSignIssues.data,
                     context.github.githubOcto
                 );
+                console.log("formattedIssues", formattedIssues);
 
                 setData(formattedIssues);
                 setIsLoadingGithubData(false);
@@ -278,6 +297,7 @@ const LargeRequestTable = (props: LargeRequestTableProps) => {
         },
         {
             name: "Actions",
+            omit: !isNotaryUser(),
             selector: (row: LargeRequestData) => row?.tx?.id,
             grow: 0.5,
             cell: (row: LargeRequestData) => {
@@ -291,7 +311,10 @@ const LargeRequestTable = (props: LargeRequestTableProps) => {
                             setIsActionsModalOpen(true);
                         }}
                     >
-                        <MoreHorizIcon /> ({repliesByAuthor?.length})
+                        <SettingsIcon />
+                        {repliesByAuthor.length > 0 && (
+                            <div>({repliesByAuthor?.length})</div>
+                        )}
                     </div>
                 );
             },
@@ -322,14 +345,12 @@ const LargeRequestTable = (props: LargeRequestTableProps) => {
             className="large-request-table"
             style={{ minHeight: "500px" }}
         >
-            {isNotaryUser() && (
-                <ActionsModal
-                    selectedRequest={selectedRequestForActions}
-                    handleChangeStatus={handleChangeStatus}
-                    open={isActionsModalOpen}
-                    handleClose={() => setIsActionsModalOpen(false)}
-                />
-            )}
+            <ActionsModal
+                selectedRequest={selectedRequestForActions}
+                handleChangeStatus={handleChangeStatus}
+                open={isActionsModalOpen}
+                handleClose={() => setIsActionsModalOpen(false)}
+            />
             <NodeDataModal
                 isLoadingNodeData={isLoadingNodeData}
                 open={open}

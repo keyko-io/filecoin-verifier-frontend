@@ -1,20 +1,22 @@
+import { ISSUE_LABELS } from "filecoin-verfier-common";
 import {
     createContext,
+    useCallback,
     useContext,
     useEffect,
-    useState,
+    useState
 } from "react";
-import { LargeRequestData } from "../type";
-import { anyToBytes } from "../utils/Filters";
-import { Data } from "./Data/Index";
-import { useNodeDataContext } from "./NodeData";
-import * as Logger from "../logger";
+import { config } from "../config";
 import {
     constructNewStatusComment,
-    STATUS_LABELS,
+    STATUS_LABELS
 } from "../constants";
-import { config } from "../config";
-import { ISSUE_LABELS } from "filecoin-verfier-common";
+import * as Logger from "../logger";
+import { GithubIssueEvent, LargeRequestData } from "../type";
+import { anyToBytes } from "../utils/Filters";
+import { getFileFromRepo } from "../utils/octokit";
+import { Data } from "./Data/Index";
+import { useNodeDataContext } from "./NodeData";
 
 const owner = config.onboardingOwner;
 const repo = config.onboardingLargeClientRepo;
@@ -44,6 +46,7 @@ export default function LargeRequestsProvider({ children }: any) {
     const context = useContext(Data);
     const { getMultisigInfo } = useNodeDataContext();
     const [data, setData] = useState([]);
+    const [notariesData, setNotariesData] = useState([]);
 
     useEffect(() => {
         const handler = async () => {
@@ -90,16 +93,33 @@ export default function LargeRequestsProvider({ children }: any) {
         return createCommentResponse && addLabelsResponse;
     };
 
-    const isNotaryUser = (): boolean => {
-        const activeAccount: string =
-            context.wallet.accountsActive[
-                context.wallet.activeAccount
-            ];
-
-        const allowedNotaryAddresses: string[] = []; // :FIXME
-
+    // is logged in user is a notary
+    const isNotaryUser = useCallback((): boolean => {
+        if (!notariesData || !Array.isArray(notariesData)) {
+            return false;
+        }
+        const activeAccount: string = context?.wallet?.activeAccount;
+        const allowedNotaryAddresses: string[] = notariesData?.map(
+            (n: { direct_config: { signing_address: string } }) => {
+                return n.direct_config.signing_address;
+            }
+        );
         return allowedNotaryAddresses.includes(activeAccount);
-    };
+    }, [notariesData, context?.wallet?.activeAccount]);
+
+    // fetch notaries list and save to state
+    useEffect(() => {
+        const handler = async () => {
+            const notariesListPath =
+                "json/prod/verifiers-registry.json";
+            const notariesList = await getFileFromRepo({
+                path: notariesListPath,
+                ctx: context,
+            });
+            setNotariesData(notariesList.notaries);
+        };
+        handler();
+    }, []);
 
     const areRequestsSignable = async (
         requests: LargeRequestData[]
@@ -183,8 +203,26 @@ export default function LargeRequestsProvider({ children }: any) {
 
     const extractRepliesByClient = (row: LargeRequestData) => {
         const issueAuthor = row.user;
+        if (!row?.events) return [];
+        const wfcrLabelEvent = row?.events?.find(
+            // assuming the label is added only once
+            (e: GithubIssueEvent) => {
+                return (
+                    e.event === "labeled" &&
+                    e.label.name ===
+                        ISSUE_LABELS.WAITING_FOR_CLIENT_REPLY
+                );
+            }
+        );
+        if (!wfcrLabelEvent) return [];
+        const wfcrTimestamp = wfcrLabelEvent?.created_at; // timestamp of "waiting for client reply label"
         const repliesByAuthor = row?.comments?.filter((comment) => {
-            return comment?.user?.login === issueAuthor;
+            // we retrive only comments by author that are after the label was added
+            return (
+                comment?.user?.login === issueAuthor &&
+                new Date(String(comment.updated_at)) >
+                    new Date(String(wfcrTimestamp))
+            );
         });
         return repliesByAuthor;
     };
