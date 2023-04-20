@@ -1,7 +1,7 @@
 import { config } from "../config";
 
 const owner = config.onboardingOwner;
-
+const filecoinContentOwner = config.filecoinContentOwner
 export async function getFileFromRepo({
     path,
     ctx,
@@ -12,7 +12,7 @@ export async function getFileFromRepo({
     try {
         const response = await ctx.github.githubOcto.repos.getContent(
             {
-                owner,
+                owner: filecoinContentOwner,
                 repo: "filecoin-content",
                 path,
             }

@@ -51,6 +51,7 @@ const localConfig = {
     onboardingLargeClientRepo: 'filecoin-large-clients-onboarding',
     onboardingLargeOwner: 'keyko-io',
     onboardingNotaryOwner: 'filecoin-notaries-onboarding',
+    filecoinContentOwner: 'keyko-io',
     githubApp: process.env.REACT_APP_GITHUB_APP || 'Iv1.10e7aaed4654db3c',
     oauthUri: process.env.REACT_APP_OAUTH_URI || 'http://localhost:3000/oauth/',
     networks: 'Localhost',
@@ -84,7 +85,7 @@ const localConfig = {
     status_issue_number: 1419,
     status_issue_url: "https://github.com/keyko-io/filecoin-large-clients-onboarding/issues/1419",
     verifiers_registry_url: "https://raw.githubusercontent.com/keyko-io/filecoin-content/main/json/test/verifiers-registry_test.json",
-    numberOfWalletAccounts : 20
+    numberOfWalletAccounts: 20
 }
 
 const prodConfig = {
@@ -95,6 +96,7 @@ const prodConfig = {
     onboardingLargeClientRepo: 'filecoin-plus-large-datasets',
     onboardingLargeOwner: 'filecoin-project',
     onboardingNotaryOwner: 'notary-governance',
+    filecoinContentOwner: 'keyko-io',
     githubApp: process.env.REACT_APP_GITHUB_APP || 'Iv1.1490209508f9ed93',
     oauthUri: process.env.REACT_APP_OAUTH_URI || 'http://localhost:3000/oauth/',
     networks: 'Mainnet',
@@ -127,8 +129,8 @@ const prodConfig = {
     dev_mode: process.env.REACT_APP_MODE,
     status_issue_number: 1427,
     status_issue_url: "https://github.com/filecoin-project/filecoin-plus-large-datasets/issues/1427",
-    verifiers_registry_url : "https://raw.githubusercontent.com/keyko-io/filecoin-content/main/json/prod/verifiers-registry.json",
-    numberOfWalletAccounts : 20
+    verifiers_registry_url: "https://raw.githubusercontent.com/keyko-io/filecoin-content/main/json/prod/verifiers-registry.json",
+    numberOfWalletAccounts: 20
 }
 
 export const config =
