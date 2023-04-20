@@ -1,17 +1,17 @@
 import { ldnParser } from "@keyko-io/filecoin-verifier-tools";
 import { CircularProgress } from "@material-ui/core";
+import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
+import SettingsIcon from "@mui/icons-material/Settings";
+import { ISSUE_LABELS } from "filecoin-verfier-common";
 import { useContext, useEffect, useState } from "react";
 import DataTable from "react-data-table-component";
 import { config } from "../../../config";
 import { Data } from "../../../context/Data/Index";
+import { useLargeRequestsContext } from "../../../context/LargeRequests";
 import { LargeRequestData } from "../../../type";
-import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
+import ActionsModal from "./ActionsModal";
 import NodeDataModal from "./NodeDataModal";
 import SearchInput from "./SearchInput";
-import { useLargeRequestsContext } from "../../../context/LargeRequests";
-import ActionsModal from "./ActionsModal";
-import { ISSUE_LABELS } from "filecoin-verfier-common";
-import { filterByLabel } from "../../../utils";
 
 const CANT_SIGN_MESSAGE =
     "You can currently only approve the allocation requests associated with the multisig organization you signed in with. Signing proposals for additional DataCap allocations will require you to sign in again";
@@ -79,10 +79,27 @@ const formatIssues = async (
             const commentParsed = ldnParser.parseReleaseRequest(
                 comment.body
             );
+
+            let events = [];
+            const isWaitingForClientReplyLabelExist =
+                issue?.labels?.filter(
+                    (l: { name: string }) =>
+                        l.name ===
+                        ISSUE_LABELS.WAITING_FOR_CLIENT_REPLY
+                ).length > 0;
+
+            if (isWaitingForClientReplyLabelExist) {
+                events = await fetch(issue.events_url).then((res) =>
+                    res.json()
+                );
+            }
+
             parsedIssueData.push({
                 ...parsed,
                 issue_number: issue.number,
                 url: issue.html_url,
+                labels: issue.labels,
+                events: events,
                 comments,
                 user: issue.user.login,
                 multisig: commentParsed.notaryAddress,
@@ -100,8 +117,12 @@ type LargeRequestTableProps = {
 
 const LargeRequestTable = (props: LargeRequestTableProps) => {
     const { setSelectedLargeClientRequests } = props;
-    const { count, changeRequestStatus, extractRepliesByClient } =
-        useLargeRequestsContext();
+    const {
+        count,
+        isNotaryUser,
+        changeRequestStatus,
+        extractRepliesByClient,
+    } = useLargeRequestsContext();
     const context = useContext(Data);
 
     const [isLoadingGithubData, setIsLoadingGithubData] =
@@ -172,7 +193,6 @@ const LargeRequestTable = (props: LargeRequestTableProps) => {
                         per_page: 10,
                     }
                 );
-
 
             if (allReadyToSignIssues.data) {
                 const formattedIssues = await formatIssues(
@@ -275,6 +295,7 @@ const LargeRequestTable = (props: LargeRequestTableProps) => {
         },
         {
             name: "Actions",
+            omit: !isNotaryUser(),
             selector: (row: LargeRequestData) => row?.tx?.id,
             grow: 0.5,
             cell: (row: LargeRequestData) => {
@@ -288,7 +309,10 @@ const LargeRequestTable = (props: LargeRequestTableProps) => {
                             setIsActionsModalOpen(true);
                         }}
                     >
-                        <MoreHorizIcon /> ({repliesByAuthor?.length})
+                        <SettingsIcon />
+                        {repliesByAuthor.length > 0 && (
+                            <div>({repliesByAuthor?.length})</div>
+                        )}
                     </div>
                 );
             },
