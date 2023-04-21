@@ -93,7 +93,6 @@ const formatIssues = async (
                     res.json()
                 );
             }
-
             parsedIssueData.push({
                 ...parsed,
                 issue_number: issue.number,
@@ -105,6 +104,7 @@ const formatIssues = async (
                 multisig: commentParsed.notaryAddress,
                 datacap: commentParsed.allocationDatacap,
                 approvalInfoFromLabels: approvalInfo ? 1 : 0,
+                uuid: commentParsed.uuid
             });
         })
     );

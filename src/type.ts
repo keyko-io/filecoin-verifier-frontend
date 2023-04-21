@@ -32,6 +32,8 @@ export interface LargeRequestData {
     approvalInfoFromLabels?: number;
     user: string; //github handle
     events: GithubIssueEvent[];
+    name: string
+    uuid:string
 }
 
 export interface GithubIssueEvent {
