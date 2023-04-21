@@ -194,13 +194,13 @@ export default class RootKeyHolder extends Component<{},
               // this is a workaround because method approveVerifier stopped working - now just approving the TX
               messageID = await this.context.wallet.api.send(rootkey.approve(tx.id, tx.tx), walletIndex)
 
-              const txReceipt = await this.context.wallet.api.getReceipt(
-                messageID
-              );
-              if (!txReceipt)
-                warningMessage += `#### @${assignee} The bot couldn't find the Receipt. \nPlease, manually check the message to see that exitcode equals 0.\n>${messageID}`;
-              if (txReceipt.ExitCode !== 0)
-                errorMessage += `#### @${assignee} There was an error processing the message >${messageID}`;
+              // const txReceipt = await this.context.wallet.api.getReceipt(
+              //   messageID
+              // );
+              // if (!txReceipt)
+              //   warningMessage += `#### @${assignee} The bot couldn't find the Receipt. \nPlease, manually check the message to see that exitcode equals 0.\n>${messageID}`;
+              // if (txReceipt.ExitCode !== 0)
+              //   errorMessage += `#### @${assignee} There was an error processing the message >${messageID}`;
               messageIds.push(messageID);
               this.context.wallet.dispatchNotification(
                 "Accepting Message sent with ID: " + messageID
@@ -251,13 +251,14 @@ export default class RootKeyHolder extends Component<{},
                       this.context.wallet.walletIndex
                     );
                 console.log("messageID: " + messageID);
-                const txReceipt = await this.context.wallet.api.getReceipt(
-                  messageID
-                );
-                if (!txReceipt)
-                  warningMessage += `#### @${assignee} The bot couldn't find the Receipt. \nPlease, manually check the message to see that exitcode equals 0.\n>${messageID}`;
-                if (txReceipt.ExitCode !== 0)
-                  errorMessage += `#### @${assignee} There was an error processing the message\n>${messageID}`;
+
+                // const txReceipt = await this.context.wallet.api.getReceipt(
+                //   messageID
+                // );
+                // if (!txReceipt)
+                //   warningMessage += `#### @${assignee} The bot couldn't find the Receipt. \nPlease, manually check the message to see that exitcode equals 0.\n>${messageID}`;
+                // if (txReceipt.ExitCode !== 0)
+                //   errorMessage += `#### @${assignee} There was an error processing the message\n>${messageID}`;
                 messageIds.push(messageID);
                 this.context.wallet.dispatchNotification(
                   "Accepting Message sent with ID: " + messageID
@@ -288,11 +289,8 @@ export default class RootKeyHolder extends Component<{},
           if (commentContent !== "") {
             await this.context.github.githubOctoGeneric.octokit.issues.createComment(
               {
-                owner:
-                  config.lotusNodes[this.context.wallet.networkIndex]
-                    .notaryOwner,
-                repo: config.lotusNodes[this.context.wallet.networkIndex]
-                  .notaryRepo,
+                owner: config.onboardingOwner,
+                repo: config.onboardingNotaryOwner,
                 issue_number: request.issue_number,
                 body: commentContent,
               }
@@ -301,11 +299,8 @@ export default class RootKeyHolder extends Component<{},
           if (warningMessage !== "") {
             await this.context.github.githubOctoGeneric.octokit.issues.createComment(
               {
-                owner:
-                  config.lotusNodes[this.context.wallet.networkIndex]
-                    .notaryOwner,
-                repo: config.lotusNodes[this.context.wallet.networkIndex]
-                  .notaryRepo,
+                owner: config.onboardingOwner,
+                repo: config.onboardingNotaryOwner,
                 issue_number: request.issue_number,
                 body: warningMessage,
               }
@@ -315,10 +310,8 @@ export default class RootKeyHolder extends Component<{},
             await this.context.github.githubOctoGeneric.octokit.issues.removeAllLabels(
               {
                 owner:
-                  config.lotusNodes[this.context.wallet.networkIndex]
-                    .notaryOwner,
-                repo: config.lotusNodes[this.context.wallet.networkIndex]
-                  .notaryRepo,
+                  config.onboardingOwner,
+                repo: config.onboardingNotaryOwner,
                 issue_number: request.issue_number,
               }
             );
@@ -326,24 +319,20 @@ export default class RootKeyHolder extends Component<{},
             await this.context.github.githubOctoGeneric.octokit.issues.addLabels(
               {
                 owner:
-                  config.lotusNodes[this.context.wallet.networkIndex]
-                    .notaryOwner,
-                repo: config.lotusNodes[this.context.wallet.networkIndex]
-                  .notaryRepo,
+                  config.onboardingOwner,
+                repo: config.onboardingNotaryOwner,
                 issue_number: request.issue_number,
                 labels: [label, "Notary Application"],
               }
             );
           }
           //metrics
-          if (label ===ISSUE_LABELS.GRANTED) {
+          if (label === ISSUE_LABELS.GRANTED) {
             const notaryGovissue =
               await this.context.github.githubOctoGeneric.octokit.issues.get({
                 owner:
-                  config.lotusNodes[this.context.wallet.networkIndex]
-                    .notaryOwner,
-                repo: config.lotusNodes[this.context.wallet.networkIndex]
-                  .notaryRepo,
+                  config.onboardingOwner,
+                repo: config.onboardingNotaryOwner,
                 issue_number: request.issue_number,
               });
             const notaryData = notaryParser.parseIssue(notaryGovissue.data.body)
