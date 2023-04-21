@@ -434,7 +434,7 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
                   messageCid: messageID,
                   uuid: request.uuid
                }
-               callMetricsApi(
+               await callMetricsApi(
                   request.issue_number,
                   EVENT_TYPE.DC_ALLOCATION,
                   params
