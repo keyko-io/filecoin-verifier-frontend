@@ -4,12 +4,12 @@ import {
     useCallback,
     useContext,
     useEffect,
-    useState
+    useState,
 } from "react";
 import { config } from "../config";
 import {
     constructNewStatusComment,
-    STATUS_LABELS
+    STATUS_LABELS,
 } from "../constants";
 import * as Logger from "../logger";
 import { GithubIssueEvent, LargeRequestData } from "../type";
@@ -63,34 +63,53 @@ export default function LargeRequestsProvider({ children }: any) {
         freeTextValue: string,
         issueNumber: number
     ): Promise<boolean> => {
-        const newStatusLabels = STATUS_LABELS[newStatus];
-        const newStatusComment = constructNewStatusComment(
-            newStatus,
-            statusReason,
-            freeTextValue
-        );
+        try {
+            const newStatusLabels = STATUS_LABELS[newStatus];
+            const newStatusComment = constructNewStatusComment(
+                newStatus,
+                statusReason,
+                freeTextValue
+            );
 
-        await Logger.BasicLogger({
-            message:
-                "NOTARY X CHANGED REQUEST Y STATE TO " + newStatus,
-        });
+            const notaryGithubHandle = context?.github?.loggedUser;
 
-        const addLabelsResponse = await context.addLabels(
-            owner,
-            repo,
-            issueNumber,
-            newStatusLabels
-        );
-        if (!addLabelsResponse) return false;
+            const addLabelsResponse = await context.addLabels(
+                owner,
+                repo,
+                issueNumber,
+                newStatusLabels
+            );
+            if (!addLabelsResponse) return false;
 
-        const createCommentResponse = await context.createComment(
-            owner,
-            repo,
-            issueNumber,
-            newStatusComment
-        );
-        if (!createCommentResponse) return false;
-        return createCommentResponse && addLabelsResponse;
+            const createCommentResponse = await context.createComment(
+                owner,
+                repo,
+                issueNumber,
+                newStatusComment
+            );
+            if (!createCommentResponse) {
+                // if reached this point, label was added but comment
+                // failed, so we need to revert the label state
+                const addLabelsResponse = await context.removeLabel(
+                    owner,
+                    repo,
+                    issueNumber,
+                    newStatusLabels
+                );
+                return false;
+            }
+            await Logger.BasicLogger({
+                message: `Notary ${notaryGithubHandle} succesfully changed request ${issueNumber} state to ${newStatus}`,
+            });
+            return createCommentResponse && addLabelsResponse; // this expressions is alawys true at this point. // return true; can work as well
+        } catch (error) {
+            console.log(error);
+            const notaryGithubHandle = context?.github?.loggedUser;
+            await Logger.BasicLogger({
+                message: `Notary ${notaryGithubHandle} failed changed request ${issueNumber} state to ${newStatus}`,
+            });
+            return false;
+        }
     };
 
     // is logged in user is a notary
