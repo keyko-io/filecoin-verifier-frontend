@@ -31,6 +31,7 @@ import Miners from "./pages/Miners"
 import StatusPage from "./pages/StatusPage"
 import Admin from "./admin"
 import SentryInfo from "./pages/SentryInfo"
+import Redirect from "./components/Redirect"
 
 // redirect to domain if user access fleek url
 if (window.location.host.includes("fleek") && config.willRedirect) {
@@ -69,6 +70,7 @@ const root = ReactDOM.createRoot(document.getElementById("root") as HTMLElement)
 
 root.render(
   <>
+    <Redirect />
     <CookiesProvider>
       <WalletProvider>
         <GithubProvider>
