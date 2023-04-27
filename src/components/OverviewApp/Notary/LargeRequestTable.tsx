@@ -8,7 +8,7 @@ import DataTable from "react-data-table-component";
 import { config } from "../../../config";
 import { Data } from "../../../context/Data/Index";
 import { useLargeRequestsContext } from "../../../context/LargeRequests";
-import { LargeRequestData } from "../../../type";
+import { LargeRequestData, NotaryActionStatus } from "../../../type";
 import ActionsModal from "./ActionsModal";
 import NodeDataModal from "./NodeDataModal";
 import SearchInput from "./SearchInput";
@@ -104,7 +104,7 @@ const formatIssues = async (
                 multisig: commentParsed.notaryAddress,
                 datacap: commentParsed.allocationDatacap,
                 approvalInfoFromLabels: approvalInfo ? 1 : 0,
-                uuid: commentParsed.uuid
+                uuid: commentParsed.uuid,
             });
         })
     );
@@ -295,7 +295,7 @@ const LargeRequestTable = (props: LargeRequestTableProps) => {
         },
         {
             name: "Actions",
-            omit: !isNotaryUser(),
+            // omit: !isNotaryUser(),
             selector: (row: LargeRequestData) => row?.tx?.id,
             grow: 0.5,
             cell: (row: LargeRequestData) => {
@@ -325,7 +325,7 @@ const LargeRequestTable = (props: LargeRequestTableProps) => {
         statusReason,
         freeTextValue,
     }: {
-        selectedStatus: string;
+        selectedStatus: NotaryActionStatus;
         statusReason: string;
         freeTextValue: string;
     }) => {

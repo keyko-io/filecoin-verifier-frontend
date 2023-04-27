@@ -1,14 +1,22 @@
 import { ISSUE_LABELS } from "filecoin-verfier-common";
+import { NotaryActionStatus } from "./type";
 
 export const constructNewStatusComment = (
-    status: string,
+    status: NotaryActionStatus,
     reason: string,
     freeText: string
 ): string => {
-    return `Status: ${STATUS_LABELS[status]} 
-    Reason: ${reason}
-    ${freeText}
-    `;
+    if (status === "Decline") {
+        return `I have reviewed and I will not support due to: 
+                - ${reason}
+                ${freeText}`;
+    }
+    if (status === "Request More Information") {
+        return `I have reviewed but am not ready to support yet. There is insufficient information about: 
+                - ${reason}
+                ${freeText}`;
+    }
+    return "";
 };
 
 export const NOTARY_DECLINE_REASONS = [

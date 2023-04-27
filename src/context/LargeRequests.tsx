@@ -12,7 +12,11 @@ import {
     STATUS_LABELS,
 } from "../constants";
 import * as Logger from "../logger";
-import { GithubIssueEvent, LargeRequestData } from "../type";
+import {
+    GithubIssueEvent,
+    LargeRequestData,
+    NotaryActionStatus,
+} from "../type";
 import { anyToBytes } from "../utils/Filters";
 import { getFileFromRepo } from "../utils/octokit";
 import { Data } from "./Data/Index";
@@ -28,7 +32,7 @@ interface LargeRequestsState {
     data: LargeRequestData[];
     extractRepliesByClient: (i: LargeRequestData) => any;
     changeRequestStatus: (
-        newStatus: string,
+        newStatus: NotaryActionStatus,
         statusReason: string,
         freeTextValue: string,
         issueNumber: number
@@ -58,7 +62,7 @@ export default function LargeRequestsProvider({ children }: any) {
     }, [context]);
 
     const changeRequestStatus = async (
-        newStatus: string,
+        newStatus: NotaryActionStatus,
         statusReason: string,
         freeTextValue: string,
         issueNumber: number
