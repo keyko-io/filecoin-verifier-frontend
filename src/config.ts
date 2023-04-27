@@ -85,7 +85,8 @@ const localConfig = {
     status_issue_number: 1419,
     status_issue_url: "https://github.com/keyko-io/filecoin-large-clients-onboarding/issues/1419",
     verifiers_registry_url: "https://raw.githubusercontent.com/keyko-io/filecoin-content/main/json/test/verifiers-registry_test.json",
-    numberOfWalletAccounts: 20
+    numberOfWalletAccounts: 20,
+    oldDomain: ""
 }
 
 const prodConfig = {
@@ -110,6 +111,7 @@ const prodConfig = {
     largeClientRequest: 5497558000000000000000000,
     metrics_api_environment: process.env.REACT_APP_METRICS_API_ENVIRONMENT || "test",
     loggerApiKey: process.env.REACT_APP_X_API_KEY || '',
+    // secretRecieverAddress: 't0100',
     secretRecieverAddress: process.env.REACT_APP_SECRET_RECIEVER_ADDRESS,
     lotusNodes: [{
         name: 'Mainnet',
@@ -130,7 +132,8 @@ const prodConfig = {
     status_issue_number: 1427,
     status_issue_url: "https://github.com/filecoin-project/filecoin-plus-large-datasets/issues/1427",
     verifiers_registry_url: "https://raw.githubusercontent.com/keyko-io/filecoin-content/main/json/prod/verifiers-registry.json",
-    numberOfWalletAccounts: 20
+    numberOfWalletAccounts: 20,
+    oldDomain: process.env.REACT_APP_OLD_DOMAIN //for redirect
 }
 
 export const config =
