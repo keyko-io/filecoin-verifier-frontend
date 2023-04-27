@@ -23,6 +23,15 @@ export const NOTARY_DECLINE_REASONS = [
     "Other reason",
 ];
 
+export const NOTARY_REQUEST_MORE_INFO_REASONS = [
+    "Data Samples",
+    "Why the client requires the requested amount of DataCap",
+    "The legitimacy of the client or the associated business",
+    "The legitimacy of the data that the client is storing",
+    "Who the client plans to store their data with and where they are located",
+    "Other reason",
+];
+
 export const NOTARY_LDN_STATE_CONTROL = [
     "Decline",
     "Request More Information",

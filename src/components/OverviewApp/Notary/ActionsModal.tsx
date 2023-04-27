@@ -15,6 +15,7 @@ import {
 } from "@mui/material";
 import { useEffect, useState } from "react";
 import {
+    NOTARY_REQUEST_MORE_INFO_REASONS,
     NOTARY_DECLINE_REASONS,
     NOTARY_LDN_STATE_CONTROL,
 } from "../../../constants";
@@ -160,6 +161,7 @@ const ActionsModal = ({
                             onChange={(e) => {
                                 //@ts-ignore
                                 setSelectedStatus(e.target.value);
+                                setSelectedReason("");
                             }}
                         >
                             {NOTARY_LDN_STATE_CONTROL.map(
@@ -190,15 +192,29 @@ const ActionsModal = ({
                                         );
                                     }}
                                 >
-                                    {NOTARY_DECLINE_REASONS.map(
-                                        (r: string) => {
-                                            return (
-                                                <MenuItem value={r}>
-                                                    {r}
-                                                </MenuItem>
-                                            );
-                                        }
-                                    )}
+                                    {selectedStatus === "Decline"
+                                        ? NOTARY_DECLINE_REASONS.map(
+                                              (r: string) => {
+                                                  return (
+                                                      <MenuItem
+                                                          value={r}
+                                                      >
+                                                          {r}
+                                                      </MenuItem>
+                                                  );
+                                              }
+                                          )
+                                        : NOTARY_REQUEST_MORE_INFO_REASONS.map(
+                                              (r: string) => {
+                                                  return (
+                                                      <MenuItem
+                                                          value={r}
+                                                      >
+                                                          {r}
+                                                      </MenuItem>
+                                                  );
+                                              }
+                                          )}
                                 </Select>
                             </>
                         )}
