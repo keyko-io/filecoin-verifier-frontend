@@ -295,7 +295,7 @@ const LargeRequestTable = (props: LargeRequestTableProps) => {
         },
         {
             name: "Actions",
-            // omit: !isNotaryUser(),
+            omit: !isNotaryUser(),
             selector: (row: LargeRequestData) => row?.tx?.id,
             grow: 0.5,
             cell: (row: LargeRequestData) => {
