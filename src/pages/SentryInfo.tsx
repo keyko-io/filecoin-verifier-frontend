@@ -170,7 +170,7 @@ const Sentry = () => {
                                     y: data[k].length,
                                 };
                             }
-                        );
+                        ).reverse();
 
                         return (
                             <div>
