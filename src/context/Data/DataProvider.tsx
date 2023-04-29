@@ -1041,13 +1041,13 @@ export default class DataProvider extends React.Component<
 
                 //if error, post error comment and error label
                 if (errorMessage !== "") {
-                    await this.props.github.githubOcto.issues.removeAllLabels(
-                        {
-                            owner: config.onboardingLargeOwner,
-                            repo: config.onboardingLargeClientRepo,
-                            issue_number: requestNumber,
-                        }
-                    );
+                    // await this.props.github.githubOcto.issues.removeAllLabels(
+                    //     {
+                    //         owner: config.onboardingLargeOwner,
+                    //         repo: config.onboardingLargeClientRepo,
+                    //         issue_number: requestNumber,
+                    //     }
+                    // );
                     await this.props.github.githubOcto.issues.addLabels(
                         {
                             owner: config.onboardingLargeOwner,
