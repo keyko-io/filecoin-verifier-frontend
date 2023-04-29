@@ -135,5 +135,3 @@ const prodConfig = {
 
 export const config =
     process.env.REACT_APP_NETWORKS !== 'Mainnet' ? localConfig : prodConfig
-
-
