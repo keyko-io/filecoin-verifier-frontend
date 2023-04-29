@@ -65,3 +65,5 @@ export interface TransactionAndIssue {
     tx: any;
     issue: any[];
 }
+
+export type NotaryActionStatus = "Decline" | "Request More Information";

@@ -1,14 +1,22 @@
 import { ISSUE_LABELS } from "filecoin-verfier-common";
+import { NotaryActionStatus } from "./type";
 
 export const constructNewStatusComment = (
-    status: string,
+    status: NotaryActionStatus,
     reason: string,
     freeText: string
 ): string => {
-    return `Status: ${STATUS_LABELS[status]} 
-    Reason: ${reason}
-    ${freeText}
-    `;
+    if (status === "Decline") {
+        return `I have reviewed and I will not support due to: 
+                - ${reason}
+                ${freeText}`;
+    }
+    if (status === "Request More Information") {
+        return `I have reviewed but am not ready to support yet. There is insufficient information about: 
+                - ${reason}
+                ${freeText}`;
+    }
+    return "";
 };
 
 export const NOTARY_DECLINE_REASONS = [
@@ -20,6 +28,15 @@ export const NOTARY_DECLINE_REASONS = [
     "Client did not provide information about the Storage Providers they are working with",
     "Fil+ data distribution noncompliance (Incorrect SPs that client stated that they would work with in their application)",
     "False information that was provided from application",
+    "Other reason",
+];
+
+export const NOTARY_REQUEST_MORE_INFO_REASONS = [
+    "Data Samples",
+    "Why the client requires the requested amount of DataCap",
+    "The legitimacy of the client or the associated business",
+    "The legitimacy of the data that the client is storing",
+    "Who the client plans to store their data with and where they are located",
     "Other reason",
 ];
 
