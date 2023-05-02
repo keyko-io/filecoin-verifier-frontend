@@ -116,7 +116,7 @@ const Sentry = () => {
                     fontSize: "36px",
                 }}
             >
-                FILECOIN PLUS DATA METRICS
+                Fil+ App Data Metrics
             </h4>
             <TextField
                 id="outlined-select-currency"
@@ -149,13 +149,11 @@ const Sentry = () => {
             ) : infoData && !isLoading ? (
                 <div
                     style={{
-                        height: "50rem",
                         display: "grid",
                         gridTemplateColumns:
                             searchQuery === SentryDataPeriods.TwoWeeks
                                 ? "1fr"
                                 : "1fr 1fr",
-                        overflow: "scroll",
                     }}
                 >
                     {Object.keys(infoData).map((key: string) => {

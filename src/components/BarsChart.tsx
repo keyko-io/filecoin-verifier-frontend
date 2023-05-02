@@ -19,7 +19,7 @@ const BarsChart = (props: {searchQuery: string, data: { x: string; y: number }[]
     );
 
     return (
-        <div>
+        <div style={{ marginTop : "2rem", marginBottom : "2rem"}}>
             <XYPlot
                 xType="ordinal"
                 width={props?.searchQuery === SentryDataPeriods?.TwoWeeks ? 1200 : 600}
