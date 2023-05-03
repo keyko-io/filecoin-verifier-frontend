@@ -401,8 +401,6 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
             const pendingForClient = pendingTxs?.filter((tx: any) => tx?.parsed?.params?.address == request.address && tx?.parsed?.params?.cap == anyToBytes(request.datacap))
             const mostRecentTx = pendingForClient[pendingForClient.length - 1]
 
-            console.log(mostRecentTx, "mostRecentTx")
-
             let errorMessage = "";
             const PHASE = "DATACAP-SIGN";
             const datacap = anyToBytes(request.datacap);
