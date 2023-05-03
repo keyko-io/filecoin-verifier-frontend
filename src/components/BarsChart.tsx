@@ -1,3 +1,4 @@
+//@ts-nocheck
 import {
     HorizontalGridLines,
     LabelSeries,
@@ -7,8 +8,9 @@ import {
     XYPlot,
     YAxis,
 } from "react-vis";
+import { SentryDataPeriods } from "../type";
 
-const BarsChart = (props: { data: { x: string; y: number }[] }) => {
+const BarsChart = (props: {searchQuery: string, data: { x: string; y: number }[] }) => {
     const labelData = Object.keys(
         props?.data?.map((d, idx) => ({
             x: d.x,
@@ -20,7 +22,7 @@ const BarsChart = (props: { data: { x: string; y: number }[] }) => {
         <div>
             <XYPlot
                 xType="ordinal"
-                width={600}
+                width={props?.searchQuery === SentryDataPeriods?.TwoWeeks ? 1200 : 600}
                 height={300}
                 xDistance={100}
             >

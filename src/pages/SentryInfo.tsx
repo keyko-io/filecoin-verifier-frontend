@@ -12,7 +12,8 @@ import {
 const groupEventsByDay = (data: { dateCreated: string }[]) => {
     const result = _.groupBy(data, (i) => {
         const d = new Date(i.dateCreated).toDateString().split(" ");
-        if(d.length < 3) return new Date(i.dateCreated).toDateString(); // just to be safe
+        if (d.length < 3)
+            return new Date(i.dateCreated).toDateString(); // just to be safe
         const res = d[1] + "/" + d[2];
         return res;
     });
@@ -150,7 +151,10 @@ const Sentry = () => {
                     style={{
                         height: "50rem",
                         display: "grid",
-                        gridTemplateColumns: "1fr 1fr",
+                        gridTemplateColumns:
+                            searchQuery === SentryDataPeriods.TwoWeeks
+                                ? "1fr"
+                                : "1fr 1fr",
                         overflow: "scroll",
                     }}
                 >
@@ -174,7 +178,12 @@ const Sentry = () => {
                                     {neededTitles[key] || key}, Count:
                                     {total}
                                 </h2>
-                                {total > 0 && <StackedBarsChart data={response.reverse()} /> }
+                                {total > 0 && (
+                                    <StackedBarsChart
+                                        searchQuery={searchQuery}
+                                        data={response.reverse()}
+                                    />
+                                )}
                             </div>
                         );
                     })}
