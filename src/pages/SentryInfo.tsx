@@ -8,6 +8,7 @@ import {
     SentryDataTypes,
     SentryInfo,
 } from "../type";
+import { config } from "../config";
 
 const groupEventsByDay = (data: { dateCreated: string }[]) => {
     const result = _.groupBy(data, (i) => {
@@ -40,7 +41,7 @@ const constructSentryUrl = (
     period: string,
     type: SentryDataTypes
 ) => {
-    const baseUrl = `${process.env.REACT_APP_BACK_END_URL}/stats/${type}/${period}`;
+    const baseUrl = `${config.apiUri}/stats/${type}/${period}`;
     return baseUrl;
 };
 
