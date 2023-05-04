@@ -76,6 +76,8 @@ export interface StatsInfo {
 export interface SentryInfo {
     requestProposed: any;
     requestApproved: any;
+    approvalFailed: any;
+    proposalFailed : any;
     ghLogins: any;
     ledgerLogins: any;
     ghTokenLoading: any;
