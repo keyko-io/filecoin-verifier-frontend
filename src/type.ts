@@ -67,3 +67,27 @@ export interface TransactionAndIssue {
 }
 
 export type NotaryActionStatus = "Decline" | "Request More Information";
+
+export interface StatsInfo {
+    dateCreated: string; // Date Object(?)
+    title: string;
+}
+
+export interface SentryInfo {
+    requestProposed: any;
+    requestApproved: any;
+    ghLogins: any;
+    ledgerLogins: any;
+    ghTokenLoading: any;
+}
+
+export enum SentryDataPeriods {
+    OneDay = "24h",
+    SevenDays = "7d",
+    TwoWeeks = "14d",
+}
+
+export enum SentryDataTypes {
+    LoginStats = "login",
+    SigningStats = "tx",
+}

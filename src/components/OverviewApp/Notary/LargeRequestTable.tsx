@@ -1,7 +1,6 @@
 import { ldnParser } from "@keyko-io/filecoin-verifier-tools";
 import { CircularProgress } from "@material-ui/core";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
-import SettingsIcon from "@mui/icons-material/Settings";
 import { ISSUE_LABELS } from "filecoin-verfier-common";
 import { useContext, useEffect, useState } from "react";
 import DataTable from "react-data-table-component";
@@ -12,6 +11,9 @@ import { LargeRequestData, NotaryActionStatus } from "../../../type";
 import ActionsModal from "./ActionsModal";
 import NodeDataModal from "./NodeDataModal";
 import SearchInput from "./SearchInput";
+import Badge from "@mui/material/Badge";
+import Tooltip from "@mui/material/Tooltip";
+import CreateIcon from "@mui/icons-material/Create";
 
 const CANT_SIGN_MESSAGE =
     "You can currently only approve the allocation requests associated with the multisig organization you signed in with. Signing proposals for additional DataCap allocations will require you to sign in again";
@@ -302,18 +304,22 @@ const LargeRequestTable = (props: LargeRequestTableProps) => {
                 const repliesByAuthor = extractRepliesByClient(row);
 
                 return (
-                    <div
-                        style={{ cursor: "pointer" }}
-                        onClick={() => {
-                            setSelectedRequestForActions(row);
-                            setIsActionsModalOpen(true);
-                        }}
-                    >
-                        <SettingsIcon />
-                        {repliesByAuthor.length > 0 && (
-                            <div>({repliesByAuthor?.length})</div>
-                        )}
-                    </div>
+                    <Tooltip title="Replies By Client">
+                        <div
+                            style={{ cursor: "pointer" }}
+                            onClick={() => {
+                                setSelectedRequestForActions(row);
+                                setIsActionsModalOpen(true);
+                            }}
+                        >
+                            <Badge
+                                color="primary"
+                                badgeContent={repliesByAuthor.length}
+                            >
+                                <CreateIcon />
+                            </Badge>
+                        </div>
+                    </Tooltip>
                 );
             },
             center: true,

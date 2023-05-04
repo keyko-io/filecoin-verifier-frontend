@@ -22,18 +22,21 @@ import {
 import toast from "react-hot-toast";
 import { ldnParser } from "@keyko-io/filecoin-verifier-tools";
 import * as Logger from "../../logger";
-import * as Sentry from "@sentry/react"
 import LargeRequestsProvider from "../../context/LargeRequests";
 import ApproveLargeRequestModal from "./Notary/ApproveLargeRequestModal";
 import NodeDataProvider from "../../context/NodeData";
 import { LargeRequestData } from "../../type";
-import { preventDoublePropose } from "../../utils/preventDoublePropose";
 import { EVENT_TYPE, MetricsApiParams } from "../../utils/Metrics";
 import { callMetricsApi } from "@keyko-io/filecoin-verifier-tools/lib/metrics/metrics";
 
 type NotaryProps = {
    clients: any[];
 };
+
+enum NotaryActions {
+   Proposed = "Proposed",
+   Approved = "Approved"
+} 
 
 type CancelProposalDataType = {
    clientName: string;
@@ -382,14 +385,15 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
       }
    };
 
+
    const verifyLargeClients = async (i?: LargeRequestData[]) => {
       setApproveLoading(true);
       let thisStateLargeRequestList = Array.isArray(i)
          ? i
          : context.largeClientRequests;
       for (const request of thisStateLargeRequestList) {
+         let action = NotaryActions.Proposed
          try {
-
             const pendingTxs =
                await context.wallet.api.pendingTransactions(
                   String(request.multisig)
@@ -416,9 +420,10 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
                "",
                request.issue_number,
                PHASE
-            );
-            let action = "";
+            );         
             if (mostRecentTx) {
+               action = NotaryActions.Approved
+   
                messageID = await context.wallet.api.approvePending(
                   request.multisig,
                   mostRecentTx,
@@ -451,14 +456,13 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
                   request.issue_number,
                   PHASE
                );
-               action = "Approved";
-
+              
                context.wallet.dispatchNotification(
                   `datacap being approved: ${request.datacap} \nclient address: ${address}`
                );
 
             } else {
-
+   
                messageID =
                   await context.wallet.api.multisigVerifyClient(
                      request.multisig,
@@ -474,8 +478,7 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
                   "datacap_proposed",
                   request.issue_number,
                   PHASE
-               );
-               action = "Proposed";
+               );           
             }
 
             if (!messageID) {
@@ -528,16 +531,17 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
                "largeClientRequests"
             );
          } catch (e: any) {
+            console.log(e.message)
             context.wallet.dispatchNotification(
                "Verification failed: " + e.message
             );
 
-            Sentry.captureMessage('Unsuccessful transaction', {
-               extra: {
-                  errorMessage: e.message,
-               }
-            })
-
+            if (action === NotaryActions.Proposed) {
+               await Logger.BasicLogger({ message: "Proposal Failed" })          
+            } else if (action === NotaryActions.Approved) {
+               await Logger.BasicLogger({ message: "Approval Failed" })
+            }
+        
             await context.postLogs(
                `The transaction to sign the datacap failed: ${e.message}`,
                "ERROR",

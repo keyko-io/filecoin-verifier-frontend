@@ -30,7 +30,7 @@ interface LargeRequestsState {
     isNotaryUser: () => boolean;
     count: number;
     data: LargeRequestData[];
-    extractRepliesByClient: (i: LargeRequestData) => any;
+    extractRepliesByClient: (i: LargeRequestData) => any[];
     changeRequestStatus: (
         newStatus: NotaryActionStatus,
         statusReason: string,
@@ -224,7 +224,7 @@ export default function LargeRequestsProvider({ children }: any) {
         return areSignable.every((a: any) => a.value);
     };
 
-    const extractRepliesByClient = (row: LargeRequestData) => {
+    const extractRepliesByClient = (row: LargeRequestData): any[] => {
         const issueAuthor = row.user;
         if (!row?.events) return [];
         const wfcrLabelEvent = row?.events?.find(

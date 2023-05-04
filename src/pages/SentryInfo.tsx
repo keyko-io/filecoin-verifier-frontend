@@ -1,100 +1,205 @@
-import { Grid, MenuItem, TextField } from "@mui/material"
-import InfoCard from "../components/InfoCard"
-import { useEffect, useState } from "react"
+import { MenuItem, TextField } from "@mui/material";
+import axios from "axios";
+import _ from "lodash";
+import { useEffect, useState } from "react";
+import StackedBarsChart from "../components/BarsChart";
+import {
+    SentryDataPeriods,
+    SentryDataTypes,
+    SentryInfo,
+} from "../type";
+import { config } from "../config";
 
-const titles = [
-  { title: "Ledger Login Successful", order: 0, tooltip: "Every time a user log in with the ledger" },
-  { title: "Github Login Success", order: 1, tooltip: "Every time a user log in with Github" },
-  { title: "Request Proposed", order: 2, tooltip: "Every time a dataCap request is proposed by a notary" },
-  { title: "Request Approved", order: 3, tooltip: "Every time a dataCap request is approved by a notary" },
-  { title: "User Logged Out Github", order: 4, tooltip: "Every time a user log in with the ledger" },
-  { title: "Loaded Github Token Successfully", order: 5, tooltip: "Every time a user log in with the ledger" },
-]
+const groupEventsByDay = (data: { dateCreated: string }[]) => {
+    const result = _.groupBy(data, (i) => {
+        const d = new Date(i.dateCreated).toDateString().split(" ");
+        if (d.length < 3)
+            return new Date(i.dateCreated).toDateString(); // just to be safe
+        const res = d[1] + "/" + d[2];
+        return res;
+    });
+
+    return result;
+};
 
 const range = [
-  {
-    value: '14d',
-    label: "last 14 days"
-  },
-  {
-    value: '24h',
-    label: "last 24 hours"
-  },
+    {
+        value: SentryDataPeriods.SevenDays,
+        label: "last 7 Days",
+    },
+    {
+        value: SentryDataPeriods.TwoWeeks,
+        label: "last 14 days",
+    },
+    {
+        value: SentryDataPeriods.OneDay,
+        label: "last 24 hours",
+    },
 ];
 
-const Sentry = () => {
-  const [infoData, setInfoData] = useState([])
-  const [isLoading, setIsLoading] = useState(true)
-  const [searchQuery, setSearchQuery] = useState("14d")
+const constructSentryUrl = (
+    period: string,
+    type: SentryDataTypes
+) => {
+    const baseUrl = `${config.apiUri}/stats/${type}/${period}`;
+    return baseUrl;
+};
 
-  useEffect(() => {
-    fetch(` https://test.verification.rocks/api/v1/sentry?statsPeriod=${searchQuery}`)
-      .then((res) => res.json())
-      .then((data) => {
-        const filteredData = data.filter((dataItem: any) =>
-          titles.find((titleElement: any) => titleElement.title == dataItem.title)
-        )
-          .map((dataItem: any) => {
-            const t = titles.find((titleElement: any) => titleElement.title == dataItem.title)
-            dataItem.order = t?.order
-            dataItem.tooltip = t?.tooltip
-            return dataItem
-          })
-
-          .sort((a: any, b: any) => a.order - b.order);
-
-
-        for (let metrics of filteredData) {
-          let sum = metrics.stats[searchQuery].reduce((total: any, current: any) => total + current[1], 0);
-          metrics.stats = sum
+const fetchSentryData = async (
+    period: SentryDataPeriods,
+    type: SentryDataTypes
+) => {
+    try {
+        const url = constructSentryUrl(period, type);
+        const response = await axios.get(url);
+        if (response.status < 300 && response.status > 199) {
+            return response.data;
         }
+        return [];
+    } catch (error) {
+        console.error(error);
+        return [];
+    }
+};
 
-        setIsLoading(false)
-        setInfoData(filteredData)
-      })
-      .catch((error) => console.log(error))
-  }, [searchQuery])
+const Sentry = () => {
+    const [infoData, setInfoData] = useState<SentryInfo>(
+        {} as SentryInfo
+    );
+    const [isLoading, setIsLoading] = useState(true);
+    const [searchQuery, setSearchQuery] = useState<SentryDataPeriods>(
+        SentryDataPeriods.SevenDays
+    );
 
-  return (
-    <div
-      style={{
-        width: "1400px",
-        padding: "0 20px",
-        margin: "10rem auto",
-      }}
-    >
-      <h4
-        style={{ textAlign: "center", marginBottom: "6rem", fontSize: "36px" }}
-      >
-        Fil+ App Data Metrics
-      </h4>
-      <TextField
-        id="outlined-select-currency"
-        select
-        label="Select time range"
-        value={searchQuery}
-        sx={{ mb: "2rem", minWidth: "14rem" }}
-        onChange={e => setSearchQuery(e.target.value)}
-      >
-        {range.map((option) => (
-          <MenuItem key={option.value} value={option.value}>
-            {option.label}
-          </MenuItem>
-        ))}
-      </TextField>
-      {isLoading ? (
-        <div style={{ textAlign: "center", minHeight: "30rem", width: "100%" }}>
-          Loading metrics...{" "}
+    useEffect(() => {
+        const fetchData = async () => {
+            setIsLoading(true);
+            const signingStats = await fetchSentryData(
+                searchQuery,
+                SentryDataTypes.SigningStats
+            );
+            const loginStats = await fetchSentryData(
+                searchQuery,
+                SentryDataTypes.LoginStats
+            );
+            setInfoData({
+                requestProposed: groupEventsByDay(
+                    signingStats.requestProposed
+                ),
+                requestApproved: groupEventsByDay(
+                    signingStats.requestApproved
+                ),
+                ghLogins: groupEventsByDay(loginStats.ghLogins),
+                ledgerLogins: groupEventsByDay(
+                    loginStats.ledgerLogins
+                ),
+                ghTokenLoading: groupEventsByDay(
+                    loginStats.ghTokenLoading
+                ),
+            });
+            setIsLoading(false);
+        };
+        fetchData();
+    }, [searchQuery]);
+
+    return (
+        <div
+            style={{
+                width: "1400px",
+                padding: "0 20px",
+                margin: "10rem auto",
+            }}
+        >
+            <h4
+                style={{
+                    textAlign: "center",
+                    marginBottom: "6rem",
+                    fontSize: "36px",
+                }}
+            >
+                Fil+ App Data Metrics
+            </h4>
+            <TextField
+                id="outlined-select-currency"
+                select
+                label="Select time range"
+                value={searchQuery}
+                sx={{ mb: "2rem", minWidth: "14rem" }}
+                onChange={(e) =>
+                    setSearchQuery(
+                        e.target.value as SentryDataPeriods
+                    )
+                }
+            >
+                {range.map((option) => (
+                    <MenuItem key={option.value} value={option.value}>
+                        {option.label}
+                    </MenuItem>
+                ))}
+            </TextField>
+            {isLoading ? (
+                <div
+                    style={{
+                        textAlign: "center",
+                        minHeight: "30rem",
+                        width: "100%",
+                    }}
+                >
+                    Loading metrics...{" "}
+                </div>
+            ) : infoData && !isLoading ? (
+                <div
+                    style={{
+                        display: "grid",
+                        gridTemplateColumns:
+                            searchQuery === SentryDataPeriods.TwoWeeks
+                                ? "1fr"
+                                : "1fr 1fr",
+                    }}
+                >
+                    {Object.keys(infoData).map((key: string) => {
+                        const data =
+                            infoData[key as keyof SentryInfo];
+                        let total = 0;
+                        const response = Object.keys(data).map(
+                            (k) => {
+                                total += data[k].length;
+                                return {
+                                    x: k,
+                                    y: data[k].length,
+                                };
+                            }
+                        ).reverse();
+
+                        return (
+                            <div>
+                                <h2>
+                                    {neededTitles[key] || key}, Count:
+                                    {total}
+                                </h2>
+                                {total > 0 && (
+                                    <StackedBarsChart
+                                        searchQuery={searchQuery}
+                                        data={response.reverse()}
+                                    />
+                                )}
+                            </div>
+                        );
+                    })}
+                </div>
+            ) : (
+                <div>No data found</div>
+            )}
         </div>
-      ) : (
-        <Grid container spacing={2}>
-          {infoData.map((infoItem: any) => (
-            <InfoCard info={infoItem} />
-          ))}
-        </Grid>
-      )}
-    </div>
-  )
-}
+    );
+};
 
-export default Sentry
+const neededTitles: any = {
+    ghLogins: "Github Logins",
+    ledgerLogins: "Ledger Logins",
+    ghTokenLoading: "Github Token Loaded",
+    requestProposed: "Request Proposed",
+    requestApproved: "Request Approved",
+};
+
+export default Sentry;
