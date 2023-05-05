@@ -62,7 +62,6 @@ const LogInModal = (props: ModalProps) => {
       });
       if (logged) {
            setBrowserLoading(false)
-           await Logger.BasicLogger({ message: Logger.LEDGER_LOGIN_FAILED })
         if (context.viewroot === false && props.type === "0") {
           context.switchview();
         }
