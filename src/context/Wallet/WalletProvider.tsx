@@ -7,6 +7,7 @@ import { dispatchCustomEvent } from "slate-react-system";
 import { config } from '../../config';
 import { withCookies } from 'react-cookie'
 import { LoadWalletOptionsType, WalletProviderProps, WalletProviderStates } from '../contextType';
+import * as Logger from "../../logger"
 
 async function getActiveAccounts(api: any, accounts: any) {
     const accountsActive: any = {};
@@ -116,6 +117,7 @@ class WalletProvider extends React.Component<WalletProviderProps, WalletProvider
                 isLogged: false,
                 isLoading: false
             })
+            await Logger.BasicLogger({ message: Logger.LEDGER_LOGIN_FAILED })
             this.state.dispatchNotification('Ledger ' + e.toString())
             return false
         }
