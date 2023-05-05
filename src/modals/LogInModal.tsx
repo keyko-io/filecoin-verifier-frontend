@@ -43,6 +43,8 @@ const LogInModal = (props: ModalProps) => {
         history.push({
           pathname: "/app",
         });
+      } else {
+        await Logger.BasicLogger({ message: Logger.LEDGER_LOGIN_FAILED })
       }
     } catch (error) {
       await Logger.BasicLogger({ message: Logger.LEDGER_LOGIN_FAILED })
