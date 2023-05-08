@@ -10,8 +10,6 @@ import {
     SentryInfo,
 } from "../type";
 import { config } from "../config";
-import { BorderBottom } from "@mui/icons-material";
-
 
 const groupEventsByDay = (data: { dateCreated: string }[]) => {
     const result = _.groupBy(data, (i) => {
