@@ -10,6 +10,7 @@ import {
     SentryInfo,
 } from "../type";
 import { config } from "../config";
+import { BorderBottom } from "@mui/icons-material";
 
 
 const groupEventsByDay = (data: { dateCreated: string }[]) => {
@@ -100,11 +101,14 @@ const Sentry = () => {
                     signingStats.approvalFailed
                 ),
                 ghLogins: groupEventsByDay(loginStats.ghLogins),
+                ghTokenLoading: groupEventsByDay(
+                    loginStats.ghTokenLoading
+                ),  
                 ledgerLogins: groupEventsByDay(
                     loginStats.ledgerLogins
                 ),
-                ghTokenLoading: groupEventsByDay(
-                    loginStats.ghTokenLoading
+                ledgerLoginsFail: groupEventsByDay(
+                    loginStats.ledgerLoginsFail
                 ),
             });
             setIsLoading(false);
@@ -122,8 +126,7 @@ const Sentry = () => {
     return (
         <div
             style={{
-                width: "1400px",
-                padding: "0 20px",
+                width: "1440px",
                 margin: "10rem auto",
             }}
         >   
@@ -198,6 +201,7 @@ const Sentry = () => {
                             searchQuery === SentryDataPeriods.TwoWeeks
                                 ? "1fr"
                                 : "1fr 1fr",
+                        gap: "40px"        
                     }}
                 >
                     {Object.keys(infoData).map((key: string) => {
@@ -215,11 +219,24 @@ const Sentry = () => {
                         ).reverse();
 
                         return (
-                            <div>
-                                <h2>
-                                    {neededTitles[key] || key}, Count:
-                                    {total}
+                            <div style={{
+                                border : "1px solid #C4C4C4", 
+                                borderRadius : "4px" ,
+                                }}>
+                                <h2 style={{ marginBottom : searchQuery === "24h" ? "" : "40px", padding : "20px", paddingTop: "20px",  display : "flex",
+                                    justifyContent : "space-between",
+                                    alignItems : "center",
+                                    fontSize : "24px",
+                                    fontWeight: "normal",
+                                    borderBottom : searchQuery === "24h" ? "" : "1px solid #C4C4C4",                               
+                                 }}>
+                                    <span>{neededTitles[key] || key}</span>
+                                    <span style={{
+                                    border: "2px solid rgb(15 147 153 / 60%)",
+                                    padding : "10px" , fontSize : "16px" , borderRadius: "4px",
+                                    }}>Total: {total} </span>
                                 </h2>
+                            
                                 {total > 0 && (
                                     <StackedBarsChart
                                         searchQuery={searchQuery}
@@ -244,7 +261,8 @@ const neededTitles: any = {
     requestProposed: "Request Proposed",
     requestApproved: "Request Approved",
     proposalFailed : "Proposal Failed",
-    approvalFailed : "Approval Failed"
+    approvalFailed : "Approval Failed",
+    ledgerLoginsFail : "Ledger Login Failed"
  };
 
 export default Sentry;

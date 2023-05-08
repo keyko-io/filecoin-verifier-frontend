@@ -80,6 +80,7 @@ export interface SentryInfo {
     proposalFailed : any;
     ghLogins: any;
     ledgerLogins: any;
+    ledgerLoginsFail: any;
     ghTokenLoading: any;
 }
 
