@@ -62,19 +62,17 @@ export const METRICES_TITLES: any = {
     approvalFailed: "Approval Failed",
 };
 
-
 export const METRICES_TIME_RANGE_OPTIONS = [
     {
+        value: SentryDataPeriods.OneDay,
+        label: "1 Day",
+    },
+    {
         value: SentryDataPeriods.SevenDays,
-        label: "last 7 Days",
+        label: "7 Days",
     },
     {
         value: SentryDataPeriods.TwoWeeks,
-        label: "last 14 days",
-    },
-    {
-        value: SentryDataPeriods.OneDay,
-        label: "last 24 hours",
+        label: "14 days",
     },
 ];
-
