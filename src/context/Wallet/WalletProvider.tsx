@@ -16,7 +16,7 @@ async function getActiveAccounts(api: any, accounts: any) {
         accounts.map(
             (acc: any) => new Promise<any>(async (resolve, reject) => {
                 try {
-                    const key = await api.actorAddress(acc + "11")
+                    const key = await api.actorAddress(acc)
                     accountsActive[acc] = key
                     resolve(key)
                 } catch (error) {                  
