@@ -13,7 +13,7 @@ import {
     SentryDataPeriods,
     SentryDataTypes,
     TabsInput,
-    UserTabProps
+    UserTabProps,
 } from "../type";
 import { fetchSentryData, groupEventsByDay } from "../utils";
 
@@ -129,11 +129,13 @@ const ChartsView = (i: ChartsViewProps) => {
 };
 
 const UserTab = (i: UserTabProps) => {
-    const { searchQuery, setIsLoading } = i;
+    const [isLoading, setIsLoading] = React.useState(false);
+    const { searchQuery } = i;
     const [infoData, setInfoData] = React.useState({});
 
     React.useEffect(() => {
         const fetchData = async () => {
+            setIsLoading(true);
             const loginStats = await fetchSentryData(
                 searchQuery,
                 SentryDataTypes.LoginStats
@@ -153,13 +155,16 @@ const UserTab = (i: UserTabProps) => {
         fetchData();
     }, [searchQuery]);
 
-    return (
+    return isLoading ? (
+        <div>Loading...</div>
+    ) : (
         <ChartsView searchQuery={searchQuery} infoData={infoData} />
     );
 };
 
 const BlockchainTab = (i: BlockchainsTabProps) => {
-    const { searchQuery, setIsLoading, isLoading } = i;
+    const { searchQuery } = i;
+    const [isLoading, setIsLoading] = React.useState(false);
     const [infoData, setInfoData] = React.useState({});
 
     React.useEffect(() => {
@@ -188,7 +193,9 @@ const BlockchainTab = (i: BlockchainsTabProps) => {
         fetchData();
     }, [searchQuery]);
 
-    return (
+    return isLoading ? (
+        <div>Loading...</div>
+    ) : (
         <ChartsView searchQuery={searchQuery} infoData={infoData} />
     );
 };
@@ -251,24 +258,17 @@ const MetricesTabs = (i: TabsInput) => {
                 >
                     <Tab label="Bugs" {...a11yProps(0)} />
                     <Tab label="Blockchain" {...a11yProps(1)} />
-                    <Tab label="Item Three" {...a11yProps(2)} />
+                    <Tab label="User" {...a11yProps(2)} />
                 </Tabs>
             </Box>
             <TabPanel value={value} index={0}>
                 <BugsTab />
             </TabPanel>
             <TabPanel value={value} index={1}>
-                <BlockchainTab
-                    searchQuery={searchQuery}
-                    setIsLoading={setIsLoading}
-                    isLoading={isLoading}
-                />
+                <BlockchainTab searchQuery={searchQuery} />
             </TabPanel>
             <TabPanel value={value} index={2}>
-                <UserTab
-                    searchQuery={searchQuery}
-                    setIsLoading={setIsLoading}
-                />
+                <UserTab searchQuery={searchQuery} />
             </TabPanel>
         </Box>
     );
