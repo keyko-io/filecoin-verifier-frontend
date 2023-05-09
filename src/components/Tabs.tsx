@@ -79,6 +79,7 @@ const ChartsView = (i: ChartsViewProps) => {
 
                 return (
                     <div
+                        key={key}
                         style={{
                             border: "1px solid #C4C4C4",
                             borderRadius: "4px",
@@ -148,6 +149,9 @@ const UserTab = (i: UserTabProps) => {
                 ),
                 ghTokenLoading: groupEventsByDay(
                     loginStats.ghTokenLoading
+                ),
+                ledgerLoginsFail: groupEventsByDay(
+                    loginStats.ledgerLoginsFail
                 ),
             });
             setIsLoading(false);

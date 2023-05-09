@@ -60,6 +60,7 @@ export const METRICES_TITLES: any = {
     requestApproved: "Request Approved",
     proposalFailed: "Proposal Failed",
     approvalFailed: "Approval Failed",
+    ledgerLoginsFail : "Ledger Login Failed"
 };
 
 export const METRICES_TIME_RANGE_OPTIONS = [
