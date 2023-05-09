@@ -8,6 +8,7 @@ import { config } from '../../config';
 import { withCookies } from 'react-cookie'
 import { LoadWalletOptionsType, WalletProviderProps, WalletProviderStates } from '../contextType';
 import * as Logger from "../../logger"
+import { toast } from "react-hot-toast"
 
 async function getActiveAccounts(api: any, accounts: any) {
     const accountsActive: any = {};
@@ -15,15 +16,21 @@ async function getActiveAccounts(api: any, accounts: any) {
         accounts.map(
             (acc: any) => new Promise<any>(async (resolve, reject) => {
                 try {
-                    const key = await api.actorAddress(acc)
+                    const key = await api.actorAddress(acc + "11")
                     accountsActive[acc] = key
                     resolve(key)
-                } catch (error) {
-                    reject(error)
+                } catch (error) {                  
+                  reject(error)
                 }
             })
         )
     )
+
+    if(Object.keys(accountsActive).length === 0) {
+        toast.error("something went wrong while loading accounts, please try loading the wallet again")
+        await Logger.BasicLogger({ message: "could not load active accounts"});
+    }
+
     return accountsActive
 }
 
@@ -39,6 +46,7 @@ class WalletProvider extends React.Component<WalletProviderProps, WalletProvider
             await wallet.loadWallet(this.state.networkIndex)
             const accounts: any = await wallet.getAccounts()
             const accountsActive = await getActiveAccounts(wallet.api, accounts)
+
             const { cookies } = this.props;
             const walletCookie = cookies.get('wallet')
             let lastWallet

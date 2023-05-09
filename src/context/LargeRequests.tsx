@@ -158,14 +158,6 @@ export default function LargeRequestsProvider({ children }: any) {
                                     context.wallet.activeAccount
                                 ];
 
-                            if (!activeAccount) {
-                                await Logger.BasicLogger({
-                                    message:
-                                        "could not load active accounts",
-                                });
-                                resolve(false);
-                            }
-
                             const multisigInfo =
                                 await getMultisigInfo(
                                     request.multisig
