@@ -12,16 +12,11 @@ import {
     ChartsViewProps,
     SentryDataPeriods,
     SentryDataTypes,
+    TabPanelProps,
     TabsInput,
     UserTabProps,
 } from "../type";
 import { fetchSentryData, groupEventsByDay } from "../utils";
-
-interface TabPanelProps {
-    children?: React.ReactNode;
-    index: number;
-    value: number;
-}
 
 function TabPanel(props: TabPanelProps) {
     const { children, value, index, ...other } = props;

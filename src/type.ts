@@ -116,8 +116,6 @@ export interface TabsInput {
 
 export interface BlockchainsTabProps {
     searchQuery: SentryDataPeriods;
-    setIsLoading: any;
-    isLoading: boolean;
 }
 
 export interface ChartsViewProps {
@@ -126,6 +124,12 @@ export interface ChartsViewProps {
 }
 
 export interface UserTabProps {
-    setIsLoading: any;
     searchQuery: SentryDataPeriods;
 }
+
+export interface TabPanelProps {
+    children?: React.ReactNode;
+    index: number;
+    value: number;
+}
+
