@@ -1,5 +1,5 @@
 import { ISSUE_LABELS } from "filecoin-verfier-common";
-import { NotaryActionStatus } from "./type";
+import { NotaryActionStatus, SentryDataPeriods } from "./type";
 
 export const constructNewStatusComment = (
     status: NotaryActionStatus,
@@ -51,3 +51,30 @@ export const STATUS_LABELS: any = {
         ISSUE_LABELS.WAITING_FOR_CLIENT_REPLY,
     ],
 };
+
+export const METRICES_TITLES: any = {
+    ghLogins: "Github Logins",
+    ledgerLogins: "Ledger Logins",
+    ghTokenLoading: "Github Token Loaded",
+    requestProposed: "Request Proposed",
+    requestApproved: "Request Approved",
+    proposalFailed: "Proposal Failed",
+    approvalFailed: "Approval Failed",
+};
+
+
+export const METRICES_TIME_RANGE_OPTIONS = [
+    {
+        value: SentryDataPeriods.SevenDays,
+        label: "last 7 Days",
+    },
+    {
+        value: SentryDataPeriods.TwoWeeks,
+        label: "last 14 days",
+    },
+    {
+        value: SentryDataPeriods.OneDay,
+        label: "last 24 hours",
+    },
+];
+

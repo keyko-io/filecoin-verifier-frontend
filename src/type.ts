@@ -32,8 +32,8 @@ export interface LargeRequestData {
     approvalInfoFromLabels?: number;
     user: string; //github handle
     events: GithubIssueEvent[];
-    name: string
-    uuid:string
+    name: string;
+    uuid: string;
 }
 
 export interface GithubIssueEvent {
@@ -66,18 +66,23 @@ export interface TransactionAndIssue {
     issue: any[];
 }
 
-export type NotaryActionStatus = "Decline" | "Request More Information";
+export type NotaryActionStatus =
+    | "Decline"
+    | "Request More Information";
 
 export interface StatsInfo {
     dateCreated: string; // Date Object(?)
     title: string;
 }
 
-export interface SentryInfo {
+export interface BlockchainDataInfo {
     requestProposed: any;
     requestApproved: any;
     approvalFailed: any;
-    proposalFailed : any;
+    proposalFailed: any;
+}
+
+export interface UserDataInfo {
     ghLogins: any;
     ledgerLogins: any;
     ledgerLoginsFail: any;
@@ -93,4 +98,34 @@ export enum SentryDataPeriods {
 export enum SentryDataTypes {
     LoginStats = "login",
     SigningStats = "tx",
+}
+
+export interface TimeRangeInput {
+    searchQuery: SentryDataPeriods;
+    setSearchQuery: React.Dispatch<
+        React.SetStateAction<SentryDataPeriods>
+    >;
+}
+
+export interface TabsInput {
+    searchQuery: SentryDataPeriods;
+    setSearchQuery: any;
+    setIsLoading: any;
+    isLoading: boolean;
+}
+
+export interface BlockchainsTabProps {
+    searchQuery: SentryDataPeriods;
+    setIsLoading: any;
+    isLoading: boolean;
+}
+
+export interface ChartsViewProps {
+    searchQuery: SentryDataPeriods;
+    infoData: any;
+}
+
+export interface UserTabProps {
+    setIsLoading: any;
+    searchQuery: SentryDataPeriods;
 }
