@@ -1,11 +1,10 @@
 import { useState } from "react";
-import AltTabs from "../components/Tabs";
+import MetricesTabs from "../components/Tabs";
 import TimeRangeTextField from "../components/TimeRangeTextField";
 import { SentryDataPeriods } from "../type";
 
 const Sentry = () => {
     const [openIssue, setOpenIssue] = useState(0);
-    const [isLoading, setIsLoading] = useState(true);
     const [searchQuery, setSearchQuery] = useState<SentryDataPeriods>(
         SentryDataPeriods.OneDay
     );
@@ -29,11 +28,9 @@ const Sentry = () => {
             <TimeRangeTextField
                 {...{ searchQuery, setSearchQuery }}
             />
-            <AltTabs
+            <MetricesTabs
                 searchQuery={searchQuery}
                 setSearchQuery={setSearchQuery}
-                isLoading={isLoading}
-                setIsLoading={setIsLoading}
             />
         </div>
     );

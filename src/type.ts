@@ -110,8 +110,6 @@ export interface TimeRangeInput {
 export interface TabsInput {
     searchQuery: SentryDataPeriods;
     setSearchQuery: any;
-    setIsLoading: any;
-    isLoading: boolean;
 }
 
 export interface BlockchainsTabProps {

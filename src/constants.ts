@@ -60,7 +60,7 @@ export const METRICES_TITLES: any = {
     requestApproved: "Request Approved",
     proposalFailed: "Proposal Failed",
     approvalFailed: "Approval Failed",
-    ledgerLoginsFail : "Ledger Login Failed"
+    ledgerLoginsFail: "Ledger Login Failed",
 };
 
 export const METRICES_TIME_RANGE_OPTIONS = [
@@ -77,3 +77,6 @@ export const METRICES_TIME_RANGE_OPTIONS = [
         label: "14 days",
     },
 ];
+
+export const FRONT_END_ISSUES_URL =
+    "https://github.com/keyko-io/filecoin-verifier-frontend/issues";

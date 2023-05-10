@@ -4,9 +4,10 @@ import Tab from "@mui/material/Tab";
 import Tabs from "@mui/material/Tabs";
 import Typography from "@mui/material/Typography";
 import * as React from "react";
+import { fetchOpenBugsCount, fetchSentryData } from "../api";
 import StackedBarsChart from "../components/BarsChart";
 import { config } from "../config";
-import { METRICES_TITLES } from "../constants";
+import { FRONT_END_ISSUES_URL, METRICES_TITLES } from "../constants";
 import {
     BlockchainsTabProps,
     ChartsViewProps,
@@ -16,9 +17,11 @@ import {
     TabsInput,
     UserTabProps,
 } from "../type";
-import { fetchSentryData, groupEventsByDay } from "../utils";
+import {
+    groupEventsByDay,
+} from "../utils";
 
-function TabPanel(props: TabPanelProps) {
+const TabPanel = (props: TabPanelProps) => {
     const { children, value, index, ...other } = props;
 
     return (
@@ -36,14 +39,14 @@ function TabPanel(props: TabPanelProps) {
             )}
         </div>
     );
-}
+};
 
-function a11yProps(index: number) {
+const a11yProps = (index: number) => {
     return {
         id: `simple-tab-${index}`,
         "aria-controls": `simple-tabpanel-${index}`,
     };
-}
+};
 
 const ChartsView = (i: ChartsViewProps) => {
     const { searchQuery, infoData } = i;
@@ -203,9 +206,10 @@ const BugsTab = () => {
     const [openIssue, setOpenIssue] = React.useState(0);
 
     React.useEffect(() => {
-        fetch(`${config.apiUri}/stats/issues`)
-            .then((res) => res.json())
-            .then((openIssue) => setOpenIssue(openIssue.count));
+        const handler = async () => {
+            const response = await fetchOpenBugsCount();
+            setOpenIssue(response);
+        };
     }, []);
 
     return (
@@ -223,10 +227,7 @@ const BugsTab = () => {
                 },
             }}
             onClick={() =>
-                window.open(
-                    "https://github.com/keyko-io/filecoin-verifier-frontend/issues",
-                    "_blank"
-                )
+                window.open(FRONT_END_ISSUES_URL, "_blank")
             }
         >
             <BugReportIcon sx={{ pr: "0.5rem" }} />
@@ -236,8 +237,7 @@ const BugsTab = () => {
 };
 
 const MetricesTabs = (i: TabsInput) => {
-    const { searchQuery, setSearchQuery, setIsLoading, isLoading } =
-        i;
+    const { searchQuery, setSearchQuery } = i;
     const [value, setValue] = React.useState(0);
 
     const handleChange = (
@@ -250,11 +250,7 @@ const MetricesTabs = (i: TabsInput) => {
     return (
         <Box sx={{ width: "100%" }}>
             <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
-                <Tabs
-                    value={value}
-                    onChange={handleChange}
-                    aria-label="basic tabs example"
-                >
+                <Tabs value={value} onChange={handleChange}>
                     <Tab label="Bugs" {...a11yProps(0)} />
                     <Tab label="Blockchain" {...a11yProps(1)} />
                     <Tab label="User" {...a11yProps(2)} />
