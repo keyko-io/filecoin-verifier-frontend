@@ -1,7 +1,7 @@
-import { config } from "../config";
+import { AxiosResponse } from "axios";
 import _ from "lodash";
-import { SentryDataPeriods, SentryDataTypes } from "../type";
-import axios, { AxiosResponse } from "axios";
+import { config } from "../config";
+import { SentryDataTypes } from "../type";
 
 export const groupEventsByDay = (data: { dateCreated: string }[]) => {
     const result = _.groupBy(data, (i) => {
@@ -39,22 +39,5 @@ export const isAxiosResponseSuccess = (
     response: AxiosResponse<any[]>
 ): boolean => {
     return response?.status < 300 && response?.status > 199;
-};
-
-export const fetchSentryData = async (
-    period: SentryDataPeriods,
-    type: SentryDataTypes
-) => {
-    try {
-        const url = formatSentryURL(period, type);
-        const response = await axios.get(url);
-        if (isAxiosResponseSuccess(response)) {
-            return response.data;
-        }
-        return {};
-    } catch (error) {
-        console.error(error);
-        return {};
-    }
 };
 
