@@ -6,7 +6,7 @@ import { SentryDataPeriods } from "../type";
 const Sentry = () => {
     const [openIssue, setOpenIssue] = useState(0);
     const [searchQuery, setSearchQuery] = useState<SentryDataPeriods>(
-        SentryDataPeriods.OneDay
+        SentryDataPeriods.SevenDays
     );
 
     return (
@@ -23,7 +23,7 @@ const Sentry = () => {
                     fontSize: "36px",
                 }}
             >
-                Fil+ App Data Metrics
+                Fil+ notary app and GitHub tooling metrics
             </h4>
             <TimeRangeTextField
                 {...{ searchQuery, setSearchQuery }}

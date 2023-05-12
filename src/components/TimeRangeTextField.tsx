@@ -12,6 +12,7 @@ const TimeRangeTextField = (i: TimeRangeInput) => {
                 justifyContent: "space-between",
                 alignItems: "center",
                 paddingBottom: "2rem",
+                paddingLeft : "24px"
             }}
         >
             <div>

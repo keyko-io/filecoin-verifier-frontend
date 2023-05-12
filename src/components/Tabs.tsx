@@ -6,8 +6,8 @@ import Typography from "@mui/material/Typography";
 import * as React from "react";
 import { fetchOpenBugsCount, fetchSentryData } from "../api";
 import StackedBarsChart from "../components/BarsChart";
-import { config } from "../config";
-import { FRONT_END_ISSUES_URL, METRICES_TITLES } from "../constants";
+import { FRONT_END_ISSUES_URL, METRICES_TITLES, METRICES_TITLES_EXPLAINATION } from "../constants";
+import Tooltip from '@mui/material/Tooltip';
 import {
     BlockchainsTabProps,
     ChartsViewProps,
@@ -20,6 +20,8 @@ import {
 import {
     groupEventsByDay,
 } from "../utils";
+import { IconButton } from "@mui/material";
+import InfoIcon from '@mui/icons-material/Info';
 
 const TabPanel = (props: TabPanelProps) => {
     const { children, value, index, ...other } = props;
@@ -78,46 +80,28 @@ const ChartsView = (i: ChartsViewProps) => {
                 return (
                     <div
                         key={key}
-                        style={{
-                            border: "1px solid #C4C4C4",
-                            borderRadius: "4px",
-                        }}
+                        style={{position : "relative"}}
                     >
-                        <h2
-                            style={{
-                                marginBottom:
-                                    searchQuery === "24h"
-                                        ? ""
-                                        : "40px",
-                                padding: "20px",
-                                paddingTop: "20px",
-                                display: "flex",
-                                justifyContent: "space-between",
-                                alignItems: "center",
-                                fontSize: "24px",
-                                fontWeight: "normal",
-                                borderBottom:
-                                    searchQuery === "24h"
-                                        ? ""
-                                        : "1px solid #C4C4C4",
-                            }}
-                        >
-                            <span>{METRICES_TITLES[key] || key}</span>
-                            <span
-                                style={{
-                                    border: "2px solid rgb(15 147 153 / 60%)",
-                                    padding: "10px",
-                                    fontSize: "16px",
-                                    borderRadius: "4px",
-                                }}
-                            >
-                                Total: {total}
-                            </span>
-                        </h2>
+                     {searchQuery !== "24h"  &&  <div style={{position : "absolute" , right : "10px", zIndex : "100" , display : "flex" 
+                          , alignItems : "center"
+                        }}>
+                        <Tooltip 
+                         title={<div style={{ fontSize : "12px"}}>{METRICES_TITLES_EXPLAINATION[key]}</div>}
+                         >
+                         <IconButton>
+                           <InfoIcon sx={{color : "#0090FF" }}/>
+                          </IconButton>
+                         </Tooltip>
+                         <div>
+                            Total : {total}
+                         </div>
+                        </div>}
                         {total > 0 && (
                             <StackedBarsChart
                                 searchQuery={searchQuery}
                                 data={response}
+                                title={METRICES_TITLES[key]}
+                                total={total}
                             />
                         )}
                     </div>
@@ -220,7 +204,6 @@ const BugsTab = () => {
                 borderRadius: "4px",
                 display: "flex",
                 alignItems: "center",
-                fontWeight: "600",
                 "&:hover": {
                     cursor: "pointer",
                     borderColor: "black",

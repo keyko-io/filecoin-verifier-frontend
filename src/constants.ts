@@ -63,6 +63,16 @@ export const METRICES_TITLES: any = {
     ledgerLoginsFail: "Ledger Login Failed",
 };
 
+export const METRICES_TITLES_EXPLAINATION: any = {
+    ghLogins: "explain the mettrics here",
+    ledgerLogins: "explain the mettrics here",
+    ghTokenLoading: "explain the mettrics here",
+    requestProposed: "explain the mettrics here",
+    requestApproved: "explain the mettrics here",
+    proposalFailed: "explain the mettrics here",
+    approvalFailed: "explain the mettrics here",
+};
+
 export const METRICES_TIME_RANGE_OPTIONS = [
     {
         value: SentryDataPeriods.OneDay,
