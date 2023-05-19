@@ -415,7 +415,7 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
                ? context.wallet.activeAccount
                : "";
             await context.postLogs(
-               `starting to sign datacap request. approvals: ${request.approvals} -signer: ${signer}, uuid: ${request.uuid}`,
+               `starting to sign datacap request. approvals: ${request.approvals} -signer: ${signer}, uuid: ${request.uuid ? request.uuid : "not found"}`,
                "DEBUG",
                "",
                request.issue_number,
