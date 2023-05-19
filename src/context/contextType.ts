@@ -12,7 +12,7 @@ export interface DataProviderStates {
     switchview: () => void;
     loadVerified: (page: number) => Promise<void>;
     updateGithubVerified: (requestNumber: number, messageID: string, address: string, datacap: number, signer: string, errorMessage: string) => Promise<void>;
-    updateGithubVerifiedLarge: (requestNumber: number, messageID: string, address: string, datacap: any, signer: string, errorMessage: string, action?: string) => Promise<void>;
+    updateGithubVerifiedLarge: (requestNumber: number, messageID: string, address: string, datacap: any, signer: string, errorMessage: string, uuid: string, action?: string) => Promise<void>;
     createRequest: (data: any) => Promise<any>;
     selectNotaryRequest: (selectedNotaryItems: any) => void;
     loadClients: () => Promise<void>;

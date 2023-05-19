@@ -81,7 +81,8 @@ export const Data = React.createContext({
         datacap: any,
         signer: string,
         errorMessage: string,
-        action?: string
+        uuid:string,
+        action?: string,
     ) => {},
     createRequest: async (data: any) => {},
     selectNotaryRequest: (selectedNotaryItems: any) => {},
