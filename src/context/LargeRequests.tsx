@@ -118,10 +118,13 @@ export default function LargeRequestsProvider({ children }: any) {
 
     // is logged in user is a notary
     const isNotaryUser = useCallback((): boolean => {
+        const activeAccount: string = context?.wallet?.activeAccount;
+        if (config.witheListedAddresses.includes(activeAccount)){
+            return true
+        }
         if (!notariesData || !Array.isArray(notariesData)) {
             return false;
         }
-        const activeAccount: string = context?.wallet?.activeAccount;
         const allowedNotaryAddresses: string[] = notariesData?.map(
             (n: { direct_config: { signing_address: string } }) => {
                 return n.direct_config.signing_address;
