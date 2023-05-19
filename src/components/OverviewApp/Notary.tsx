@@ -442,7 +442,8 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
                await callMetricsApi(
                   request.issue_number,
                   EVENT_TYPE.DC_ALLOCATION,
-                  params
+                  params,
+                  config.metrics_api_environment
                )
                
                setApprovedDcRequests([
