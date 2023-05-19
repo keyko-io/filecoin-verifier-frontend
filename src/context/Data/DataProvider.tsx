@@ -1026,13 +1026,14 @@ export default class DataProvider extends React.Component<
                 datacap: any,
                 signer: string,
                 errorMessage: string,
+                uuid:string,
                 action?: string
             ) => {
                 const formattedDc = bytesToiB(datacap);
-                const uniqueLastId =
-                    (await this.state.getLastUniqueId(
-                        requestNumber
-                    )) || "";
+                const uniqueLastId = uuid ? uuid : "not found"
+                    // (await this.state.getLastUniqueId(
+                    //     requestNumber
+                    // )) || "";
 
                 let commentContent =
                     errorMessage !== ""
