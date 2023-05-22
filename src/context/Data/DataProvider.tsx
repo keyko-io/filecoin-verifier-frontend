@@ -185,6 +185,7 @@ export default class DataProvider extends React.Component<
                                 proposer: null,
                                 tx: null,
                                 approvals: null,
+                                uuid: commentParsed.uuid,
                             });
                         }
                     )
@@ -1026,13 +1027,11 @@ export default class DataProvider extends React.Component<
                 datacap: any,
                 signer: string,
                 errorMessage: string,
+                uuid: string,
                 action?: string
             ) => {
                 const formattedDc = bytesToiB(datacap);
-                const uniqueLastId =
-                    (await this.state.getLastUniqueId(
-                        requestNumber
-                    )) || "";
+                const uniqueLastId = uuid ? uuid : "not found"
 
                 let commentContent =
                     errorMessage !== ""

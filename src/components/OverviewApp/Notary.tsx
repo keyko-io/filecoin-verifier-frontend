@@ -415,7 +415,7 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
                ? context.wallet.activeAccount
                : "";
             await context.postLogs(
-               `starting to sign datacap request. approvals: ${request.approvals} -signer: ${signer}`,
+               `starting to sign datacap request. approvals: ${request.approvals} -signer: ${signer}, uuid: ${request.uuid ? request.uuid : "not found"}`,
                "DEBUG",
                "",
                request.issue_number,
@@ -437,12 +437,13 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
                   msigAddress: request.multisig,
                   amount: request.datacap,
                   messageCid: messageID,
-                  uuid: request.uuid
+                  uuid: request.uuid ? request.uuid : "not found"
                }
                await callMetricsApi(
                   request.issue_number,
                   EVENT_TYPE.DC_ALLOCATION,
-                  params
+                  params,
+                  config.metrics_api_environment
                )
                
                setApprovedDcRequests([
@@ -489,7 +490,8 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
                   address,
                   datacap,
                   signer,
-                  errorMessage
+                  errorMessage,
+                  request.uuid
                );
 
                context.wallet.dispatchNotification(errorMessage);
@@ -504,6 +506,7 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
                datacap,
                signer,
                "",
+               request.uuid,
                action
             );
 
