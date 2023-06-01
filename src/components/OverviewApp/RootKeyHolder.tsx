@@ -211,336 +211,340 @@ export default class RootKeyHolder extends Component<{},
             commentContent = `## The request has been signed by a new Root Key Holder\n#### Message sent to Filecoin Network\n>${messageIds.join()}\n${errorMessage}\n${filfox}`;
             label =
               errorMessage === "" ? ISSUE_LABELS.GRANTED : ISSUE_LABELS.ERROR;
-          } else {
-            await this.context.postLogs(
-              `multisig ${request.addresses[0]} - going to propose the address.`,
-              "DEBUG",
-              "",
-              request.issue_number,
-              PHASE
-            );
-            let filfox = "";
-            let errorMessage = "";
-            for (let i = 0; i < request.datacaps.length; i++) {
-              if (request.datacaps[i] && request.addresses[i]) {
-                const datacap = anyToBytes(request.datacaps[i]);
-                let address = request.addresses[i];
-                console.log("request address: " + address);
-                console.log("request datacap: " + request.datacaps[i]);
-                console.log("datacap: " + datacap);
 
-                if (address.startsWith("t1") || address.startsWith("f1")) {
-                  address = await this.context.wallet.api.actorAddress(address);
-                  console.log(
-                    "getting t0/f0 ID. Result of  actorAddress method: " +
-                    address
-                  );
-                }
-
-                console.log("address to propose: " + address);
-
-                messageID =
-                  datacap === 0
-                    ? await this.context.wallet.api.proposeRemoveVerifier(
-                      address,
-                      this.context.wallet.walletIndex
-                    )
-                    : await this.context.wallet.api.proposeVerifier(
-                      address,
-                      BigInt(datacap),
-                      this.context.wallet.walletIndex
-                    );
-                console.log("messageID: " + messageID);
-
-                // const txReceipt = await this.context.wallet.api.getReceipt(
-                //   messageID
-                // );
-                // if (!txReceipt)
-                //   warningMessage += `#### @${assignee} The bot couldn't find the Receipt. \nPlease, manually check the message to see that exitcode equals 0.\n>${messageID}`;
-                // if (txReceipt.ExitCode !== 0)
-                //   errorMessage += `#### @${assignee} There was an error processing the message\n>${messageID}`;
-                messageIds.push(messageID);
-                this.context.wallet.dispatchNotification(
-                  "Accepting Message sent with ID: " + messageID
-                );
-                filfox += `#### You can check the status of the message here: https://filfox.info/en/message/${messageID}\n`;
-              }
-            }
-            commentContent = `## The request has been signed by a new Root Key Holder\n#### Message sent to Filecoin Network\n>${messageIds.join()}\n ${errorMessage}\n ${filfox}`;
-            label =
-              errorMessage === ""
-                ? config.lotusNodes[this.context.wallet.networkIndex]
-                  .rkhtreshold > 1
-                  ? ISSUE_LABELS.START_SIGN_DATACAP
-                  : ISSUE_LABELS.GRANTED
-                : ISSUE_LABELS.ERROR;
-          }
-
-          if (messageIds.length === 0) {
-            await this.context.postLogs(
-              `Message ID not returned from node call`,
-              "ERROR",
-              "",
-              request.issue_number,
-              PHASE
-            );
-          }
-
-          if (commentContent !== "") {
-            await this.context.github.githubOctoGeneric.octokit.issues.createComment(
-              {
-                owner: config.onboardingOwner,
-                repo: config.onboardingNotaryOwner,
-                issue_number: request.issue_number,
-                body: commentContent,
-              }
-            );
-          }
-          if (warningMessage !== "") {
-            await this.context.github.githubOctoGeneric.octokit.issues.createComment(
-              {
-                owner: config.onboardingOwner,
-                repo: config.onboardingNotaryOwner,
-                issue_number: request.issue_number,
-                body: warningMessage,
-              }
-            );
-          }
-          if (label !== "") {
-            await this.context.github.githubOctoGeneric.octokit.issues.removeAllLabels(
-              {
-                owner:
-                  config.onboardingOwner,
-                repo: config.onboardingNotaryOwner,
-                issue_number: request.issue_number,
-              }
-            );
-            await this.timeout(1000);
+            //remove ready to sign and add granted or error
+            await this.context.github.githubOctoGeneric.octokit.issues.removeLabel({
+              owner:
+                config.onboardingOwner,
+              repo: config.onboardingNotaryOwner,
+              issue_number: request.issue_number,
+              label: ISSUE_LABELS.READY_TO_SIGN
+            })
             await this.context.github.githubOctoGeneric.octokit.issues.addLabels(
               {
                 owner:
                   config.onboardingOwner,
                 repo: config.onboardingNotaryOwner,
                 issue_number: request.issue_number,
-                labels: [label, "Notary Application"],
+                labels: [label],
               }
             );
+          
+        } else {
+          await this.context.postLogs(
+            `multisig ${request.addresses[0]} - going to propose the address.`,
+            "DEBUG",
+            "",
+            request.issue_number,
+            PHASE
+          );
+          let filfox = "";
+          let errorMessage = "";
+          for (let i = 0; i < request.datacaps.length; i++) {
+            if (request.datacaps[i] && request.addresses[i]) {
+              const datacap = anyToBytes(request.datacaps[i]);
+              let address = request.addresses[i];
+              console.log("request address: " + address);
+              console.log("request datacap: " + request.datacaps[i]);
+              console.log("datacap: " + datacap);
+
+              if (address.startsWith("t1") || address.startsWith("f1")) {
+                address = await this.context.wallet.api.actorAddress(address);
+                console.log(
+                  "getting t0/f0 ID. Result of  actorAddress method: " +
+                  address
+                );
+              }
+
+              console.log("address to propose: " + address);
+
+              messageID =
+                datacap === 0
+                  ? await this.context.wallet.api.proposeRemoveVerifier(
+                    address,
+                    this.context.wallet.walletIndex
+                  )
+                  : await this.context.wallet.api.proposeVerifier(
+                    address,
+                    BigInt(datacap),
+                    this.context.wallet.walletIndex
+                  );
+              console.log("messageID: " + messageID);
+
+              messageIds.push(messageID);
+              this.context.wallet.dispatchNotification(
+                "Accepting Message sent with ID: " + messageID
+              );
+              filfox += `#### You can check the status of the message here: https://filfox.info/en/message/${messageID}\n`;
+            }
           }
-          //metrics
-          if (label === ISSUE_LABELS.GRANTED) {
-            const notaryGovissue =
-              await this.context.github.githubOctoGeneric.octokit.issues.get({
+          commentContent = `## The request has been signed by a new Root Key Holder\n#### Message sent to Filecoin Network\n>${messageIds.join()}\n ${errorMessage}\n ${filfox}`;
+          label =
+            errorMessage === ""
+              ? config.lotusNodes[this.context.wallet.networkIndex]
+                .rkhtreshold > 1
+                ? ISSUE_LABELS.START_SIGN_DATACAP
+                : ISSUE_LABELS.GRANTED
+              : ISSUE_LABELS.ERROR;
+
+
+            //add START_SIGN_DATACAP or error
+            await this.context.github.githubOctoGeneric.octokit.issues.addLabels(
+              {
                 owner:
                   config.onboardingOwner,
                 repo: config.onboardingNotaryOwner,
                 issue_number: request.issue_number,
-              });
-            const notaryData = notaryParser.parseIssue(notaryGovissue.data.body)
-            const applicationName = notaryData.name
-            const applicationAddress = notaryData.address
-
-            const params: MetricsApiParams = {
-              name: applicationName || "not found",
-              clientAddress: applicationAddress || "not found",
-              msigAddress: request.addresses[0] ? request.addresses[0] : "",
-              messageCid: messageIds[0] ? messageIds[0] : "",
-            };
-            metrics.callMetricsApi(
-              request.issue_number,
-              EVENT_TYPE.MULTISIG_CREATION,
-              params,
-              config.metrics_api_environment
+                labels: [label],
+              }
             );
-            await this.context.postLogs(
-              `multisig ${request.addresses[0]} approved by RKH ${this.context.wallet.activeAccount}!`,
-              "INFO",
-              "msig_approved",
-              request.issue_number,
-              PHASE
-            );
+        }
 
-            await Logger.BasicLogger({ message: Logger.RKH_SIGN_ON_CHAIN })
-          }
-        } catch (e: any) {
-          this.context.wallet.dispatchNotification("Failed: " + e.message);
-
-          this.setState({ approveLoading: false });
+        if (messageIds.length === 0) {
           await this.context.postLogs(
-            `Error approving the multisig: ${e.message}`,
+            `Message ID not returned from node call`,
             "ERROR",
             "",
             request.issue_number,
             PHASE
           );
         }
+
+        if (commentContent !== "") {
+          await this.context.github.githubOctoGeneric.octokit.issues.createComment(
+            {
+              owner: config.onboardingOwner,
+              repo: config.onboardingNotaryOwner,
+              issue_number: request.issue_number,
+              body: commentContent,
+            }
+          );
+        }
+        if (warningMessage !== "") {
+          await this.context.github.githubOctoGeneric.octokit.issues.createComment(
+            {
+              owner: config.onboardingOwner,
+              repo: config.onboardingNotaryOwner,
+              issue_number: request.issue_number,
+              body: warningMessage,
+            }
+          );
+        }
+        //metrics
+        if (label === ISSUE_LABELS.GRANTED) {
+          const notaryGovissue =
+            await this.context.github.githubOctoGeneric.octokit.issues.get({
+              owner:
+                config.onboardingOwner,
+              repo: config.onboardingNotaryOwner,
+              issue_number: request.issue_number,
+            });
+          const notaryData = notaryParser.parseIssue(notaryGovissue.data.body)
+          const applicationName = notaryData.name
+          const applicationAddress = notaryData.address
+
+          const params: MetricsApiParams = {
+            name: applicationName || "not found",
+            clientAddress: applicationAddress || "not found",
+            msigAddress: request.addresses[0] ? request.addresses[0] : "",
+            messageCid: messageIds[0] ? messageIds[0] : "",
+          };
+          metrics.callMetricsApi(
+            request.issue_number,
+            EVENT_TYPE.MULTISIG_CREATION,
+            params,
+            config.metrics_api_environment
+          );
+          await this.context.postLogs(
+            `multisig ${request.addresses[0]} approved by RKH ${this.context.wallet.activeAccount}!`,
+            "INFO",
+            "msig_approved",
+            request.issue_number,
+            PHASE
+          );
+
+          await Logger.BasicLogger({ message: Logger.RKH_SIGN_ON_CHAIN })
+        }
+      } catch (e: any) {
+        this.context.wallet.dispatchNotification("Failed: " + e.message);
+
+        this.setState({ approveLoading: false });
+        await this.context.postLogs(
+          `Error approving the multisig: ${e.message}`,
+          "ERROR",
+          "",
+          request.issue_number,
+          PHASE
+        );
       }
     }
+  }
     this.setState({ approveLoading: false });
   };
 
-  onRefAccepted = (refAccepted: any) => {
-    this.setState({ refAccepted });
-  };
+onRefAccepted = (refAccepted: any) => {
+  this.setState({ refAccepted });
+};
 
-  onRefRequests = (refRequests: any) => {
-    this.setState({ refRequests });
-  };
+onRefRequests = (refRequests: any) => {
+  this.setState({ refRequests });
+};
 
-  timeout(delay: number) {
-    return new Promise((res) => setTimeout(res, delay));
-  }
+timeout(delay: number) {
+  return new Promise((res) => setTimeout(res, delay));
+}
 
   public render() {
-    return (
-      <div className="main">
-        <div className="tabsholder">
-          <div className="tabs">
-            <div
-              className={this.state.tabs === "0" ? "selected" : ""}
-              onClick={() => {
-                this.showVerifierRequests();
-              }}
-            >
-              Notary Requests ({this.context.verifierAndPendingRequests.length})
-            </div>
-            <div
-              className={this.state.tabs === "2" ? "selected" : ""}
-              onClick={() => {
-                this.showApproved();
-              }}
-            >
-              Accepted Notaries ({this.context?.approvedVerifiersData?.length})
-            </div>
+  return (
+    <div className="main">
+      <div className="tabsholder">
+        <div className="tabs">
+          <div
+            className={this.state.tabs === "0" ? "selected" : ""}
+            onClick={() => {
+              this.showVerifierRequests();
+            }}
+          >
+            Notary Requests ({this.context.verifierAndPendingRequests.length})
           </div>
-          <div className="tabssadd">
-            {this.state.approveLoading ? (
-              <BeatLoader size={15} color={"rgb(24,160,237)"} />
-            ) : this.state.tabs === "0" ? (
-              <>
-                <ButtonPrimary
-                  onClick={(e: any) =>
-                    this.showWarnPropose(
-                      e,
-                      "ProposeSign",
-                      this.context.selectedNotaryRequests
-                    )
-                  }
-                >
-                  Sign On-chain
-                </ButtonPrimary>
-              </>
-            ) : null}
+          <div
+            className={this.state.tabs === "2" ? "selected" : ""}
+            onClick={() => {
+              this.showApproved();
+            }}
+          >
+            Accepted Notaries ({this.context?.approvedVerifiersData?.length})
           </div>
         </div>
-
-        {this.state.tabs === "0" &&
-          <div style={{ minHeight: "500px" }}>
-            <DataTable
-              columns={[
-                {
-                  name: "Status",
-                  selector: (row: any) => row.proposed,
-                  sortable: true,
-                  cell: (row: any) => (
-                    <span>{row.proposed ? "Proposed" : "Pending"}</span>
-                  ),
-                },
-                {
-                  name: "Issue",
-                  selector: (row: any) => row.issue_number,
-                  sortable: true,
-                  cell: (row: any) => (
-                    <a
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      href={row.issue_Url}
-                    >
-                      #{row.issue_number}
-                    </a>
-                  ),
-                },
-                {
-                  name: "Address",
-                  selector: (row: any) => row.addresses,
-                  sortable: true,
-                },
-                {
-                  name: "Datacap",
-                  selector: (row: any) => row.datacaps,
-                  sortable: true,
-                },
-                {
-                  name: "Transaction ID",
-                  selector: (row: any) => row.txs,
-                  grow: 2,
-                  cell: (row: any) => (
-                    <span>{row.txs.length === 0 ? "-" : row.txs[0].id}</span>
-                  ),
-                },
-                {
-                  name: "Proposed by",
-                  selector: (row: any) => row.proposedBy,
-                  sortable: true,
-                  grow: 2,
-                },
-              ]}
-              data={this.context.verifierAndPendingRequests}
-              pagination
-              paginationRowsPerPageOptions={[10, 20, 30]}
-              paginationPerPage={10}
-              selectableRows
-              noDataComponent="No pending requests yet"
-              selectableRowsHighlight={true}
-              selectableRowsNoSelectAll={true}
-              progressPending={this.context.isPendingRequestLoading}
-              progressComponent={<CircularProgress
-                style={{ marginTop: "4rem", color: "rgb(0, 144, 255)" }}
-              />}
-              onSelectedRowsChange={({ selectedRows }) => {
-                this.context.selectNotaryRequest(selectedRows);
-              }}
-            />
-          </div>
-        }
-
-        {this.state.tabs === "2" &&
-          <div style={{ minHeight: "500px" }}>
-            <DataTable
-              columns={[
-                {
-                  name: "Notary",
-                  selector: (row) => row.verifier,
-                  sortable: true,
-                },
-                {
-                  name: "Address",
-                  selector: (row) => row.verifierAccount,
-                  sortable: true,
-                  grow: 2,
-                },
-                {
-                  name: "Datacap",
-                  selector: (row) => row.datacap,
-                  sortable: true,
-                  cell: (row: any) => <span>{bytesToiB(row.datacap)}</span>,
-                },
-              ]}
-              data={this.context.verified as VerifiedData[]}
-              pagination
-              paginationServer
-              paginationTotalRows={this.context?.approvedVerifiersData?.length}
-              onChangePage={(page: number) => {
-                this.context.loadVerified(page)
-              }}
-              progressPending={this.context.acceptedNotariesLoading}
-              progressComponent={<CircularProgress
-                style={{ marginTop: "4rem", color: "rgb(0, 144, 255)" }}
-              />}
-              paginationRowsPerPageOptions={[10]}
-            />
-          </div>
-        }
+        <div className="tabssadd">
+          {this.state.approveLoading ? (
+            <BeatLoader size={15} color={"rgb(24,160,237)"} />
+          ) : this.state.tabs === "0" ? (
+            <>
+              <ButtonPrimary
+                onClick={(e: any) =>
+                  this.showWarnPropose(
+                    e,
+                    "ProposeSign",
+                    this.context.selectedNotaryRequests
+                  )
+                }
+              >
+                Sign On-chain
+              </ButtonPrimary>
+            </>
+          ) : null}
+        </div>
       </div>
-    );
-  }
+
+      {this.state.tabs === "0" &&
+        <div style={{ minHeight: "500px" }}>
+          <DataTable
+            columns={[
+              {
+                name: "Status",
+                selector: (row: any) => row.proposed,
+                sortable: true,
+                cell: (row: any) => (
+                  <span>{row.proposed ? "Proposed" : "Pending"}</span>
+                ),
+              },
+              {
+                name: "Issue",
+                selector: (row: any) => row.issue_number,
+                sortable: true,
+                cell: (row: any) => (
+                  <a
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    href={row.issue_Url}
+                  >
+                    #{row.issue_number}
+                  </a>
+                ),
+              },
+              {
+                name: "Address",
+                selector: (row: any) => row.addresses,
+                sortable: true,
+              },
+              {
+                name: "Datacap",
+                selector: (row: any) => row.datacaps,
+                sortable: true,
+              },
+              {
+                name: "Transaction ID",
+                selector: (row: any) => row.txs,
+                grow: 2,
+                cell: (row: any) => (
+                  <span>{row.txs.length === 0 ? "-" : row.txs[0].id}</span>
+                ),
+              },
+              {
+                name: "Proposed by",
+                selector: (row: any) => row.proposedBy,
+                sortable: true,
+                grow: 2,
+              },
+            ]}
+            data={this.context.verifierAndPendingRequests}
+            pagination
+            paginationRowsPerPageOptions={[10, 20, 30]}
+            paginationPerPage={10}
+            selectableRows
+            noDataComponent="No pending requests yet"
+            selectableRowsHighlight={true}
+            selectableRowsNoSelectAll={true}
+            progressPending={this.context.isPendingRequestLoading}
+            progressComponent={<CircularProgress
+              style={{ marginTop: "4rem", color: "rgb(0, 144, 255)" }}
+            />}
+            onSelectedRowsChange={({ selectedRows }) => {
+              this.context.selectNotaryRequest(selectedRows);
+            }}
+          />
+        </div>
+      }
+
+      {this.state.tabs === "2" &&
+        <div style={{ minHeight: "500px" }}>
+          <DataTable
+            columns={[
+              {
+                name: "Notary",
+                selector: (row) => row.verifier,
+                sortable: true,
+              },
+              {
+                name: "Address",
+                selector: (row) => row.verifierAccount,
+                sortable: true,
+                grow: 2,
+              },
+              {
+                name: "Datacap",
+                selector: (row) => row.datacap,
+                sortable: true,
+                cell: (row: any) => <span>{bytesToiB(row.datacap)}</span>,
+              },
+            ]}
+            data={this.context.verified as VerifiedData[]}
+            pagination
+            paginationServer
+            paginationTotalRows={this.context?.approvedVerifiersData?.length}
+            onChangePage={(page: number) => {
+              this.context.loadVerified(page)
+            }}
+            progressPending={this.context.acceptedNotariesLoading}
+            progressComponent={<CircularProgress
+              style={{ marginTop: "4rem", color: "rgb(0, 144, 255)" }}
+            />}
+            paginationRowsPerPageOptions={[10]}
+          />
+        </div>
+      }
+    </div>
+  );
+}
 }
