@@ -344,6 +344,34 @@ const LargeRequestTable = (props: LargeRequestTableProps) => {
         return response;
     };
 
+    const getEfilData =  async () => {
+        try {
+             setIsLoadingGithubData(true);
+            const allReadyToSignIssues = await context.github.githubOcto.paginate(
+                context.github.githubOcto.issues.listForRepo,
+                {
+                    owner: config.onboardingLargeOwner,
+                    repo: config.onboardingLargeClientRepo,
+                    state: "open",
+                    labels: [ISSUE_LABELS.EFIL_PLUS, ISSUE_LABELS.READY_TO_SIGN] 
+                }
+              );
+
+            const formattedIssues = await formatIssues(
+                allReadyToSignIssues,
+                    context.github.githubOcto
+            )
+                
+
+            setData(formattedIssues);
+            setIsLoadingGithubData(false);
+
+            
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
     return (
         <div
             className="large-request-table"
@@ -376,11 +404,17 @@ const LargeRequestTable = (props: LargeRequestTableProps) => {
                 </div>
             ) : (
                 <>
-                    <div style={{ display: "grid" }}>
+                    <div style={{ display: "flex", alignItems : "center", marginBottom : "2rem" }}>
                         <SearchInput
                             updateData={setData}
                             fetchTableData={fetchTableData}
                         />
+
+                      <button style={{ marginLeft : "4rem" , backgroundColor : "white" ,
+                       borderRadius : "2rem", padding : "0.7rem 1.2rem", border : "2px solid #2F9BFF",
+                       cursor : "pointer" , fontSize: "14px", color : "#2F9BFF"
+                    }} onClick={() => getEfilData()}>Filter Efil+ applications</button>
+                     
                     </div>
                     <DataTable
                         defaultSortAsc={false}

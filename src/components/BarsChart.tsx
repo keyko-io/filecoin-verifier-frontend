@@ -19,10 +19,11 @@ const BarsChart = (props: {searchQuery: string, data: { x: string; y: number }[]
     );
 
     return (
-        <div style={{ marginTop : "2rem", marginBottom : "2rem"}}>
+        <div>
+            {props.searchQuery !== "24h" && 
             <XYPlot
                 xType="ordinal"
-                width={props?.searchQuery === SentryDataPeriods?.TwoWeeks ? 1200 : 600}
+                width={props?.searchQuery === SentryDataPeriods?.TwoWeeks ? 1400 : 700}
                 height={300}
                 xDistance={100}
             >
@@ -35,7 +36,7 @@ const BarsChart = (props: {searchQuery: string, data: { x: string; y: number }[]
                     data={labelData}
                     getLabel={(d: any) => d.x}
                 />
-            </XYPlot>
+            </XYPlot>}
         </div>
     );
 };

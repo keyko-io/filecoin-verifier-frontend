@@ -1,5 +1,5 @@
 import { ISSUE_LABELS } from "filecoin-verfier-common";
-import { NotaryActionStatus } from "./type";
+import { NotaryActionStatus, SentryDataPeriods } from "./type";
 
 export const constructNewStatusComment = (
     status: NotaryActionStatus,
@@ -51,3 +51,32 @@ export const STATUS_LABELS: any = {
         ISSUE_LABELS.WAITING_FOR_CLIENT_REPLY,
     ],
 };
+
+export const METRICES_TITLES: any = {
+    ghLogins: "Github Logins",
+    ledgerLogins: "Ledger Logins",
+    ghTokenLoading: "Github Token Loaded",
+    requestProposed: "Request Proposed",
+    requestApproved: "Request Approved",
+    proposalFailed: "Proposal Failed",
+    approvalFailed: "Approval Failed",
+    ledgerLoginsFail: "Ledger Login Failed",
+};
+
+export const METRICES_TIME_RANGE_OPTIONS = [
+    {
+        value: SentryDataPeriods.OneDay,
+        label: "1 Day",
+    },
+    {
+        value: SentryDataPeriods.SevenDays,
+        label: "7 Days",
+    },
+    {
+        value: SentryDataPeriods.TwoWeeks,
+        label: "14 days",
+    },
+];
+
+export const FRONT_END_ISSUES_URL =
+    "https://github.com/keyko-io/filecoin-verifier-frontend/issues";
