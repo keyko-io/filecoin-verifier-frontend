@@ -9,7 +9,7 @@ import { v4 as uuidv4 } from "uuid";
 import { bytesToiB } from "../../utils/Filters";
 import { notaryLedgerVerifiedComment } from "./comments";
 import { Notary } from "../../pages/Verifiers";
-import { ISSUE_LABELS } from "filecoin-verfier-common";
+import { ISSUE_LABELS } from "filecoin-verifier-common";
 import {
     ldnParser,
     notaryParser,
@@ -572,7 +572,7 @@ export default class DataProvider extends React.Component<
                                 labels: [ISSUE_LABELS.READY_TO_SIGN, "Notary Application"],
                             }
                         );
-
+console.log("msigRequests",msigRequests)
                     // const msigRequests = allIssues
                     // .filter(
                     //     (issue: any) =>
@@ -697,6 +697,36 @@ export default class DataProvider extends React.Component<
                     });
                     console.error(
                         "error in verifierAndPendingRequests",
+                        error
+                    );
+                }
+            },
+            loadDataCapRemovalRequests: async () => {
+                try {
+                    if (
+                        this.props.github.githubOctoGeneric.logged ===
+                        false
+                    ) {
+                        await this.props.github.githubOctoGenericLogin();
+                    }
+                    const reqs =
+                        await this.props.github.githubOctoGeneric.octokit.paginate(
+                            this.props.github.githubOctoGeneric
+                                .octokit.issues.listForRepo,
+                            {
+                                owner: config.onboardingOwner,
+                                repo: config.onboardingNotaryOwner,
+                                state: "open",
+                                // labels: [ISSUE_LABELS.READY_TO_SIGN, "Notary Application"],
+                            }
+                        );
+                    return reqs
+
+
+
+                } catch (error) {
+                    console.error(
+                        "error in loadDataCapRemovalRequests",
                         error
                     );
                 }

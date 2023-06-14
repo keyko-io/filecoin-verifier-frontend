@@ -1,4 +1,4 @@
-import { ISSUE_LABELS } from "filecoin-verfier-common";
+import { ISSUE_LABELS } from "filecoin-verifier-common";
 import {
     createContext,
     useCallback,

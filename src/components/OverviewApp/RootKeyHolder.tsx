@@ -14,7 +14,7 @@ import { notaryParser, metrics } from "@keyko-io/filecoin-verifier-tools";
 import { VerifiedData } from "../../type";
 import * as Logger from "../../logger";
 import { methods } from "@keyko-io/filecoin-verifier-tools";
-import { ISSUE_LABELS } from "filecoin-verfier-common";
+import { ISSUE_LABELS } from "filecoin-verifier-common";
 
 type RootKeyHolderState = {
   tabs: string;
@@ -501,6 +501,7 @@ timeout(delay: number) {
               style={{ marginTop: "4rem", color: "rgb(0, 144, 255)" }}
             />}
             onSelectedRowsChange={({ selectedRows }) => {
+              console.log("selectedRows",selectedRows)
               this.context.selectNotaryRequest(selectedRows);
             }}
           />

@@ -1,7 +1,7 @@
 import { ldnParser } from "@keyko-io/filecoin-verifier-tools";
 import { CircularProgress } from "@material-ui/core";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
-import { ISSUE_LABELS } from "filecoin-verfier-common";
+import { ISSUE_LABELS } from "filecoin-verifier-common";
 import { useContext, useEffect, useState } from "react";
 import DataTable from "react-data-table-component";
 import { config } from "../../../config";

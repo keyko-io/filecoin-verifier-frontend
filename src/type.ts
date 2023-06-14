@@ -35,6 +35,17 @@ export interface LargeRequestData {
     name: string;
     uuid: string;
 }
+export interface RemoveDatacapRequestData {
+     name: string
+                labels: { name: string }[];
+                approvalInfoFromLabels: 0,
+    address: string;
+    datacapToRemove: string;
+    issue_number: number;
+    url: string;
+    uuid: string;
+    signable: boolean;
+}
 
 export interface GithubIssueEvent {
     id: number;

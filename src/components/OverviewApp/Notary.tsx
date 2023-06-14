@@ -28,6 +28,7 @@ import NodeDataProvider from "../../context/NodeData";
 import { LargeRequestData } from "../../type";
 import { EVENT_TYPE, MetricsApiParams } from "../../utils/Metrics";
 import { callMetricsApi } from "@keyko-io/filecoin-verifier-tools/lib/metrics/metrics";
+import RemoveDataCapTable from "./Notary/RemoveDataCapTable";
 
 type NotaryProps = {
    clients: any[];
@@ -77,6 +78,7 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
       CancelProposalDataType[]
    >([]);
    const [dataCancelLoading, setDataCancelLoading] = useState(false);
+   const [removalLoading, setRemovalLoading] = useState(false);
    const [
       isApproveLargeRequestModalOpen,
       setIsApproveLargeRequestModalOpen,
@@ -585,6 +587,13 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
                setCancelProposalData={setCancelProposalData}
             />
          ),
+         "5": (
+            <RemoveDataCapTable
+               setSelectedLargeClientRequests={
+                  setSelectedLargeClientRequests
+               }
+            />
+         )
       };
 
       return tables[tabs];
@@ -636,6 +645,19 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
                               onClick={cancelDuplicateRequest}
                            >
                               Cancel Proposal
+                           </ButtonPrimary>
+                        ))}
+                     {tabs === "5" &&
+                        (removalLoading ? ( //TODO change
+                           <BeatLoader
+                              size={15}
+                              color={"rgb(24,160,237)"}
+                           />
+                        ) : (
+                           <ButtonPrimary
+                              onClick={()=>{}}
+                           >
+                              Sign Removal Request
                            </ButtonPrimary>
                         ))}
 
