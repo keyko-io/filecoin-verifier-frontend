@@ -96,6 +96,10 @@ export class LedgerWallet {
     return await this.generateSignedMessage(filecoinMessage, signedMessage)
   }
 
+  //TODO make a function to sign removal datacap
+  //NEED TO UPDATE WALLET AND LEDGERJS
+  
+
 
   private generateSignedMessage = async (filecoinMessage: any, signedMessage: any) => {
 

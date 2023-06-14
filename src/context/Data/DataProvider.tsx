@@ -560,7 +560,7 @@ export default class DataProvider extends React.Component<
                     ) {
                         await this.props.github.githubOctoGenericLogin();
                     }
-
+                    console.log("this.props.github.githubOctoGeneric",this.props.github.githubOctoGeneric)
                     const msigRequests =
                         await this.props.github.githubOctoGeneric.octokit.paginate(
                             this.props.github.githubOctoGeneric

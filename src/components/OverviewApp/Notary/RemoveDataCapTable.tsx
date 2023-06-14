@@ -48,22 +48,27 @@ export const isSignable = (
  * @param githubOcto 
  * @returns 
  */
-const formatIssues = async (
-    data?: { body: string }[],
-    githubOcto?: any
-): Promise<any[]> => {
+const formatIssues = (
+    issues: any[]
+): any[] => {
     const parsedIssueData = []
-    parsedIssueData.push({
-        name: "xxx",
-        adress: "xx0x123x",
-        issue_number: 123,
-        url: "",
-        labels: "",
-        datacapToRemove: "200PiB",
-        approvalInfoFromLabels: 0,
-        uuid: "uuidtest",
-    });
-    return ["parsedIssueData"];
+    for (let issue of issues) {
+        debugger
+        const parsed = ldnParser.parseDataCapRemoval(issue.body)
+        console.log(parsed)
+        parsedIssueData.push({
+            name: parsed.name,
+            address: parsed.address,
+            issue_number: issue.number,
+            url: issue.html_url,
+            labels: issue.labels.map((l:any)=>l.name),
+            datacapToRemove: parsed.datacapToRemove,
+            approvalInfoFromLabels: 0,
+            uuid: parsed.uuid,
+        });
+    }
+    console.log("parsedIssueData", parsedIssueData)
+    return parsedIssueData;
 };
 
 type LargeRequestTableProps = {
@@ -100,17 +105,36 @@ const RemoveDataCapTable = (props: LargeRequestTableProps) => {
     const fetchTableData = async (page: number) => {
         try {
             setIsLoadingGithubData(true)
-            debugger
-            console.log(context)
-            // THIS part not working somehow, going on for now....
-            const reqs = await context.github.githubOctoGeneric.octokit.issues.get({
+            console.log({
                 owner: config.onboardingOwner,
                 repo: config.onboardingNotaryOwner,
-                issue_number: 836,
-            });
+                state: "open",
+                labels: [ISSUE_LABELS.DC_REMOVE_READY_TO_SIGN],
+            })
+            const reqs =
+                await context.github.githubOcto.paginate(
+                    context.github.githubOcto.issues.listForRepo,
+                    {
+                        owner: config.onboardingOwner,
+                        repo: config.onboardingNotaryOwner,
+                        state: "open",
+                        labels: [ISSUE_LABELS.DC_REMOVE_READY_TO_SIGN],
+                    }
+                );
             console.log(reqs)
             // const reqs = await context.loadDataCapRemovalRequests()
-            formatIssues()
+            const formattedIssues = formatIssues(reqs)
+
+            //FOR REFERENCE
+            //   if (allReadyToSignIssues.data) {
+            //     const formattedIssues = await formatIssues(
+            //         allReadyToSignIssues.data,
+            //         context.github.githubOcto
+            //     );
+
+              setData(formattedIssues);
+            setIsLoadingGithubData(false);
+
         } catch (error) {
             console.log(error);
             setIsLoadingGithubData(false);
