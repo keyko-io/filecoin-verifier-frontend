@@ -30,7 +30,6 @@ import Verifiers from "./pages/Verifiers"
 import Miners from "./pages/Miners"
 import StatusPage from "./pages/StatusPage"
 import Admin from "./admin"
-import SentryInfo from "./pages/SentryInfo"
 import Redirect from "./components/Redirect"
 
 // redirect to domain if user access fleek url
@@ -112,7 +111,6 @@ root.render(
                             component={StatusPage}
                           ></Route>
                           <Route path={"/admin"} component={Admin}></Route>
-                          <Route path={"/info"} component={SentryInfo}></Route>
                         </Switch>
                       </Layout>
                     </Router>
