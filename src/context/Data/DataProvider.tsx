@@ -192,22 +192,26 @@ export default class DataProvider extends React.Component<
                 );
                 return parsedIssueData;
             },
-            getLargeRequestSearchInputData: async () => {
+            getLargeRequestSearchInputData: async (labels? : string[]) => {
                 if (
                     !this?.props?.github ||
                     !this?.props?.github?.githubLogged
                 )
                     return [];
+
+                    
                 const allGHIssues =
                     await this?.props?.github?.fetchGithubIssues(
                         config.onboardingLargeOwner,
                         config.onboardingLargeClientRepo,
                         "open",
+                        labels ? labels : [ISSUE_LABELS.READY_TO_SIGN]
                         // ["bot:readyToSign","Bot: Ready To Sign"]
                     );
-                const filteredByLabel = filterByLabel(allGHIssues, "readytosign")
 
-                const response = filteredByLabel.map((issue: any) => {
+                console.log(allGHIssues, "hey hey")    
+            
+                const response = allGHIssues.map((issue: any) => {
                     const parsed: ParseLargeRequestData =
                         ldnParser.parseIssue(issue.body);
                     const approvalInfo = issue.labels.some((l: any) => l.name.toLowerCase().replace(/ /g, '').includes("startsigndatacap"))
