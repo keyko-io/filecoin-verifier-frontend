@@ -41,6 +41,7 @@
     "axios": "^1.4.0",
     "bignumber.js": "^9.0.1",
     "bluebird": "^3.7.2",
+    "cbor-x": "^1.5.3",
     "copy-text-to-clipboard": "^2.2.0",
     "filecoin-verifier-common": "^1.0.16",
     "fuse.js": "^6.6.2",

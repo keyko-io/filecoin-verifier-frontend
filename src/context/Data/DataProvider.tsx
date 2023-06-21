@@ -560,7 +560,7 @@ export default class DataProvider extends React.Component<
                     ) {
                         await this.props.github.githubOctoGenericLogin();
                     }
-                    console.log("this.props.github.githubOctoGeneric",this.props.github.githubOctoGeneric)
+                    console.log("this.props.github.githubOctoGeneric", this.props.github.githubOctoGeneric)
                     const msigRequests =
                         await this.props.github.githubOctoGeneric.octokit.paginate(
                             this.props.github.githubOctoGeneric
@@ -572,7 +572,7 @@ export default class DataProvider extends React.Component<
                                 labels: [ISSUE_LABELS.READY_TO_SIGN, "Notary Application"],
                             }
                         );
-console.log("msigRequests",msigRequests)
+                    console.log("msigRequests", msigRequests)
                     // const msigRequests = allIssues
                     // .filter(
                     //     (issue: any) =>
@@ -701,7 +701,7 @@ console.log("msigRequests",msigRequests)
                     );
                 }
             },
-            loadDataCapRemovalRequests: async () => {
+            loadDataCapRemovalRequests: async (isRkh: boolean) => {
                 try {
                     if (
                         this.props.github.githubOctoGeneric.logged ===
@@ -710,19 +710,20 @@ console.log("msigRequests",msigRequests)
                         await this.props.github.githubOctoGenericLogin();
                     }
                     const reqs =
-                        await this.props.github.githubOctoGeneric.octokit.paginate(
-                            this.props.github.githubOctoGeneric
-                                .octokit.issues.listForRepo,
+                        await this.props.github.githubOcto.paginate(
+                            this.props.github.githubOcto.issues.listForRepo,
                             {
                                 owner: config.onboardingOwner,
                                 repo: config.onboardingNotaryOwner,
                                 state: "open",
-                                // labels: [ISSUE_LABELS.READY_TO_SIGN, "Notary Application"],
+                                labels: [isRkh ? ISSUE_LABELS.DC_REMOVE_NOTARY_APPROVED : ISSUE_LABELS.DC_REMOVE_READY_TO_SIGN],
                             }
                         );
+                    this.setState({
+                        removalRequests: reqs,
+                    });
+                    console.log("rewqqqqs", reqs)
                     return reqs
-
-
 
                 } catch (error) {
                     console.error(

@@ -8,7 +8,6 @@ import FilecoinApp from "@zondax/ledger-filecoin"
 import signer from "@zondax/filecoin-signing-tools/js"
 import { VerifyAPI } from '@keyko-io/filecoin-verifier-tools'
 import { ConfigLotusNode } from '../contextType'
-
 export class LedgerWallet {
 
   ledgerBusy: boolean = false
@@ -86,7 +85,7 @@ export class LedgerWallet {
   }
 
   public sign = async (filecoinMessage: any, indexAccount: number) => {
-    const serializedMessage = signer.transactionSerialize(
+   const serializedMessage = signer.transactionSerialize(
       filecoinMessage
     )
     const signedMessage = this.handleErrors(
@@ -96,9 +95,26 @@ export class LedgerWallet {
     return await this.generateSignedMessage(filecoinMessage, signedMessage)
   }
 
-  //TODO make a function to sign removal datacap
-  //NEED TO UPDATE WALLET AND LEDGERJS
-  
+  /**
+   *  async signRemoveDataCap(path, message) {
+      return this.signGeneric(path, message, INS.SIGN_DATA_CAP);
+    }
+    lotus command is: lfp  sign-remove-data-cap-proposal  t1ualijplj5aaaogymjce4subwj2rfyiqcpragbjy t1uwc7jhbu6nh5il2j6wjvjgjx5n624c3iummknwa 100
+
+   */
+  public signRemoveDataCap = async (message: any, indexAccount: number) => {
+    // debugger
+    // const serializedMessage = signer.transactionSerialize(
+    //   message
+    // )
+    // const signedMessage = this.handleErrors(
+      
+      const signedMessage = await this.ledgerApp.signRemoveDataCap(`m/44'/${this.lotusNode.code}'/0'/0/${indexAccount}`, message)
+    // )
+    console.log("signedMessage",signedMessage)
+    return signedMessage
+    // return await this.generateSignedMessage(filecoinMessage, signedMessage)
+  }
 
 
   private generateSignedMessage = async (filecoinMessage: any, signedMessage: any) => {

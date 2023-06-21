@@ -64,7 +64,7 @@ export const Data = React.createContext({
     getLastUniqueId: async (issueNumber: number) => "",
     loadClientRequests: async () => {},
     loadVerifierAndPendingRequests: async () => {},
-    loadDataCapRemovalRequests: async () => {},
+    loadDataCapRemovalRequests: async (isRkh:boolean) => {},
     switchview: () => {},
     loadVerified: async (page: number) => {},
     updateGithubVerified: async (

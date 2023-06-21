@@ -12,18 +12,6 @@ import { ISSUE_LABELS } from "filecoin-verifier-common";
 const CANT_SIGN_MESSAGE =
     "You can currently only approve the allocation requests associated with the multisig organization you signed in with. Signing proposals for additional DataCap allocations will require you to sign in again";
 
-const mapNotaryAddressToGithubHandle = async (address: string) => {
-    const verifRegJson: any = await fetch(
-        config.verifiers_registry_url
-    );
-    const json = await verifRegJson.json();
-    const githubHandle =
-        json.notaries.find(
-            (notary: any) =>
-                notary.ldn_config.signing_address === address
-        )?.github_user[0] || "";
-    return githubHandle;
-};
 
 export const isSignable = (
     approvals: number,
@@ -53,7 +41,6 @@ const formatIssues = (
 ): any[] => {
     const parsedIssueData = []
     for (let issue of issues) {
-        debugger
         const parsed = ldnParser.parseDataCapRemoval(issue.body)
         console.log(parsed)
         parsedIssueData.push({
@@ -61,7 +48,7 @@ const formatIssues = (
             address: parsed.address,
             issue_number: issue.number,
             url: issue.html_url,
-            labels: issue.labels.map((l:any)=>l.name),
+            labels: issue.labels.map((l: any) => l.name),
             datacapToRemove: parsed.datacapToRemove,
             approvalInfoFromLabels: 0,
             uuid: parsed.uuid,
@@ -72,11 +59,11 @@ const formatIssues = (
 };
 
 type LargeRequestTableProps = {
-    setSelectedLargeClientRequests: any;
+    setRemoveDataCapIssues: any;
 };
 
 const RemoveDataCapTable = (props: LargeRequestTableProps) => {
-    const { setSelectedLargeClientRequests } = props;
+    const { setRemoveDataCapIssues } = props;
     const {
         count,
     } = useLargeRequestsContext();
@@ -105,34 +92,9 @@ const RemoveDataCapTable = (props: LargeRequestTableProps) => {
     const fetchTableData = async (page: number) => {
         try {
             setIsLoadingGithubData(true)
-            console.log({
-                owner: config.onboardingOwner,
-                repo: config.onboardingNotaryOwner,
-                state: "open",
-                labels: [ISSUE_LABELS.DC_REMOVE_READY_TO_SIGN],
-            })
-            const reqs =
-                await context.github.githubOcto.paginate(
-                    context.github.githubOcto.issues.listForRepo,
-                    {
-                        owner: config.onboardingOwner,
-                        repo: config.onboardingNotaryOwner,
-                        state: "open",
-                        labels: [ISSUE_LABELS.DC_REMOVE_READY_TO_SIGN],
-                    }
-                );
-            console.log(reqs)
-            // const reqs = await context.loadDataCapRemovalRequests()
+            const reqs : any= await context.loadDataCapRemovalRequests(false)
             const formattedIssues = formatIssues(reqs)
-
-            //FOR REFERENCE
-            //   if (allReadyToSignIssues.data) {
-            //     const formattedIssues = await formatIssues(
-            //         allReadyToSignIssues.data,
-            //         context.github.githubOcto
-            //     );
-
-              setData(formattedIssues);
+            setData(formattedIssues);
             setIsLoadingGithubData(false);
 
         } catch (error) {
@@ -158,6 +120,7 @@ const RemoveDataCapTable = (props: LargeRequestTableProps) => {
             selector: (row: RemoveDatacapRequestData) => row?.address,
             sortable: true,
             cell: (row: RemoveDatacapRequestData) => (
+                
                 <div>{`${row?.address?.substring(
                     0,
                     9
@@ -181,7 +144,7 @@ const RemoveDataCapTable = (props: LargeRequestTableProps) => {
             sortable: true,
             grow: 0.5,
             cell: (row: RemoveDatacapRequestData) => (
-                <a
+                <a  
                     target="_blank"
                     rel="noopener noreferrer"
                     href={row?.url}
@@ -201,51 +164,6 @@ const RemoveDataCapTable = (props: LargeRequestTableProps) => {
                 <div>{row?.approvalInfoFromLabels}</div>
             ),
         },
-        // {
-        //     name: "Node Data",
-        //     selector: (row: RemoveDatacapRequestData) => row?.tx?.id,
-        //     grow: 0.5,
-        //     cell: (row: RemoveDatacapRequestData) => (
-        //         <div
-        //             style={{ cursor: "pointer" }}
-        //             onClick={() =>
-        //                 handleOpen(row.multisig, row.address)
-        //             }
-        //         >
-        //             <MoreHorizIcon />
-        //         </div>
-        //     ),
-        //     center: true,
-        // },
-        // {
-        //     name: "Actions",
-        //     omit: !isNotaryUser(),
-        //     selector: (row: RemoveDatacapRequestData) => row?.tx?.id,
-        //     grow: 0.5,
-        //     cell: (row: RemoveDatacapRequestData) => {
-        //         const repliesByAuthor = extractRepliesByClient(row);
-
-        //         return (
-        //             <Tooltip title="Replies By Client">
-        //                 <div
-        //                     style={{ cursor: "pointer" }}
-        //                     onClick={() => {
-        //                         setSelectedRequestForActions(row);
-        //                         setIsActionsModalOpen(true);
-        //                     }}
-        //                 >
-        //                     <Badge
-        //                         color="primary"
-        //                         badgeContent={repliesByAuthor.length}
-        //                     >
-        //                         <CreateIcon />
-        //                     </Badge>
-        //                 </div>
-        //             </Tooltip>
-        //         );
-        //     },
-        //     center: true,
-        // },
     ];
 
     return (
@@ -272,13 +190,14 @@ const RemoveDataCapTable = (props: LargeRequestTableProps) => {
 
                     </div>
                     <DataTable
+                        selectableRowsSingle
                         defaultSortAsc={false}
                         defaultSortFieldId="auditTrail"
                         columns={largeReqColumns}
                         selectableRowsHighlight
                         onSelectedRowsChange={({ selectedRows }) => {
-                            setSelectedLargeClientRequests(
-                                selectedRows
+                            setRemoveDataCapIssues(
+                                selectedRows[0]
                             );
                         }}
                         onRowClicked={(row) => {
@@ -289,6 +208,7 @@ const RemoveDataCapTable = (props: LargeRequestTableProps) => {
                             }
                         }}
                         selectableRows
+                        selectableRowsNoSelectAll={true}
                         progressPending={isLoadingGithubData}
                         onChangePage={(
                             page: number,
@@ -296,7 +216,6 @@ const RemoveDataCapTable = (props: LargeRequestTableProps) => {
                         ) => {
                             setCurrentPage(page);
                         }}
-                        selectableRowsNoSelectAll={true}
                         pagination
                         paginationServer
                         paginationTotalRows={count > 0 ? count : 500}
