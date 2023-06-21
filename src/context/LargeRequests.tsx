@@ -37,6 +37,7 @@ interface LargeRequestsState {
         freeTextValue: string,
         issueNumber: number
     ) => void;
+    setTableData: any
 }
 
 export const LargeRequestsContext = createContext(
@@ -49,7 +50,7 @@ export const useLargeRequestsContext = () =>
 export default function LargeRequestsProvider({ children }: any) {
     const context = useContext(Data);
     const { getMultisigInfo } = useNodeDataContext();
-    const [data, setData] = useState([]);
+    const [data, setData] = useState<any>([]);
     const [notariesData, setNotariesData] = useState([]);
 
     useEffect(() => {
@@ -260,6 +261,7 @@ export default function LargeRequestsProvider({ children }: any) {
         changeRequestStatus,
         extractRepliesByClient,
         isNotaryUser,
+        setTableData : setData
     };
 
     return (
