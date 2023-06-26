@@ -5,7 +5,7 @@ import { Cookies } from 'react-cookie'
 // DATA PROVIDER CONTEXT TYPE => STATE AND PROPS
 export interface DataProviderStates {
     formatLargeRequestData: (i: LargeRequestData[]) => Promise<any>;
-    getLargeRequestSearchInputData: () => Promise<any>;
+    getLargeRequestSearchInputData: (labels ? : string[]) => Promise<any>;
     getNodeData: (address: any, clientAddress: any) => Promise<any>;
     loadClientRequests: () => Promise<void>;
     loadVerifierAndPendingRequests: () => Promise<void>;

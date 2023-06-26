@@ -39,7 +39,7 @@ export const Data = React.createContext({
     ) => false,
     formatLargeRequestData: async (i: LargeRequestData[]) =>
         ({} as any),
-    getLargeRequestSearchInputData: async () => ({} as any),
+    getLargeRequestSearchInputData: async (labels? : string[]) => ({} as any),
     getNodeData: async (address: string, clientAddress: string) =>
         ({} as any),
     assignToIssue: async (
