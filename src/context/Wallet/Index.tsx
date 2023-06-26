@@ -23,5 +23,6 @@ export const Wallet = React.createContext({
     selectNetwork: async (network: number) => { },
     selectAccount: async (index: number) => { },
     loadWallet: async (type: string, options?: LoadWalletOptionsType) => { return false },
-    dispatchNotification: (message: string) => { }
+    dispatchNotification: (message: string) => { },
+    signRemoveDataCap:async (message: any, index:number) => { }
 })

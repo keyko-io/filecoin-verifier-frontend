@@ -47,6 +47,7 @@ export interface DataProviderStates {
     selectedLargeClientRequests: any;
     approvedVerifiersData: ApprovedVerifiers[] | null,
     txsIssueGitHub: TransactionAndIssue[] | null;
+    removalRequests: any;
 }
 
 export interface DataProviderProps {
@@ -100,6 +101,7 @@ export interface WalletProviderStates {
     selectAccount: (index: number) => Promise<void>
     loadWallet: (type: string, options?: LoadWalletOptionsType) => Promise<boolean>
     dispatchNotification: (message: string) => void
+    signRemoveDataCap:  (msg:any,index:number) => { },
 }
 
 

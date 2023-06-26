@@ -25,9 +25,12 @@ import * as Logger from "../../logger";
 import LargeRequestsProvider from "../../context/LargeRequests";
 import ApproveLargeRequestModal from "./Notary/ApproveLargeRequestModal";
 import NodeDataProvider from "../../context/NodeData";
-import { LargeRequestData } from "../../type";
+import { DataCapRemovalRequest, LargeRequestData } from "../../type";
 import { EVENT_TYPE, MetricsApiParams } from "../../utils/Metrics";
 import { callMetricsApi } from "@keyko-io/filecoin-verifier-tools/lib/metrics/metrics";
+import RemoveDataCapTable from "./Notary/RemoveDataCapTable";
+import { encode } from 'cbor-x';
+import { ISSUE_LABELS } from "filecoin-verifier-common";
 
 type NotaryProps = {
    clients: any[];
@@ -36,7 +39,7 @@ type NotaryProps = {
 enum NotaryActions {
    Proposed = "Proposed",
    Approved = "Approved"
-} 
+}
 
 type CancelProposalDataType = {
    clientName: string;
@@ -73,10 +76,13 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
    );
    const [cancelProposalData, setCancelProposalData] =
       useState<CancelProposalDataType | null>(null);
+   const [removeDataCapIssue, setRemoveDataCapIssue] =
+      useState<DataCapRemovalRequest>();
    const [dataCancel, setDataCancel] = useState<
       CancelProposalDataType[]
    >([]);
    const [dataCancelLoading, setDataCancelLoading] = useState(false);
+   const [removalLoading, setRemovalLoading] = useState(false);
    const [
       isApproveLargeRequestModalOpen,
       setIsApproveLargeRequestModalOpen,
@@ -420,10 +426,10 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
                "",
                request.issue_number,
                PHASE
-            );         
+            );
             if (mostRecentTx) {
                action = NotaryActions.Approved
-   
+
                messageID = await context.wallet.api.approvePending(
                   request.multisig,
                   mostRecentTx,
@@ -445,7 +451,7 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
                   params,
                   config.metrics_api_environment
                )
-               
+
                setApprovedDcRequests([
                   ...approvedDcRequests,
                   request.issue_number,
@@ -457,13 +463,13 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
                   request.issue_number,
                   PHASE
                );
-              
+
                context.wallet.dispatchNotification(
                   `datacap being approved: ${request.datacap} \nclient address: ${address}`
                );
 
             } else {
-   
+
                messageID =
                   await context.wallet.api.multisigVerifyClient(
                      request.multisig,
@@ -479,7 +485,7 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
                   "datacap_proposed",
                   request.issue_number,
                   PHASE
-               );           
+               );
             }
 
             if (!messageID) {
@@ -540,11 +546,11 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
             );
 
             if (action === NotaryActions.Proposed) {
-               await Logger.BasicLogger({ message: "Proposal Failed" })          
+               await Logger.BasicLogger({ message: "Proposal Failed" })
             } else if (action === NotaryActions.Approved) {
                await Logger.BasicLogger({ message: "Approval Failed" })
             }
-        
+
             await context.postLogs(
                `The transaction to sign the datacap failed: ${e.message}`,
                "ERROR",
@@ -557,6 +563,63 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
          }
       }
    };
+
+   const signRemovalRequest = async () => {
+      try {
+         setRemovalLoading(true);
+         const dataCapBytes : number= anyToBytes(removeDataCapIssue?.datacapToRemove as string)
+         console.log("sign removal request")
+         const idAddress = await context.wallet.api.actorAddress(removeDataCapIssue?.address);
+         const message = {
+            VerifiedClient: idAddress,
+            DataCapAmount: dataCapBytes,
+            RemovalProposalID: 1234
+         }
+
+         const encodedMessage = context.wallet.api.encodeRemoveDataCapParameters(
+            [message.VerifiedClient, message.DataCapAmount, [message.RemovalProposalID]]
+         );
+         const signature = await context.wallet.signRemoveDataCap(encodedMessage, 0)
+         let labelsToAdd = removeDataCapIssue?.labels.find((l: string) => l === ISSUE_LABELS.DC_REMOVE_NOTARY_PROPOSED) ? ISSUE_LABELS.DC_REMOVE_NOTARY_APPROVED : ISSUE_LABELS.DC_REMOVE_NOTARY_PROPOSED
+
+
+         const body = `# notary approved for datacap removal: 
+            \n > **Client Address**: ${removeDataCapIssue?.address}
+            \n > **Client Id Address**: ${idAddress}
+            \n > **Notary Id Address**: ${context.wallet.accountsActive
+            [context.wallet.activeAccount]}
+            \n > **Signature**: ${signature}`
+         labelsToAdd = ISSUE_LABELS.DC_REMOVE_NOTARY_APPROVED
+
+
+         await context.github.githubOctoGeneric.octokit.issues.createComment(
+            {
+               owner: config.onboardingOwner,
+               repo: config.onboardingNotaryOwner,
+               issue_number: removeDataCapIssue?.issue_number,
+               body: body,
+               label: [labelsToAdd]
+            })
+         await context.github.githubOctoGeneric.octokit.issues.addLabels(
+            {
+               owner: config.onboardingOwner,
+               repo: config.onboardingNotaryOwner,
+               issue_number: removeDataCapIssue?.issue_number,
+               labels: [labelsToAdd]
+            })
+
+         setRemovalLoading(false);
+         context.wallet.dispatchNotification("The dataCap Removal has been signed and posted to github");
+      } catch (error) {
+         setRemovalLoading(false);
+         console.log(error)
+         context.wallet.dispatchNotification(
+            'error during signature creation'
+         );
+      }
+
+
+   }
 
    const activeTable = (tabs: any) => {
       const tables: any = {
@@ -585,6 +648,13 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
                setCancelProposalData={setCancelProposalData}
             />
          ),
+         "5": (
+            <RemoveDataCapTable
+               setRemoveDataCapIssues={
+                  setRemoveDataCapIssue
+               }
+            />
+         )
       };
 
       return tables[tabs];
@@ -636,6 +706,19 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
                               onClick={cancelDuplicateRequest}
                            >
                               Cancel Proposal
+                           </ButtonPrimary>
+                        ))}
+                     {tabs === "5" &&
+                        (removalLoading ? ( //TODO change
+                           <BeatLoader
+                              size={15}
+                              color={"rgb(24,160,237)"}
+                           />
+                        ) : (
+                           <ButtonPrimary
+                              onClick={signRemovalRequest}
+                           >
+                              Sign Removal Request
                            </ButtonPrimary>
                         ))}
 

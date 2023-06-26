@@ -108,7 +108,15 @@ class WalletProvider extends React.Component<WalletProviderProps, WalletProvider
                 accountsActive,
                 multisig: options.multisig ? true : false,
                 multisigAddress: options.multisig ? options.multisigAddress : '',
-                multisigID: multisigID
+                multisigID: multisigID,
+                signRemoveDataCap: async (msg: any, index: number) => {
+                    try {
+                        const signature = await wallet.signRemoveDataCap(msg, index)
+                        return signature
+                    } catch (e: any) {
+                        this.state.dispatchNotification(e.toString())
+                    }
+                },
             })
             // this.loadGithub()
             return true
@@ -288,7 +296,8 @@ class WalletProvider extends React.Component<WalletProviderProps, WalletProvider
         multisig: false,
         multisigAddress: '',
         multisigActor: '',
-        multisigID: ''
+        multisigID: '',
+        signRemoveDataCap: async () => { },
     }
 
     render() {
