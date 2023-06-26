@@ -172,10 +172,11 @@ export default class RootKeyHolder extends Component<{},
     try {
       dispatchCustomEvent({ name: "delete-modal", detail: {} });
       this.setState({ approveLoading: true });
-       const dataCapBytes : number= anyToBytes(removalRequest?.datacapToRemove as string)
+      const dataCapBytes: number = anyToBytes(removalRequest?.datacapToRemove as string)
       let action = ""
       let messageID = ""
-      let labels = []
+      let labelsToAdd = []
+      const walletIndex = this.context.wallet.walletIndex
       if (isProposal) {
         messageID = await this.context.wallet.api.proposeRemoveDataCap(
           this.state.removeDataCapIssueParsed.address,
@@ -184,19 +185,18 @@ export default class RootKeyHolder extends Component<{},
           signature1,
           notary2,
           signature2,
-          0
+          walletIndex
         )
-        console.log("removal",messageID)
+        console.log("removal", messageID)
         action = "proposed"
-        labels = [ISSUE_LABELS.DC_REMOVE_RKH_PROPOSED]
+        labelsToAdd = [ISSUE_LABELS.DC_REMOVE_RKH_PROPOSED]
       } else {
-        const walletIndex = this.context.wallet.walletIndex
         console.log("removalRequest", removalRequest)
         const rootkey = config.networks == "Mainnet" ? methods.mainnet.rootkey : methods.testnet.rootkey
 
         messageID = await this.context.wallet.api.send(rootkey.approve(removalRequest.tx?.id, removalRequest.tx?.tx), walletIndex)
         action = "approved"
-        labels = [ISSUE_LABELS.DC_REMOVE_RKH_APPROVED,ISSUE_LABELS.DC_REMOVE_COMPLETED] 
+        labelsToAdd = [ISSUE_LABELS.DC_REMOVE_RKH_APPROVED, ISSUE_LABELS.DC_REMOVE_COMPLETED]
       }
 
       const body = `# RootKey Holder ${action} the dataCap Removal for client ${removalRequest.address} \n > **message CID**: ${messageID}
@@ -219,7 +219,7 @@ export default class RootKeyHolder extends Component<{},
             config.onboardingOwner,
           repo: config.onboardingNotaryOwner,
           issue_number: removalRequest.issue_number,
-          labels: [labels],
+          labels: [labelsToAdd],
         }
       );
 
@@ -575,7 +575,7 @@ export default class RootKeyHolder extends Component<{},
                   onClick={(e: any) =>
                     this.showWarnProposeRemoveDataCap(
                       e,
-                      "ApproveRemoval", 
+                      "ApproveRemoval",
                       this.state.removeDataCapIssueParsed
 
                     )
