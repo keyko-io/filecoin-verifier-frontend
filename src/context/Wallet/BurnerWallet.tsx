@@ -1,13 +1,12 @@
 import { config } from '../../config'
-import signer from "@zondax/filecoin-signing-tools/js"
 import { VerifyAPI } from '@keyko-io/filecoin-verifier-tools'
 import { ConfigLotusNode } from '../contextType'
-
+import signer from "@zondax/filecoin-signing-tools/js"
 export class BurnerWallet {
     // Notary: 
-    mnemonic: string = 'exit mystery juice city argue breeze film learn orange dynamic marine diary antenna road couple surge marine assume loop thought leader liquid rotate believe'
+    // mnemonic: string = 'exit mystery juice city argue breeze film learn orange dynamic marine diary antenna road couple surge marine assume loop thought leader liquid rotate believe'
     // RKH
-    // mnemonic: string = 'robot matrix ribbon husband feature attitude noise imitate matrix shaft resist cliff lab now gold menu grocery truth deliver camp about stand consider number'
+    mnemonic: string = 'robot matrix ribbon husband feature attitude noise imitate matrix shaft resist cliff lab now gold menu grocery truth deliver camp about stand consider number'
     client: any
     api: any
     lotusNode: ConfigLotusNode
@@ -53,7 +52,7 @@ export class BurnerWallet {
 
     public sign = async (filecoinMessage: string, indexAccount: number) => {
         const private_hexstring = signer.keyDerive(this.mnemonic, `m/44'/${this.lotusNode.code}'/0/0/${indexAccount}`, '').private_hexstring
-        return signer.transactionSignLotus(
+         return signer.transactionSignLotus(
             filecoinMessage,
             private_hexstring
         )

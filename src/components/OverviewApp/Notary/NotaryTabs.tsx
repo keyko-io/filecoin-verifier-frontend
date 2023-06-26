@@ -97,6 +97,14 @@ const NotaryTabs = ({
                 >
                     Proposed Requests
                 </div>
+                <div
+                    className={selectedTab("5")}
+                    onClick={() => {
+                        changeStateTabs("5");
+                    }}
+                >
+                    DataCap Removal Requests
+                </div>
             </div>
         </>
     );

@@ -4,7 +4,7 @@ import { config } from "../../config"
 import { Typography } from "@mui/material"
 import DataTable from "react-data-table-component"
 import { ldnParser } from "@keyko-io/filecoin-verifier-tools"
-import {ISSUE_LABELS} from 'filecoin-verfier-common'
+import {ISSUE_LABELS} from 'filecoin-verifier-common'
 
 
 export const ReviewNeeded = () => {

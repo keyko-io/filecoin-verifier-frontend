@@ -8,7 +8,6 @@ import FilecoinApp from "@zondax/ledger-filecoin"
 import signer from "@zondax/filecoin-signing-tools/js"
 import { VerifyAPI } from '@keyko-io/filecoin-verifier-tools'
 import { ConfigLotusNode } from '../contextType'
-
 export class LedgerWallet {
 
   ledgerBusy: boolean = false
@@ -86,7 +85,7 @@ export class LedgerWallet {
   }
 
   public sign = async (filecoinMessage: any, indexAccount: number) => {
-    const serializedMessage = signer.transactionSerialize(
+   const serializedMessage = signer.transactionSerialize(
       filecoinMessage
     )
     const signedMessage = this.handleErrors(
@@ -94,6 +93,28 @@ export class LedgerWallet {
     )
 
     return await this.generateSignedMessage(filecoinMessage, signedMessage)
+  }
+
+  /**
+   *  async signRemoveDataCap(path, message) {
+      return this.signGeneric(path, message, INS.SIGN_DATA_CAP);
+    }
+    lotus command is: lfp  sign-remove-data-cap-proposal  t1ualijplj5aaaogymjce4subwj2rfyiqcpragbjy t1uwc7jhbu6nh5il2j6wjvjgjx5n624c3iummknwa 100
+
+   */
+  public signRemoveDataCap = async (message: any, indexAccount: number) => {
+    // const txBlob = Buffer.from("834300ec0745000977f43e811904e8", 'hex')
+    const messageBlob = Buffer.from(message.toString('hex'), 'hex')
+    const signedMessage = await this.ledgerApp.signRemoveDataCap(`m/44'/${this.lotusNode.code}'/0'/0/${indexAccount}`, messageBlob)
+    console.log("signedMessage", signedMessage)
+    // const ts = signedMessage.signature_der.toString('hex')
+    // const ts_compact = signedMessage.signature_compact.toString('hex')
+    // console.log("ts",ts,"ts_compact",ts_compact)
+
+    // const ts = signedMessage.signature_der.toString('hex')
+    const ts_compact = signedMessage.signature_compact.toString('hex')
+    // console.log("ts",ts,"ts_compact",ts_compact)
+    return ts_compact
   }
 
 

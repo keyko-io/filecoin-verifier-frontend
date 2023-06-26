@@ -6,6 +6,7 @@ import {
     VerifiedCachedData,
     ApprovedVerifiers,
     TransactionAndIssue,
+    DataCapRemovalRequest,
 } from "../../type";
 import {
     GithubProviderStates,
@@ -64,6 +65,7 @@ export const Data = React.createContext({
     getLastUniqueId: async (issueNumber: number) => "",
     loadClientRequests: async () => {},
     loadVerifierAndPendingRequests: async () => {},
+    loadDataCapRemovalRequests: async (isRkh:boolean)  =>[]  as DataCapRemovalRequest[],
     switchview: () => {},
     loadVerified: async (page: number) => {},
     updateGithubVerified: async (
