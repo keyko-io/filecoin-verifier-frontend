@@ -747,7 +747,6 @@ export default class DataProvider extends React.Component<
                     for (let issue of issues) {
                         const parsed = ldnParser.parseDataCapRemoval(issue.body)
 
-
                         const tx: RemovalTransaction | undefined = parsedTxs.find((tx: RemovalTransaction) => tx.parsed.params.verifiedClientToRemove === parsed.address)
 
                         const notaryProposal = issue.labels.filter((label: any) => label.name === ISSUE_LABELS.DC_REMOVE_NOTARY_PROPOSED)

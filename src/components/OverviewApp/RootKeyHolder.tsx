@@ -219,7 +219,7 @@ export default class RootKeyHolder extends Component<{},
             config.onboardingOwner,
           repo: config.onboardingNotaryOwner,
           issue_number: removalRequest.issue_number,
-          labels: [labelsToAdd],
+          labels: labelsToAdd,
         }
       );
 
