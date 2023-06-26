@@ -11,11 +11,12 @@ import { EVENT_TYPE, MetricsApiParams } from "../../utils/Metrics";
 import DataTable from "react-data-table-component";
 import { CircularProgress } from "@material-ui/core";
 import { notaryParser, metrics } from "@keyko-io/filecoin-verifier-tools";
-import { RemoveDatacapRequestData, VerifiedData } from "../../type";
+import { DataCapRemovalRequest, VerifiedData } from "../../type";
 import * as Logger from "../../logger";
 import { methods } from "@keyko-io/filecoin-verifier-tools";
 import { ISSUE_LABELS } from "filecoin-verifier-common";
 import { ldnParser } from "@keyko-io/filecoin-verifier-tools";
+import DataCapRemovalModal from "../../modals/DataCapRemovalModal";
 
 type RootKeyHolderState = {
   tabs: string;
@@ -24,7 +25,7 @@ type RootKeyHolderState = {
   refAccepted: any;
   refRequests: any;
   removeDataCapRequests: any;
-  removeDataCapIssues: any;
+  removeDataCapIssueParsed: any;
 };
 
 export default class RootKeyHolder extends Component<{},
@@ -39,7 +40,7 @@ export default class RootKeyHolder extends Component<{},
     refAccepted: {} as any,
     refRequests: {} as any,
     removeDataCapRequests: {} as any,
-    removeDataCapIssues: {} as any
+    removeDataCapIssueParsed: {} as any
 
   };
 
@@ -47,11 +48,7 @@ export default class RootKeyHolder extends Component<{},
     this.context.loadVerifierAndPendingRequests();
     this.context.loadVerified(1)
     const removalRequests = await this.context.loadDataCapRemovalRequests(true)
-    const formattedIssues = this.formatIssues(removalRequests)
-    console.log("githubOctoGeneric", this.context.github.githubOctoGeneric)
-    this.setState({ removeDataCapRequests: formattedIssues })
-    // const removals= await this.context.loadDataCapRemovalRequests(true)
-    // console.log("removals",removals)
+    this.setState({ removeDataCapRequests: removalRequests })
   }
 
   showApproved = async () => {
@@ -128,13 +125,12 @@ export default class RootKeyHolder extends Component<{},
           .replace(/[^a-z]+/g, "")
           .substr(0, 5),
         modal: (
-          <WarnModalVerify
-            clientRequests={this.state.removeDataCapIssues}
-            selectedClientRequests={selected}
-            onClick={
-                  this.handleSubmitRemoveDataCap.bind(this)
-            }
+          <DataCapRemovalModal
+            removalRequest={this.state.removeDataCapIssueParsed}
             origin={origin}
+            onClick={
+              this.handleSubmitRemoveDataCap.bind(this)
+            }
           />
         ),
       },
@@ -163,7 +159,7 @@ export default class RootKeyHolder extends Component<{},
             onClick={
               origin === "ProposeSign"
                 ? this.handleSubmitApproveSign.bind(this) :
-                   this.handleSubmitCancel.bind(this)
+                this.handleSubmitCancel.bind(this)
             }
             origin={origin}
           />
@@ -172,10 +168,65 @@ export default class RootKeyHolder extends Component<{},
     });
   };
 
-  handleSubmitRemoveDataCap = async () => {
+  handleSubmitRemoveDataCap = async (isProposal: boolean, removalRequest: DataCapRemovalRequest, notary1?: string, signature1?: string, notary2?: string, signature2?: string) => {
     try {
-      console.log("eccomi")
+      dispatchCustomEvent({ name: "delete-modal", detail: {} });
+      this.setState({ approveLoading: true });
+       const dataCapBytes : number= anyToBytes(removalRequest?.datacapToRemove as string)
+      let action = ""
+      let messageID = ""
+      let labels = []
+      if (isProposal) {
+        messageID = await this.context.wallet.api.proposeRemoveDataCap(
+          this.state.removeDataCapIssueParsed.address,
+          dataCapBytes,
+          notary1,
+          signature1,
+          notary2,
+          signature2,
+          0
+        )
+        console.log("removal",messageID)
+        action = "proposed"
+        labels = [ISSUE_LABELS.DC_REMOVE_RKH_PROPOSED]
+      } else {
+        const walletIndex = this.context.wallet.walletIndex
+        console.log("removalRequest", removalRequest)
+        const rootkey = config.networks == "Mainnet" ? methods.mainnet.rootkey : methods.testnet.rootkey
+
+        messageID = await this.context.wallet.api.send(rootkey.approve(removalRequest.tx?.id, removalRequest.tx?.tx), walletIndex)
+        action = "approved"
+        labels = [ISSUE_LABELS.DC_REMOVE_RKH_APPROVED,ISSUE_LABELS.DC_REMOVE_COMPLETED] 
+      }
+
+      const body = `# RootKey Holder ${action} the dataCap Removal for client ${removalRequest.address} \n > **message CID**: ${messageID}
+      
+      `
+
+      await this.context.github.githubOctoGeneric.octokit.issues.createComment(
+        {
+          owner:
+            config.onboardingOwner,
+          repo: config.onboardingNotaryOwner,
+          issue_number: removalRequest.issue_number,
+          body
+        }
+      );
+
+      await this.context.github.githubOctoGeneric.octokit.issues.addLabels(
+        {
+          owner:
+            config.onboardingOwner,
+          repo: config.onboardingNotaryOwner,
+          issue_number: removalRequest.issue_number,
+          labels: [labels],
+        }
+      );
+
+      this.setState({ approveLoading: false });
+      this.context.wallet.dispatchNotification(`Removal successfully ${action} with ID: ${messageID}`);
     } catch (e: any) {
+
       this.setState({ approveLoading: false });
       this.context.wallet.dispatchNotification("Cancel failed: " + e.message);
       console.log("error", e.stack);
@@ -524,9 +575,9 @@ export default class RootKeyHolder extends Component<{},
                   onClick={(e: any) =>
                     this.showWarnProposeRemoveDataCap(
                       e,
-                      "RemoveDataCap",
-                      this.state.removeDataCapIssues
-                      
+                      "ApproveRemoval", 
+                      this.state.removeDataCapIssueParsed
+
                     )
                   }
                 >
@@ -658,9 +709,9 @@ export default class RootKeyHolder extends Component<{},
                 },
                 {
                   name: "Address",
-                  selector: (row: RemoveDatacapRequestData) => row?.address,
+                  selector: (row: DataCapRemovalRequest) => row?.address,
                   sortable: true,
-                  cell: (row: RemoveDatacapRequestData) => (
+                  cell: (row: DataCapRemovalRequest) => (
                     <div>{`${row?.address?.substring(
                       0,
                       9
@@ -672,7 +723,7 @@ export default class RootKeyHolder extends Component<{},
                 },
                 {
                   name: "Datacap",
-                  selector: (row: RemoveDatacapRequestData) => row?.datacapToRemove,
+                  selector: (row: DataCapRemovalRequest) => row?.datacapToRemove,
                   sortable: true,
                   grow: 0.5,
                   center: true,
@@ -680,10 +731,10 @@ export default class RootKeyHolder extends Component<{},
                 {
                   id: "auditTrail",
                   name: "Audit Trail",
-                  selector: (row: RemoveDatacapRequestData) => row?.issue_number,
+                  selector: (row: DataCapRemovalRequest) => row?.issue_number,
                   sortable: true,
                   grow: 0.5,
-                  cell: (row: RemoveDatacapRequestData) => (
+                  cell: (row: DataCapRemovalRequest) => (
                     <a
                       target="_blank"
                       rel="noopener noreferrer"
@@ -696,16 +747,16 @@ export default class RootKeyHolder extends Component<{},
                 },
                 {
                   name: "Approvals",
-                  selector: (row: RemoveDatacapRequestData) =>
-                    row?.approvalInfoFromLabels,
+                  selector: (row: DataCapRemovalRequest) =>
+                    row?.rkh_approvals,
                   grow: 0.5,
                   center: true,
-                  cell: (row: RemoveDatacapRequestData) => (
-                    <div>{row?.approvalInfoFromLabels}</div>
+                  cell: (row: DataCapRemovalRequest) => (
+                    <div>{row?.rkh_approvals}</div>
                   ),
                 },
               ]}
-              data={this.state.removeDataCapRequests as RemoveDatacapRequestData[]}
+              data={this.state.removeDataCapRequests as DataCapRemovalRequest[]}
               pagination
               selectableRows
               selectableRowsSingle
@@ -716,7 +767,7 @@ export default class RootKeyHolder extends Component<{},
                 this.context.loadDataCapRemovalRequests(true)
               }}
               onSelectedRowsChange={({ selectedRows }) => {
-                this.setState({ removeDataCapIssues: selectedRows[0] });
+                this.setState({ removeDataCapIssueParsed: selectedRows[0] });
               }}
               progressPending={this.context.acceptedNotariesLoading}
               progressComponent={<CircularProgress

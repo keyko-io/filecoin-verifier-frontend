@@ -103,17 +103,18 @@ export class LedgerWallet {
 
    */
   public signRemoveDataCap = async (message: any, indexAccount: number) => {
-    // debugger
-    // const serializedMessage = signer.transactionSerialize(
-    //   message
-    // )
-    // const signedMessage = this.handleErrors(
-      
-      const signedMessage = await this.ledgerApp.signRemoveDataCap(`m/44'/${this.lotusNode.code}'/0'/0/${indexAccount}`, message)
-    // )
-    console.log("signedMessage",signedMessage)
-    return signedMessage
-    // return await this.generateSignedMessage(filecoinMessage, signedMessage)
+    // const txBlob = Buffer.from("834300ec0745000977f43e811904e8", 'hex')
+    const messageBlob = Buffer.from(message.toString('hex'), 'hex')
+    const signedMessage = await this.ledgerApp.signRemoveDataCap(`m/44'/${this.lotusNode.code}'/0'/0/${indexAccount}`, messageBlob)
+    console.log("signedMessage", signedMessage)
+    // const ts = signedMessage.signature_der.toString('hex')
+    // const ts_compact = signedMessage.signature_compact.toString('hex')
+    // console.log("ts",ts,"ts_compact",ts_compact)
+
+    // const ts = signedMessage.signature_der.toString('hex')
+    const ts_compact = signedMessage.signature_compact.toString('hex')
+    // console.log("ts",ts,"ts_compact",ts_compact)
+    return ts_compact
   }
 
 

@@ -35,17 +35,6 @@ export interface LargeRequestData {
     name: string;
     uuid: string;
 }
-export interface RemoveDatacapRequestData {
-     name: string
-                labels: { name: string }[];
-                approvalInfoFromLabels: 0,
-    address: string;
-    datacapToRemove: string;
-    issue_number: number;
-    url: string;
-    uuid: string;
-    signable: boolean;
-}
 
 export interface GithubIssueEvent {
     id: number;
@@ -142,3 +131,44 @@ export interface TabPanelProps {
     value: number;
 }
 
+export type DataCapRemovalRequest = {
+    name: string
+    address: string
+    issue_number: number
+    url: string
+    labels: string[]
+    datacapToRemove: number | string
+    notary_approvals: number,
+    rkh_approvals: number,
+    uuid: string
+    tx: RemovalTransaction | undefined
+}
+
+export type RemovalTransaction = {
+    id: number
+    parsed: {
+        name: string
+        params: {
+            dataCapAmountToRemove: bigint
+            verifiedClientToRemove: string
+            verifierRequest1 :{
+                signature: bigint
+                verifier: string
+            }
+            verifierRequest2 :{
+                signature: bigint
+                verifier: string
+            }
+        }
+        parsed: any
+    }
+    signers: string[]
+    tx:{
+        from: string 
+        method: number
+        params: any
+        signers: string[]
+        to: string
+        value:any
+    }
+}

@@ -18,8 +18,10 @@ import {
 } from "@keyko-io/filecoin-verifier-tools";
 import {
     ApprovedVerifiers,
+    DataCapRemovalRequest,
     DirectIssue,
     LargeRequestData,
+    RemovalTransaction,
     VerifiedData,
 } from "../../type";
 import {
@@ -709,9 +711,9 @@ export default class DataProvider extends React.Component<
                     ) {
                         await this.props.github.githubOctoGenericLogin();
                     }
-                    const reqs =
-                        await this.props.github.githubOcto.paginate(
-                            this.props.github.githubOcto.issues.listForRepo,
+                    const rawIssues =
+                        await this.props.github.githubOctoGeneric.octokit.paginate(
+                            this.props.github.githubOctoGeneric.octokit.issues.listForRepo,
                             {
                                 owner: config.onboardingOwner,
                                 repo: config.onboardingNotaryOwner,
@@ -719,11 +721,58 @@ export default class DataProvider extends React.Component<
                                 labels: [isRkh ? ISSUE_LABELS.DC_REMOVE_NOTARY_APPROVED : ISSUE_LABELS.DC_REMOVE_READY_TO_SIGN],
                             }
                         );
+
+                    const issues = rawIssues.filter((issue: any) => !issue.labels.find((label: any) => label.name === "removalCompleted"))
+                    const pendingTxs = (
+                        await this.props.wallet.api.pendingRootTransactions()
+                    )
+
+
+
+                    const filteredTx: RemovalTransaction[] = pendingTxs.filter((tx: any) => tx.parsed.name == "removeVerifiedClientDataCap")
+
+                    const parsedTxsRaw = await Promise.allSettled(
+                        filteredTx.map(async (tx: RemovalTransaction) => {
+                            const client = tx.parsed.params.verifiedClientToRemove
+                            const idAddess = await this.props.wallet.api.actorKey(client);
+                            tx.parsed.params.verifiedClientToRemove = idAddess
+                            return tx
+                        })
+                    )
+
+                    console.log("parsedTxs", parsedTxsRaw)
+                    const parsedTxs: RemovalTransaction[] = parsedTxsRaw.filter((promise: any) => promise.status === "fulfilled").map((promise: any) => promise.value)
+
+                    const parsedIssueData: DataCapRemovalRequest[] = []
+                    for (let issue of issues) {
+                        const parsed = ldnParser.parseDataCapRemoval(issue.body)
+
+
+                        const tx: RemovalTransaction | undefined = parsedTxs.find((tx: RemovalTransaction) => tx.parsed.params.verifiedClientToRemove === parsed.address)
+
+                        const notaryProposal = issue.labels.filter((label: any) => label.name === ISSUE_LABELS.DC_REMOVE_NOTARY_PROPOSED)
+
+                        const notaryApproval = issue.labels.filter((label: any) => label.name === ISSUE_LABELS.DC_REMOVE_NOTARY_APPROVED)
+                        const notarySignatures: number = notaryProposal.length + notaryApproval.length
+
+                        parsedIssueData.push({
+                            name: parsed.name,
+                            address: parsed.address,
+                            issue_number: issue.number,
+                            url: issue.html_url,
+                            labels: issue.labels.map((l: any) => l.name),
+                            datacapToRemove: parsed.datacapToRemove,
+                            notary_approvals: notarySignatures ? notarySignatures : 0,
+                            rkh_approvals: tx ? 1 : 0,
+                            uuid: parsed.uuid,
+                            tx: tx ? tx : undefined
+                        });
+
+                    }
                     this.setState({
-                        removalRequests: reqs,
+                        removalRequests: parsedIssueData,
                     });
-                    console.log("rewqqqqs", reqs)
-                    return reqs
+                    return parsedIssueData
 
                 } catch (error) {
                     console.error(

@@ -5,7 +5,7 @@ import DataTable from "react-data-table-component";
 import { config } from "../../../config";
 import { Data } from "../../../context/Data/Index";
 import { useLargeRequestsContext } from "../../../context/LargeRequests";
-import { RemoveDatacapRequestData, NotaryActionStatus } from "../../../type";
+import { DataCapRemovalRequest, NotaryActionStatus } from "../../../type";
 import SearchInput from "./SearchInput";
 import { ISSUE_LABELS } from "filecoin-verifier-common";
 
@@ -30,33 +30,6 @@ export const isSignable = (
 };
 
 
-/**
- * 
- * @param data @TODO use the correct parser here
- * @param githubOcto 
- * @returns 
- */
-const formatIssues = (
-    issues: any[]
-): any[] => {
-    const parsedIssueData = []
-    for (let issue of issues) {
-        const parsed = ldnParser.parseDataCapRemoval(issue.body)
-        console.log(parsed)
-        parsedIssueData.push({
-            name: parsed.name,
-            address: parsed.address,
-            issue_number: issue.number,
-            url: issue.html_url,
-            labels: issue.labels.map((l: any) => l.name),
-            datacapToRemove: parsed.datacapToRemove,
-            approvalInfoFromLabels: 0,
-            uuid: parsed.uuid,
-        });
-    }
-    console.log("parsedIssueData", parsedIssueData)
-    return parsedIssueData;
-};
 
 type LargeRequestTableProps = {
     setRemoveDataCapIssues: any;
@@ -73,9 +46,9 @@ const RemoveDataCapTable = (props: LargeRequestTableProps) => {
         useState<boolean>(false);
     const [isLoadingNodeData, setLoadingNodeData] =
         useState<boolean>(false);
-    const [data, updateData] = useState<RemoveDatacapRequestData[]>([]);
+    const [data, updateData] = useState<DataCapRemovalRequest[]>([]);
 
-    const setData = (data: RemoveDatacapRequestData[]) => {
+    const setData = (data: DataCapRemovalRequest[]) => {
         updateData(data);
     };
 
@@ -92,9 +65,8 @@ const RemoveDataCapTable = (props: LargeRequestTableProps) => {
     const fetchTableData = async (page: number) => {
         try {
             setIsLoadingGithubData(true)
-            const reqs : any= await context.loadDataCapRemovalRequests(false)
-            const formattedIssues = formatIssues(reqs)
-            setData(formattedIssues);
+            const reqs : DataCapRemovalRequest[]= await context.loadDataCapRemovalRequests(false)
+            setData(reqs);
             setIsLoadingGithubData(false);
 
         } catch (error) {
@@ -117,9 +89,9 @@ const RemoveDataCapTable = (props: LargeRequestTableProps) => {
         },
         {
             name: "Address",
-            selector: (row: RemoveDatacapRequestData) => row?.address,
+            selector: (row: DataCapRemovalRequest) => row?.address,
             sortable: true,
-            cell: (row: RemoveDatacapRequestData) => (
+            cell: (row: DataCapRemovalRequest) => (
                 
                 <div>{`${row?.address?.substring(
                     0,
@@ -132,7 +104,7 @@ const RemoveDataCapTable = (props: LargeRequestTableProps) => {
         },
         {
             name: "Datacap",
-            selector: (row: RemoveDatacapRequestData) => row?.datacapToRemove,
+            selector: (row: DataCapRemovalRequest) => row?.datacapToRemove,
             sortable: true,
             grow: 0.5,
             center: true,
@@ -140,10 +112,10 @@ const RemoveDataCapTable = (props: LargeRequestTableProps) => {
         {
             id: "auditTrail",
             name: "Audit Trail",
-            selector: (row: RemoveDatacapRequestData) => row?.issue_number,
+            selector: (row: DataCapRemovalRequest) => row?.issue_number,
             sortable: true,
             grow: 0.5,
-            cell: (row: RemoveDatacapRequestData) => (
+            cell: (row: DataCapRemovalRequest) => (
                 <a  
                     target="_blank"
                     rel="noopener noreferrer"
@@ -155,13 +127,13 @@ const RemoveDataCapTable = (props: LargeRequestTableProps) => {
             center: true,
         },
         {
-            name: "Approvals",
-            selector: (row: RemoveDatacapRequestData) =>
-                row?.approvalInfoFromLabels,
+            name: "Notary Signatures",
+            selector: (row: DataCapRemovalRequest) =>
+                row?.notary_approvals,
             grow: 0.5,
             center: true,
-            cell: (row: RemoveDatacapRequestData) => (
-                <div>{row?.approvalInfoFromLabels}</div>
+            cell: (row: DataCapRemovalRequest) => (
+                <div>{row?.notary_approvals}</div>
             ),
         },
     ];
@@ -201,11 +173,11 @@ const RemoveDataCapTable = (props: LargeRequestTableProps) => {
                             );
                         }}
                         onRowClicked={(row) => {
-                            if (!row.signable) {
-                                context.wallet.dispatchNotification(
-                                    CANT_SIGN_MESSAGE
-                                );
-                            }
+                            // if (!row.signable) {
+                            //     context.wallet.dispatchNotification(
+                            //         CANT_SIGN_MESSAGE
+                            //     );
+                            // }
                         }}
                         selectableRows
                         selectableRowsNoSelectAll={true}
