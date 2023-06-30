@@ -573,11 +573,15 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
          const message = {
             VerifiedClient: idAddress,
             DataCapAmount: dataCapBytes,
-            RemovalProposalID: 1234
+            RemovalProposalID: 1
          }
 
+         // message: {verifiedClient: string, dataCapAmount: string, removalProposalID: number[]}
          const encodedMessage = context.wallet.api.encodeRemoveDataCapParameters(
-            [message.VerifiedClient, message.DataCapAmount, [message.RemovalProposalID]]
+           {
+             verifiedClient: message.VerifiedClient,
+             dataCapAmount: message.DataCapAmount,
+             removalProposalID: [message.RemovalProposalID]}
          );
          const signature = await context.wallet.signRemoveDataCap(encodedMessage, 0)
          let labelsToAdd = removeDataCapIssue?.labels.find((l: string) => l === ISSUE_LABELS.DC_REMOVE_NOTARY_PROPOSED) ? ISSUE_LABELS.DC_REMOVE_NOTARY_APPROVED : ISSUE_LABELS.DC_REMOVE_NOTARY_PROPOSED
