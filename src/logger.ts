@@ -41,6 +41,7 @@ export const REQUEST_APPROVED = "Request Approved"
 export const PROPOSE_CANCELLED = "Propose Cancelled"
 export const RKH_SIGN_ON_CHAIN = "Sign On Chain - Notary Application"
 export const CLIENT_ALLOCATION_REQUEST = "Client Allocation Request"
+export const DATACAP_REMOVAL = "Datacap Removal"
 
 // LEDGER LOGIN
 export const LEDGER_LOGIN_SUCCESS = "Ledger Login Successful"

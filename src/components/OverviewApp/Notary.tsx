@@ -567,7 +567,7 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
    const signRemovalRequest = async () => {
       try {
          setRemovalLoading(true);
-         const dataCapBytes : number= anyToBytes(removeDataCapIssue?.datacapToRemove as string)
+         const dataCapBytes: number = anyToBytes(removeDataCapIssue?.datacapToRemove as string)
          console.log("sign removal request")
          const idAddress = await context.wallet.api.actorAddress(removeDataCapIssue?.address);
          const message = {
@@ -576,10 +576,12 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
             RemovalProposalID: 0 //hardcoding it to 0 for now
          }
 
-         const encodedMessage = context.wallet.api.encodeRemoveDataCapParameters(
-            [message.VerifiedClient, message.DataCapAmount, [message.RemovalProposalID]]
-         );
-         const signature = await context.wallet.signRemoveDataCap(encodedMessage, 0)
+         const encodedMessage = context.wallet.api.encodeRemoveDataCapParameters({
+            verifiedClient: message.VerifiedClient,
+            dataCapAmount: message.DataCapAmount,
+            removalProposalID: message.RemovalProposalID
+         });
+         const signature = await context.wallet.signRemoveDataCap(encodedMessage, context.wallet.walletIndex)
          let labelsToAdd = removeDataCapIssue?.labels.find((l: string) => l === ISSUE_LABELS.DC_REMOVE_NOTARY_PROPOSED) ? ISSUE_LABELS.DC_REMOVE_NOTARY_APPROVED : ISSUE_LABELS.DC_REMOVE_NOTARY_PROPOSED
 
 
@@ -610,8 +612,10 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
 
          setRemovalLoading(false);
          context.wallet.dispatchNotification("The dataCap Removal has been signed and posted to github");
-      } catch (error) {
+         Logger.BasicLogger({ message: Logger.DATACAP_REMOVAL })
+      } catch (error: any) {
          setRemovalLoading(false);
+         Logger.BasicLogger({ message: `${Logger.DATACAP_REMOVAL}. error: ${error.toString()}`  })
          console.log(error)
          context.wallet.dispatchNotification(
             'error during signature creation'
