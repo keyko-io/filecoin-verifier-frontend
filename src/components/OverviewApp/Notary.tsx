@@ -592,7 +592,7 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
             [context.wallet.activeAccount]}
             \n > **Signature**: ${signature}`
          labelsToAdd = ISSUE_LABELS.DC_REMOVE_NOTARY_APPROVED
-
+         Logger.BasicLogger({ message: `${Logger.DATACAP_REMOVAL} - signature: ${signature} - notary address: ${idAddress}` })
          if (removeDataCapIssue) {
 
             await context.github.githubOcto.issues.createComment(
@@ -603,17 +603,17 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
                   body: body,
                })
             await context.github.githubOctoGeneric.octokit.issues.addLabels(
-            {
-               owner: config.onboardingOwner,
-               repo: config.onboardingNotaryOwner,
-               issue_number: removeDataCapIssue?.issue_number,
-               labels: [labelsToAdd]
-            })
+               {
+                  owner: config.onboardingOwner,
+                  repo: config.onboardingNotaryOwner,
+                  issue_number: removeDataCapIssue?.issue_number,
+                  labels: [labelsToAdd]
+               })
          }
 
          setRemovalLoading(false);
          context.wallet.dispatchNotification("The dataCap Removal has been signed and posted to github");
-         Logger.BasicLogger({ message: Logger.DATACAP_REMOVAL })
+
       } catch (error: any) {
          setRemovalLoading(false);
          Logger.BasicLogger({ message: `${Logger.DATACAP_REMOVAL}. error: ${error.toString()}` })
