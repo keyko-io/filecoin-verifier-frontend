@@ -573,7 +573,7 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
          const message = {
             VerifiedClient: idAddress,
             DataCapAmount: dataCapBytes,
-            RemovalProposalID: 1234
+            RemovalProposalID: 0 //hardcoding it to 0 for now
          }
 
          const encodedMessage = context.wallet.api.encodeRemoveDataCapParameters(
