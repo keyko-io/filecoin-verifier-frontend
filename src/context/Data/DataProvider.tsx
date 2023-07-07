@@ -211,7 +211,6 @@ export default class DataProvider extends React.Component<
                         // ["bot:readyToSign","Bot: Ready To Sign"]
                     );
 
-                console.log(allGHIssues, "hey hey")    
             
                 const response = allGHIssues.map((issue: any) => {
                     const parsed: ParseLargeRequestData =
@@ -955,6 +954,7 @@ export default class DataProvider extends React.Component<
                 comment: string
             ): Promise<boolean> => {
                 try {
+                    debugger
                     const response = await this.props.github.githubOcto.issues.createComment(
                         {
                             owner: owner,
