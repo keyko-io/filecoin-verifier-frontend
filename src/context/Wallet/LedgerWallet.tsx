@@ -107,14 +107,14 @@ export class LedgerWallet {
     const messageBlob = Buffer.from(message.toString('hex'), 'hex')
     const signedMessage = await this.ledgerApp.signRemoveDataCap(`m/44'/${this.lotusNode.code}'/0'/0/${indexAccount}`, messageBlob)
     console.log("signedMessage", signedMessage)
-    // const ts = signedMessage.signature_der.toString('hex')
-    // const ts_compact = signedMessage.signature_compact.toString('hex')
-    // console.log("ts",ts,"ts_compact",ts_compact)
-
-    // const ts = signedMessage.signature_der.toString('hex')
     const ts_compact = signedMessage.signature_compact.toString('hex')
-    // console.log("ts",ts,"ts_compact",ts_compact)
-    return ts_compact
+    const ts_der = signedMessage.signature_der.toString('hex')
+    console.log({
+      ts_compact,
+      ts_der,
+      signedMessage
+      })
+    return `01${ts_compact}`
   }
 
 
