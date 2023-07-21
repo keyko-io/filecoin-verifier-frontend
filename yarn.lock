@@ -7,11 +7,6 @@
   resolved "https://registry.yarnpkg.com/@aashutoshrathi/word-wrap/-/word-wrap-1.2.6.tgz#bd9154aec9983f77b3a034ecaa015c2e4201f6cf"
   integrity sha512-1Yjs2SvM8TflER/OD3cOjhWWOZb58A2t7wpE2S9XfBYTiIl+XFhQG2bjy4Pu1I+EAlCNUzRDYDdFwFYUKvXcIA==
 
-"@aashutoshrathi/word-wrap@^1.2.3":
-  version "1.2.6"
-  resolved "https://registry.yarnpkg.com/@aashutoshrathi/word-wrap/-/word-wrap-1.2.6.tgz#bd9154aec9983f77b3a034ecaa015c2e4201f6cf"
-  integrity sha512-1Yjs2SvM8TflER/OD3cOjhWWOZb58A2t7wpE2S9XfBYTiIl+XFhQG2bjy4Pu1I+EAlCNUzRDYDdFwFYUKvXcIA==
-
 "@ampproject/remapping@^2.2.0":
   version "2.2.1"
   resolved "https://registry.yarnpkg.com/@ampproject/remapping/-/remapping-2.2.1.tgz#99e8e11851128b8702cd57c33684f1d0f260b630"
@@ -2155,10 +2150,10 @@
     "@jridgewell/resolve-uri" "3.1.0"
     "@jridgewell/sourcemap-codec" "1.4.14"
 
-"@keyko-io/filecoin-verifier-tools@^2.2.2":
-  version "2.2.2"
-  resolved "https://registry.yarnpkg.com/@keyko-io/filecoin-verifier-tools/-/filecoin-verifier-tools-2.2.2.tgz#53f961c28a203c0735f5ed198f0e80a2367ef5b9"
-  integrity sha512-T93kf5mjxyjuWkF6IN0RFBM8l9BASFYsWlQrTKBfG25KL12GaTEPnkW4EvZ41OZxtlvS0ukcNGTZrMLnHako/A==
+"@keyko-io/filecoin-verifier-tools@^2.2.4":
+  version "2.2.4"
+  resolved "https://registry.yarnpkg.com/@keyko-io/filecoin-verifier-tools/-/filecoin-verifier-tools-2.2.4.tgz#4a67258ede04f097db4859df2d4fd85fc38849d4"
+  integrity sha512-OoZuGukbh/autozfUP2hmKuT8ydaPi3wX5AGss54Tig8tb1XA/zuxd3ym5+86NQnrHX7Xzu1/6NxRVGbnOU8kA==
   dependencies:
     "@babel/core" "^7.20.12"
     "@babel/helper-compilation-targets" "^7.20.7"
