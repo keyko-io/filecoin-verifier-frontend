@@ -65,10 +65,10 @@ const PublicRequestTable = ({
 
     // find assigned notary data
     for (const item of getPublic) {
-      const dannyobAssignee = item.assignees.find(
+      const assigneIsFound = item.assignees.find(
         (assignee: any) => assignee.login === targetAssignee
       )
-      if (dannyobAssignee) {
+      if (assigneIsFound) {
         notaryDataList.push(item)
       }
     }
