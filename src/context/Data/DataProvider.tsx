@@ -565,7 +565,7 @@ export default class DataProvider extends React.Component<
                     ) {
                         await this.props.github.githubOctoGenericLogin();
                     }
-                    console.log("this.props.github.githubOctoGeneric", this.props.github.githubOctoGeneric)
+                    // console.log("this.props.github.githubOctoGeneric", this.props.github.githubOctoGeneric)
                     const msigRequests =
                         await this.props.github.githubOctoGeneric.octokit.paginate(
                             this.props.github.githubOctoGeneric
@@ -578,20 +578,6 @@ export default class DataProvider extends React.Component<
                             }
                         );
                     console.log("msigRequests", msigRequests)
-                    // const msigRequests = allIssues
-                    // .filter(
-                    //     (issue: any) =>
-                    //         !issue.labels.find(
-                    //             (l: any) =>
-                    //                 l.name.toLowerCase().replace(/ /g, '').includes("addedonchain")
-                    //         )
-                    // )
-                    // .filter((issue: any) =>
-                    //     issue.labels.find(
-                    //         (l: any) =>
-                    //             l.name.toLowerCase().replace(/ /g, '').includes("approved") || l.name.toLowerCase().replace(/ /g, '').includes("startsignonchain")
-                    //     )
-                    // );
 
                     const pendingTxs = (
                         await this.props.wallet.api.pendingRootTransactions()
@@ -607,51 +593,56 @@ export default class DataProvider extends React.Component<
                                 (issue: any) =>
                                     new Promise<any>(
                                         async (resolve, reject) => {
-                                            const comments =
-                                                await this.props.github.fetchGithubComments(
-                                                    config.onboardingOwner,
-                                                    config.onboardingNotaryOwner,
-                                                    issue.number
-                                                );
-                                            const parseCommentBody =
-                                                comments.map(
-                                                    (c: any) =>
-                                                        notaryParser.parseApproveComment(
-                                                            c.body
-                                                        )
-                                                );
-                                            const filteredCorrectRequests =
-                                                parseCommentBody.filter(
-                                                    (o: any) =>
-                                                        o.correct
-                                                );
-
-                                            const lastRequest =
-                                                filteredCorrectRequests.reverse()[0];
-
-                                            let verifierAddress =
-                                                lastRequest?.address ||
-                                                null;
-
-                                            if (verifierAddress?.startsWith("t1") || verifierAddress?.startsWith("f1")) {
-                                                verifierAddress = await this.props.wallet.api.actorAddress(verifierAddress);
-                                            }
-
-                                            const tx =
-                                                pendingTxs.find(
-                                                    (ptx: any) =>
-                                                        ptx.parsed
-                                                            .params
-                                                            .verifier ===
-                                                        verifierAddress
-                                                );
-                                            resolve({
-                                                issue,
-                                                comments,
-                                                lastRequest,
-                                                msigAddress: verifierAddress,
-                                                tx,
-                                            });
+                                           try {
+                                             const comments =
+                                                 await this.props.github.fetchGithubComments(
+                                                     config.onboardingOwner,
+                                                     config.onboardingNotaryOwner,
+                                                     issue.number
+                                                 );
+                                             const parseCommentBody =
+                                                 comments.map(
+                                                     (c: any) =>
+                                                         notaryParser.parseApproveComment(
+                                                             c.body
+                                                         )
+                                                 );
+                                             const filteredCorrectRequests =
+                                                 parseCommentBody.filter(
+                                                     (o: any) =>
+                                                         o.correct
+                                                 );
+ 
+                                             const lastRequest =
+                                                 filteredCorrectRequests.reverse()[0];
+ 
+                                             let verifierAddress =
+                                                 lastRequest?.address ||
+                                                 null;
+ 
+                                             if (verifierAddress?.startsWith("t1") || verifierAddress?.startsWith("f1")) {
+                                                 verifierAddress = await this.props.wallet.api.actorAddress(verifierAddress);
+                                             }
+ 
+                                             const tx =
+                                                 pendingTxs.find(
+                                                     (ptx: any) =>
+                                                         ptx.parsed
+                                                             .params
+                                                             .verifier ===
+                                                         verifierAddress
+                                                 );
+                                             resolve({
+                                                 issue,
+                                                 comments,
+                                                 lastRequest,
+                                                 msigAddress: verifierAddress,
+                                                 tx,
+                                             });
+                                           } catch (error) {
+                                            reject(error)
+                                            alert("one of the notary address is not on chain. please send some fil to it.")
+                                           }
                                         }
                                     )
                             )
