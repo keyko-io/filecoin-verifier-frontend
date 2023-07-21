@@ -13,9 +13,9 @@ const publicRequestColumns: any = [
   },
   {
     name: "Address",
-    selector: (row: any) => row.address,
+    selector: (row: any) => row.address.slice(0, 15) + "...",
     sortable: true,
-    grow: 1.2,
+    grow: 1.5,
   },
   {
     name: "Datacap",
@@ -50,25 +50,30 @@ const PublicRequestTable = ({
   const context = useContext(Data)
 
   const getPublic = async () => {
+    // get public request
     const getPublic = await context.github?.fetchGithubIssues(
       config.onboardingLargeOwner,
       config.onboardingClientRepo,
       "open",
-      "kyc verified"
+      ["kyc verified", "bot:lookingGood"]
     )
 
+    // get current notary handle
     const targetAssignee = context.github.loggedUser
 
     const notaryDataList = []
 
+    // find assigned notary data
     for (const item of getPublic) {
       const dannyobAssignee = item.assignees.find(
-        (assignee: any) => assignee.login === "dannyob"
+        (assignee: any) => assignee.login === targetAssignee
       )
       if (dannyobAssignee) {
         notaryDataList.push(item)
       }
     }
+
+    if (!notaryDataList) return
 
     const publicClientDataForTable = []
 
@@ -106,7 +111,11 @@ const PublicRequestTable = ({
         pagination
         paginationRowsPerPageOptions={[10, 20, 30]}
         paginationPerPage={10}
-        noDataComponent="No client requests yet"
+        noDataComponent={
+          <div style={{ marginTop: "2rem" }}>
+            There is not any public request associated with your github handle.
+          </div>
+        }
       />
     </div>
   )

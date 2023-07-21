@@ -118,7 +118,7 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
           modal: (
             <AddClientModal
               newDatacap={true}
-              clientRequest={context.clientRequests}
+              clientRequest={directReqTableData}
               selected={selectedClientRequests[0]}
             />
           ),
@@ -658,6 +658,7 @@ const Notary = (props: { notaryProps: NotaryProps }) => {
               tabs={tabs}
               changeStateTabs={changeStateTabs}
               verifiedClientsLength={props.notaryProps.clients.length}
+              directReqTableData={directReqTableData}
             />
             <ApproveLargeRequestModal
               open={isApproveLargeRequestModalOpen}
