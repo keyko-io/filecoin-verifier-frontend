@@ -38,14 +38,16 @@ const publicRequestColumns: any = [
 
 type PublicRequestTable2Props = {
   setSelectedClientRequests: any
+  setDirectReqTableData: any
+  directReqTableData: any
 }
 
 const PublicRequestTable = ({
   setSelectedClientRequests,
+  setDirectReqTableData,
+  directReqTableData,
 }: PublicRequestTable2Props) => {
   const context = useContext(Data)
-
-  const [tableData, setTableData] = useState<any>([])
 
   const getPublic = async () => {
     const getPublic = await context.github?.fetchGithubIssues(
@@ -82,7 +84,7 @@ const PublicRequestTable = ({
       })
     }
 
-    setTableData(publicClientDataForTable)
+    setDirectReqTableData(publicClientDataForTable)
   }
 
   useEffect(() => {
@@ -100,7 +102,7 @@ const PublicRequestTable = ({
           setSelectedClientRequests(rowNumbers)
         }}
         columns={publicRequestColumns}
-        data={tableData}
+        data={directReqTableData}
         pagination
         paginationRowsPerPageOptions={[10, 20, 30]}
         paginationPerPage={10}
