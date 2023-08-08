@@ -211,8 +211,12 @@ export default class DataProvider extends React.Component<
                         // ["bot:readyToSign","Bot: Ready To Sign"]
                     );
 
-            
-                const response = allGHIssues.map((issue: any) => {
+                 // filter out issues that have the review needed label
+                 const filteredReviewNeededApplications = allGHIssues.filter((issue : any) => {              
+                        return !issue.labels.some((label : any) => label.name === ISSUE_LABELS.REVIEW_NEEDED);
+                     });
+                
+                const response = filteredReviewNeededApplications.map((issue: any) => {
                     const parsed: ParseLargeRequestData =
                         ldnParser.parseIssue(issue.body);
                     const approvalInfo = issue.labels.some((l: any) => l.name.toLowerCase().replace(/ /g, '').includes("startsigndatacap"))
