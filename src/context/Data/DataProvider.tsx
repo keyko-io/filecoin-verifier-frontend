@@ -217,13 +217,13 @@ export default class DataProvider extends React.Component<
                         return !issue.labels.some((label : any) => label.name === ISSUE_LABELS.REVIEW_NEEDED);
                      });
 
-                    if(labels?.includes(ISSUE_LABELS.REVIEW_NEEDED)) {
-                        const formattedIssuesForEil = await formatIssues(
-                            filteredReviewNeededApplications,
-                            this.props.github.githubOcto
-                          )
-                        return formattedIssuesForEil
-                    }
+                if(labels?.includes(ISSUE_LABELS.EFIL_PLUS)) {
+                    const formattedIssuesForEil = await formatIssues(
+                        filteredReviewNeededApplications,
+                        this.props.github.githubOcto
+                      )
+                    return formattedIssuesForEil
+                }
  
                 const response = filteredReviewNeededApplications.map((issue: any) => {
                     const parsed: ParseLargeRequestData = ldnParser.parseIssue(issue.body);
