@@ -211,6 +211,7 @@ export default class DataProvider extends React.Component<
                         // ["bot:readyToSign","Bot: Ready To Sign"]
                     );
 
+                 // filter out issues that have the review needed label
                  const filteredReviewNeededApplications = allGHIssues.filter((issue : any) => {              
                         return !issue.labels.some((label : any) => label.name === ISSUE_LABELS.REVIEW_NEEDED);
                      });
