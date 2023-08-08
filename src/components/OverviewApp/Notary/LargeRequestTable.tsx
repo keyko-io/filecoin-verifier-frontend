@@ -44,7 +44,7 @@ export const isSignable = (
   return signable
 }
 
-const formatIssues = async (
+export const formatIssues = async (
   data: { body: string }[],
   githubOcto: any
 ): Promise<any[]> => {
