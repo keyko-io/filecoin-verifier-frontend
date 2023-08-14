@@ -30,6 +30,7 @@ import {
 } from "../contextType";
 import * as Logger from "../../logger";
 import * as Sentry from "@sentry/react";
+import { formatIssues } from "../../components/OverviewApp/Notary/LargeRequestTable";
 
 interface ParseLargeRequestData {
     address: string;
@@ -211,13 +212,23 @@ export default class DataProvider extends React.Component<
                         // ["bot:readyToSign","Bot: Ready To Sign"]
                     );
 
-            
-                const response = allGHIssues.map((issue: any) => {
-                    const parsed: ParseLargeRequestData =
-                        ldnParser.parseIssue(issue.body);
-                    const approvalInfo = issue.labels.some((l: any) => l.name.toLowerCase().replace(/ /g, '').includes("startsigndatacap"))
+                 // filter out issues that have the review needed label
+                 const filteredReviewNeededApplications = allGHIssues.filter((issue : any) => {              
+                        return !issue.labels.some((label : any) => label.name === ISSUE_LABELS.REVIEW_NEEDED);
+                     });
 
-                    const res = {
+                if(labels?.includes(ISSUE_LABELS.EFIL_PLUS)) {
+                    const formattedIssuesForEil = await formatIssues(
+                        filteredReviewNeededApplications,
+                        this.props.github.githubOcto
+                      )
+                    return formattedIssuesForEil
+                }
+ 
+                const response = filteredReviewNeededApplications.map((issue: any) => {
+                    const parsed: ParseLargeRequestData = ldnParser.parseIssue(issue.body);
+                    const approvalInfo = issue.labels.some((l: any) => l.name.toLowerCase().replace(/ /g, '').includes("startsigndatacap"))
+                    return {
                         ...parsed,
                         issue_number: issue?.number,
                         url: issue?.html_url,
@@ -229,8 +240,8 @@ export default class DataProvider extends React.Component<
                         // tx: null,
                         // approvals: null,
                     };
-                    return res;
                 });
+
                 return response;
             },
             getLDNIssuesAndTransactions: async () => {
