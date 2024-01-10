@@ -706,20 +706,22 @@ export default class RootKeyHolder extends Component<{},
                   sortable: true,
                   grow: 1,
                   wrap: true,
+                  cell: (row: any) => {
+                    return <div>{row?.name ? row.name : "Not Available"}</div>;
+                  },
                 },
                 {
                   name: "Address",
                   selector: (row: DataCapRemovalRequest) => row?.address,
                   sortable: true,
-                  cell: (row: DataCapRemovalRequest) => (
-                    <div>{`${row?.address?.substring(
-                      0,
-                      9
-                    )}...${row?.address.substring(
-                      row?.address.length - 9,
-                      row?.address.length
-                    )}`}</div>
-                  ),
+                  cell: (row: DataCapRemovalRequest) => {
+                    if (row?.address) {
+                      return (
+                        <div>{`${row.address.substring(0, 9)}...${row.address.substring(row.address.length - 9)}`}</div>
+                      );
+                    }
+                    return <div>Not Available</div>;
+                  },
                 },
                 {
                   name: "Datacap",
