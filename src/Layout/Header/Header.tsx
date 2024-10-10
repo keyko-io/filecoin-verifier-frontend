@@ -2,6 +2,7 @@ import Logo from "../../svg/logo.svg"
 import history from "../../context/History"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import "./Header.scss"
+import DeprecationWarning from "../../components/DeprecationWarning/DeprecationWarning"
 
 const Header = () => {
   const goHomePage = () => history.push({ pathname: "/" })
@@ -18,6 +19,7 @@ const Header = () => {
 
   return (
     <div className="layoutHeader" style={addBorderBottom}>
+    <DeprecationWarning />
       {window.location.pathname.length === 1 ? null : (
         <div className="goBack" onClick={goBack}>
           <FontAwesomeIcon icon={["fas", "arrow-left"]} /> Back
