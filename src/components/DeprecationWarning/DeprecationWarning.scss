@@ -1,14 +1,21 @@
 .deprecation-warning {
-    background-color: #fef3c7;
-    border-left: 4px solid #f59e0b;
-    color: #92400e;
-    padding: 1rem;
-  }
+    background-color: #fff3cd;
+    border-top: 1px solid #ffeeba;
+    color: #856404;
+    padding: 0.75rem 1rem;
+    font-size: 0.9rem;
+    text-align: center;
   
-  .deprecation-warning p {
-    margin: 0;
-  }
+    p {
+      margin: 0;
+    }
   
-  .deprecation-warning p:first-child {
-    font-weight: bold;
-  }
+    a {
+      color: #856404;
+      text-decoration: underline;
+  
+      &:hover {
+        color: #533f03;
+      }
+    }
+}

@@ -1,19 +1,29 @@
 .layoutHeader {
-    display: flex;
-    align-items: center;
-    justify-content: center;
     position: fixed;
     width: 100%;
     background-color: white;
     z-index: 10;
-    height: 4.4rem;
-    cursor: pointer;
-   
-    .goBack {
-        position: absolute;
-        left: 2rem;
-        font-weight: 600;
-        cursor: pointer;
-        font-size: 1.2rem;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  
+    .headerContent {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 4.4rem;
+      position: relative;
     }
-}
+  
+    .logo {
+      cursor: pointer;
+    }
+  
+    .goBack {
+      position: absolute;
+      left: 2rem;
+      font-weight: 600;
+      cursor: pointer;
+      font-size: 1.2rem;
+    }
+  }
