@@ -1,0 +1,14 @@
+.deprecation-warning {
+    background-color: #fef3c7;
+    border-left: 4px solid #f59e0b;
+    color: #92400e;
+    padding: 1rem;
+  }
+  
+  .deprecation-warning p {
+    margin: 0;
+  }
+  
+  .deprecation-warning p:first-child {
+    font-weight: bold;
+  }

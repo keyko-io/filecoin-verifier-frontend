@@ -3,6 +3,7 @@ import { useLocation } from "react-router-dom"
 import Footer from "./Footer/Footer"
 import Header from "./Header/Header"
 import { Toaster } from "react-hot-toast"
+import DeprecationWarning from "../components/DeprecationWarning/DeprecationWarning"
 
 export interface LayoutProps {
   children: React.ReactNode
@@ -24,6 +25,7 @@ const Layout = ({ children }: LayoutProps) => {
         }}
       />
       {!excludeHeaderPaths.includes(pathname) && !isAdminPage && <Header />}
+      <DeprecationWarning />
       {children}
       {!isAdminPage && <Footer />}
     </>
