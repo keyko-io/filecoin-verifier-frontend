@@ -19,16 +19,17 @@ const Header = () => {
 
   return (
     <div className="layoutHeader" style={addBorderBottom}>
-    <DeprecationWarning />
-      {window.location.pathname.length === 1 ? null : (
-        <div className="goBack" onClick={goBack}>
-          <FontAwesomeIcon icon={["fas", "arrow-left"]} /> Back
+      <div className="headerContent">
+        {window.location.pathname.length === 1 ? null : (
+          <div className="goBack" onClick={goBack}>
+            <FontAwesomeIcon icon={["fas", "arrow-left"]} /> Back
+          </div>
+        )}
+        <div className="logo" onClick={goHomePage}>
+          <img src={Logo} alt="Filecoin" />
         </div>
-      )}
-      <div onClick={goHomePage}>
-        {" "}
-        <img src={Logo} alt="Filecoin" />
       </div>
+      <DeprecationWarning />
     </div>
   )
 }
